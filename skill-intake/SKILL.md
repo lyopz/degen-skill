@@ -7,6 +7,8 @@ description: Use when lyopz sends a GitHub repo to add as a skill, asks to remov
 
 This repo is lyopz's skill library. It lives on GitHub at `lyopz/degen-skill` and is cloned to `~/.claude/skills` so Claude Code loads every `<name>/SKILL.md` folder automatically.
 
+Agent definitions and slash commands from skill repos go in `_ruflo/`-style underscore folders (linked into ~/.claude/agents and ~/.claude/commands), never at the root as skills.
+
 Key files (in `_notes/`, kept off the front page):
 - `_notes/SKILLS_REGISTRY.md`: every source repo, what it added, and where any of its content was merged. This is the source of truth for removal.
 - `_notes/HANDOFF.md`: running log so a new conversation can pick up where the last one stopped.

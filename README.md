@@ -1,10 +1,10 @@
 # lyopz's Claude Skills
 
-A personal skill library for [Claude Code](https://claude.com/claude-code). Every skill loads on its own when a task calls for it — no commands to remember.
+A personal skill library for [Claude Code](https://claude.com/claude-code). Every skill loads on its own when a task calls for it — no commands to remember. Ruflo adds a team of specialist agents that can work on parts of a job in parallel.
 
-| Skills | Coding | Design & UI | Planning | OmniRoute | Sources |
-|:-:|:-:|:-:|:-:|:-:|:-:|
-| **62** | 6 | 8 | 2 | 45 | 6 repos |
+| Skills | Agents | Commands | Coding | Design & UI | Swarms (Ruflo) | OmniRoute | Sources |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **94** | 98 | 168 | 6 | 8 | 32 | 45 | 7 repos |
 
 ## Coding
 
@@ -50,6 +50,50 @@ Keeps this repo organized.
 | Skill | What it does |
 |---|---|
 | [`skill-intake`](skill-intake/SKILL.md) | Reviews new skill repos, merges overlaps, removes by repo name |
+
+## Agents & swarms (Ruflo)
+
+Multi-agent coordination from [Ruflo](https://github.com/ruvnet/ruflo): 32 skills, plus 98 specialist agents and 168 slash commands in [`_ruflo/`](_ruflo). Most need the Ruflo MCP server (see Install).
+
+<details>
+<summary>Show all 32 Ruflo skills</summary>
+
+| Skill | What it does |
+|---|---|
+| [`agentdb-advanced`](agentdb-advanced/SKILL.md) | Master advanced AgentDB features including QUIC synchronization, multi-database management, custom distance me… |
+| [`agentdb-learning`](agentdb-learning/SKILL.md) | Create and train AI learning plugins with AgentDB's 9 reinforcement learning algorithms |
+| [`agentdb-memory-patterns`](agentdb-memory-patterns/SKILL.md) | Implement persistent memory patterns for AI agents using AgentDB |
+| [`agentdb-optimization`](agentdb-optimization/SKILL.md) | Optimize AgentDB performance with quantization (4-32x memory reduction), HNSW indexing (150x faster search), c… |
+| [`agentdb-vector-search`](agentdb-vector-search/SKILL.md) | Implement semantic vector search with AgentDB for intelligent document retrieval, similarity matching, and con… |
+| [`agentic-jujutsu`](agentic-jujutsu/SKILL.md) | Quantum-resistant, self-learning version control for AI agents with ReasoningBank intelligence and multi-agent… |
+| [`browser`](browser/SKILL.md) | Web browser automation with AI-optimized snapshots for claude-flow agents |
+| [`dual-collect`](dual-collect/SKILL.md) | Collect results from headless Codex workers |
+| [`dual-coordinate`](dual-coordinate/SKILL.md) | Coordinate hybrid Claude Code + Codex workflows |
+| [`dual-spawn`](dual-spawn/SKILL.md) | Spawn headless Codex workers from Claude Code for parallel execution |
+| [`flow-nexus-neural`](flow-nexus-neural/SKILL.md) | Train and deploy neural networks in distributed E2B sandboxes with Flow Nexus |
+| [`flow-nexus-platform`](flow-nexus-platform/SKILL.md) | Comprehensive Flow Nexus platform management - authentication, sandboxes, app deployment, payments, and challe… |
+| [`flow-nexus-swarm`](flow-nexus-swarm/SKILL.md) | Cloud-based AI swarm deployment and event-driven workflow automation with Flow Nexus platform |
+| [`github-code-review`](github-code-review/SKILL.md) | Comprehensive GitHub code review with AI-powered swarm coordination |
+| [`github-multi-repo`](github-multi-repo/SKILL.md) | Multi-repository coordination, synchronization, and architecture management with AI swarm orchestration |
+| [`github-project-management`](github-project-management/SKILL.md) | Comprehensive GitHub project management with swarm-coordinated issue tracking, project board automation, and s… |
+| [`github-release-management`](github-release-management/SKILL.md) | Comprehensive GitHub release orchestration with AI swarm coordination for automated versioning, testing, deplo… |
+| [`github-workflow-automation`](github-workflow-automation/SKILL.md) | Advanced GitHub Actions workflow automation with AI swarm coordination, intelligent CI/CD pipelines, and compr… |
+| [`hive-mind-advanced`](hive-mind-advanced/SKILL.md) | Advanced Hive Mind collective intelligence system for queen-led multi-agent coordination with consensus mechan… |
+| [`hooks-automation`](hooks-automation/SKILL.md) | Automated coordination, formatting, and learning from Claude Code operations using intelligent hooks with MCP … |
+| [`pair-programming`](pair-programming/SKILL.md) | AI-assisted pair programming with multiple modes (driver/navigator/switch), real-time verification, quality mo… |
+| [`performance-analysis`](performance-analysis/SKILL.md) | Comprehensive performance analysis, bottleneck detection, and optimization recommendations for Claude Flow swa… |
+| [`reasoningbank-agentdb`](reasoningbank-agentdb/SKILL.md) | Implement ReasoningBank adaptive learning with AgentDB's 150x faster vector database |
+| [`reasoningbank-intelligence`](reasoningbank-intelligence/SKILL.md) | Implement adaptive learning with ReasoningBank for pattern recognition, strategy optimization, and continuous … |
+| [`skill-builder`](skill-builder/SKILL.md) | Create new Claude Code Skills with proper YAML frontmatter, progressive disclosure structure, and complete dir… |
+| [`sparc-methodology`](sparc-methodology/SKILL.md) | SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) comprehensive development methodology … |
+| [`stream-chain`](stream-chain/SKILL.md) | Stream-JSON chaining for multi-agent pipelines, data transformation, and sequential workflows |
+| [`swarm-advanced`](swarm-advanced/SKILL.md) | Advanced swarm orchestration patterns for research, development, testing, and complex distributed workflows |
+| [`swarm-orchestration`](swarm-orchestration/SKILL.md) | Orchestrate multi-agent swarms with agentic-flow for parallel task execution, dynamic topology, and intelligen… |
+| [`verification-quality`](verification-quality/SKILL.md) | Check code quality and change risk with ruflo's shipped analysis commands (analyze diff, analyze complexity, a… |
+| [`worker-benchmarks`](worker-benchmarks/SKILL.md) | Run comprehensive worker system benchmarks and performance analysis |
+| [`worker-integration`](worker-integration/SKILL.md) | Worker-Agent integration for intelligent task dispatch and performance tracking |
+
+</details>
 
 ## OmniRoute
 
@@ -117,6 +161,7 @@ Keeps this repo organized.
 | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 1 | Apache-2.0 |
 | [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | merged into ponytail | MIT |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | 7 | MIT |
+| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | 32 skills, 98 agents, 168 commands | MIT |
 | [diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute) | 45 | MIT |
 
 ## Install
@@ -125,6 +170,15 @@ Keeps this repo organized.
 git clone https://github.com/lyopz/degen-skill.git ~/.claude/skills
 ```
 
-Update with `git pull` inside `~/.claude/skills`. Some skills need Python (ui-ux-pro-max, design, graphify) or Node (brand, design-system, ui-styling). AI image generation in `design` needs a Gemini, Atlas Cloud, or MuAPI API key.
+For the Ruflo agents, commands, and tools:
+
+```bash
+claude mcp add claude-flow -s user -- npx -y ruflo@latest mcp start
+# link agents and commands so Claude Code finds them
+ln -s ~/.claude/skills/_ruflo/agents ~/.claude/agents
+ln -s ~/.claude/skills/_ruflo/commands ~/.claude/commands
+```
+
+Update with `git pull` inside `~/.claude/skills`. Some skills need Python (ui-ux-pro-max, design, graphify) or Node (brand, design-system, ui-styling, Ruflo). AI image generation in `design` needs a Gemini, Atlas Cloud, or MuAPI API key.
 
 <sub>Review notes, change log, and full license texts live in [`_notes/`](_notes).</sub>

@@ -11,9 +11,11 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 
 ## Current status
 - Setup done: `skill-intake`, `SKILLS_REGISTRY.md`, `HANDOFF.md`.
-- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), multica-ai/andrej-karpathy-skills (merged into ponytail). 62 skills total.
+- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), ruvnet/ruflo (32 skills + 98 agents + 168 commands in `_ruflo/`), multica-ai/andrej-karpathy-skills (merged into ponytail). 94 skills total.
 - Repo layout: root `README.md` = skill catalog + stats only. Notes, registry and licenses live in `_notes/`.
-- lyopz is installing the OmniRoute app to stretch AI credits. Image generation (design skill) needs a Gemini, Atlas Cloud or MuAPI key; it has no OpenAI/ChatGPT support.
+- lyopz is installing the OmniRoute app to stretch AI credits.
+- Ruflo agents/commands load via links: ~/.claude/agents -> skills/_ruflo/agents, ~/.claude/commands -> skills/_ruflo/commands. Ruflo tools need the `claude-flow` MCP server added at user scope.
+- Image generation: lyopz will add a custom Higgsfield connector in the Claude app. Once it exists, use it for image/video generation as needed (prefer it over the design skill's Gemini/Atlas/MuAPI scripts). ChatGPT idea dropped.
 
 ## Next up
 - lyopz sends the next repo, or keeps/removes trial skills after using them.
@@ -24,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-18** — Added ruvnet/ruflo (32 skills, 98 agents, 168 commands). Skipped its internal v3 dev skills and auto-run hooks. Higgsfield connector pending on lyopz's side.
 - **2026-10-18** — Added OmniRoute's 45 skills and the other 6 ui-ux-pro-max skills (incl. fonts + image generation). Moved registry/handoff to `_notes/`, new README catalog. Browser uploads got blocked partway, so lyopz pushed the rest from his PC.
 - **2026-10-18** — Added ui-ux-pro-max (design database + search tool; needs Python on the PC). Merged karpathy-guidelines into ponytail. Skipped 6 extra ui-ux-pro-max skills.
 - **2026-10-18** — Added Graphify-Labs/graphify (Windows variant). lyopz chose: map any project automatically. Kept a one-time ask before the Python install.
