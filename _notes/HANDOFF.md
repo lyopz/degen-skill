@@ -7,12 +7,13 @@ Read this first in any new conversation. It says where things stand so we can pi
 - Sends skill repos one at a time.
 
 ## What this repo is
-lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public), cloned to `~/.claude/skills`. Each skill is a folder with a `SKILL.md`. The `skill-intake` skill holds the rules for adding, merging, and removing skills.
+lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public), cloned to `~/.claude/skills`. Notes and registry are in `_notes/`. Each skill is a folder with a `SKILL.md`. The `skill-intake` skill holds the rules for adding, merging, and removing skills.
 
 ## Current status
 - Setup done: `skill-intake`, `SKILLS_REGISTRY.md`, `HANDOFF.md`.
-- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1 skill), nextlevelbuilder/ui-ux-pro-max-skill (1 skill), multica-ai/andrej-karpathy-skills (merged into ponytail).
-- Reviewed, not added: diegosouzapw/OmniRoute.
+- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), multica-ai/andrej-karpathy-skills (merged into ponytail). 62 skills total.
+- Repo layout: root `README.md` = skill catalog + stats only. Notes, registry and licenses live in `_notes/`.
+- lyopz is installing the OmniRoute app to stretch AI credits. Image generation (design skill) needs a Gemini, Atlas Cloud or MuAPI key; it has no OpenAI/ChatGPT support.
 
 ## Next up
 - lyopz sends the next repo, or keeps/removes trial skills after using them.
@@ -23,6 +24,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-18** — Added OmniRoute's 45 skills and the other 6 ui-ux-pro-max skills (incl. fonts + image generation). Moved registry/handoff to `_notes/`, new README catalog. Browser uploads got blocked partway, so lyopz pushed the rest from his PC.
 - **2026-10-18** — Added ui-ux-pro-max (design database + search tool; needs Python on the PC). Merged karpathy-guidelines into ponytail. Skipped 6 extra ui-ux-pro-max skills.
 - **2026-10-18** — Added Graphify-Labs/graphify (Windows variant). lyopz chose: map any project automatically. Kept a one-time ask before the Python install.
 - **2026-10-18** — Reviewed 3 repos. Added 4 skills from addyosmani/agent-skills and merged 2 tagged blocks into ponytail skills. Skipped OmniRoute. graphify pending lyopz's call.
