@@ -26,6 +26,10 @@ Read the task and the code it touches. List every place your change must reach: 
 Before deleting or simplifying code you did not write, know why it exists: what calls it, what edge case or error path it handles, what its tests expect. If you are not sure something is unused, list it and ask before deleting it.
 <!-- end: addyosmani/agent-skills -->
 
+<!-- from: multica-ai/andrej-karpathy-skills (MIT) -->
+Don't assume and don't hide confusion. State the assumptions the change rests on. If the request can be read more than one way, name the readings instead of silently picking one. If something is unclear, stop and ask.
+<!-- end: multica-ai/andrej-karpathy-skills -->
+
 ## The smallest complete change
 
 Take the first option that fully works:
@@ -46,6 +50,10 @@ Take the first option that fully works:
 - Between options of equal size, take the one that is correct on edge cases.
 - Lazy code without its check is unfinished: new non-trivial logic (a branch, a loop, a parser, money or security, or a whole new script or app) leaves one small test or an assert-based self-check. Trivial changes need none.
 - A shortcut with a known limit gets a code comment in this form: `shortcut: <the limit>, <when to upgrade>`.
+<!-- from: multica-ai/andrej-karpathy-skills (MIT) -->
+- Surgical edits: every changed line traces to the request. Don't reformat, re-comment or refactor code next to your change. Remove what your change made unused; mention unrelated dead code you notice instead of deleting it.
+- Multi-step task: write a short plan where each step has its own check (`1. <step> -> verify: <check>`), and loop until each check passes.
+<!-- end: multica-ai/andrej-karpathy-skills -->
 
 Never cut: validation at trust boundaries, error handling that prevents data loss, security, accessibility, the calibration real hardware needs, anything the user asked for.
 
