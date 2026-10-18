@@ -1,6 +1,6 @@
 # lyopz's Claude Skills
 
-Personal skill library for Claude Code. GitHub: `lyopz/degen-skill` (private). Cloned to `%USERPROFILE%\.claude\skills`.
+Personal skill library for Claude Code. GitHub: `lyopz/degen-skill` (public). Cloned to `~/.claude/skills`.
 
 - `SKILLS_REGISTRY.md` — every skill and the repo it came from
 - `HANDOFF.md` — where we left off
