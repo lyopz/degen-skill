@@ -1,9 +1,9 @@
 ---
 name: graphify
-description: "Maps a codebase into a queryable knowledge graph. Use ONLY when lyopz explicitly asks to map, graph, or index a project (e.g. \"map this project\", \"graph this repo\", /graphify), or asks to query a graph that already exists in graphify-out/. Do not use for ordinary questions about code."
+description: "Use for any question about a codebase, its architecture, file relationships, or project content — especially when graphify-out/ exists, where the question should be treated as a graphify query first. Turns any input (code, docs, papers, images, videos) into a persistent knowledge graph with god nodes, community detection, and query/path/explain tools."
 ---
 
-<!-- from: Graphify-Labs/graphify (Apache-2.0, Windows variant). Local changes: description narrowed; first-run note added. -->
+<!-- from: Graphify-Labs/graphify (Apache-2.0, Windows variant). Local change: first-run install note added. Triggers on any codebase question (lyopz chose this). -->
 > **First run:** graphify needs the `graphifyy` Python package. If it is not installed yet, tell lyopz it will install a Python package on this PC and wait for an OK before installing it.
 
 # /graphify
