@@ -7,14 +7,14 @@ Read this first in any new conversation. It says where things stand so we can pi
 - Sends skill repos one at a time.
 
 ## What this repo is
-lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public), cloned to `~/.claude/skills`. Notes and registry are in `_notes/`. Each skill is a folder with a `SKILL.md`. The `skill-intake` skill holds the rules for adding, merging, and removing skills.
+lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public), cloned to `~/.claude/degen-skill`, with `~/.claude/skills`, `~/.claude/agents`, `~/.claude/commands` linked to its `skills/`, `agents/`, `commands/` folders. Reviews and registry are in `reviews/`. Each skill is a folder with a `SKILL.md`. The `skill-intake` skill holds the rules for adding, merging, and removing skills.
 
 ## Current status
 - Setup done: `skill-intake`, `SKILLS_REGISTRY.md`, `HANDOFF.md`.
-- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), ruvnet/ruflo (32 skills + 98 agents + 168 commands in `_ruflo/`), multica-ai/andrej-karpathy-skills (merged into ponytail). 94 skills total.
-- Repo layout: root `README.md` = skill catalog + stats only. Notes, registry and licenses live in `_notes/`.
+- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), ruvnet/ruflo (32 skills + 98 agents + 168 commands), multica-ai/andrej-karpathy-skills (merged into ponytail). 94 skills total.
+- Repo layout: `skills/`, `agents/`, `commands/`, `reviews/`, `assets/` + `README.md`. Front page = black/red catalog in plain language.
 - lyopz is installing the OmniRoute app to stretch AI credits.
-- Ruflo agents/commands load via links: ~/.claude/agents -> skills/_ruflo/agents, ~/.claude/commands -> skills/_ruflo/commands. Ruflo tools need the `claude-flow` MCP server added at user scope.
+- Ruflo tools need the `claude-flow` MCP server added at user scope.
 - Image generation: lyopz will add a custom Higgsfield connector in the Claude app. Once it exists, use it for image/video generation as needed (prefer it over the design skill's Gemini/Atlas/MuAPI scripts). ChatGPT idea dropped.
 
 ## Next up
@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-18** — Reorganized repo into skills/, agents/, commands/, reviews/. New black-and-red front page with plain-English descriptions. Repo now clones to ~/.claude/degen-skill with links. Walked lyopz through OmniRoute basics.
 - **2026-10-18** — Added ruvnet/ruflo (32 skills, 98 agents, 168 commands). Skipped its internal v3 dev skills and auto-run hooks. Higgsfield connector pending on lyopz's side.
 - **2026-10-18** — Added OmniRoute's 45 skills and the other 6 ui-ux-pro-max skills (incl. fonts + image generation). Moved registry/handoff to `_notes/`, new README catalog. Browser uploads got blocked partway, so lyopz pushed the rest from his PC.
 - **2026-10-18** — Added ui-ux-pro-max (design database + search tool; needs Python on the PC). Merged karpathy-guidelines into ponytail. Skipped 6 extra ui-ux-pro-max skills.

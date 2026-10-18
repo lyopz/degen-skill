@@ -1,8 +1,8 @@
-Applies to ui-ux-pro-max/, design/, design-system/, brand/, banner-design/, slides/, ui-styling/ from nextlevelbuilder/ui-ux-pro-max-skill. Fonts in ui-styling/canvas-fonts keep their own OFL license files.
+Applies to the 32 Ruflo folders in skills/, plus agents/ and commands/ from ruvnet/ruflo.
 
 MIT License
 
-Copyright (c) 2024 Next Level Builder
+Copyright (c) 2024-2026 ruvnet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

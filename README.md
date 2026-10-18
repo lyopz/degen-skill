@@ -1,184 +1,165 @@
-# lyopz's Claude Skills
+<p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
-A personal skill library for [Claude Code](https://claude.com/claude-code). Every skill loads on its own when a task calls for it — no commands to remember. Ruflo adds a team of specialist agents that can work on parts of a job in parallel.
+<p align="center">
+<img src="https://img.shields.io/badge/skills-94-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="94 skills">
+<img src="https://img.shields.io/badge/agents-98-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="98 agents">
+<img src="https://img.shields.io/badge/commands-168-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="168 commands">
+<img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
+</p>
 
-| Skills | Agents | Commands | Coding | Design & UI | Swarms (Ruflo) | OmniRoute | Sources |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| **94** | 98 | 168 | 6 | 8 | 32 | 45 | 7 repos |
+## What is this?
 
-## Coding
+A **skill** is a set of instructions that teaches Claude how to do one job really well, like fixing bugs or designing a logo.
+This repo is a big bag of them. Once it's installed, you just talk to Claude normally and it grabs the right skill by itself.
 
-Write and fix code the lean way, then check it.
+<p align="center"><img src="assets/catalog.svg" alt="What's inside: coding, design and planning skills, plus the Swarms and OmniRoute packs" width="100%"></p>
 
-| Skill | What it does |
-|---|---|
-| [`ponytail`](ponytail/SKILL.md) | Smallest change that fully solves the task, plain-English replies |
-| [`ponytail-review`](ponytail-review/SKILL.md) | Reviews a change: bugs, security, load, missing tests, dead weight |
-| [`ponytail-audit`](ponytail-audit/SKILL.md) | Same review for a whole project, ranked by what to fix first |
-| [`ponytail-debt`](ponytail-debt/SKILL.md) | Lists every shortcut taken so none get forgotten |
-| [`debugging-and-error-recovery`](debugging-and-error-recovery/SKILL.md) | Finds the root cause when something breaks |
-| [`security-and-hardening`](security-and-hardening/SKILL.md) | Catches security holes in logins, inputs, and data handling |
+## Try saying
 
-## Design & UI
+| You say… | Claude uses… |
+|:--|:--|
+| "Why is my login page crashing?" | `debugging-and-error-recovery` |
+| "Make me a landing page for my Shopify store" | `ui-ux-pro-max`, `frontend-ui-engineering` |
+| "Design a logo for my brand" | `design`, `brand` |
+| "Is my code safe from hackers?" | `security-and-hardening` |
+| "I have an idea for an app, help me plan it" | `idea-refine` |
+| "Split this big job across a team of agents" | `swarm-orchestration`, `hive-mind-advanced` |
+| "How much am I spending on AI?" | `cli-cost-usage`, `omni-budget` |
 
-Websites, apps, stores, and brand visuals.
+## 🟥 Swarms pack — 32 skills
 
-| Skill | What it does |
-|---|---|
-| [`ui-ux-pro-max`](ui-ux-pro-max/SKILL.md) | Searchable design database: styles, palettes, fonts, UX rules |
-| [`frontend-ui-engineering`](frontend-ui-engineering/SKILL.md) | Accessible, responsive, production-ready interfaces |
-| [`ui-styling`](ui-styling/SKILL.md) | shadcn/ui + Tailwind styling, with 29 bundled font families |
-| [`design`](design/SKILL.md) | Logos, icons, mockups, social images (AI image generation) |
-| [`design-system`](design-system/SKILL.md) | Design tokens, component specs, slide generation |
-| [`brand`](brand/SKILL.md) | Brand voice, visual identity, style guides |
-| [`banner-design`](banner-design/SKILL.md) | Banners for social, ads, web heroes, and print |
-| [`slides`](slides/SKILL.md) | HTML presentations with charts and layouts |
-
-## Planning & projects
-
-Shape ideas and understand codebases.
-
-| Skill | What it does |
-|---|---|
-| [`idea-refine`](idea-refine/SKILL.md) | Turns a rough idea into a sharp one-page plan |
-| [`graphify`](graphify/SKILL.md) | Maps a project into a searchable knowledge graph |
-
-## Library
-
-Keeps this repo organized.
-
-| Skill | What it does |
-|---|---|
-| [`skill-intake`](skill-intake/SKILL.md) | Reviews new skill repos, merges overlaps, removes by repo name |
-
-## Agents & swarms (Ruflo)
-
-Multi-agent coordination from [Ruflo](https://github.com/ruvnet/ruflo): 32 skills, plus 98 specialist agents and 168 slash commands in [`_ruflo/`](_ruflo). Most need the Ruflo MCP server (see Install).
+Teams of AI helpers that each take a piece of a big job. Comes with **98 ready-made agents** (coder, tester, reviewer, planner…) in [`agents/`](agents) and **168 slash commands** in [`commands/`](commands).
 
 <details>
-<summary>Show all 32 Ruflo skills</summary>
+<summary><b>Show all 32 Swarms skills</b></summary>
 
 | Skill | What it does |
-|---|---|
-| [`agentdb-advanced`](agentdb-advanced/SKILL.md) | Master advanced AgentDB features including QUIC synchronization, multi-database management, custom distance me… |
-| [`agentdb-learning`](agentdb-learning/SKILL.md) | Create and train AI learning plugins with AgentDB's 9 reinforcement learning algorithms |
-| [`agentdb-memory-patterns`](agentdb-memory-patterns/SKILL.md) | Implement persistent memory patterns for AI agents using AgentDB |
-| [`agentdb-optimization`](agentdb-optimization/SKILL.md) | Optimize AgentDB performance with quantization (4-32x memory reduction), HNSW indexing (150x faster search), c… |
-| [`agentdb-vector-search`](agentdb-vector-search/SKILL.md) | Implement semantic vector search with AgentDB for intelligent document retrieval, similarity matching, and con… |
-| [`agentic-jujutsu`](agentic-jujutsu/SKILL.md) | Quantum-resistant, self-learning version control for AI agents with ReasoningBank intelligence and multi-agent… |
-| [`browser`](browser/SKILL.md) | Web browser automation with AI-optimized snapshots for claude-flow agents |
-| [`dual-collect`](dual-collect/SKILL.md) | Collect results from headless Codex workers |
-| [`dual-coordinate`](dual-coordinate/SKILL.md) | Coordinate hybrid Claude Code + Codex workflows |
-| [`dual-spawn`](dual-spawn/SKILL.md) | Spawn headless Codex workers from Claude Code for parallel execution |
-| [`flow-nexus-neural`](flow-nexus-neural/SKILL.md) | Train and deploy neural networks in distributed E2B sandboxes with Flow Nexus |
-| [`flow-nexus-platform`](flow-nexus-platform/SKILL.md) | Comprehensive Flow Nexus platform management - authentication, sandboxes, app deployment, payments, and challe… |
-| [`flow-nexus-swarm`](flow-nexus-swarm/SKILL.md) | Cloud-based AI swarm deployment and event-driven workflow automation with Flow Nexus platform |
-| [`github-code-review`](github-code-review/SKILL.md) | Comprehensive GitHub code review with AI-powered swarm coordination |
-| [`github-multi-repo`](github-multi-repo/SKILL.md) | Multi-repository coordination, synchronization, and architecture management with AI swarm orchestration |
-| [`github-project-management`](github-project-management/SKILL.md) | Comprehensive GitHub project management with swarm-coordinated issue tracking, project board automation, and s… |
-| [`github-release-management`](github-release-management/SKILL.md) | Comprehensive GitHub release orchestration with AI swarm coordination for automated versioning, testing, deplo… |
-| [`github-workflow-automation`](github-workflow-automation/SKILL.md) | Advanced GitHub Actions workflow automation with AI swarm coordination, intelligent CI/CD pipelines, and compr… |
-| [`hive-mind-advanced`](hive-mind-advanced/SKILL.md) | Advanced Hive Mind collective intelligence system for queen-led multi-agent coordination with consensus mechan… |
-| [`hooks-automation`](hooks-automation/SKILL.md) | Automated coordination, formatting, and learning from Claude Code operations using intelligent hooks with MCP … |
-| [`pair-programming`](pair-programming/SKILL.md) | AI-assisted pair programming with multiple modes (driver/navigator/switch), real-time verification, quality mo… |
-| [`performance-analysis`](performance-analysis/SKILL.md) | Comprehensive performance analysis, bottleneck detection, and optimization recommendations for Claude Flow swa… |
-| [`reasoningbank-agentdb`](reasoningbank-agentdb/SKILL.md) | Implement ReasoningBank adaptive learning with AgentDB's 150x faster vector database |
-| [`reasoningbank-intelligence`](reasoningbank-intelligence/SKILL.md) | Implement adaptive learning with ReasoningBank for pattern recognition, strategy optimization, and continuous … |
-| [`skill-builder`](skill-builder/SKILL.md) | Create new Claude Code Skills with proper YAML frontmatter, progressive disclosure structure, and complete dir… |
-| [`sparc-methodology`](sparc-methodology/SKILL.md) | SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) comprehensive development methodology … |
-| [`stream-chain`](stream-chain/SKILL.md) | Stream-JSON chaining for multi-agent pipelines, data transformation, and sequential workflows |
-| [`swarm-advanced`](swarm-advanced/SKILL.md) | Advanced swarm orchestration patterns for research, development, testing, and complex distributed workflows |
-| [`swarm-orchestration`](swarm-orchestration/SKILL.md) | Orchestrate multi-agent swarms with agentic-flow for parallel task execution, dynamic topology, and intelligen… |
-| [`verification-quality`](verification-quality/SKILL.md) | Check code quality and change risk with ruflo's shipped analysis commands (analyze diff, analyze complexity, a… |
-| [`worker-benchmarks`](worker-benchmarks/SKILL.md) | Run comprehensive worker system benchmarks and performance analysis |
-| [`worker-integration`](worker-integration/SKILL.md) | Worker-Agent integration for intelligent task dispatch and performance tracking |
+|:--|:--|
+| [`agentdb-advanced`](skills/agentdb-advanced/SKILL.md) | Advanced setup for the agents' shared memory |
+| [`agentdb-learning`](skills/agentdb-learning/SKILL.md) | Lets agents get better by learning from past jobs |
+| [`agentdb-memory-patterns`](skills/agentdb-memory-patterns/SKILL.md) | Gives agents a memory that lasts between chats |
+| [`agentdb-optimization`](skills/agentdb-optimization/SKILL.md) | Makes agent memory faster and smaller |
+| [`agentdb-vector-search`](skills/agentdb-vector-search/SKILL.md) | Searches notes by meaning, not exact words |
+| [`agentic-jujutsu`](skills/agentic-jujutsu/SKILL.md) | Version control built for many agents at once |
+| [`browser`](skills/browser/SKILL.md) | Lets agents use a web browser |
+| [`dual-collect`](skills/dual-collect/SKILL.md) | Gathers results from Codex helpers (needs OpenAI Codex) |
+| [`dual-coordinate`](skills/dual-coordinate/SKILL.md) | Runs Claude and Codex together (needs OpenAI Codex) |
+| [`dual-spawn`](skills/dual-spawn/SKILL.md) | Starts Codex helpers in the background (needs OpenAI Codex) |
+| [`flow-nexus-neural`](skills/flow-nexus-neural/SKILL.md) | Trains AI models in Ruflo's cloud (paid account) |
+| [`flow-nexus-platform`](skills/flow-nexus-platform/SKILL.md) | Manages your Ruflo cloud account (paid account) |
+| [`flow-nexus-swarm`](skills/flow-nexus-swarm/SKILL.md) | Runs agent teams in Ruflo's cloud (paid account) |
+| [`github-code-review`](skills/github-code-review/SKILL.md) | A team of agents reviews a pull request |
+| [`github-multi-repo`](skills/github-multi-repo/SKILL.md) | Keeps several GitHub projects in sync |
+| [`github-project-management`](skills/github-project-management/SKILL.md) | Handles GitHub issues and project boards |
+| [`github-release-management`](skills/github-release-management/SKILL.md) | Plans and ships new versions |
+| [`github-workflow-automation`](skills/github-workflow-automation/SKILL.md) | Sets up auto-testing and auto-deploying on GitHub |
+| [`hive-mind-advanced`](skills/hive-mind-advanced/SKILL.md) | A lead agent runs a team of worker agents |
+| [`hooks-automation`](skills/hooks-automation/SKILL.md) | Runs helpers automatically before and after actions |
+| [`pair-programming`](skills/pair-programming/SKILL.md) | Codes alongside you like a partner |
+| [`performance-analysis`](skills/performance-analysis/SKILL.md) | Finds what's slowing an agent team down |
+| [`reasoningbank-agentdb`](skills/reasoningbank-agentdb/SKILL.md) | Remembers what worked so agents reuse it |
+| [`reasoningbank-intelligence`](skills/reasoningbank-intelligence/SKILL.md) | Spots patterns in what works and adapts |
+| [`skill-builder`](skills/skill-builder/SKILL.md) | Helps you make your own new skills |
+| [`sparc-methodology`](skills/sparc-methodology/SKILL.md) | Step-by-step build plan: spec, plan, build, polish |
+| [`stream-chain`](skills/stream-chain/SKILL.md) | Passes work from one agent to the next, like an assembly line |
+| [`swarm-advanced`](skills/swarm-advanced/SKILL.md) | Bigger agent teams for research, building and testing |
+| [`swarm-orchestration`](skills/swarm-orchestration/SKILL.md) | Splits one big job across many agents at once |
+| [`verification-quality`](skills/verification-quality/SKILL.md) | Checks code quality before you ship |
+| [`worker-benchmarks`](skills/worker-benchmarks/SKILL.md) | Speed-tests the background workers |
+| [`worker-integration`](skills/worker-integration/SKILL.md) | Sends each task to the best worker |
 
 </details>
 
-## OmniRoute
+## 🟥 OmniRoute pack — 45 skills
 
-45 skills for running the [OmniRoute](https://github.com/diegosouzapw/OmniRoute) AI gateway: providers, routing, budgets, keys, caching, and its CLI. They need the OmniRoute app installed.
+Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that puts all your AI accounts behind one door. It picks a model, switches when one runs out, and tracks what you spend. **Needs the OmniRoute app.**
 
 <details>
-<summary>Show all 45 OmniRoute skills</summary>
+<summary><b>Show all 45 OmniRoute skills</b></summary>
 
 | Skill | What it does |
-|---|---|
-| [`cli-a2a`](cli-a2a/SKILL.md) | Interact with the OmniRoute A2A server from the CLI |
-| [`cli-backup-sync`](cli-backup-sync/SKILL.md) | Backup and restore OmniRoute data from the CLI |
-| [`cli-batches`](cli-batches/SKILL.md) | Submit and monitor batch inference jobs from the CLI |
-| [`cli-chat`](cli-chat/SKILL.md) | Send chat completions, stream responses, and start an interactive REPL session from the CLI |
-| [`cli-compression`](cli-compression/SKILL.md) | Configure and test prompt compression from the CLI |
-| [`cli-contexts`](cli-contexts/SKILL.md) | Manage context engineering configurations, RTK filter sets, and conversation sessions from the CLI |
-| [`cli-cost-usage`](cli-cost-usage/SKILL.md) | View cost breakdowns, token usage, and call logs from the CLI |
-| [`cli-eval`](cli-eval/SKILL.md) | Create and run evaluation suites, watch live benchmark progress, view scorecards, compare model performance, a… |
-| [`cli-health`](cli-health/SKILL.md) | Check server health, component status, and live metrics from the CLI |
-| [`cli-keys`](cli-keys/SKILL.md) | Create, list, rotate, and revoke OmniRoute API keys from the CLI |
-| [`cli-mcp`](cli-mcp/SKILL.md) | Inspect the MCP server status, list registered tools and scopes, run tool invocations, and manage MCP audit lo… |
-| [`cli-models`](cli-models/SKILL.md) | Query available AI models, list model aliases, and browse the full model catalog from the CLI |
-| [`cli-plugins-skills`](cli-plugins-skills/SKILL.md) | Manage Omni Skills (list, install, test, remove), plugins (create, configure), and persistent memory (search, … |
-| [`cli-policy-audit`](cli-policy-audit/SKILL.md) | Inspect audit logs, manage access policies, view telemetry data, and review request history from the CLI |
-| [`cli-providers`](cli-providers/SKILL.md) | Manage provider connections from the CLI: list available/configured providers, add, test, test-all, validate, … |
-| [`cli-resilience`](cli-resilience/SKILL.md) | Inspect and manage circuit-breaker states, connection cooldowns, quota limits, and backoff levels from the CLI |
-| [`cli-routing`](cli-routing/SKILL.md) | Create, list, update, and delete routing combos from the CLI |
-| [`cli-serve`](cli-serve/SKILL.md) | Start, stop, and restart the OmniRoute server from the CLI |
-| [`cli-setup`](cli-setup/SKILL.md) | Run initial setup, configure global CLI settings, manage environment variables, check for updates, and configu… |
-| [`cli-skill-collector`](cli-skill-collector/SKILL.md) | Detect installed CLI coding tools (Claude Code, Codex, Cursor, Copilot, Cline and more), search GitHub for mat… |
-| [`cli-tunnel`](cli-tunnel/SKILL.md) | Start and stop tunnel connections (ngrok, Cloudflare, custom) from the CLI |
-| [`config-codex-cli`](config-codex-cli/SKILL.md) | Step-by-step agent workflow to configure the OpenAI Codex CLI on any machine (Linux, macOS, Windows) to use Om… |
-| [`omni-agents-a2a`](omni-agents-a2a/SKILL.md) | Interact with OmniRoute via JSON-RPC 2.0 agent-to-agent protocol |
-| [`omni-api-keys`](omni-api-keys/SKILL.md) | Create, list, rotate, and revoke OmniRoute API keys |
-| [`omni-auth`](omni-auth/SKILL.md) | Manage API key authentication and session tokens |
-| [`omni-budget`](omni-budget/SKILL.md) | Configure spending limits, token quotas, and rate-limit policies per API key or globally |
-| [`omni-cache`](omni-cache/SKILL.md) | Manage the LLM response cache |
-| [`omni-cli-tools`](omni-cli-tools/SKILL.md) | Manage CLI tool integrations exposed via the API |
-| [`omni-combos-routing`](omni-combos-routing/SKILL.md) | Create and manage routing combos with 19 strategies (priority, weighted, round-robin, Auto-combo, and more) |
-| [`omni-compression`](omni-compression/SKILL.md) | Configure RTK (command output), Caveman (prose), and stacked compression modes |
-| [`omni-context-rtk`](omni-context-rtk/SKILL.md) | Configure RTK filters, context engineering rules, and context relay settings |
-| [`omni-db-backups`](omni-db-backups/SKILL.md) | Trigger system backups, restore from backup files, and manage the SQLite database lifecycle |
-| [`omni-github-skills`](omni-github-skills/SKILL.md) | Search, score, scan, and import agent skills from GitHub repositories that contain SKILL.md, CLAUDE.md, .curso… |
-| [`omni-inference`](omni-inference/SKILL.md) | The core OpenAI-compatible inference endpoints: chat completions, embeddings, images, audio (TTS/STT), moderat… |
-| [`omni-mcp`](omni-mcp/SKILL.md) | Connect to the OmniRoute MCP server (110 tools, 3 transports: SSE/stdio/HTTP) |
-| [`omni-models`](omni-models/SKILL.md) | Query available AI models across all configured providers |
-| [`omni-providers`](omni-providers/SKILL.md) | Manage provider connections, API keys, OAuth flows, and connection tests via the REST API |
-| [`omni-proxies`](omni-proxies/SKILL.md) | Configure HTTP/HTTPS/SOCKS proxies for upstream provider requests |
-| [`omni-resilience`](omni-resilience/SKILL.md) | Monitor provider health, circuit-breaker states, p50/p95/p99 latency metrics, and budget guard alerts |
-| [`omni-settings`](omni-settings/SKILL.md) | Read and update global application settings: system prompts, thinking budget, IP filters, payload rules, combo… |
-| [`omni-sync-cloud`](omni-sync-cloud/SKILL.md) | Synchronise OmniRoute configuration, provider connections, and settings to/from cloud storage |
-| [`omni-tunnels`](omni-tunnels/SKILL.md) | Create and manage secure tunnels (ngrok, Cloudflare Tunnel, custom) to expose OmniRoute to the internet or sha… |
-| [`omni-usage-logs`](omni-usage-logs/SKILL.md) | Access detailed call logs and usage analytics |
-| [`omni-version-manager`](omni-version-manager/SKILL.md) | Install, start, stop, restart, and update embedded services (9Router, CLIProxyAPI) |
-| [`omni-webhooks`](omni-webhooks/SKILL.md) | Register, list, test, and remove webhook endpoints |
+|:--|:--|
+| [`cli-a2a`](skills/cli-a2a/SKILL.md) | Lets your agents talk to other agents (terminal) |
+| [`cli-backup-sync`](skills/cli-backup-sync/SKILL.md) | Backs up your OmniRoute setup |
+| [`cli-batches`](skills/cli-batches/SKILL.md) | Sends lots of AI requests at once |
+| [`cli-chat`](skills/cli-chat/SKILL.md) | Chat with any AI model from the terminal |
+| [`cli-compression`](skills/cli-compression/SKILL.md) | Shrinks prompts so they cost fewer credits |
+| [`cli-contexts`](skills/cli-contexts/SKILL.md) | Switches between saved setups |
+| [`cli-cost-usage`](skills/cli-cost-usage/SKILL.md) | Shows what each model is costing you |
+| [`cli-eval`](skills/cli-eval/SKILL.md) | Tests models side by side on the same questions |
+| [`cli-health`](skills/cli-health/SKILL.md) | Checks OmniRoute and your providers are working |
+| [`cli-keys`](skills/cli-keys/SKILL.md) | Makes and manages OmniRoute keys |
+| [`cli-mcp`](skills/cli-mcp/SKILL.md) | Manages the tools OmniRoute connects to |
+| [`cli-models`](skills/cli-models/SKILL.md) | Lists the models you can use |
+| [`cli-plugins-skills`](skills/cli-plugins-skills/SKILL.md) | Adds plugins and skills to OmniRoute |
+| [`cli-policy-audit`](skills/cli-policy-audit/SKILL.md) | Checks your rules and settings for problems |
+| [`cli-providers`](skills/cli-providers/SKILL.md) | Adds AI accounts (OpenAI, Gemini, and more) |
+| [`cli-resilience`](skills/cli-resilience/SKILL.md) | Sets backup models for when one fails |
+| [`cli-routing`](skills/cli-routing/SKILL.md) | Decides which model answers which request |
+| [`cli-serve`](skills/cli-serve/SKILL.md) | Starts OmniRoute (start here for the terminal) |
+| [`cli-setup`](skills/cli-setup/SKILL.md) | First-time setup |
+| [`cli-skill-collector`](skills/cli-skill-collector/SKILL.md) | Finds skills on GitHub for your AI tools |
+| [`cli-tunnel`](skills/cli-tunnel/SKILL.md) | Lets your other devices reach OmniRoute |
+| [`config-codex-cli`](skills/config-codex-cli/SKILL.md) | Points OpenAI's Codex tool at OmniRoute |
+| [`omni-agents-a2a`](skills/omni-agents-a2a/SKILL.md) | Agent-to-agent connections |
+| [`omni-api-keys`](skills/omni-api-keys/SKILL.md) | Creates, limits and cancels access keys |
+| [`omni-auth`](skills/omni-auth/SKILL.md) | Logging in and connecting (start here) |
+| [`omni-budget`](skills/omni-budget/SKILL.md) | Spending limits so you don't overspend |
+| [`omni-cache`](skills/omni-cache/SKILL.md) | Reuses answers to save credits |
+| [`omni-cli-tools`](skills/omni-cli-tools/SKILL.md) | Connects Claude Code, Cursor and other tools |
+| [`omni-combos-routing`](skills/omni-combos-routing/SKILL.md) | "Combos": a list of models to try in order |
+| [`omni-compression`](skills/omni-compression/SKILL.md) | Trims requests to cut costs |
+| [`omni-context-rtk`](skills/omni-context-rtk/SKILL.md) | Smart trimming of long conversations |
+| [`omni-db-backups`](skills/omni-db-backups/SKILL.md) | Backs up OmniRoute's data |
+| [`omni-github-skills`](skills/omni-github-skills/SKILL.md) | Finds and imports skills from GitHub |
+| [`omni-inference`](skills/omni-inference/SKILL.md) | The main "ask a model" features: chat, images, audio |
+| [`omni-mcp`](skills/omni-mcp/SKILL.md) | Tool servers inside OmniRoute |
+| [`omni-models`](skills/omni-models/SKILL.md) | Browse every available model |
+| [`omni-providers`](skills/omni-providers/SKILL.md) | Connects your AI accounts |
+| [`omni-proxies`](skills/omni-proxies/SKILL.md) | Sends traffic through a proxy |
+| [`omni-resilience`](skills/omni-resilience/SKILL.md) | Switches models when one is down or maxed out |
+| [`omni-settings`](skills/omni-settings/SKILL.md) | Changes global settings |
+| [`omni-sync-cloud`](skills/omni-sync-cloud/SKILL.md) | Syncs your settings to the cloud |
+| [`omni-tunnels`](skills/omni-tunnels/SKILL.md) | Shares OmniRoute safely over the internet |
+| [`omni-usage-logs`](skills/omni-usage-logs/SKILL.md) | A log of every request and its cost |
+| [`omni-version-manager`](skills/omni-version-manager/SKILL.md) | Updates OmniRoute |
+| [`omni-webhooks`](skills/omni-webhooks/SKILL.md) | Sends alerts when things happen |
 
 </details>
 
-## Sources
+## What's where
 
-| Repo | Skills used | License |
-|---|---|---|
-| [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | 4 | MIT |
-| [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | 4 (+ ideas merged into ponytail) | MIT |
-| [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 1 | Apache-2.0 |
-| [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | merged into ponytail | MIT |
-| [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | 7 | MIT |
-| [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | 32 skills, 98 agents, 168 commands | MIT |
-| [diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute) | 45 | MIT |
+| Folder | What's in it |
+|:--|:--|
+| [`skills/`](skills) | All 94 skills, one folder each |
+| [`agents/`](agents) | 98 specialist agents |
+| [`commands/`](commands) | 168 slash commands |
+| [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
+| [`assets/`](assets) | The images on this page |
 
 ## Install
 
-```bash
-git clone https://github.com/lyopz/degen-skill.git ~/.claude/skills
-```
+**Windows (PowerShell)**
 
-For the Ruflo agents, commands, and tools:
-
-```bash
+```powershell
+cd "$env:USERPROFILE\.claude"
+git clone https://github.com/lyopz/degen-skill.git degen-skill
+New-Item -ItemType Junction -Path skills   -Target "$PWD\degen-skill\skills"
+New-Item -ItemType Junction -Path agents   -Target "$PWD\degen-skill\agents"
+New-Item -ItemType Junction -Path commands -Target "$PWD\degen-skill\commands"
 claude mcp add claude-flow -s user -- npx -y ruflo@latest mcp start
-# link agents and commands so Claude Code finds them
-ln -s ~/.claude/skills/_ruflo/agents ~/.claude/agents
-ln -s ~/.claude/skills/_ruflo/commands ~/.claude/commands
 ```
 
-Update with `git pull` inside `~/.claude/skills`. Some skills need Python (ui-ux-pro-max, design, graphify) or Node (brand, design-system, ui-styling, Ruflo). AI image generation in `design` needs a Gemini, Atlas Cloud, or MuAPI API key.
+**Mac / Linux**
 
-<sub>Review notes, change log, and full license texts live in [`_notes/`](_notes).</sub>
+```bash
+git clone https://github.com/lyopz/degen-skill.git ~/.claude/degen-skill
+ln -s ~/.claude/degen-skill/skills ~/.claude/skills
+ln -s ~/.claude/degen-skill/agents ~/.claude/agents
+ln -s ~/.claude/degen-skill/commands ~/.claude/commands
+claude mcp add claude-flow -s user -- npx -y ruflo@latest mcp start
+```
+
+Update anytime with `git pull` inside the `degen-skill` folder.
+
+<sub>Built from [ponytail](https://github.com/DietrichGebert/ponytail), [agent-skills](https://github.com/addyosmani/agent-skills), [graphify](https://github.com/Graphify-Labs/graphify), [karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), [ruflo](https://github.com/ruvnet/ruflo) and [OmniRoute](https://github.com/diegosouzapw/OmniRoute). Licenses in [`reviews/licenses`](reviews/licenses).</sub>

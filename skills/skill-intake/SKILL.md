@@ -5,15 +5,20 @@ description: Use when lyopz sends a GitHub repo to add as a skill, asks to remov
 
 # Skill Intake
 
-This repo is lyopz's skill library. It lives on GitHub at `lyopz/degen-skill` and is cloned to `~/.claude/skills` so Claude Code loads every `<name>/SKILL.md` folder automatically.
+This repo is lyopz's skill library. It lives on GitHub at `lyopz/degen-skill` and is cloned to `~/.claude/degen-skill`. Layout:
 
-Agent definitions and slash commands from skill repos go in `_ruflo/`-style underscore folders (linked into ~/.claude/agents and ~/.claude/commands), never at the root as skills.
+- `skills/<name>/SKILL.md` — every skill. `~/.claude/skills` is a link to this folder, so Claude Code loads them automatically.
+- `agents/` and `commands/` — agent definitions and slash commands (linked to `~/.claude/agents` and `~/.claude/commands`).
+- `reviews/` — registry, handoff log, license texts. Never on the front page.
+- `README.md` + `assets/` — the GitHub front page.
 
-Key files (in `_notes/`, kept off the front page):
-- `_notes/SKILLS_REGISTRY.md`: every source repo, what it added, and where any of its content was merged. This is the source of truth for removal.
-- `_notes/HANDOFF.md`: running log so a new conversation can pick up where the last one stopped.
+New agent definitions go in `agents/`, new slash commands in `commands/`, new skills in `skills/`. Nothing else at the repo root.
 
-**Always read `_notes/HANDOFF.md` and `_notes/SKILLS_REGISTRY.md` before doing anything else.**
+Key files (in `reviews/`):
+- `reviews/SKILLS_REGISTRY.md`: every source repo, what it added, and where any of its content was merged. This is the source of truth for removal.
+- `reviews/HANDOFF.md`: running log so a new conversation can pick up where the last one stopped.
+
+**Always read `reviews/HANDOFF.md` and `reviews/SKILLS_REGISTRY.md` before doing anything else.**
 
 ## Adding a skill from a repo
 
@@ -24,11 +29,11 @@ Key files (in `_notes/`, kept off the front page):
    - is empty, broken, or just marketing
    Tell lyopz what you found and why before installing anything flagged.
 3. **Check for overlap.** Compare each new skill against every existing skill in this repo:
-   - **No overlap** → install as a new folder: `<skill-name>/`.
+   - **No overlap** → install as a new folder: `skills/<skill-name>/`.
    - **Overlaps an existing skill** → do NOT install a duplicate. Merge only the useful, non-conflicting parts into the existing skill (see Merging).
    - **Directly conflicts** (opposite instructions) → keep the existing rule by default, show lyopz both versions, and let him pick.
-4. **Register.** Add a row to `_notes/SKILLS_REGISTRY.md` (format below), then update the skill list and stats in the root `README.md`.
-5. **Log.** Add an entry to the Session Log in `_notes/HANDOFF.md`.
+4. **Register.** Add a row to `reviews/SKILLS_REGISTRY.md` (format below), then update the skill list, plain-English description and stats in the root `README.md` (and the counts in `assets/`).
+5. **Log.** Add an entry to the Session Log in `reviews/HANDOFF.md`.
 6. **Commit and push:** `git add -A && git commit -m "add: owner/repo" && git push`.
 7. **Report** to lyopz in 2–3 lines: what was added, what was merged where, anything skipped.
 
@@ -49,11 +54,11 @@ Wrap every merged block in markers so it can be removed cleanly later:
 ## Removing a skill by repo name
 
 When lyopz says "remove owner/repo" (or just the repo name):
-1. Look it up in `_notes/SKILLS_REGISTRY.md`.
+1. Look it up in `reviews/SKILLS_REGISTRY.md`.
 2. Delete every folder it installed.
 3. Delete every `<!-- from: owner/repo -->` … `<!-- end: owner/repo -->` block from the skills it merged into. Restore any `description:` it changed.
 4. Move its registry row to the **Removed** table with the date and lyopz's reason.
-5. Remove it from `README.md`, log it in `_notes/HANDOFF.md`, commit (`remove: owner/repo`), push.
+5. Remove it from `README.md`, log it in `reviews/HANDOFF.md`, commit (`remove: owner/repo`), push.
 
 ## Registry row format
 
@@ -62,7 +67,7 @@ When lyopz says "remove owner/repo" (or just the repo name):
 | owner/repo | YYYY-MM-DD | `name/` | `other/` (section) | active / trial | one line |
 
 ## Rules
-- Keep the root `README.md` clean: skill list and stats only. Reviews, reasons and logs go in `_notes/`.
+- Keep the root `README.md` clean: skill list and stats only. Reviews, reasons and logs go in `reviews/`. Describe skills on the front page in plain, everyday words.
 - Never overwrite an existing skill wholesale. Merge with markers or ask.
 - Never install a skill that wasn't reviewed.
 - Keep answers to lyopz short and direct.

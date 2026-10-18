@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e11d2e"/><stop offset="1" stop-color="#7a0b15"/></linearGradient><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#2a2a30" stroke-width="1"/></pattern></defs>
+<rect width="1200" height="320" rx="18" fill="#0b0b0d"/>
+<rect width="1200" height="320" rx="18" fill="url(#grid)" opacity="0.55"/>
+<polygon points="780,0 1200,0 1200,320 580,320" fill="url(#g)"/>
+<polygon points="730,0 770,0 570,320 530,320" fill="#e11d2e" opacity="0.5"/>
+<rect x="56" y="64" width="10" height="112" fill="#e11d2e"/>
+<text x="86" y="112" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="58" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="2">DEGEN SKILLS</text>
+<text x="88" y="158" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">lyopz&#x27;s toolbox for Claude Code</text>
+<text x="88" y="206" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#f5f5f7" text-anchor="start" letter-spacing="0">Install once. Claude picks the right skill on its own.</text>
+<rect x="88" y="236" width="122.6" height="40" rx="20" fill="#141417" stroke="#e11d2e" stroke-width="1.5"/>
+<text x="108" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="0">94</text>
+<text x="139.0" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">skills</text>
+<rect x="222.6" y="236" width="122.6" height="40" rx="20" fill="#141417" stroke="#e11d2e" stroke-width="1.5"/>
+<text x="242.6" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="0">98</text>
+<text x="273.6" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">agents</text>
+<rect x="357.2" y="236" width="151.3" height="40" rx="20" fill="#141417" stroke="#e11d2e" stroke-width="1.5"/>
+<text x="377.2" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="0">168</text>
+<text x="419.7" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">commands</text>
+<rect x="520.5" y="236" width="119.69999999999999" height="40" rx="20" fill="#141417" stroke="#e11d2e" stroke-width="1.5"/>
+<text x="540.5" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="0">7</text>
+<text x="560.0" y="263" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">sources</text>
+<text x="1130" y="290" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#f5f5f7" text-anchor="end" letter-spacing="4">CLAUDE CODE</text>
+</svg>

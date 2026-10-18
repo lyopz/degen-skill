@@ -1,8 +1,8 @@
-Applies to the 29 ruflo skill folders and _ruflo/ (agents, commands) from ruvnet/ruflo.
+Applies to the 45 OmniRoute folders in skills/ (cli-*, omni-*, config-codex-cli) from diegosouzapw/OmniRoute. Cross-links rewritten to local paths; a provenance comment added to each SKILL.md.
 
 MIT License
 
-Copyright (c) 2024-2026 ruvnet
+Copyright (c) 2026 diegosouzapw
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
