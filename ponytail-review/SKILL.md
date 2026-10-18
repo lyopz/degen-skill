@@ -43,6 +43,11 @@ This is a report the user asked for, so give it in full.
 4. **Missing test:** risky new logic (a branch, a parser, money, security,
    data writes, a bug fix) with no test that fails when it breaks. One good
    test, not coverage.
+   <!-- from: addyosmani/agent-skills -->
+   Prove a test would catch a break by experiment, not by reading: flip one
+   condition the change adds (drop a `!`, swap `&&` for `||`), run the tests,
+   then restore the file. If the tests still pass, that missing test is a finding.
+   <!-- end: addyosmani/agent-skills -->
 5. **Speed:** big slowdowns are problems. Small wins (work repeated in a hot
    loop) are suggestions; some software counts every millisecond.
 6. **Lean:** code that should not exist or should be smaller.
@@ -55,6 +60,13 @@ This is a report the user asked for, so give it in full.
    - split: one function doing several unrelated jobs, so it is hard to read
      or test. Split by job, never by line count, and never into helpers that
      exist only to make a function shorter.
+
+<!-- from: addyosmani/agent-skills -->
+7. **Dependency upgrade:** a version bump is a code change. Read the changelog
+   for breaking changes, prefer one package per change so a break is easy to
+   trace and revert, check the lockfile diff for what came along with it, and
+   let the tests pass before and after.
+<!-- end: addyosmani/agent-skills -->
 
 ## 3. Check before you report
 
