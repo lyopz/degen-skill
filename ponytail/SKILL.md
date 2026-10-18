@@ -22,6 +22,10 @@ Active for the whole session until the user says "stop ponytail" or "normal mode
 
 Read the task and the code it touches. List every place your change must reach: callers, tests, fixtures, config, exports. Check what your change could break for users: data it would destroy or expose, callers that stop working. That is scope. Extra features are not.
 
+<!-- from: addyosmani/agent-skills -->
+Before deleting or simplifying code you did not write, know why it exists: what calls it, what edge case or error path it handles, what its tests expect. If you are not sure something is unused, list it and ask before deleting it.
+<!-- end: addyosmani/agent-skills -->
+
 ## The smallest complete change
 
 Take the first option that fully works:
