@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Build the glowing "neural" file-relationship graph from a graphify graph.json.
+"""Build Graph POW, the glowing file-relationship graph, from a graphify graph.json.
 
 graphify's graph.json is symbol-level (functions, types, README concepts).
 This script folds it into one node per file and one link per file pair, keeps
 the reason for every link (which symbols are imported, called or typed), and
-writes a single self-contained HTML page from templates/neural-graph.html.
+writes a single self-contained HTML page from templates/graph-pow.html.
 
 Usage:
-  python3 neural_graph.py --graph graphify-out/graph.json --root . \
-      --out graphify-out/neural-graph.html [--purposes purposes.json] [--title NAME]
+  python3 graph_pow.py --graph graphify-out/graph.json --root . \
+      --out graphify-out/graph-pow.html [--purposes purposes.json] [--title NAME]
 
 --purposes is an optional JSON object {"src/app.ts": "one-line purpose"}.
 Files without an entry fall back to their leading comment, then to a role.
@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_TEMPLATE = HERE.parent / "templates" / "neural-graph.html"
+DEFAULT_TEMPLATE = HERE.parent / "templates" / "graph-pow.html"
 
 # graphify relation -> link kind shown in the page
 KIND_OF = {
@@ -285,7 +285,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--graph", default="graphify-out/graph.json")
     ap.add_argument("--root", default=".")
-    ap.add_argument("--out", default="graphify-out/neural-graph.html")
+    ap.add_argument("--out", default="graphify-out/graph-pow.html")
     ap.add_argument("--purposes")
     ap.add_argument("--title")
     ap.add_argument("--template", default=str(DEFAULT_TEMPLATE))
@@ -313,7 +313,7 @@ def main():
             raise SystemExit("template is missing the __GRAPH_DATA__ placeholder")
         html = tpl.replace("__GRAPH_DATA__", payload).replace("__PROJECT_NAME__", data["project"])
         out.write_text(html, encoding="utf-8")
-    print(f"neural graph: {len(files)} files, {len(links)} links, {len(groups)} groups -> {out}")
+    print(f"Graph POW: {len(files)} files, {len(links)} links, {len(groups)} groups -> {out}")
 
 
 if __name__ == "__main__":

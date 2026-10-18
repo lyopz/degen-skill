@@ -1,4 +1,4 @@
-<title>__PROJECT_NAME__ Neural Map</title>
+<title>__PROJECT_NAME__ Graph POW</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -166,7 +166,7 @@ canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block
 <div class="app">
   <header>
     <div class="brand">
-      <h1>__PROJECT_NAME__ <span>neural map</span></h1>
+      <h1>Graph POW <span>· __PROJECT_NAME__</span></h1>
       <div class="meta" id="meta"></div>
     </div>
     <div class="search">
@@ -190,13 +190,13 @@ canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block
     <div class="dock">
       <div class="tools">
         <button class="btn" id="fit" type="button" title="Fit graph to screen">Fit</button>
-        <button class="btn" id="pulse" type="button" aria-pressed="true">Pulses on</button>
+        <button class="btn" id="pulse" type="button" title="Switch how the nerves move">Nerves: firing</button>
         <button class="btn" id="labels" type="button" aria-pressed="false">All labels</button>
       </div>
       <div class="legend" aria-label="Legend">
         <div><svg width="26" height="12" aria-hidden="true"><circle cx="5" cy="6" r="3" fill="#7cf0ff"/><circle cx="18" cy="6" r="5.5" fill="#7cf0ff"/></svg>Size shows how many files it touches</div>
         <div><svg width="26" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="#b28cff"/><circle cx="19" cy="6" r="4" fill="#ff7ad6"/></svg>Colour shows its folder</div>
-        <div><svg width="26" height="12" aria-hidden="true"><path d="M2 6h22" stroke="#5ad2ff" stroke-width="1.5"/><circle cx="16" cy="6" r="2.5" fill="#fff"/></svg>Pulses flow from a file to what it depends on</div>
+        <div><svg width="26" height="12" aria-hidden="true"><path d="M2 6h22" stroke="#5ad2ff" stroke-width="1.5"/><circle cx="16" cy="6" r="2.5" fill="#fff"/></svg>Signals fire from a file into what it depends on</div>
       </div>
     </div>
   </main>
@@ -240,7 +240,8 @@ rankByDegree.forEach((n, i) => n.rank = i);
 const state = {
   kinds: new Set(KINDS.map(k => k.id)), groups: new Set(groups.map(g => g.id)),
   selected: null, hover: null, hoverLink: null, focus: 0, trace: null, tracing: false,
-  pulses: !reduceMotion && store.get('pulses') !== 'off', allLabels: store.get('labels') === 'all',
+  mode: reduceMotion ? 'off' : (['fire', 'calm', 'off'].includes(store.get('mode')) ? store.get('mode') : 'fire'),
+  allLabels: store.get('labels') === 'all',
 };
 
 // ---------- layout: folders become lobes around an ellipse, ordered so linked lobes sit side by side ----------
@@ -329,9 +330,61 @@ function ctrl(l) {
 }
 function bez(l, c, t) { const u = 1 - t; return { x: u * u * l.a.x + 2 * u * t * c.x + t * t * l.b.x, y: u * u * l.a.y + 2 * u * t * c.y + t * t * l.b.y }; }
 
-let raf = 0, lastLabelBoxes = [];
+let raf = 0, lastLabelBoxes = [], lastNow = 0;
+
+// ---------- nerve firing ----------
+// A fired file sends fast signals down its links toward what it depends on; each arrival
+// flashes the next file and may fire onward with less energy, so activity cascades.
+const signals = [];
+let nextFire = 0;
+function outgoing(n) { return adj.get(n.id).filter(l => linkOn(l) && (!activeLinks || activeLinks.has(l))); }
+function fire(n, energy = 1, from = null) {
+  if (!n || !nodeOn(n)) return;
+  n.flash = Math.min(1.4, (n.flash || 0) + .9 * energy);
+  const ls = outgoing(n).filter(l => l !== from);
+  if (!ls.length || signals.length > 220) return;
+  // Prefer dependencies (s -> t), then heavier links.
+  const pickN = Math.min(ls.length, energy >= 1 ? 2 + Math.floor(Math.random() * 3) : 1 + (Math.random() < energy * .7 ? 1 : 0));
+  const pool = ls.slice().sort((a, b) => (b.s === n.id) - (a.s === n.id) || b.w * Math.random() - a.w * Math.random());
+  for (let i = 0; i < pickN; i++) {
+    const l = pool[i];
+    signals.push({ l, fwd: l.s === n.id, t: 0, speed: 1.6 + Math.random() * 1.4, energy, col: KIND[l.primary].color });
+  }
+}
+function stepNerves(dt, now) {
+  if (state.mode !== 'fire') { signals.length = 0; return; }
+  if (now > nextFire) {
+    const src = state.selected && Math.random() < .55 ? state.selected : weightedPick();
+    fire(src, 1);
+    nextFire = now + (active ? 260 : 140) + Math.random() * 160;
+  }
+  for (let i = signals.length - 1; i >= 0; i--) {
+    const sg = signals[i], c = ctrl(sg.l);
+    sg.t += dt * sg.speed * Math.min(2.2, 220 / Math.max(80, c.len));
+    sg.l.heat = Math.min(1, (sg.l.heat || 0) + dt * 6 * sg.energy);
+    if (sg.t >= 1) {
+      signals.splice(i, 1);
+      const to = sg.fwd ? sg.l.b : sg.l.a;
+      if (sg.energy > .3 && Math.random() < .55 + .3 * sg.energy) fire(to, sg.energy * .62, sg.l);
+      else to.flash = Math.min(1.4, (to.flash || 0) + .5 * sg.energy);
+    }
+  }
+}
+function weightedPick() {
+  const pool = nodes.filter(n => nodeOn(n) && n.degree);
+  let r = Math.random() * pool.reduce((s, n) => s + Math.sqrt(n.degree), 0);
+  for (const n of pool) { r -= Math.sqrt(n.degree); if (r <= 0) return n; }
+  return pool[0];
+}
+// Live hook: post {type: 'graph-pow:fire', file: 'src/x.ts'} to this page, or call
+// graphPow.fire('src/x.ts'), to light a file when an agent touches it.
+window.graphPow = { fire(path) { const n = N[path]; if (n) { fire(n, 1.3); kick(); } return !!n; } };
+addEventListener('message', e => { const d = e.data; if (d && d.type === 'graph-pow:fire' && typeof d.file === 'string') window.graphPow.fire(d.file); });
+
 function draw(now = performance.now()) {
-  const k = T.k, sec = now / 1000;
+  const k = T.k, sec = now / 1000, dt = Math.min(.05, lastNow ? (now - lastNow) / 1000 : 0);
+  lastNow = now;
+  stepNerves(dt, now);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
   ctx.fillStyle = tok('--void'); ctx.fillRect(0, 0, W, H);
@@ -367,10 +420,30 @@ function draw(now = performance.now()) {
     } else {
       ctx.strokeStyle = hexA(col, dim ? .025 : base); ctx.lineWidth = (.6 + 1.4 * l.w / maxW) / k; ctx.stroke();
     }
+    if (l.heat > .02) {
+      const hc = KIND[l.primary].color;
+      ctx.strokeStyle = hexA(hc, .22 * l.heat); ctx.lineWidth = (6 + 3 * l.w / maxW) / k; ctx.stroke();
+      ctx.strokeStyle = hexA(hc, .75 * l.heat); ctx.lineWidth = 1.4 / k; ctx.stroke();
+      l.heat *= Math.pow(.04, dt);
+    }
   });
 
-  // Pulses travel from a file toward what it depends on
-  if (state.pulses) {
+  // Firing signals: a bright head with a short tail
+  signals.forEach(sg => {
+    if (!linkOn(sg.l)) return;
+    const c = ctrl(sg.l);
+    for (let j = 0; j < 6; j++) {
+      const tt = sg.t - j * .022; if (tt < 0) break;
+      const p = bez(sg.l, c, sg.fwd ? tt : 1 - tt), s = (j === 0 ? 18 : 12 - j * 1.6) / Math.sqrt(k) * (.7 + .3 * sg.energy);
+      ctx.globalAlpha = Math.min(1, .5 + sg.energy * .5) * (1 - j * .15);
+      ctx.drawImage(sprite(j === 0 ? '#ffffff' : sg.col), p.x - s / 2, p.y - s / 2, s, s);
+      if (j === 0) ctx.drawImage(sprite(sg.col), p.x - s, p.y - s, s * 2, s * 2);
+    }
+  });
+  ctx.globalAlpha = 1;
+
+  // Calm mode: slow pulses travel from a file toward what it depends on
+  if (state.mode === 'calm') {
     const set = activeLinks ? vis.filter(l => activeLinks.has(l)) : vis.filter(l => l.w >= pulseCut);
     set.forEach(l => {
       const c = ctrl(l), speed = 60 / Math.max(60, c.len) * .32;
@@ -390,15 +463,18 @@ function draw(now = performance.now()) {
   nodes.forEach(n => {
     if (!nodeOn(n)) return;
     const dim = active && !active.has(n.id);
-    const breathe = state.pulses ? 1 + .07 * Math.sin(sec * .9 + n.phase) : 1;
-    const gs = n.r * (dim ? 3.2 : 5.6) * breathe;
+    const breathe = state.mode !== 'off' ? 1 + .07 * Math.sin(sec * (state.mode === 'fire' ? 2.2 : .9) + n.phase) : 1;
+    const fl = n.flash || 0;
+    const gs = n.r * (dim ? 3.2 : 5.6) * breathe * (1 + fl * 1.1);
+    if (fl > .01) n.flash = fl * Math.pow(.08, dt);
     ctx.globalAlpha = dim ? .16 : 1;
     ctx.drawImage(sprite(n.color), n.x - gs / 2, n.y - gs / 2, gs, gs);
     ctx.globalCompositeOperation = 'source-over';
     ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 6.283);
     ctx.fillStyle = dim ? hexA(n.color, .25) : n.color; ctx.fill();
     ctx.beginPath(); ctx.arc(n.x, n.y, n.r * .42, 0, 6.283);
-    ctx.fillStyle = dim ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.85)'; ctx.fill();
+    ctx.fillStyle = dim ? `rgba(255,255,255,${.12 + .5 * fl})` : 'rgba(255,255,255,.85)'; ctx.fill();
+    if (fl > .05) { ctx.beginPath(); ctx.arc(n.x, n.y, n.r * (1 + fl * .35), 0, 6.283); ctx.fillStyle = `rgba(255,255,255,${Math.min(.75, fl * .55)})`; ctx.fill(); }
     if (state.selected === n) {
       ctx.strokeStyle = tok('--synapse'); ctx.lineWidth = 1.6 / k;
       ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 5 / k + 1.5 * Math.sin(sec * 2), 0, 6.283); ctx.stroke();
@@ -453,7 +529,7 @@ function draw(now = performance.now()) {
     halo(n.name, s[0], y, key ? '#ffffff' : emph ? tok('--ink') : 'rgba(205,215,245,.82)', font);
   });
   lastLabelBoxes = boxes;
-  if (state.pulses || anim) raf = requestAnimationFrame(draw); else raf = 0;
+  if (state.mode !== 'off' || anim || signals.length) raf = requestAnimationFrame(draw); else { raf = 0; lastNow = 0; }
 }
 let anim = false;
 function kick() { if (!raf) raf = requestAnimationFrame(draw); }
@@ -647,10 +723,10 @@ groupsEl.addEventListener('dblclick', e => {
 });
 const pulseBtn = document.getElementById('pulse'), labelBtn = document.getElementById('labels');
 function syncTools() {
-  pulseBtn.textContent = state.pulses ? 'Pulses on' : 'Pulses off'; pulseBtn.setAttribute('aria-pressed', state.pulses);
+  pulseBtn.textContent = { fire: 'Nerves: firing', calm: 'Nerves: calm', off: 'Nerves: still' }[state.mode];
   labelBtn.setAttribute('aria-pressed', state.allLabels); labelBtn.textContent = state.allLabels ? 'Auto labels' : 'All labels';
 }
-pulseBtn.onclick = () => { state.pulses = !state.pulses; store.set('pulses', state.pulses ? 'on' : 'off'); syncTools(); kick(); };
+pulseBtn.onclick = () => { state.mode = { fire: 'calm', calm: 'off', off: 'fire' }[state.mode]; store.set('mode', state.mode); syncTools(); kick(); };
 labelBtn.onclick = () => { state.allLabels = !state.allLabels; store.set('labels', state.allLabels ? 'all' : 'auto'); syncTools(); kick(); };
 document.getElementById('fit').onclick = () => fit(state.selected && focusSet ? [...focusSet] : null);
 const panel = document.getElementById('panel'), grab = document.getElementById('grab');

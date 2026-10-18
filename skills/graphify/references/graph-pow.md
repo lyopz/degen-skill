@@ -1,25 +1,25 @@
-# graphify reference: neural file graph
+# graphify reference: Graph POW
 
-Load this in Step 6, or whenever the user asks for the file graph, the "neural map", or to restyle it. It turns `graphify-out/graph.json` into `graphify-out/neural-graph.html`: one glowing node per file, one link per related file pair, with the reason for every link. The design is fixed in `templates/neural-graph.html`; reuse it as is. Do not redesign it per project.
+Load this in Step 6, or whenever the user asks for Graph POW, the file graph, the "neural map", or to restyle it. It turns `graphify-out/graph.json` into `graphify-out/graph-pow.html`: one glowing node per file, one link per related file pair, with the reason for every link. The design is fixed in `templates/graph-pow.html`; reuse it as is. Do not redesign it per project.
 
 ## Files
 
 | File | What it is |
 |:--|:--|
-| `scripts/neural_graph.py` | Folds the symbol graph into files and links and fills the template. Standard library only. |
-| `templates/neural-graph.html` | The page: styles, layout, rendering and interaction. Placeholders `__GRAPH_DATA__` and `__PROJECT_NAME__`. Loads d3 7.9.0 from cdnjs. |
+| `scripts/graph_pow.py` | Folds the symbol graph into files and links and fills the template. Standard library only. |
+| `templates/graph-pow.html` | The page: styles, layout, rendering and interaction. Placeholders `__GRAPH_DATA__` and `__PROJECT_NAME__`. Loads d3 7.9.0 from cdnjs. |
 | `purposes.json` (per project) | Optional `{"path/to/file": "one-line purpose"}`. Kept in the project, not in this skill. |
 
 ## Apply it to a project
 
 1. Run the normal graphify build first so `graphify-out/graph.json` exists.
-2. Write purposes for files that have no leading comment. The script uses, in order: the `purposes.json` entry, then the file's first comment block, then its role. List the files that would fall back to a role (`--json-only` and look for empty `purpose`), read each one, and write one plain sentence about what it does for the app. Save the file as `docs/file-graph/purposes.json`, or wherever the project keeps docs.
+2. Write purposes for files that have no leading comment. The script uses, in order: the `purposes.json` entry, then the file's first comment block, then its role. List the files that would fall back to a role (`--json-only` and look for empty `purpose`), read each one, and write one plain sentence about what it does for the app. Save the file as `docs/graph-pow/purposes.json`, or wherever the project keeps docs.
 3. Build the page. On Windows, run it with the saved interpreter:
    ```powershell
-   & (Get-Content graphify-out\.graphify_python) SCRIPT_PATH --graph graphify-out/graph.json --root INPUT_PATH --purposes docs/file-graph/purposes.json --title "Project Name" --out graphify-out/neural-graph.html
+   & (Get-Content graphify-out\.graphify_python) SCRIPT_PATH --graph graphify-out/graph.json --root INPUT_PATH --purposes docs/graph-pow/purposes.json --title "Project Name" --out graphify-out/graph-pow.html
    ```
-   SCRIPT_PATH is the absolute path of `scripts/neural_graph.py` beside this skill's SKILL.md. On macOS/Linux use `python3` in place of the interpreter call. Leave out `--purposes` if there is no purposes file.
-4. Open `graphify-out/neural-graph.html` in a browser. To share it as a claude.ai Artifact, publish the same file (it is written as an artifact body, with no `<html>`/`<head>`/`<body>` tags, which browsers also accept).
+   SCRIPT_PATH is the absolute path of `scripts/graph_pow.py` beside this skill's SKILL.md. On macOS/Linux use `python3` in place of the interpreter call. Leave out `--purposes` if there is no purposes file.
+4. Open `graphify-out/graph-pow.html` in a browser. To share it as a claude.ai Artifact, publish the same file (it is written as an artifact body, with no `<html>`/`<head>`/`<body>` tags, which browsers also accept).
 5. Tell the user the file and link counts, the most connected files, and one thing the graph shows that they might not know, such as an import cycle or a file that bridges two folders.
 
 Rebuild after big changes: re-run graphify (`--update`), then step 3.
@@ -48,10 +48,12 @@ One dark world on purpose. It is not themed for light mode.
 - Link kinds: imports `#5ad2ff`, calls `#b28cff`, types `#ffc46b`, tests `#78f7b0`, docs `#ff7ad6`.
 - Folder colours, in order of folder size: `#5ad2ff #b28cff #ff7ad6 #ffc46b #78f7b0 #7f9cff #ff9a74 #4ff0d0 #e0a8ff #c8f06e #ff6f9c #9fd4ff #f5e17a #8affd9`.
 - Type: Unbounded (title only), IBM Plex Sans (UI), IBM Plex Mono (file names, counts, canvas labels).
-- **Nodes:** an additive radial glow sprite (5.6× radius) in the folder colour, a solid core, and a white nucleus at 42% radius. The glow breathes ±7% on a slow sine while pulses are on.
+- **Nodes:** an additive radial glow sprite (5.6× radius) in the folder colour, a solid core, and a white nucleus at 42% radius. The glow breathes ±7% (faster while firing) and swells and whitens when the file fires.
 - **Links at rest:** thin curved paths in cool blue `#7a96ff`, opacity 0.07–0.29 and width 0.6–2px by weight, drawn with `lighter` blending so busy bundles glow.
 - **Links in focus:** recoloured by their main kind, with a wide faint halo under a bright core line, and a small `kind count` label at the midpoint (when 18 or fewer, or zoomed in).
-- **Pulses:** small glowing dots with a 3-dot fading tail travel each link from the file to what it depends on. At rest only the top 22% of links by weight pulse; in focus, only the focused links. One trip takes several seconds.
+- **Nerves (default mode "firing"):** every 140–300 ms a file fires (weighted toward busy files, and toward the selected file when one is selected). Fast signals, each a white-hot head with a 6-dot tail in the link's kind colour, shoot along 2–4 of its links, preferring what it depends on. A link lights up as a signal passes and fades in about a third of a second. When a signal arrives, that file flashes and usually fires onward with 62% of the energy, so activity cascades through the graph. At most 220 signals are live at once.
+- **Calm mode:** slow single pulses with a 3-dot tail on the top 22% of links by weight (or on the focused links), one trip every few seconds.
+- **Live hook:** `graphPow.fire('src/x.ts')`, or `postMessage({type: 'graph-pow:fire', file: 'src/x.ts'})` from a parent page, fires that file. Wire it to an agent's file activity to show real work. Without a feed, the firing is simulated.
 - **Lobes:** a faint radial nebula in the folder colour behind each folder, and the folder name in spaced capitals just above its topmost node.
 - **Labels:** canvas text with a dark 4px halo for contrast. Collision-checked so they never overlap; the selected and hovered files always win.
 
@@ -70,12 +72,12 @@ One dark world on purpose. It is not themed for light mode.
 - **Trace a path:** pick a second file (click it, or search) and the shortest path through visible links is lit, with each hop's reason in the panel.
 - **Search** (`/` to focus): file name, path, symbol, purpose and role, ranked in that order. Arrow keys and Enter pick a result.
 - **Filters:** link-kind chips and folder chips toggle what is shown. Double-click a folder chip to show only that folder, and again to show all.
-- **Tools:** Fit, Pulses on/off and All/Auto labels. Pulses and labels are remembered per browser.
+- **Tools:** Fit, Nerves (firing → calm → still) and All/Auto labels. Both are remembered per browser.
 - `Esc` clears the selection. Scroll or pinch zooms, and drag pans.
 - With nothing selected, the panel shows an overview and the most connected files, so the page is never empty.
-- With `prefers-reduced-motion`, pulses and breathing start off and the camera jumps instead of gliding.
+- With `prefers-reduced-motion`, nerves start still and the camera jumps instead of gliding.
 - On phones (≤760px) the panel becomes a collapsible bottom sheet and the chip rows scroll sideways.
 
 ## Changing the design
 
-Change `templates/neural-graph.html` itself, so every project keeps the same look. Keep the two placeholders and the d3 version pinned. Afterwards, rebuild one project and check it at desktop and phone width.
+Change `templates/graph-pow.html` itself, so every project keeps the same look. Keep the two placeholders and the d3 version pinned. Afterwards, rebuild one project and check it at desktop and phone width.
