@@ -34,6 +34,7 @@ Turn any folder of files into a navigable knowledge graph with community detecti
 /graphify <path> --mcp                                # start MCP stdio server for agent access
 /graphify <path> --watch                              # watch folder, auto-rebuild on code changes (no LLM needed)
 /graphify <path> --wiki                               # build agent-crawlable wiki (index.md + one article per community)
+/graphify <path> --neural-only                        # rebuild just the glowing file graph (neural-graph.html) from an existing graph.json
 /graphify <path> --obsidian --obsidian-dir ~/vaults/my-project  # write vault to custom path (e.g. existing vault)
 /graphify add <url>                                   # fetch URL, save to ./raw, update graph
 /graphify add <url> --author "Name"                   # tag who wrote it
@@ -606,6 +607,8 @@ graphify export html  # auto-aggregates to community view if graph > 5000 nodes
 # or: graphify export html --no-viz
 ```
 
+Then build the **neural file graph** (always, unless `--no-viz`): a glowing, brain-like map with one node per file, labelled links that say why files connect, search, filters and path tracing. Follow `references/neural-graph.md`, which covers writing missing file purposes, the build command and the fixed design. Do not restyle it per project. With `--neural-only`, skip Steps 1-6 except this one and rebuild the page from the existing `graphify-out/graph.json`.
+
 ### Steps 6b-8 - Wiki, Neo4j, FalkorDB, SVG, GraphML, MCP, benchmark (only on their flags)
 
 These run only when their flag is present (`--wiki`, `--neo4j`/`--neo4j-push`, `--falkordb`/`--falkordb-push`, `--svg`, `--graphml`, `--mcp`) or, for the token-reduction benchmark, when `total_words` exceeds 5,000. A default run with no export flags skips all of them. See `references/exports.md` for each one. Run any `--wiki` export before Step 9 cleanup so `.graphify_labels.json` is still available.
@@ -688,6 +691,7 @@ Tell the user (omit the obsidian line unless --obsidian was given):
 Graph complete. Outputs in PATH_TO_DIR/graphify-out/
 
   graph.html            - interactive graph, open in browser
+  neural-graph.html     - glowing file-relationship map (one node per file)
   GRAPH_REPORT.md       - audit report
   graph.json            - raw graph data
   obsidian/             - Obsidian vault (only if --obsidian was given)
