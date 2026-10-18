@@ -5,7 +5,7 @@ description: Use when lyopz sends a GitHub repo to add as a skill, asks to remov
 
 # Skill Intake
 
-This repo is lyopz's skill library. It lives on GitHub at `lyopz/degen-skill` and is cloned to `~/.claude\skills` so Claude Code loads every `<name>/SKILL.md` folder automatically.
+This repo is lyopz's skill library. It lives on GitHub at `lyopz/degen-skill` and is cloned to `~/.claude/skills` so Claude Code loads every `<name>/SKILL.md` folder automatically.
 
 Key files at the repo root:
 - `SKILLS_REGISTRY.md`: every source repo, what it added, and where any of its content was merged. This is the source of truth for removal.
