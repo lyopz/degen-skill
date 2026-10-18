@@ -11,7 +11,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 
 ## Current status
 - Setup done: `skill-intake`, `SKILLS_REGISTRY.md`, `HANDOFF.md`.
-- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), ruvnet/ruflo (32 skills + 98 agents + 168 commands), multica-ai/andrej-karpathy-skills (merged into ponytail). 94 skills total.
+- Outside repos added (trial): DietrichGebert/ponytail (4 skills), addyosmani/agent-skills (4 skills + merges into ponytail/ponytail-review), Graphify-Labs/graphify (1), nextlevelbuilder/ui-ux-pro-max-skill (7), diegosouzapw/OmniRoute (45), ruvnet/ruflo (32 skills + 98 agents + 168 commands), multica-ai/andrej-karpathy-skills (merged into ponytail). 95 skills total (incl. lyopz's own `project-map`).
 - Repo layout: `skills/`, `agents/`, `commands/`, `reviews/`, `assets/` + `README.md`. Front page = black/red catalog in plain language.
 - lyopz is installing the OmniRoute app to stretch AI credits.
 - Ruflo tools need the `claude-flow` MCP server added at user scope.
@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-18** — Added `project-map` (lyopz's own map viewer, blank template + builder from graphify output). Agent Office data not included. 95 skills.
 - **2026-10-18** — Reorganized repo into skills/, agents/, commands/, reviews/. New black-and-red front page with plain-English descriptions. Repo now clones to ~/.claude/degen-skill with links. Walked lyopz through OmniRoute basics.
 - **2026-10-18** — Added ruvnet/ruflo (32 skills, 98 agents, 168 commands). Skipped its internal v3 dev skills and auto-run hooks. Higgsfield connector pending on lyopz's side.
 - **2026-10-18** — Added OmniRoute's 45 skills and the other 6 ui-ux-pro-max skills (incl. fonts + image generation). Moved registry/handoff to `_notes/`, new README catalog. Browser uploads got blocked partway, so lyopz pushed the rest from his PC.

@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/skills-94-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="94 skills">
+<img src="https://img.shields.io/badge/skills-95-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="95 skills">
 <img src="https://img.shields.io/badge/agents-98-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="98 agents">
 <img src="https://img.shields.io/badge/commands-168-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="168 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
@@ -23,6 +23,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |
 | "I have an idea for an app, help me plan it" | `idea-refine` |
+| "Show me a map of this project" | `graphify`, `project-map` |
 | "Split this big job across a team of agents" | `swarm-orchestration`, `hive-mind-advanced` |
 | "How much am I spending on AI?" | `cli-cost-usage`, `omni-budget` |
 
@@ -131,7 +132,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 
 | Folder | What's in it |
 |:--|:--|
-| [`skills/`](skills) | All 94 skills, one folder each |
+| [`skills/`](skills) | All 95 skills, one folder each |
 | [`agents/`](agents) | 98 specialist agents |
 | [`commands/`](commands) | 168 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
