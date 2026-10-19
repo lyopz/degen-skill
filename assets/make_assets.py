@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("89", "skills"), ("98", "agents"), ("168", "commands"), ("7", "sources")]
+STATS = [("89", "skills"), ("85", "agents"), ("159", "commands"), ("7", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [

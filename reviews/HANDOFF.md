@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-18** — Removed Flow Nexus + Codex dual-mode agents and /flow-nexus commands to match. 85 agents, 159 commands.
 - **2026-10-18** — Removed 6 Ruflo trial skills (flow-nexus-*, dual-*): need paid cloud account / Codex CLI. 89 skills.
 - **2026-10-18** — Added `project-map` (lyopz's own map viewer, blank template + builder from graphify output). Agent Office data not included. 95 skills.
 - **2026-10-18** — Reorganized repo into skills/, agents/, commands/, reviews/. New black-and-red front page with plain-English descriptions. Repo now clones to ~/.claude/degen-skill with links. Walked lyopz through OmniRoute basics.
