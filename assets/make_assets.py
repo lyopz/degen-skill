@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("89", "skills"), ("85", "agents"), ("159", "commands"), ("7", "sources")]
+STATS = [("90", "skills"), ("85", "agents"), ("159", "commands"), ("8", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -34,6 +34,7 @@ CORE = [
     ]),
     ("PLANNING", "Think it through", [
         ("idea-refine", "Turns a rough idea into a clear plan"),
+        ("llm-council", "Several AIs answer, grade each other, best answer wins"),
         ("graphify", "Maps a project so Claude gets it faster"),
         ("project-map", "Draws a glowing map of your project to explore"),
         ("skill-intake", "Adds new skills, removes ones you don't want"),

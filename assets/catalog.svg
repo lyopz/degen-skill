@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1462" viewBox="0 0 1200 1462">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1502" viewBox="0 0 1200 1502">
 <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e11d2e"/><stop offset="1" stop-color="#6d0a13"/></linearGradient></defs>
-<rect width="1200" height="1462" rx="18" fill="#0b0b0d"/>
+<rect width="1200" height="1502" rx="18" fill="#0b0b0d"/>
 <text x="56" y="70" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="3">WHAT&#x27;S INSIDE</text>
 <rect x="56" y="84" width="64" height="4" fill="#e11d2e"/>
 <text x="56" y="120" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">You don&#x27;t need to remember any of these. Just ask Claude for what you want.</text>
 <rect x="56" y="184" width="1088" height="310" rx="14" fill="#141417" stroke="#2a2a30"/>
 <rect x="56" y="184" width="8" height="310" rx="4" fill="#e11d2e"/>
 <text x="88" y="228" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="3">CODING</text>
-<text x="207.0" y="228" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Â· Write and fix code</text>
+<text x="207.0" y="228" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">· Write and fix code</text>
 <text x="1116" y="228" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#a1a1aa" text-anchor="end" letter-spacing="0">6 skills</text>
 <circle cx="94" cy="270" r="4" fill="#e11d2e"/>
 <text x="110" y="276" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">ponytail</text>
@@ -35,7 +35,7 @@
 <rect x="56" y="528" width="1088" height="390" rx="14" fill="#141417" stroke="#2a2a30"/>
 <rect x="56" y="528" width="8" height="390" rx="4" fill="#e11d2e"/>
 <text x="88" y="572" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="3">DESIGN</text>
-<text x="207.0" y="572" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Â· Make it look good</text>
+<text x="207.0" y="572" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">· Make it look good</text>
 <text x="1116" y="572" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#a1a1aa" text-anchor="end" letter-spacing="0">8 skills</text>
 <circle cx="94" cy="614" r="4" fill="#e11d2e"/>
 <text x="110" y="620" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">ui-ux-pro-max</text>
@@ -68,36 +68,40 @@
 <circle cx="94" cy="894" r="4" fill="#e11d2e"/>
 <text x="110" y="900" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">slides</text>
 <text x="486" y="900" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Builds presentations</text>
-<rect x="56" y="952" width="1088" height="230" rx="14" fill="#141417" stroke="#2a2a30"/>
-<rect x="56" y="952" width="8" height="230" rx="4" fill="#e11d2e"/>
+<rect x="56" y="952" width="1088" height="270" rx="14" fill="#141417" stroke="#2a2a30"/>
+<rect x="56" y="952" width="8" height="270" rx="4" fill="#e11d2e"/>
 <text x="88" y="996" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#ff4d5e" text-anchor="start" letter-spacing="3">PLANNING</text>
-<text x="242.0" y="996" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Â· Think it through</text>
-<text x="1116" y="996" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#a1a1aa" text-anchor="end" letter-spacing="0">4 skills</text>
+<text x="242.0" y="996" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#a1a1aa" text-anchor="start" letter-spacing="0">· Think it through</text>
+<text x="1116" y="996" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#a1a1aa" text-anchor="end" letter-spacing="0">5 skills</text>
 <circle cx="94" cy="1038" r="4" fill="#e11d2e"/>
 <text x="110" y="1044" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">idea-refine</text>
 <text x="486" y="1044" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Turns a rough idea into a clear plan</text>
 <line x1="88" y1="1057" x2="1116" y2="1057" stroke="#2a2a30"/>
 <circle cx="94" cy="1078" r="4" fill="#e11d2e"/>
-<text x="110" y="1084" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">graphify</text>
-<text x="486" y="1084" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Maps a project so Claude gets it faster</text>
+<text x="110" y="1084" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">llm-council</text>
+<text x="486" y="1084" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Several AIs answer, grade each other, best answer wins</text>
 <line x1="88" y1="1097" x2="1116" y2="1097" stroke="#2a2a30"/>
 <circle cx="94" cy="1118" r="4" fill="#e11d2e"/>
-<text x="110" y="1124" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">project-map</text>
-<text x="486" y="1124" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Draws a glowing map of your project to explore</text>
+<text x="110" y="1124" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">graphify</text>
+<text x="486" y="1124" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Maps a project so Claude gets it faster</text>
 <line x1="88" y1="1137" x2="1116" y2="1137" stroke="#2a2a30"/>
 <circle cx="94" cy="1158" r="4" fill="#e11d2e"/>
-<text x="110" y="1164" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">skill-intake</text>
-<text x="486" y="1164" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Adds new skills, removes ones you don&#x27;t want</text>
-<rect x="56" y="1216" width="532" height="190" rx="14" fill="url(#rg)"/>
-<text x="86" y="1294" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="56" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="0">26</text>
-<text x="170" y="1272" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="3">SWARMS</text>
-<text x="170" y="1296" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#ffd5d9" text-anchor="start" letter-spacing="0">Ruflo pack</text>
-<text x="86" y="1340" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">A team of AI helpers that split up a big job and</text>
-<text x="86" y="1366" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">work on it at the same time.</text>
-<rect x="612" y="1216" width="532" height="190" rx="14" fill="url(#rg)"/>
-<text x="642" y="1294" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="56" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="0">45</text>
-<text x="726" y="1272" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="3">OMNIROUTE</text>
-<text x="726" y="1296" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#ffd5d9" text-anchor="start" letter-spacing="0">AI gateway pack</text>
-<text x="642" y="1340" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">Run lots of AI models through one place, switch when</text>
-<text x="642" y="1366" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">one runs out, track what you spend.</text>
+<text x="110" y="1164" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">project-map</text>
+<text x="486" y="1164" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Draws a glowing map of your project to explore</text>
+<line x1="88" y1="1177" x2="1116" y2="1177" stroke="#2a2a30"/>
+<circle cx="94" cy="1198" r="4" fill="#e11d2e"/>
+<text x="110" y="1204" font-family="Cascadia Code, Consolas, Menlo, monospace" font-size="17" font-weight="600" fill="#f5f5f7" text-anchor="start" letter-spacing="0">skill-intake</text>
+<text x="486" y="1204" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#a1a1aa" text-anchor="start" letter-spacing="0">Adds new skills, removes ones you don&#x27;t want</text>
+<rect x="56" y="1256" width="532" height="190" rx="14" fill="url(#rg)"/>
+<text x="86" y="1334" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="56" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="0">26</text>
+<text x="170" y="1312" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="3">SWARMS</text>
+<text x="170" y="1336" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#ffd5d9" text-anchor="start" letter-spacing="0">Ruflo pack</text>
+<text x="86" y="1380" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">A team of AI helpers that split up a big job and</text>
+<text x="86" y="1406" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">work on it at the same time.</text>
+<rect x="612" y="1256" width="532" height="190" rx="14" fill="url(#rg)"/>
+<text x="642" y="1334" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="56" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="0">45</text>
+<text x="726" y="1312" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#f5f5f7" text-anchor="start" letter-spacing="3">OMNIROUTE</text>
+<text x="726" y="1336" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#ffd5d9" text-anchor="start" letter-spacing="0">AI gateway pack</text>
+<text x="642" y="1380" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">Run lots of AI models through one place, switch when</text>
+<text x="642" y="1406" font-family="Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="500" fill="#f5f5f7" text-anchor="start" letter-spacing="0">one runs out, track what you spend.</text>
 </svg>
