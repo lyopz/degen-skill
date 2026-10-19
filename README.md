@@ -2,7 +2,7 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/skills-90-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="90 skills">
-<img src="https://img.shields.io/badge/agents-85-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="85 agents">
+<img src="https://img.shields.io/badge/agents-75-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="75 agents">
 <img src="https://img.shields.io/badge/commands-159-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="159 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
 </p>
@@ -30,7 +30,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 
 ## 🟥 Swarms pack — 26 skills
 
-Teams of AI helpers that each take a piece of a big job. Comes with **85 ready-made agents** (coder, tester, reviewer, planner…) in [`agents/`](agents) and **159 slash commands** in [`commands/`](commands).
+Teams of AI helpers that each take a piece of a big job. Comes with **75 ready-made agents** (coder, tester, reviewer, planner…) in [`agents/`](agents) and **159 slash commands** in [`commands/`](commands).
 
 <details>
 <summary><b>Show all 26 Swarms skills</b></summary>
@@ -128,7 +128,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 | Folder | What's in it |
 |:--|:--|
 | [`skills/`](skills) | All 90 skills, one folder each |
-| [`agents/`](agents) | 85 specialist agents |
+| [`agents/`](agents) | 75 specialist agents |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
 | [`assets/`](assets) | The images on this page |
