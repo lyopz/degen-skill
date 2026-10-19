@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("95", "skills"), ("98", "agents"), ("168", "commands"), ("7", "sources")]
+STATS = [("89", "skills"), ("98", "agents"), ("168", "commands"), ("7", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -41,7 +41,7 @@ CORE = [
 ]
 
 PACKS = [
-    ("32", "SWARMS", "Ruflo", "A team of AI helpers that split up a big job and work on it at the same time."),
+    ("26", "SWARMS", "Ruflo", "A team of AI helpers that split up a big job and work on it at the same time."),
     ("45", "OMNIROUTE", "AI gateway", "Run lots of AI models through one place, switch when one runs out, track what you spend."),
 ]
 

@@ -25,3 +25,4 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 
 | Repo | Added | Removed | Reason |
 |---|---|---|---|
+| ruvnet/ruflo (partial: flow-nexus-neural, flow-nexus-platform, flow-nexus-swarm, dual-spawn, dual-coordinate, dual-collect) | 2026-10-18 | 2026-10-18 | Need a paid Flow Nexus account or the OpenAI Codex CLI |

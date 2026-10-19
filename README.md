@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/skills-95-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="95 skills">
+<img src="https://img.shields.io/badge/skills-89-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="89 skills">
 <img src="https://img.shields.io/badge/agents-98-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="98 agents">
 <img src="https://img.shields.io/badge/commands-168-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="168 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
@@ -27,12 +27,12 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Split this big job across a team of agents" | `swarm-orchestration`, `hive-mind-advanced` |
 | "How much am I spending on AI?" | `cli-cost-usage`, `omni-budget` |
 
-## 🟥 Swarms pack — 32 skills
+## 🟥 Swarms pack — 26 skills
 
 Teams of AI helpers that each take a piece of a big job. Comes with **98 ready-made agents** (coder, tester, reviewer, planner…) in [`agents/`](agents) and **168 slash commands** in [`commands/`](commands).
 
 <details>
-<summary><b>Show all 32 Swarms skills</b></summary>
+<summary><b>Show all 26 Swarms skills</b></summary>
 
 | Skill | What it does |
 |:--|:--|
@@ -43,12 +43,6 @@ Teams of AI helpers that each take a piece of a big job. Comes with **98 ready-m
 | [`agentdb-vector-search`](skills/agentdb-vector-search/SKILL.md) | Searches notes by meaning, not exact words |
 | [`agentic-jujutsu`](skills/agentic-jujutsu/SKILL.md) | Version control built for many agents at once |
 | [`browser`](skills/browser/SKILL.md) | Lets agents use a web browser |
-| [`dual-collect`](skills/dual-collect/SKILL.md) | Gathers results from Codex helpers (needs OpenAI Codex) |
-| [`dual-coordinate`](skills/dual-coordinate/SKILL.md) | Runs Claude and Codex together (needs OpenAI Codex) |
-| [`dual-spawn`](skills/dual-spawn/SKILL.md) | Starts Codex helpers in the background (needs OpenAI Codex) |
-| [`flow-nexus-neural`](skills/flow-nexus-neural/SKILL.md) | Trains AI models in Ruflo's cloud (paid account) |
-| [`flow-nexus-platform`](skills/flow-nexus-platform/SKILL.md) | Manages your Ruflo cloud account (paid account) |
-| [`flow-nexus-swarm`](skills/flow-nexus-swarm/SKILL.md) | Runs agent teams in Ruflo's cloud (paid account) |
 | [`github-code-review`](skills/github-code-review/SKILL.md) | A team of agents reviews a pull request |
 | [`github-multi-repo`](skills/github-multi-repo/SKILL.md) | Keeps several GitHub projects in sync |
 | [`github-project-management`](skills/github-project-management/SKILL.md) | Handles GitHub issues and project boards |
@@ -132,7 +126,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 
 | Folder | What's in it |
 |:--|:--|
-| [`skills/`](skills) | All 95 skills, one folder each |
+| [`skills/`](skills) | All 89 skills, one folder each |
 | [`agents/`](agents) | 98 specialist agents |
 | [`commands/`](commands) | 168 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
