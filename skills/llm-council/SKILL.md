@@ -15,7 +15,11 @@ Three stages: everyone answers on their own, everyone reviews the others blind, 
 - `model: "opus"`, `model: "sonnet"`, `model: "haiku"`, plus `model: "fable"` if available.
 - You (the main session) are the chairman.
 
-**Cross-vendor (optional):** if the OmniRoute app is running and lyopz asks for other vendors (GPT, Gemini, Grok…), send stage 1 and 2 through its OpenAI-compatible endpoint instead. See the `omni-inference` and `cli-chat` skills for the URL, key and model names. Don't ask for or store API keys yourself.
+**Cross-vendor (optional):** if the OmniRoute app is running and lyopz asks for other vendors (GPT, Gemini, Grok…), run the bundled script instead of subagents. It does all three stages through OmniRoute's OpenAI-compatible endpoint:
+```
+python ~/.claude/skills/llm-council/council.py "the question" --models <id> <id> <id> --chairman <id>
+```
+`--list-models` shows what's connected; defaults are in `council.json`. It reads the key from the `COUNCIL_API_KEY` environment variable only. If that isn't set, ask lyopz to set it himself (`$env:COUNCIL_API_KEY = "..."`); don't ask for the key in chat or write it to a file. Pick models from different providers for a real spread of opinions.
 
 ## Stage 1 — First answers
 
