@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-20** — Added kepano/obsidian-skills (6 Obsidian skills). 111 skills.
 - **2026-10-20** — Added emilkowalski/skills (15 motion/UI-polish skills). 105 skills.
 - **2026-10-18** — Cleaned agents (75 left: dropped migration docs, test-long-runner, 7 duplicates). Added `reviews/AGENT_ROUTING.md` (which agent for which task), imported from ~/.claude/CLAUDE.md. Commits now use lyopz's GitHub noreply email. Old commits still carry his real email; history rewrite pending his OK.
 - **2026-10-18** — Added `llm-council` (own skill based on karpathy/llm-council's method; upstream app not installed: no license, needs OpenRouter key). Runs on Claude subagents, optional OmniRoute for other vendors. 90 skills.
