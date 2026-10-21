@@ -2,12 +2,21 @@
 
 Load this in Step 6, or whenever the user asks for the brain, the file map, the "neural map", or to restyle it. It turns `graphify-out/graph.json` into `graphify-out/brain.html`, a map drawn like a fruit-fly connectome. Each folder is a dense region of nerve fibres, each file is a small node inside its folder, and signals fire along the links between files. The design is fixed in `templates/brain.html`; reuse it as is. Do not redesign it per project.
 
+![The brain built from a 61-file React app: folders as nerve regions, files as nodes, the file menu on the left](../assets/brain-example.jpg)
+
+Selecting a file lights up its links and opens a card that says why each one exists:
+
+![The brain with Inspector.tsx selected, its links lit and its Depends on and Used by lists in the card](../assets/brain-example-selected.jpg)
+
+The screenshots live in `assets/`. Retake them after a visible design change.
+
 ## Files
 
 | File | What it is |
 |:--|:--|
 | `scripts/brain.py` | Folds the symbol graph into files and links and fills the template. Standard library only. |
 | `templates/brain.html` | The page: styles, brain growth, rendering and interaction, in plain canvas JavaScript with no libraries. Placeholders `__GRAPH_DATA__` and `__PROJECT_NAME__`. |
+| `assets/brain-example*.jpg` | Example screenshots shown above. |
 | `purposes.json` (per project) | Optional `{"path/to/file": "one-line purpose"}`. Kept in the project, not in this skill. |
 
 ## Apply it to a project

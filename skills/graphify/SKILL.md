@@ -609,6 +609,8 @@ graphify export html  # auto-aggregates to community view if graph > 5000 nodes
 
 Then build **the brain** (always, unless `--no-viz`): a connectome-style map where each folder is a dense region of nerve fibres, each file is a small node inside it, nerve bundles join folders whose files depend on each other, and signals fire along the links. A file menu on the side lists every file by folder, and a card says why each link exists. Follow `references/brain.md`, which covers writing missing file purposes, the build command and the fixed design. Do not restyle it per project. With `--brain-only`, skip Steps 1-6 except this one and rebuild the page from the existing `graphify-out/graph.json`.
 
+![Example of the brain](assets/brain-example.jpg)
+
 ### Steps 6b-8 - Wiki, Neo4j, FalkorDB, SVG, GraphML, MCP, benchmark (only on their flags)
 
 These run only when their flag is present (`--wiki`, `--neo4j`/`--neo4j-push`, `--falkordb`/`--falkordb-push`, `--svg`, `--graphml`, `--mcp`) or, for the token-reduction benchmark, when `total_words` exceeds 5,000. A default run with no export flags skips all of them. See `references/exports.md` for each one. Run any `--wiki` export before Step 9 cleanup so `.graphify_labels.json` is still available.
