@@ -10,7 +10,8 @@ Reference: https://developers.facebook.com/documentation/development/permissions
 
 | Permission or feature | Used by The Brain | What it allows | Writes? |
 | --- | --- | --- | --- |
-| `instagram_basic` | yes | read the owner's Instagram professional account profile and media | no |
+| `instagram_business_basic` (Instagram login route, token from the app dashboard) | yes | read the owner's own account: username, follower and post counts, own posts with captions and counts | no |
+| `instagram_basic` (Facebook login route) | yes | read the owner's Instagram professional account profile and media | no |
 | `pages_show_list` | yes | list the Facebook Page the Instagram account is linked to | no |
 | `pages_read_engagement` | yes | read that Page's metadata (needed to reach the linked Instagram account) | no |
 | Instagram Public Content Access (feature, App Review) | yes | hashtag search: `ig_hashtag_search`, `top_media`, `recent_media`; captions, counts, links; 30 hashtags per 7 days | no |
@@ -23,6 +24,11 @@ Reference: https://developers.facebook.com/documentation/development/permissions
 | `pages_manage_posts`, `pages_manage_engagement`, `pages_manage_metadata` | never | post, comment, change the Page | yes |
 | `pages_read_user_content` | never | read and delete user comments on the Page | partly |
 | `business_management` | never | Business Manager and ad accounts | yes |
+
+Two token kinds exist. The dashboard's "API setup with Instagram login" token (`instagram_business_basic`,
+host graph.instagram.com) sees the owner's own account only; Meta offers no hashtag search on it. Hashtag
+search needs the Facebook login route (`instagram_basic` + `pages_show_list` + Instagram Public Content
+Access, host graph.facebook.com). The Brain accepts either and uses both read-only.
 
 Instagram's API has no "save to collection" endpoint, so a meme found on Instagram is kept as its
 info (caption, counts, link, licence) in the memez folder on the owner's PC, never as a repost or a
