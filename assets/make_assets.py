@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("111", "skills"), ("75", "agents"), ("159", "commands"), ("10", "sources")]
+STATS = [("113", "skills"), ("75", "agents"), ("159", "commands"), ("12", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -21,11 +21,13 @@ CORE = [
         ("ponytail-debt", "Lists shortcuts taken so you fix them later"),
         ("debugging-and-error-recovery", "Finds why something broke, fixes the cause"),
         ("security-and-hardening", "Finds ways hackers could get in, closes them"),
+        ("optimization", "Makes slow code fast, measured not guessed"),
     ]),
     ("DESIGN", "Make it look good", [
         ("ui-ux-pro-max", "Huge library of colors, fonts and layouts"),
         ("frontend-ui-engineering", "Builds pages that work on every screen"),
         ("ui-styling", "Styling, with 29 font families included"),
+        ("design-taste-frontend", "Art direction so sites don't look generic"),
         ("design", "Logos, icons, mockups and social images"),
         ("design-system", "Keeps colors and buttons the same everywhere"),
         ("brand", "Sets your brand's look and voice"),
