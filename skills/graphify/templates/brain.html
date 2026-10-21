@@ -1,0 +1,642 @@
+<title>__PROJECT_NAME__ · the brain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: a file menu docks left; the brain fills the rest. Each folder is a
+   dense tangle of nerve fibres in its colour (no outline: the shape comes from
+   density alone), nerve bundles join folders whose files depend on each other,
+   and every file is a small node inside its folder. Signals fire along the
+   links. On phones the menu drops below the brain. */
+:root {
+  color-scheme: dark;
+  --void: #020308;          /* page ground */
+  --deep: #0a0f1f;          /* centre glow, raised surfaces */
+  --panel: #070b16;
+  --panel-2: #0e1426;
+  --glass: rgba(9, 13, 28, 0.9);
+  --line: rgba(130, 160, 255, 0.15);
+  --line-strong: rgba(130, 160, 255, 0.3);
+  --ink: #e7ecff;           /* primary text */
+  --ink-dim: #a0abd0;       /* secondary text */
+  --ink-faint: #64709a;     /* captions */
+  --synapse: #7cf0ff;       /* single accent: focus, selection */
+  --k-imports: #5ad2ff;
+  --k-calls: #b28cff;
+  --k-types: #ffc46b;
+  --k-tests: #78f7b0;
+  --k-docs: #ff7ad6;
+  --font-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+  --menu-w: 300px;
+}
+html, body { height: 100%; margin: 0; }
+body { background: var(--void); color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; overflow: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--synapse); outline-offset: 2px; border-radius: 6px; }
+.app { height: 100%; display: grid; grid-template-columns: var(--menu-w) minmax(0, 1fr); }
+
+/* Menu */
+.menu { display: grid; grid-template-rows: auto auto 1fr; min-height: 0; background: var(--panel); border-right: 1px solid var(--line); padding-left: env(safe-area-inset-left, 0px); }
+.brand { padding: 14px 14px 8px; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: .01em; }
+.brand h1 span { color: var(--synapse); font-weight: 500; }
+.brand .meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.search { position: relative; margin: 0 12px 8px; }
+.search input { width: 100%; padding: 7px 30px 7px 32px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); outline: none; }
+.search input:focus { border-color: var(--synapse); box-shadow: 0 0 0 3px rgba(124,240,255,.12); }
+.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; stroke: var(--ink-faint); }
+.search kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; }
+.list { overflow: auto; padding: 0 6px 12px; border-top: 1px solid var(--line); }
+.list section { margin-top: 6px; }
+.list h2 { display: flex; align-items: center; gap: 7px; width: 100%; margin: 0; padding: 7px 6px 5px; background: none; border: 0; text-align: left; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.list h2 button { all: unset; display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; cursor: pointer; border-radius: 6px; }
+.list h2 button:focus-visible { outline: 2px solid var(--synapse); outline-offset: 2px; }
+.list h2 i { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 7px currentColor; flex: none; }
+.list h2 .n { margin-left: auto; color: var(--ink-faint); font-weight: 400; letter-spacing: 0; }
+.list h2 .chev { color: var(--ink-faint); transition: transform .15s; }
+.list section.closed .chev { transform: rotate(-90deg); }
+.list section.closed ul { display: none; }
+.list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.file { display: flex; gap: 8px; align-items: flex-start; width: 100%; padding: 4px 6px 4px 8px; background: none; border: 1px solid transparent; border-radius: 7px; text-align: left; }
+.file:hover { background: rgba(124,240,255,.06); }
+.file.sel { border-color: var(--synapse); background: rgba(124,240,255,.09); }
+.file .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex: none; }
+.file .tx { display: grid; min-width: 0; flex: 1; }
+.file .nm { font-family: var(--font-mono); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file .rl { font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file .dg { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.none { padding: 10px 8px; color: var(--ink-faint); font-size: 13px; }
+
+/* Brain */
+main { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, var(--deep) 0%, var(--void) 75%); cursor: grab; touch-action: none; user-select: none; }
+main.dragging { cursor: grabbing; }
+canvas { position: absolute; inset: 0; display: block; }
+.tip { position: absolute; transform: translate(-50%, -100%); pointer-events: none; background: var(--glass); border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; white-space: nowrap; max-width: 360px; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 6px 20px rgba(0,0,0,.4); z-index: 3; }
+.tip b { font-family: var(--font-mono); font-weight: 500; }
+.tip div { color: var(--ink-dim); font-size: 12px; }
+.card { position: absolute; right: max(12px, env(safe-area-inset-right, 0px)); top: 12px; width: min(380px, calc(100% - 24px)); max-height: calc(100% - 80px); overflow: auto; background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px 14px; box-shadow: 0 12px 34px rgba(0,0,0,.5); z-index: 4; cursor: default; user-select: text; }
+.card header { display: flex; align-items: center; gap: 8px; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.card .x { margin-left: auto; background: none; border: 1px solid var(--line); border-radius: 7px; width: 26px; height: 26px; display: grid; place-items: center; color: var(--ink-dim); }
+.card h3 { margin: 4px 0 2px; font-family: var(--font-mono); font-weight: 500; font-size: 16px; word-break: break-all; }
+.card .path { display: flex; gap: 6px; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint); word-break: break-all; }
+.card .path button { flex: none; background: none; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; padding: 1px 7px; color: var(--ink-dim); }
+.card p { margin: 8px 0; color: var(--ink-dim); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0; }
+.stats div { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 7px; }
+.stats b { display: block; font-family: var(--font-mono); font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 11px; color: var(--ink-faint); }
+.card h4 { margin: 12px 0 4px; font-size: 11px; font-family: var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
+.rel { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rel button { display: grid; gap: 1px; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 7px; padding: 4px 6px; }
+.rel button:hover { background: rgba(124,240,255,.06); border-color: var(--line); }
+.rel .nm { font-family: var(--font-mono); font-size: 12.5px; }
+.rel .why { font-size: 12px; color: var(--ink-faint); }
+.badge { display: inline-block; margin-left: 6px; font-family: var(--font-mono); font-size: 10.5px; padding: 0 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .9; }
+.ext { font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); }
+.dock { position: absolute; left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom, 0px)); display: flex; align-items: flex-end; gap: 10px; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink-dim); background: rgba(7,11,22,.8); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.tools { margin-left: auto; display: flex; gap: 6px; pointer-events: auto; }
+.btn { background: var(--glass); border: 1px solid var(--line-strong); border-radius: 8px; padding: 5px 10px; font-size: 12.5px; color: var(--ink); white-space: nowrap; }
+.btn:hover { border-color: var(--synapse); }
+.btn.icon { width: 30px; padding: 5px 0; font-family: var(--font-mono); }
+@media (max-width: 760px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 42%; }
+  .menu { order: 2; border-right: 0; border-top: 1px solid var(--line); padding-left: 0; }
+  .brand { padding: 10px 14px 6px; }
+  .legend { display: none; }
+  .card { max-height: calc(100% - 64px); }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <aside class="menu" aria-label="Files by folder">
+    <div class="brand">
+      <h1>The brain <span>· __PROJECT_NAME__</span></h1>
+      <div class="meta" id="meta"></div>
+    </div>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Find a file, symbol or purpose" aria-label="Find a file">
+      <kbd aria-hidden="true">/</kbd>
+    </label>
+    <div class="list" id="list"></div>
+  </aside>
+  <main id="stage">
+    <canvas id="nerves" aria-hidden="true"></canvas>
+    <canvas id="live" role="img" aria-label="The brain: folders as nerve regions, files as nodes, and signals firing along the links between files. Use the file menu to select a file."></canvas>
+    <div class="tip" id="tip" hidden></div>
+    <aside class="card" id="card" hidden aria-live="polite"></aside>
+    <div class="dock">
+      <div class="legend" aria-label="Legend">
+        <span><i style="background:#fff;box-shadow:0 0 6px #9fe6ff"></i>bigger nodes touch more files</span>
+        <span><i style="background:#5ad2ff"></i>imports</span>
+        <span><i style="background:#b28cff"></i>calls</span>
+        <span><i style="background:#ffc46b"></i>types</span>
+        <span><i style="background:#78f7b0"></i>tests</span>
+        <span><i style="background:#ff7ad6"></i>docs</span>
+      </div>
+      <div class="tools">
+        <button class="btn" id="mode" type="button" title="Switch how the nerves move">Nerves: firing</button>
+        <button class="btn icon" id="zin" type="button" aria-label="Zoom in">+</button>
+        <button class="btn icon" id="zout" type="button" aria-label="Zoom out">−</button>
+        <button class="btn" id="fit" type="button" title="Fit the brain to the screen">Fit</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script id="graph-data" type="application/json">__GRAPH_DATA__</script>
+<script>
+(() => {
+'use strict';
+const DATA = JSON.parse(document.getElementById('graph-data').textContent);
+const css = getComputedStyle(document.documentElement);
+const tok = n => css.getPropertyValue(n).trim();
+const KIND = { imports: tok('--k-imports'), calls: tok('--k-calls'), types: tok('--k-types'), tests: tok('--k-tests'), docs: tok('--k-docs') };
+const VERB = { imports: 'imports', calls: 'calls', types: 'uses types', tests: 'tests', docs: 'documents' };
+const PALETTE = ['#5ad2ff', '#b28cff', '#ff7ad6', '#ffc46b', '#78f7b0', '#7f9cff', '#ff9a74', '#4ff0d0', '#e0a8ff', '#c8f06e', '#ff6f9c', '#9fd4ff', '#f5e17a', '#8affd9'];
+const GROUP_LABEL = { root: 'project root', src: 'app shell' };
+const W = 1600, H = 900, CX = W / 2, CY = H / 2;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = { get(k) { try { return localStorage.getItem('brain:' + k); } catch { return null; } }, set(k, v) { try { localStorage.setItem('brain:' + k, v); } catch {} } };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ---------- seeded helpers ----------
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function tint(hex, deg, dl = 0) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex); if (!m) return hex;
+  const n = parseInt(m[1], 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let l = (max + min) / 2; const s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+  let h = d ? (max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4) * 60 : 0;
+  h = ((h + deg) % 360 + 360) % 360; l = Math.max(0, Math.min(1, l + dl));
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), o = l - c / 2;
+  const [R, G, B] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  const to = v => Math.round((v + o) * 255).toString(16).padStart(2, '0');
+  return '#' + to(R) + to(G) + to(B);
+}
+function curve(a, c, b, n = 18) { const out = []; for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; out.push(u * u * a.x + 2 * u * t * c.x + t * t * b.x, u * u * a.y + 2 * u * t * c.y + t * t * b.y); } return out; }
+function reversed(p) { const out = []; for (let i = p.length - 2; i >= 0; i -= 2) out.push(p[i], p[i + 1]); return out; }
+function at(p, t) { const n = p.length / 2 - 1, f = Math.max(0, Math.min(n, t * n)), i = Math.floor(f), u = f - i, j = Math.min(n, i + 1); return { x: p[i * 2] + (p[j * 2] - p[i * 2]) * u, y: p[i * 2 + 1] + (p[j * 2 + 1] - p[i * 2 + 1]) * u }; }
+const inside = (r, x, y) => Math.hypot((x - r.x) / r.rx, (y - r.y) / r.ry);
+
+// ---------- data ----------
+const files = DATA.files, links = DATA.links;
+const F = Object.fromEntries(files.map(f => [f.id, f]));
+const groups = DATA.groups.map((g, i) => ({ ...g, color: PALETTE[i % PALETTE.length], name: GROUP_LABEL[g.id] || g.id }));
+const G = Object.fromEntries(groups.map(g => [g.id, g]));
+const outOf = {}, inOf = {};
+for (const l of links) { (outOf[l.s] ||= []).push(l); (inOf[l.t] ||= []).push(l); }
+const pairW = new Map();
+for (const l of links) {
+  const a = F[l.s]?.group, b = F[l.t]?.group; if (!a || !b || a === b) continue;
+  const k = [a, b].sort().join('|'); pairW.set(k, (pairW.get(k) || 0) + l.w);
+}
+const degSorted = files.map(f => f.degree).sort((a, b) => b - a);
+const importantMin = Math.max(2, degSorted[Math.floor(degSorted.length * 0.12)] || 0);
+
+// ---------- grow the brain ----------
+// Slots in a fly-brain arrangement: two large optic lobes at the sides, a central body, crown and base.
+const SLOTS = [[-0.74, 0.04], [0.74, 0.04], [-0.25, 0.02], [0.25, 0.02], [0, -0.58], [-0.34, -0.5], [0.34, -0.5], [0, 0.52], [-0.36, 0.5], [0.36, 0.5], [-0.55, -0.42], [0.55, -0.42], [-0.56, 0.46], [0.56, 0.46]];
+const rand = rng(7 + groups.length * 101);
+const total = groups.reduce((s, g) => s + g.count, 0) || 1;
+const scale = Math.sqrt((0.42 * W * H) / (Math.PI * total));
+const regions = groups.map((g, i) => {
+  const s = SLOTS[i] || [Math.cos(i * 2.4) * 0.7, Math.sin(i * 2.4) * 0.6];
+  const big = i < 2 && groups.length > 3;
+  const r = Math.max(48, Math.min(300, scale * Math.sqrt(g.count)));
+  const rx = big ? r * 0.86 : r * 1.13, ry = big ? rx * 1.34 : rx * 0.74;
+  return { ...g, x: CX + s[0] * W * 0.44, y: CY + s[1] * H * 0.6, ax: CX + s[0] * W * 0.44, ay: CY + s[1] * H * 0.6, rx, ry, rim: big };
+});
+// nudge regions apart until they just touch, so the brain reads as one mass
+for (let it = 0; it < 260; it++) {
+  for (let i = 0; i < regions.length; i++) for (let j = i + 1; j < regions.length; j++) {
+    const a = regions[i], b = regions[j], dx = b.x - a.x, dy = b.y - a.y;
+    const d = Math.hypot(dx / (a.rx + b.rx), dy / (a.ry + b.ry));
+    if (d < 0.9 && d > 0) { const push = (0.9 - d) * 0.5, len = Math.hypot(dx, dy) || 1; const mx = dx / len * push * (a.rx + b.rx) * 0.5, my = dy / len * push * (a.ry + b.ry) * 0.5; a.x -= mx; a.y -= my; b.x += mx; b.y += my; }
+  }
+  for (const r of regions) { r.x += (r.ax - r.x) * 0.02; r.y += (r.ay - r.y) * 0.02; }
+}
+const R = Object.fromEntries(regions.map(r => [r.id, r]));
+
+// files sit in their folder on a sunflower spiral, the most connected in the middle
+const node = {};
+for (const r of regions) {
+  const list = files.filter(f => f.group === r.id).sort((a, b) => b.degree - a.degree || a.id.localeCompare(b.id));
+  const turn = (hash(r.id) % 628) / 100;
+  list.forEach((f, i) => {
+    const d = Math.sqrt((i + 0.5) / list.length) * 0.8, a = i * 2.39996 + turn;
+    node[f.id] = { f, x: r.x + Math.cos(a) * r.rx * d, y: r.y + Math.sin(a) * r.ry * d, r: 1.3 + 0.62 * Math.sqrt(f.degree), color: tint(r.color, 0, 0.12), important: f.degree >= importantMin, region: r };
+  });
+}
+const nodes = Object.values(node);
+
+// fibres: random walks that bend back inside their folder
+const fibres = [];
+const fibreBudget = Math.min(1, 7000 / regions.reduce((s, r) => s + 70 + 14 * r.count, 0));
+for (const r of regions) {
+  const count = Math.round(Math.min(560, 70 + 14 * r.count) * fibreBudget * (r.rim ? 1.3 : 1));
+  const step = Math.min(r.rx, r.ry) * 0.075;
+  for (let i = 0; i < count; i++) {
+    const fine = rand() < 0.7, a0 = rand() * Math.PI * 2, d0 = Math.sqrt(rand()) * 0.95;
+    let x = r.x + Math.cos(a0) * r.rx * d0, y = r.y + Math.sin(a0) * r.ry * d0, a = rand() * Math.PI * 2, turn = (rand() - 0.5) * 0.3;
+    const pts = [x, y], st = step * (fine ? 0.8 : 1.4), steps = 10 + Math.floor(rand() * 26);
+    for (let k = 0; k < steps; k++) {
+      turn = turn * 0.8 + (rand() - 0.5) * 0.7; a += turn;
+      let nx = x + Math.cos(a) * st, ny = y + Math.sin(a) * st;
+      if (inside(r, nx, ny) > (rand() < 0.12 ? 1.1 : 1)) { a = Math.atan2(r.y - y, r.x - x) + (rand() - 0.5) * 1.2; nx = x + Math.cos(a) * st; ny = y + Math.sin(a) * st; }
+      x = nx; y = ny; pts.push(x, y);
+    }
+    fibres.push({ r, pts, color: tint(r.color, (rand() - 0.5) * 70, (rand() - 0.5) * 0.2), width: fine ? 0.5 + rand() * 0.5 : 1 + rand() * 0.9, alpha: fine ? 0.22 + rand() * 0.25 : 0.35 + rand() * 0.3 });
+  }
+}
+
+// tracts: nerve bundles between folders whose files depend on each other, plus faint ones to near neighbours
+const pairs = new Map(pairW);
+for (const a of regions) for (const b of regions.filter(x => x !== a).sort((p, q) => Math.hypot(p.x - a.x, p.y - a.y) - Math.hypot(q.x - a.x, q.y - a.y)).slice(0, 2)) { const k = [a.id, b.id].sort().join('|'); if (!pairs.has(k)) pairs.set(k, 0); }
+const tracts = [...pairs].map(([k, w]) => {
+  const [ia, ib] = k.split('|'), A = R[ia], B = R[ib], n = 4 + Math.min(16, Math.round(Math.sqrt(w) * 2)), cv = [];
+  for (let i = 0; i < n; i++) {
+    const pa = { x: A.x + (rand() - 0.5) * A.rx * 0.9, y: A.y + (rand() - 0.5) * A.ry * 0.7 }, pb = { x: B.x + (rand() - 0.5) * B.rx * 0.9, y: B.y + (rand() - 0.5) * B.ry * 0.7 };
+    const mx = (pa.x + pb.x) / 2, my = (pa.y + pb.y) / 2;
+    cv.push(curve(pa, { x: mx + (CX - mx) * 0.25 + (rand() - 0.5) * 40, y: my + (CY - my) * 0.35 - 30 + (rand() - 0.5) * 40 }, pb, 24));
+  }
+  return { a: ia, b: ib, w, curves: cv };
+});
+
+// each file link is its own nerve, bowed towards the middle of the brain
+for (const l of links) {
+  const A = node[l.s], B = node[l.t]; if (!A || !B) { l.path = null; continue; }
+  const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2, same = A.region === B.region, len = Math.hypot(B.x - A.x, B.y - A.y) || 1;
+  const j = ((hash(l.s + l.t) % 1000) / 1000 - 0.5);
+  const c = same ? { x: mx - (B.y - A.y) / len * len * 0.25 * (j > 0 ? 1 : -1), y: my + (B.x - A.x) / len * len * 0.25 * (j > 0 ? 1 : -1) } : { x: mx + (CX - mx) * 0.3 + j * 60, y: my + (CY - my) * 0.3 + j * 60 };
+  l.path = curve(A, c, B, 18);
+}
+
+// optic-lobe rims: the bright beaded edge seen in connectome maps
+const rim = [];
+for (const r of regions.filter(x => x.rim)) {
+  const outer = r.x < CX ? -1 : 1;
+  for (let i = 0; i < 220; i++) {
+    const a = i / 220 * Math.PI * 2; if (Math.cos(a) * outer < -0.15) continue;
+    const k = 1 + (rand() - 0.5) * 0.04;
+    rim.push({ r, x: r.x + Math.cos(a) * r.rx * k, y: r.y + Math.sin(a) * r.ry * k, s: 1.6 + rand() * 1.8, color: i % 3 === 0 ? '#3d5bff' : '#ff3d8b' });
+    if (i % 2 === 0) rim.push({ r, x: r.x + Math.cos(a) * r.rx * 0.92, y: r.y + Math.sin(a) * r.ry * 0.92, s: 1.2 + rand(), color: '#4a63ff' });
+  }
+}
+
+// ---------- state ----------
+const stage = $('stage'), base = $('nerves'), live = $('live');
+const bctx = base.getContext('2d'), lctx = live.getContext('2d');
+let cam = { x: 0, y: 0, k: 1 }, size = { w: 800, h: 600 }, dpr = Math.min(2, devicePixelRatio || 1);
+let hoverFile = null, hoverGroup = null, menuFile = null, selected = null;
+const MODES = ['firing', 'calm', 'still'];
+let mode = store.get('mode') || (reduceMotion ? 'still' : 'firing');
+if (!MODES.includes(mode)) mode = 'firing';
+let sparks = [], flashes = new Map(), dirty = true;
+
+const focusFile = () => menuFile || hoverFile || selected;
+const focusGroup = () => { const f = focusFile(); return f ? F[f].group : hoverGroup; };
+function neighbours(id) { const s = new Set([id]); for (const l of outOf[id] || []) s.add(l.t); for (const l of inOf[id] || []) s.add(l.s); return s; }
+
+// ---------- camera ----------
+function fit(animate) {
+  const xs = regions.flatMap(r => [r.x - r.rx, r.x + r.rx]), ys = regions.flatMap(r => [r.y - r.ry, r.y + r.ry]);
+  if (!xs.length) return;
+  const minX = Math.min(...xs) - 30, maxX = Math.max(...xs) + 30, minY = Math.min(...ys) - 40, maxY = Math.max(...ys) + 50;
+  const k = Math.min(size.w / (maxX - minX), size.h / (maxY - minY));
+  setCam({ k, x: (size.w - (maxX - minX) * k) / 2 - minX * k, y: (size.h - (maxY - minY) * k) / 2 - minY * k }, animate);
+}
+let glide = null;
+function setCam(to, animate) {
+  if (!animate || reduceMotion) { cam = to; glide = null; dirty = true; return; }
+  glide = { from: { ...cam }, to, t0: performance.now() };
+}
+function centreOn(id) {
+  const n = node[id]; if (!n) return;
+  const k = Math.max(cam.k, 1.4);
+  const offset = size.w > 760 ? Math.min(190, size.w * 0.15) : 0;
+  setCam({ k, x: size.w / 2 - offset - n.x * k, y: size.h / 2 - n.y * k }, true);
+}
+function resize() {
+  size = { w: stage.clientWidth, h: stage.clientHeight };
+  dpr = Math.min(2, devicePixelRatio || 1);
+  for (const c of [base, live]) { c.width = Math.round(size.w * dpr); c.height = Math.round(size.h * dpr); c.style.width = size.w + 'px'; c.style.height = size.h + 'px'; }
+  dirty = true;
+}
+
+// ---------- drawing ----------
+function stroke(ctx, p) { ctx.beginPath(); ctx.moveTo(p[0], p[1]); for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i], p[i + 1]); ctx.stroke(); }
+function drawNerves() {
+  const ctx = bctx, fg = focusGroup();
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, base.width, base.height);
+  ctx.setTransform(dpr * cam.k, 0, 0, dpr * cam.k, dpr * cam.x, dpr * cam.y);
+  ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const dim = id => (fg && fg !== id ? 0.22 : 1);
+  for (const r of regions) {
+    const g = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, Math.max(r.rx, r.ry));
+    g.addColorStop(0, r.color + '2e'); g.addColorStop(0.7, r.color + '12'); g.addColorStop(1, r.color + '00');
+    ctx.globalAlpha = dim(r.id); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(r.x, r.y, r.rx, r.ry, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  for (const t of tracts) {
+    const A = R[t.a], B = R[t.b];
+    for (const p of t.curves) {
+      const g = ctx.createLinearGradient(p[0], p[1], p[p.length - 2], p[p.length - 1]); g.addColorStop(0, A.color); g.addColorStop(1, B.color);
+      ctx.strokeStyle = g; ctx.globalAlpha = Math.min(0.5, 0.12 + Math.sqrt(t.w) * 0.04) * (fg && fg !== t.a && fg !== t.b ? 0.25 : 1);
+      ctx.lineWidth = t.w ? 1.1 : 0.7; stroke(ctx, p);
+    }
+  }
+  for (const f of fibres) { ctx.globalAlpha = f.alpha * dim(f.r.id); ctx.strokeStyle = f.color; ctx.lineWidth = f.width; stroke(ctx, f.pts); }
+  for (const d of rim) { ctx.globalAlpha = 0.75 * (fg ? 0.35 : 1); ctx.fillStyle = d.color; ctx.beginPath(); ctx.arc(d.x, d.y, d.s, 0, Math.PI * 2); ctx.fill(); }
+  // every file link as a faint nerve at rest
+  ctx.strokeStyle = '#7a96ff';
+  for (const l of links) {
+    if (!l.path) continue;
+    const off = fg && F[l.s].group !== fg && F[l.t].group !== fg;
+    ctx.globalAlpha = Math.min(0.16, 0.04 + l.w * 0.01) * (off ? 0.2 : 1); ctx.lineWidth = Math.min(1.6, 0.5 + l.w * 0.08); stroke(ctx, l.path);
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+}
+
+function drawLive(now) {
+  const ctx = lctx, ff = focusFile(), fg = focusGroup(), near = ff ? neighbours(ff) : null;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, live.width, live.height);
+  ctx.setTransform(dpr * cam.k, 0, 0, dpr * cam.k, dpr * cam.x, dpr * cam.y);
+  ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+  // the focused file's links, lit in their kind colour
+  if (ff) {
+    for (const l of [...(outOf[ff] || []), ...(inOf[ff] || [])]) {
+      if (!l.path) continue;
+      ctx.strokeStyle = KIND[l.primary] || '#7a96ff';
+      ctx.globalAlpha = 0.18; ctx.lineWidth = 5 / cam.k + l.w * 0.2; stroke(ctx, l.path);
+      ctx.globalAlpha = 0.9; ctx.lineWidth = 1.3 / cam.k + l.w * 0.05; stroke(ctx, l.path);
+    }
+  }
+  // signals with a short tail; arriving ones flash the file and may fire onward
+  const keep = [];
+  for (const s of sparks) {
+    s.t += s.speed;
+    if (s.t >= 1) {
+      if (s.land) { flashes.set(s.land, now); if (s.energy > 0.3 && mode === 'firing' && Math.random() < 0.8) fire(s.land, s.energy * 0.62); }
+      continue;
+    }
+    keep.push(s);
+    const head = at(s.path, s.t);
+    ctx.globalAlpha = 0.55; ctx.strokeStyle = s.color; ctx.lineWidth = s.size * 0.9;
+    ctx.beginPath(); let first = true;
+    for (let i = 0; i <= 6; i++) { const p = at(s.path, Math.max(0, s.t - i * s.tail / 6)); if (first) { ctx.moveTo(p.x, p.y); first = false; } else ctx.lineTo(p.x, p.y); }
+    ctx.stroke();
+    ctx.globalAlpha = 1; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(head.x, head.y, s.size * 0.7, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 0.35; ctx.fillStyle = s.color; ctx.beginPath(); ctx.arc(head.x, head.y, s.size * 2.2, 0, Math.PI * 2); ctx.fill();
+  }
+  sparks = keep;
+  // files: a glow, a core and, for the most connected, a white nucleus
+  for (const n of nodes) {
+    const on = near ? near.has(n.f.id) : fg ? n.f.group === fg : true;
+    const fl = flashes.get(n.f.id), age = fl ? (now - fl) / 700 : 1;
+    if (fl && age >= 1) flashes.delete(n.f.id);
+    const boost = age < 1 ? 1 - age : 0;
+    ctx.globalAlpha = (on ? 0.16 : 0.04) + boost * 0.5; ctx.fillStyle = n.color;
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r * (2.2 + boost * 2.5), 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = on ? 1 : 0.22; ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+    if (n.important || boost > 0.3) { ctx.fillStyle = '#ffffff'; ctx.globalAlpha = (on ? 0.95 : 0.25); ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 0.42, 0, Math.PI * 2); ctx.fill(); }
+    if (n.f.id === selected || n.f.id === ff) { ctx.globalAlpha = 1; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.4 / cam.k; ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 4 / cam.k, 0, Math.PI * 2); ctx.stroke(); }
+  }
+  // labels in screen space so they stay readable at any zoom, collision-checked
+  ctx.globalCompositeOperation = 'source-over'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.textAlign = 'center';
+  const boxes = [];
+  const free = (x, y, w, h) => { for (const b of boxes) if (x < b[0] + b[2] && x + w > b[0] && y < b[1] + b[3] && y + h > b[1]) return false; boxes.push([x, y, w, h]); return true; };
+  ctx.font = '600 11px "IBM Plex Mono", ui-monospace, monospace';
+  for (const r of regions) {
+    const label = r.name.toUpperCase().split('').join(' ');
+    const x = cam.x + r.x * cam.k, y = cam.y + (r.y - r.ry * 0.86) * cam.k, w = ctx.measureText(label).width + 14;
+    if (!free(x - w / 2, y - 11, w, 17) && r.id !== fg) continue; // crowded on small screens: zoom in to see the rest
+    ctx.globalAlpha = fg && fg !== r.id ? 0.3 : 0.92; ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x - w / 2, y - 11, w, 17);
+    ctx.fillStyle = tint(r.color, 0, 0.18); ctx.fillText(label, x, y + 2);
+  }
+  ctx.font = '500 11.5px "IBM Plex Mono", ui-monospace, monospace';
+  const wanted = [];
+  if (selected) wanted.push(selected); if (ff && ff !== selected) wanted.push(ff);
+  if (near) for (const id of near) if (!wanted.includes(id)) wanted.push(id);
+  const rest = nodes.filter(n => !near && (cam.k > 1.6 || n.important) && (!fg || n.f.group === fg)).sort((a, b) => b.f.degree - a.f.degree);
+  for (const n of rest) if (!wanted.includes(n.f.id)) wanted.push(n.f.id);
+  for (const id of wanted.slice(0, 160)) {
+    const n = node[id]; if (!n) continue;
+    const x = cam.x + n.x * cam.k, y = cam.y + (n.y + n.r) * cam.k + 13, w = ctx.measureText(n.f.name).width + 8;
+    if (x < -w || x > size.w + w || y < 0 || y > size.h + 20) continue;
+    if (!free(x - w / 2, y - 11, w, 15) && id !== selected && id !== ff) continue;
+    ctx.globalAlpha = 1; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(2,3,8,.85)'; ctx.strokeText(n.f.name, x, y);
+    ctx.fillStyle = id === selected || id === ff ? '#ffffff' : '#c9d2f2'; ctx.fillText(n.f.name, x, y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ---------- signals ----------
+function sparkAlong(l, forward, energy, fast) {
+  if (!l.path || sparks.length > 220) return;
+  sparks.push({ path: forward ? l.path : reversed(l.path), t: 0, speed: fast ? 0.035 + Math.random() * 0.02 : 0.008, tail: fast ? 0.22 : 0.12, size: fast ? 2.2 : 2.6, color: tint(KIND[l.primary] || '#7a96ff', 0, 0.15), land: forward ? l.t : l.s, energy });
+}
+function fire(id, energy = 1) {
+  if (!node[id]) return false;
+  flashes.set(id, performance.now());
+  const outs = (outOf[id] || []).map(l => [l, true]), ins = (inOf[id] || []).map(l => [l, false]);
+  const pool = [...outs, ...outs, ...ins]; // prefer what it depends on
+  const n = Math.min(pool.length, 2 + Math.floor(Math.random() * 3));
+  for (let i = 0; i < n; i++) { const [l, fwd] = pool[Math.floor(Math.random() * pool.length)]; sparkAlong(l, fwd, energy, true); }
+  return true;
+}
+const weighted = nodes.flatMap(n => Array(Math.min(12, 1 + n.f.degree)).fill(n.f.id));
+const topLinks = [...links].filter(l => l.path).sort((a, b) => b.w - a.w).slice(0, Math.max(6, Math.ceil(links.length * 0.22)));
+const fibresBy = new Map(); for (const f of fibres) (fibresBy.get(f.r.id) || fibresBy.set(f.r.id, []).get(f.r.id)).push(f.pts);
+let nextFire = 0;
+function ambient(now) {
+  if (mode === 'still') return;
+  if (now >= nextFire && weighted.length) {
+    if (mode === 'firing') {
+      const sel = focusFile();
+      fire(sel && Math.random() < 0.35 ? sel : weighted[Math.floor(Math.random() * weighted.length)]);
+      nextFire = now + 140 + Math.random() * 160;
+    } else {
+      const sel = focusFile(), pool = sel ? [...(outOf[sel] || []), ...(inOf[sel] || [])] : topLinks;
+      if (pool.length) sparkAlong(pool[Math.floor(Math.random() * pool.length)], Math.random() < 0.7, 0, false);
+      nextFire = now + 900 + Math.random() * 1200;
+    }
+  }
+  // the folders' own fibres flicker too, busier folders more
+  if (sparks.length < 200) for (const r of regions) {
+    if (Math.random() < (mode === 'firing' ? 0.03 : 0.008) + Math.min(0.06, r.count * 0.002)) {
+      const list = fibresBy.get(r.id); if (!list) continue;
+      sparks.push({ path: list[Math.floor(Math.random() * list.length)], t: 0, speed: 0.02 + Math.random() * 0.02, tail: 0.12, size: 1.5, color: tint(r.color, 0, 0.35) });
+    }
+  }
+}
+
+function frame(now) {
+  if (glide) {
+    const t = Math.min(1, (now - glide.t0) / 450), e = 1 - Math.pow(1 - t, 3);
+    cam = { x: glide.from.x + (glide.to.x - glide.from.x) * e, y: glide.from.y + (glide.to.y - glide.from.y) * e, k: glide.from.k + (glide.to.k - glide.from.k) * e };
+    dirty = true; if (t >= 1) glide = null;
+  }
+  if (dirty) { drawNerves(); dirty = false; }
+  ambient(now);
+  drawLive(now);
+  requestAnimationFrame(frame);
+}
+
+// ---------- menu ----------
+const list = $('list'), q = $('q');
+const collapsed = new Set(files.length > 150 ? groups.slice(3).map(g => g.id) : []);
+function matches(f, term) {
+  if (!term) return true;
+  return [f.name, f.id, f.purpose, f.role, ...(f.symbols || [])].some(s => s && s.toLowerCase().includes(term));
+}
+function renderMenu() {
+  const term = q.value.trim().toLowerCase();
+  let html = '', shown = 0;
+  for (const g of groups) {
+    const fs = files.filter(f => f.group === g.id && matches(f, term)).sort((a, b) => b.degree - a.degree || a.name.localeCompare(b.name));
+    if (!fs.length) continue;
+    shown += fs.length;
+    const closed = collapsed.has(g.id) && !term;
+    html += `<section class="${closed ? 'closed' : ''}" data-group="${esc(g.id)}"><h2 style="color:${g.color}"><button type="button" data-toggle="${esc(g.id)}" aria-expanded="${!closed}"><i style="background:${g.color}"></i>${esc(g.name)}<span class="n">${fs.length}</span><span class="chev" aria-hidden="true">▾</span></button></h2><ul>`;
+    for (const f of fs) html += `<li><button type="button" class="file${f.id === selected ? ' sel' : ''}" data-file="${esc(f.id)}" title="${esc(f.id)}"><span class="dot" style="background:${g.color}"></span><span class="tx"><span class="nm">${esc(f.name)}</span><span class="rl">${esc(f.purpose || f.role)}</span></span><span class="dg" title="Files it touches">${f.degree}</span></button></li>`;
+    html += '</ul></section>';
+  }
+  list.innerHTML = html || `<p class="none">No file matches “${esc(q.value)}”.</p>`;
+  return shown;
+}
+list.addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle]');
+  if (t) { const id = t.dataset.toggle; collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id); renderMenu(); return; }
+  const b = e.target.closest('[data-file]'); if (b) select(b.dataset.file, true);
+});
+list.addEventListener('pointerover', e => {
+  const b = e.target.closest('[data-file]'), s = e.target.closest('[data-group]');
+  const nf = b ? b.dataset.file : null, ng = s ? s.dataset.group : null;
+  if (nf !== menuFile || ng !== hoverGroup) { menuFile = nf; hoverGroup = ng; dirty = true; }
+});
+list.addEventListener('pointerleave', () => { menuFile = null; hoverGroup = null; dirty = true; });
+list.addEventListener('focusin', e => { const b = e.target.closest('[data-file]'); menuFile = b ? b.dataset.file : null; dirty = true; });
+list.addEventListener('focusout', () => { menuFile = null; dirty = true; });
+q.addEventListener('input', renderMenu);
+q.addEventListener('keydown', e => { if (e.key === 'Enter') { const b = list.querySelector('[data-file]'); if (b) select(b.dataset.file, true); } if (e.key === 'Escape') { q.value = ''; renderMenu(); q.blur(); } });
+addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+  else if (e.key === 'Escape' && document.activeElement !== q) select(null);
+});
+
+// ---------- card ----------
+const card = $('card');
+function relRows(ls, dir) {
+  return ls.slice().sort((a, b) => b.w - a.w).map(l => {
+    const other = dir === 'out' ? l.t : l.s, o = F[other]; if (!o) return '';
+    const badges = Object.entries(l.kinds).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span class="badge" style="color:${KIND[k] || '#7a96ff'}">${k} ${n}</span>`).join('');
+    return `<li><button type="button" data-go="${esc(other)}"><span class="nm">${esc(o.name)}${badges}</span><span class="why">${esc(l.why.join('; ') || VERB[l.primary] || '')}</span></button></li>`;
+  }).join('');
+}
+function renderCard() {
+  if (!selected) { card.hidden = true; return; }
+  const f = F[selected], g = G[f.group], outs = outOf[f.id] || [], ins = inOf[f.id] || [];
+  card.innerHTML = `<header><span class="eyebrow" style="color:${g.color}">${esc(f.role)}</span><button class="x" type="button" aria-label="Close" data-close>×</button></header>
+    <h3>${esc(f.name)}</h3>
+    <div class="path"><span>${esc(f.id)}</span><button type="button" data-copy>Copy</button></div>
+    <p>${f.purpose ? esc(f.purpose) : '<span style="color:var(--ink-faint)">No purpose written yet.</span>'}</p>
+    <div class="ext" style="color:var(--ink-faint)">${esc(g.name)}${f.cluster ? ' · ' + esc(f.cluster) : ''}</div>
+    <div class="stats"><div><b>${f.lines}</b><span>lines</span></div><div><b>${f.symbolCount}</b><span>symbols</span></div><div><b>${outs.length}</b><span>depends on</span></div><div><b>${ins.length}</b><span>used by</span></div></div>
+    ${outs.length ? `<h4>Depends on</h4><ul class="rel">${relRows(outs, 'out')}</ul>` : ''}
+    ${ins.length ? `<h4>Used by</h4><ul class="rel">${relRows(ins, 'in')}</ul>` : ''}
+    ${f.external && f.external.length ? `<h4>Packages</h4><div class="ext">${f.external.map(esc).join(', ')}</div>` : ''}`;
+  card.hidden = false;
+}
+card.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) return select(null);
+  if (e.target.closest('[data-copy]')) { try { navigator.clipboard.writeText(selected); e.target.textContent = 'Copied'; } catch {} return; }
+  const go = e.target.closest('[data-go]'); if (go) select(go.dataset.go, true);
+});
+card.addEventListener('pointerover', e => { const go = e.target.closest('[data-go]'); const nf = go ? go.dataset.go : null; if (nf !== hoverFile) { hoverFile = nf; dirty = true; } });
+card.addEventListener('pointerleave', () => { hoverFile = null; dirty = true; });
+for (const ev of ['pointerdown', 'pointerup', 'wheel']) card.addEventListener(ev, e => e.stopPropagation());
+
+function select(id, move) {
+  selected = id && F[id] ? id : null;
+  renderCard(); renderMenu(); dirty = true;
+  if (selected) {
+    if (move) centreOn(selected);
+    if (mode !== 'still') fire(selected, 1.2);
+    const row = list.querySelector(`[data-file="${CSS.escape(selected)}"]`); if (row) row.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+// ---------- pointer ----------
+const tip = $('tip');
+let drag = null;
+const toWorld = e => { const r = stage.getBoundingClientRect(); return { x: (e.clientX - r.left - cam.x) / cam.k, y: (e.clientY - r.top - cam.y) / cam.k }; };
+function hit(e) { const p = toWorld(e); let best = null, bd = Infinity; for (const n of nodes) { const d = Math.hypot(n.x - p.x, n.y - p.y); if (d < n.r + 7 / cam.k && d < bd) { best = n; bd = d; } } return best; }
+function zoomAt(px, py, f) { const k = Math.max(0.2, Math.min(8, cam.k * f)); cam = { k, x: px - (px - cam.x) / cam.k * k, y: py - (py - cam.y) / cam.k * k }; glide = null; dirty = true; }
+const pointers = new Map(); let pinch = null;
+stage.addEventListener('wheel', e => { e.preventDefault(); const r = stage.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+stage.addEventListener('pointerdown', e => {
+  pointers.set(e.pointerId, e); stage.setPointerCapture(e.pointerId);
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), k: cam.k }; drag = null; return; }
+  drag = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y, moved: false };
+});
+stage.addEventListener('pointermove', e => {
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, e);
+  if (pinch && pointers.size === 2) {
+    const [a, b] = [...pointers.values()], r = stage.getBoundingClientRect(), d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+    zoomAt((a.clientX + b.clientX) / 2 - r.left, (a.clientY + b.clientY) / 2 - r.top, (pinch.k * d / pinch.d) / cam.k); return;
+  }
+  if (drag) {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (drag.moved || Math.hypot(dx, dy) > 4) { drag.moved = true; stage.classList.add('dragging'); cam = { ...cam, x: drag.cx + dx, y: drag.cy + dy }; glide = null; dirty = true; tip.hidden = true; return; }
+  }
+  const n = hit(e), id = n ? n.f.id : null;
+  if (id !== hoverFile) { hoverFile = id; dirty = true; }
+  if (n) {
+    const r = stage.getBoundingClientRect();
+    tip.innerHTML = `<b>${esc(n.f.id)}</b><div>${esc(n.f.role)} · touches ${n.f.degree} file${n.f.degree === 1 ? '' : 's'}</div>`;
+    tip.style.left = (e.clientX - r.left) + 'px'; tip.style.top = (e.clientY - r.top - 14) + 'px'; tip.hidden = false;
+  } else tip.hidden = true;
+});
+function endPointer(e) {
+  pointers.delete(e.pointerId); if (pointers.size < 2) pinch = null;
+  stage.classList.remove('dragging');
+  if (drag && !drag.moved && e.type === 'pointerup') { const n = hit(e); select(n ? n.f.id : null, false); }
+  drag = null;
+}
+stage.addEventListener('pointerup', endPointer);
+stage.addEventListener('pointercancel', endPointer);
+stage.addEventListener('pointerleave', () => { tip.hidden = true; if (hoverFile) { hoverFile = null; dirty = true; } });
+
+// ---------- tools ----------
+const modeBtn = $('mode');
+const showMode = () => { modeBtn.textContent = 'Nerves: ' + mode; };
+modeBtn.addEventListener('click', () => { mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length]; store.set('mode', mode); showMode(); if (mode === 'still') sparks = []; });
+$('fit').addEventListener('click', () => fit(true));
+$('zin').addEventListener('click', () => zoomAt(size.w / 2, size.h / 2, 1.25));
+$('zout').addEventListener('click', () => zoomAt(size.w / 2, size.h / 2, 0.8));
+
+// Live hook: brain.fire('src/x.ts'), or postMessage({type: 'brain:fire', file}) from a parent page.
+window.brain = { fire(path) { const ok = fire(path, 1.3); return ok; }, select(path) { select(path, true); } };
+addEventListener('message', e => { const d = e.data; if (d && d.type === 'brain:fire' && typeof d.file === 'string') window.brain.fire(d.file); });
+
+// ---------- start ----------
+$('meta').textContent = `${files.length} files · ${links.length} links · ${groups.length} folders · ${DATA.generated}${DATA.commit ? ' · ' + DATA.commit : ''}`;
+showMode(); renderMenu(); resize(); fit(false);
+if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => { resize(); fit(false); }).observe(stage);
+else addEventListener('resize', () => { resize(); fit(false); });
+requestAnimationFrame(frame);
+})();
+</script>
