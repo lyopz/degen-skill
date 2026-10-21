@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-21** — Added pbakaus/impeccable. 114 skills.
 - **2026-10-20** — Added taste-skill (design-taste-frontend) and jcode's optimization skill. llm-council was already in. 113 skills.
 - **2026-10-20** — Added kepano/obsidian-skills (6 Obsidian skills). 111 skills.
 - **2026-10-20** — Added emilkowalski/skills (15 motion/UI-polish skills). 105 skills.

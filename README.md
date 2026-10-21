@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/skills-113-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="113 skills">
+<img src="https://img.shields.io/badge/skills-114-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="114 skills">
 <img src="https://img.shields.io/badge/agents-75-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="75 agents">
 <img src="https://img.shields.io/badge/commands-159-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="159 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
@@ -23,6 +23,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Make this button animation feel smoother" | `animate`, `emil-design-eng` |
 | "Organize my Obsidian notes into a table" | `obsidian-bases`, `obsidian-markdown` |
 | "Make my landing page look less generic" | `design-taste-frontend` |
+| "Audit and polish this page's design" | `impeccable` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |
 | "I have an idea for an app, help me plan it" | `idea-refine` |
@@ -170,7 +171,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 
 | Folder | What's in it |
 |:--|:--|
-| [`skills/`](skills) | All 113 skills, one folder each |
+| [`skills/`](skills) | All 114 skills, one folder each |
 | [`agents/`](agents) | 75 specialist agents |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
@@ -201,4 +202,4 @@ claude mcp add claude-flow -s user -- npx -y ruflo@latest mcp start
 
 Update anytime with `git pull` inside the `degen-skill` folder.
 
-<sub>Built from [ponytail](https://github.com/DietrichGebert/ponytail), [agent-skills](https://github.com/addyosmani/agent-skills), [graphify](https://github.com/Graphify-Labs/graphify), [karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills), [llm-council](https://github.com/karpathy/llm-council) (idea only), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), [ruflo](https://github.com/ruvnet/ruflo) and [OmniRoute](https://github.com/diegosouzapw/OmniRoute), [emilkowalski/skills](https://github.com/emilkowalski/skills), [obsidian-skills](https://github.com/kepano/obsidian-skills), [taste-skill](https://github.com/Leonxlnx/taste-skill), [jcode](https://github.com/1jehuang/jcode). Licenses in [`reviews/licenses`](reviews/licenses).</sub>
+<sub>Built from [ponytail](https://github.com/DietrichGebert/ponytail), [agent-skills](https://github.com/addyosmani/agent-skills), [graphify](https://github.com/Graphify-Labs/graphify), [karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills), [llm-council](https://github.com/karpathy/llm-council) (idea only), [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill), [ruflo](https://github.com/ruvnet/ruflo) and [OmniRoute](https://github.com/diegosouzapw/OmniRoute), [emilkowalski/skills](https://github.com/emilkowalski/skills), [obsidian-skills](https://github.com/kepano/obsidian-skills), [taste-skill](https://github.com/Leonxlnx/taste-skill), [jcode](https://github.com/1jehuang/jcode), [impeccable](https://github.com/pbakaus/impeccable). Licenses in [`reviews/licenses`](reviews/licenses).</sub>
