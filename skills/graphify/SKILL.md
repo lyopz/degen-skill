@@ -34,7 +34,7 @@ Turn any folder of files into a navigable knowledge graph with community detecti
 /graphify <path> --mcp                                # start MCP stdio server for agent access
 /graphify <path> --watch                              # watch folder, auto-rebuild on code changes (no LLM needed)
 /graphify <path> --wiki                               # build agent-crawlable wiki (index.md + one article per community)
-/graphify <path> --pow-only                           # rebuild just Graph POW (graph-pow.html), the glowing file graph, from an existing graph.json
+/graphify <path> --brain-only                         # rebuild just the brain (brain.html), the nerve-network file map, from an existing graph.json
 /graphify <path> --obsidian --obsidian-dir ~/vaults/my-project  # write vault to custom path (e.g. existing vault)
 /graphify add <url>                                   # fetch URL, save to ./raw, update graph
 /graphify add <url> --author "Name"                   # tag who wrote it
@@ -607,7 +607,7 @@ graphify export html  # auto-aggregates to community view if graph > 5000 nodes
 # or: graphify export html --no-viz
 ```
 
-Then build **Graph POW** (always, unless `--no-viz`): a glowing, brain-like map with one node per file, labelled links that say why files connect, fast-firing nerve signals, search, filters and path tracing. Follow `references/graph-pow.md`, which covers writing missing file purposes, the build command and the fixed design. Do not restyle it per project. With `--pow-only`, skip Steps 1-6 except this one and rebuild the page from the existing `graphify-out/graph.json`.
+Then build **the brain** (always, unless `--no-viz`): a connectome-style map where each folder is a dense region of nerve fibres, each file is a small node inside it, nerve bundles join folders whose files depend on each other, and signals fire along the links. A file menu on the side lists every file by folder, and a card says why each link exists. Follow `references/brain.md`, which covers writing missing file purposes, the build command and the fixed design. Do not restyle it per project. With `--brain-only`, skip Steps 1-6 except this one and rebuild the page from the existing `graphify-out/graph.json`.
 
 ### Steps 6b-8 - Wiki, Neo4j, FalkorDB, SVG, GraphML, MCP, benchmark (only on their flags)
 
@@ -691,7 +691,7 @@ Tell the user (omit the obsidian line unless --obsidian was given):
 Graph complete. Outputs in PATH_TO_DIR/graphify-out/
 
   graph.html            - interactive graph, open in browser
-  graph-pow.html        - Graph POW: glowing file-relationship map (one node per file)
+  brain.html            - the brain: nerve-network map of the files (one node per file)
   GRAPH_REPORT.md       - audit report
   graph.json            - raw graph data
   obsidian/             - Obsidian vault (only if --obsidian was given)
