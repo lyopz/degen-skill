@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 synced/
 skills/synced/
+
+# local secrets (21st.dev key etc.)
+.env
+.env.*
+.mcp.local.json
