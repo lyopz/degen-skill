@@ -1,6 +1,6 @@
 ---
 name: 21st-dev
-description: Lyopz's saved 21st.dev React components (shadcn + Tailwind + TypeScript), with a standard way to install them into a project. Use when lyopz asks for a 21st.dev component, names one in components/ (e.g. "spotlight card", "glow card"), or wants a fancy prebuilt UI piece like a glowing card, hero, button or background.
+description: Lyopz's saved 21st.dev React components (shadcn + Tailwind + TypeScript), with a standard way to install them into a project. Use when lyopz asks for a 21st.dev component, names one in components/ (e.g. "spotlight card", "glow card"), or wants a fancy prebuilt UI piece: glowing borders, glow or spotlight effects that follow the mouse, glowing cards, heroes, buttons or backgrounds. Check components/ before building one of these from scratch.
 ---
 
 <!-- lyopz's own collection. Each file in components/ is a 21st.dev "copy prompt" he saved. -->
