@@ -24,6 +24,7 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 | lyopz (own) — 21st.dev | 2026-10-22 | `21st-dev/` (SKILL.md + `components/`) | — | active | lyopz's saved 21st.dev component prompts, one .md each. Started with spotlight-card (GlowCard). New ones get saved as-is and added to the table. |
 | lyopz (own) | 2026-10-22 | `particle-media/` (SKILL.md + particle-media.js) | — | active | Own WebGL2 code: turns an image or video into liquid particles that flow from the cursor. Inspired by the liquid-sculpture-hero look on 21st.dev; no code copied. |
 | lyopz (own) | 2026-10-22 | `widget-board/` (SKILL.md + widget-board.js) | — | active | Floating bottom "tab wheel" of widget cards (section jump, link, copy, custom action). First built for the Degen Skills showcase site. Cards chosen per project. |
+| lyopz (own) | 2026-10-22 | `ai-3d-assets/` (SKILL.md + shrink_glb.py) | — | active | Higgsfield idea→picture→GLB pipeline, GLB texture shrinker, web/app/Blender/Roblox Studio steps. First used for the robot chicken. |
 | emalorenzo/three-agent-skills | 2026-10-22 | `three-best-practices/`, `r3f-best-practices/` (SKILL.md + rules/) | — | trial | Three.js and React Three Fiber performance rules. Markdown only, no scripts. Skipped the .zip copies and repo-level docs. MIT, upstream f950f95. |
 
 ## Reviewed, not added

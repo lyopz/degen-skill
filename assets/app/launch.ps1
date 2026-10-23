@@ -34,6 +34,11 @@ $data = [ordered]@{
 $json = $data | ConvertTo-Json -Depth 5 -Compress
 [IO.File]::WriteAllText((Join-Path $app 'skills.js'), "window.DEGEN=$json;", (New-Object Text.UTF8Encoding $false))
 
+$glb = Join-Path $app 'src\chicken.glb'; $cj = Join-Path $app 'chicken.js'
+if ((Test-Path $glb) -and (-not (Test-Path $cj) -or (Get-Item $glb).LastWriteTime -gt (Get-Item $cj).LastWriteTime)) {
+  [IO.File]::WriteAllText($cj, 'window.CHICKEN="' + [Convert]::ToBase64String([IO.File]::ReadAllBytes($glb)) + '";')
+}
+
 $url = 'file:///' + ((Join-Path $app 'index.html') -replace '\\', '/')
 $dataDir = Join-Path $env:LOCALAPPDATA 'DegenSkillsApp'
 $argList = @("--app=$url", "--user-data-dir=$dataDir", '--window-size=1280,860', '--no-first-run')

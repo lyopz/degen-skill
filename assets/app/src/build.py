@@ -23,4 +23,6 @@ h = h.replace('__CORE__', json.dumps({n: t.title() for t, _, it in CORE for n, _
 h = h.replace('__PLAIN__', json.dumps({n: d for t, _, it in CORE for n, d in it}))
 h = h.replace('<title>Degen Skills</title>', '<title>Degen Skills</title>\n<link rel="icon" href="icon.png">\n<script src="skills.js"></script>', 1)
 open(os.path.join(APP, 'index.html'), 'w', encoding='utf-8').write(h)
+# single-file preview (for the claude.ai artifact): model inlined
+open(os.path.join(SRC, 'preview.html'), 'w', encoding='utf-8').write(h.replace('<script src="skills.js"></script>', '<script>window.CHICKEN="' + b64('chicken.glb') + '";</script>'))
 print('wrote assets/app/index.html,', len(raw), 'skills as fallback')

@@ -90,7 +90,7 @@ footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
 .s3d .side h3{font-size:clamp(34px,5vw,52px);line-height:1;background:linear-gradient(180deg,#fafafa,#a3a3a3);-webkit-background-clip:text;background-clip:text;color:transparent}
 .s3d .side p{color:#d4d4d8;margin-top:14px;max-width:420px}
 .s3d .view{flex:1;position:relative;z-index:2}
-.s3d spline-viewer,.s3d .fb{position:absolute;inset:0;width:100%;height:100%}
+.s3d .view canvas,.s3d .fb{position:absolute;inset:0;width:100%;height:100%}
 .s3d .fb{background:var(--img-hero) center/cover;opacity:.9;mask:radial-gradient(circle at 60% 50%,#000 40%,transparent 75%);-webkit-mask:radial-gradient(circle at 60% 50%,#000 40%,transparent 75%)}
 .loader{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -156,9 +156,9 @@ footer{padding-bottom:180px}
 <div class="grid" id="grid"></div>
 </section>
 
-<section id="3d"><div class="reveal"><div class="tag">Interactive 3D</div><h2>Drop in a <em>live scene.</em></h2><div class="built"><span>21st-dev / spline-scene</span><span>21st-dev / spotlight</span></div></div>
+<section id="3d"><div class="reveal"><div class="tag">Interactive 3D</div><h2>Meet the <em>robot chicken.</em></h2><div class="built"><span>ai-3d-assets</span><span>three-best-practices</span><span>21st-dev / spotlight</span></div></div>
 <div class="s3d reveal" id="s3d"><div class="spot" id="spot"></div>
-<div class="side"><h3>Bring your UI<br>to life.</h3><p>The spline-scene component loads a real 3D scene you can move around. Spotlight follows your cursor across the card.</p></div>
+<div class="side"><h3>Any idea.<br>Real 3D.</h3><p>Made from one sentence: a Higgsfield picture turned into a 3D model. Drag to spin it, it watches your cursor. The same steps make Roblox game assets.</p></div>
 <div class="view" id="view"><div class="loader"></div></div></div></section>
 
 <section id="packs"><div class="split">
@@ -311,7 +311,7 @@ footer{padding-bottom:180px}
 <script>
 const VB="__VID__";let VU=null;
 function setV(){try{if(!VU){const b=atob(VB),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);VU=URL.createObjectURL(new Blob([u],{type:'video/mp4'}))}document.querySelectorAll('video.hv').forEach(v=>{if(!v.src){v.src=VU;v.play().catch(()=>{})}})}catch(e){}}
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches){setV();try{const hv=document.querySelector('#hero video');const im=new Image();im.src=IMG.HERO;const pm=ParticleMedia(document.getElementById('pm'),im,{tint:'#ff2a3d',tintAmount:0.5,alpha:1,point:3.4,strength:0.22,density:2,max:innerWidth<700?20000:55000,fps:45,dpr:1,videoFps:12,target:document.getElementById('hero')});if(pm){document.getElementById('hero').classList.add('pm-on');hv.addEventListener('playing',()=>pm.setSource(hv),{once:true})}}catch(e){console.log(e)}}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){setV();try{const hv=document.querySelector('#hero video');const im=new Image();im.src=IMG.HERO;const pm=ParticleMedia(document.getElementById('pm'),im,{tint:'#ff2a3d',tintAmount:0.5,alpha:1,point:3.4,strength:0.22,density:2,max:innerWidth<700?20000:50000,fps:60,dpr:1,videoFps:12,follow:0.3,target:document.getElementById('hero')});if(pm){document.getElementById('hero').classList.add('pm-on');hv.addEventListener('playing',()=>pm.setSource(hv),{once:true})}}catch(e){console.log(e)}}
 const D=window.DEGEN||{skills:__SKILLS_RAW__,agents:75,commands:159};
 const CORE=__CORE__;
 function cat(n){if(CORE[n])return CORE[n];if(/^(omni-|cli-|config-)/.test(n))return'OmniRoute';if(/^(agentdb|reasoningbank|swarm|hive-mind|sparc|stream-chain|worker-|hooks-|agentic-|pair-prog|verification|performance-an|skill-builder|github-)/.test(n))return'Swarms';if(/^(obsidian|json-canvas|defuddle)/.test(n))return'Obsidian';if(/anim|emil|apple-design|sonner|break-ui|pick-ui|prototype|mobile-native|swift/.test(n))return'Motion';return'More'}
@@ -336,7 +336,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function pmFromBg(box,opts){if(!box.dataset.img)return null;const im=new Image();im.src=IMG[box.dataset.img];const c=document.createElement('canvas');c.className='pmc';box.appendChild(c);const pm=ParticleMedia(c,im,opts);if(pm)box.classList.add('pm-on');else c.remove();return pm}
 if(false){document.querySelectorAll('.ni').forEach(ni=>{const pi=ni.querySelector('.pi');let pm=null;ni.addEventListener('pointerleave',()=>{if(pm){pm.destroy();pm=null;pi.querySelector('.pmc')?.remove();pi.classList.remove('pm-on')}});ni.addEventListener('pointerenter',()=>{if(pm)return;try{pm=pmFromBg(pi,{max:7000,fps:30,density:1.4,point:1.6,radius:.35,strength:.3,intro:900,cut:.03,point:2,tint:'#ff2a3d',tintAmount:.35,alpha:1,target:pi})}catch(e){}})});
- try{const im=new Image();im.src=IMG.CARDS;const bandEl=document.getElementById('band');const bo=new IntersectionObserver(es=>{if(es[0].isIntersecting){bo.disconnect();ParticleMedia(document.getElementById('bandpm'),im,{density:2,max:14000,fps:30,dpr:1,tint:'#ff2a3d',tintAmount:.5,alpha:.9,radius:.3,strength:.25,target:bandEl})}});bo.observe(bandEl)}catch(e){}}
+ try{const im=new Image();im.src=IMG.CARDS;const bandEl=document.getElementById('band');const bo=new IntersectionObserver(es=>{if(es[0].isIntersecting){bo.disconnect();ParticleMedia(document.getElementById('bandpm'),im,{density:2,max:14000,fps:60,dpr:1,follow:0.3,tint:'#ff2a3d',tintAmount:.5,alpha:.9,radius:.3,strength:.25,target:bandEl})}});bo.observe(bandEl)}catch(e){}}
 
 // tab wheel
 (()=>{const ring=document.getElementById('ring'),wh=document.getElementById('wheel'),cs=[...ring.children],N=cs.length;let i=0;
@@ -357,12 +357,29 @@ const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)navA.fo
 const s3=document.getElementById('s3d'),sp=document.getElementById('spot'),vw=document.getElementById('view');
 s3.addEventListener('pointermove',e=>{const r=s3.getBoundingClientRect();sp.style.left=(e.clientX-r.left)+'px';sp.style.top=(e.clientY-r.top)+'px'});
 const fb=()=>{vw.innerHTML='<div class="fb"><video class="hv" muted loop playsinline autoplay></video></div>';setV()};
-let ok=false,t=0;function loadSpline(){t=setTimeout(()=>{if(!ok)fb()},8000);
-const sc=document.createElement('script');sc.type='module';sc.src='https://cdn.jsdelivr.net/npm/@splinetool/viewer@2.0.103/build/spline-viewer.js';
-sc.onerror=()=>{clearTimeout(t);fb()};
-sc.onload=()=>{const v=document.createElement('spline-viewer');v.setAttribute('url','https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');v.addEventListener('load-complete',()=>{ok=true;clearTimeout(t);vw.querySelector('.loader')?.remove()});vw.appendChild(v)};
-document.head.appendChild(sc)}
-new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();loadSpline()}},{rootMargin:'300px'}).observe(s3);
+function loadModel(){
+ const go=()=>import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js').then(async THREE=>{
+  const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');
+  const {OrbitControls}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js');
+  const b=atob(window.CHICKEN),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});r.setPixelRatio(Math.min(devicePixelRatio,1.5));r.outputColorSpace=THREE.SRGBColorSpace;
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,50);cam.position.set(0,.2,4.2);
+  sc.add(new THREE.HemisphereLight(0xffffff,0x220004,1.6));const k=new THREE.DirectionalLight(0xffffff,2.2);k.position.set(2,3,3);sc.add(k);
+  const rim=new THREE.PointLight(0xff2a3d,30,10);rim.position.set(-2,1,-2);sc.add(rim);
+  const g=await new GLTFLoader().parseAsync(u.buffer,'');const m=g.scene;
+  const box=new THREE.Box3().setFromObject(m),sz=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3());m.position.sub(c);const s=2.4/Math.max(sz.x,sz.y,sz.z);
+  const pivot=new THREE.Group();pivot.scale.setScalar(s);pivot.add(m);sc.add(pivot);
+  const ctl=new OrbitControls(cam,r.domElement);ctl.enableZoom=false;ctl.enablePan=false;ctl.enableDamping=true;ctl.autoRotate=true;ctl.autoRotateSpeed=1.2;
+  vw.querySelector('.loader')?.remove();vw.appendChild(r.domElement);
+  const fit=()=>{const w=vw.clientWidth,h=vw.clientHeight;r.setSize(w,h,false);r.domElement.style.width='100%';r.domElement.style.height='100%';cam.aspect=w/h;cam.updateProjectionMatrix()};fit();new ResizeObserver(fit).observe(vw);
+  let mx=0,my=0,vis=true;s3.addEventListener('pointermove',e=>{const q=vw.getBoundingClientRect();mx=((e.clientX-q.left)/q.width-.5);my=((e.clientY-q.top)/q.height-.5)});
+  new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)loop()}).observe(s3);
+  let raf=0;function loop(){if(raf)return;raf=requestAnimationFrame(t=>{raf=0;if(!vis||document.hidden)return;pivot.rotation.x+=(my*.35-pivot.rotation.x)*.08;m.rotation.y+=(mx*.9-m.rotation.y)*.08;ctl.update();r.render(sc,cam);loop()})}
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)loop()});loop();
+ }).catch(()=>fb());
+ if(window.CHICKEN)go();else{const s=document.createElement('script');s.src='chicken.js';s.onload=go;s.onerror=fb;document.head.appendChild(s)}
+}
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();loadModel()}},{rootMargin:'300px'}).observe(s3);
 </script>
 </body>
 </html>
