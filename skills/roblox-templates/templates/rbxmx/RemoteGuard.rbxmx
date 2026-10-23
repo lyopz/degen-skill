@@ -1,5 +1,7 @@
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
 <Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
 -- instance location, distance; rate-limit per player.
 -- local Guard = require(game.ReplicatedStorage.RemoteGuard)

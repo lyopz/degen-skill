@@ -1,5 +1,7 @@
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
 <Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">ButtonFeel</string><ProtectedString name="Source"><![CDATA[-- ButtonFeel.lua — make every button feel alive (ModuleScript, require from a LocalScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local ButtonFeel = require(game.ReplicatedStorage.ButtonFeel)
 -- ButtonFeel.Apply(button, { sound = true })        -- one button
 -- ButtonFeel.ApplyAll(playerGui)                    -- every GuiButton under it (and new ones)

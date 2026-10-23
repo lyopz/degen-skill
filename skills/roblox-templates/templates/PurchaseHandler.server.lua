@@ -1,4 +1,6 @@
 -- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
 -- isn't here or saving fails (Roblox retries). One handler for the whole game.
 -- Fill PRODUCTS / PASSES, and connect Data.Get/Data.Update to your data module (ProfileStore recommended).

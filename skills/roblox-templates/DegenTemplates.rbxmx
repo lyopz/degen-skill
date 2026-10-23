@@ -47,6 +47,8 @@ end
 
 button.Click:Connect(function() widget.Enabled = not widget.Enabled end)
 ]]></ProtectedString></Properties><Item class="Folder" referent="F0"><Properties><string name="Name">Templates</string></Properties><Item class="ModuleScript" referent="T0"><Properties><string name="Name">ButtonFeel</string><ProtectedString name="Source"><![CDATA[-- ButtonFeel.lua — make every button feel alive (ModuleScript, require from a LocalScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local ButtonFeel = require(game.ReplicatedStorage.ButtonFeel)
 -- ButtonFeel.Apply(button, { sound = true })        -- one button
 -- ButtonFeel.ApplyAll(playerGui)                    -- every GuiButton under it (and new ones)
@@ -130,6 +132,8 @@ end
 
 return ButtonFeel
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T1"><Properties><string name="Name">Motion</string><ProtectedString name="Source"><![CDATA[-- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local Motion = require(game.ReplicatedStorage.Motion)
 -- Motion.Spin(coin, 90)            -- degrees per second
 -- Motion.Bob(pickup, 0.6, 1.5)     -- height (studs), seconds per cycle
@@ -205,6 +209,8 @@ end
 
 return Motion
 ]]></ProtectedString></Properties></Item><Item class="LocalScript" referent="T2"><Properties><string name="Name">OceanClient</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Tags: "FloatOnWaves" (Model; optional attributes BobScale, Length, Width; its pivot's
 -- LookVector = bow direction), "Sway" (Model; optional attribute SwayDegrees).
 -- Needs Waves + OceanMesh in ReplicatedStorage. Terrain water should fill to y = 0 for swimming.
@@ -295,6 +301,8 @@ RunService.Heartbeat:Connect(function()
 	end
 end)
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T3"><Properties><string name="Name">OceanMesh</string><ProtectedString name="Source"><![CDATA[-- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Dense rings near the island, wide rings out to the horizon (flat there, hidden by haze).
 -- Usage (client): local o = OceanMesh.Build(folder, Waves.Now()); each frame o.Update(Waves.Now(), doColor)
 -- Edit-time preview: Build into workspace.OceanPreview and delete it on server start
@@ -438,6 +446,8 @@ end
 
 return OceanMesh
 ]]></ProtectedString></Properties></Item><Item class="Script" referent="T4"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
 -- isn't here or saving fails (Roblox retries). One handler for the whole game.
 -- Fill PRODUCTS / PASSES, and connect Data.Get/Data.Update to your data module (ProfileStore recommended).
@@ -490,6 +500,8 @@ MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passI
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T5"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
 -- instance location, distance; rate-limit per player.
 -- local Guard = require(game.ReplicatedStorage.RemoteGuard)
@@ -592,6 +604,8 @@ function Guard.Invoke(name, ...) return folder:WaitForChild(name):InvokeServer(.
 
 return Guard
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T6"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
 -- Usage:  local VFX = require(game.ReplicatedStorage.VFX)
 --         VFX.Fireball(hrp.Position + hrp.CFrame.LookVector*3, hrp.CFrame.LookVector)
@@ -731,6 +745,8 @@ end
 
 return VFX
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.
 -- Part of the ocean kit: Waves (ModuleScript) + OceanMesh (ModuleScript) + OceanClient (LocalScript),
 -- all from the island build 2026-10-23. Put Waves and OceanMesh in ReplicatedStorage.

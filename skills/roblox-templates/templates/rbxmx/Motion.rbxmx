@@ -1,5 +1,7 @@
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
 <Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">Motion</string><ProtectedString name="Source"><![CDATA[-- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local Motion = require(game.ReplicatedStorage.Motion)
 -- Motion.Spin(coin, 90)            -- degrees per second
 -- Motion.Bob(pickup, 0.6, 1.5)     -- height (studs), seconds per cycle

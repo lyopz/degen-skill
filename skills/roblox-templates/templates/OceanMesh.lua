@@ -1,4 +1,6 @@
 -- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Dense rings near the island, wide rings out to the horizon (flat there, hidden by haze).
 -- Usage (client): local o = OceanMesh.Build(folder, Waves.Now()); each frame o.Update(Waves.Now(), doColor)
 -- Edit-time preview: Build into workspace.OceanPreview and delete it on server start

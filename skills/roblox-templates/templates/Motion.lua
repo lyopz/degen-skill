@@ -1,4 +1,6 @@
 -- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local Motion = require(game.ReplicatedStorage.Motion)
 -- Motion.Spin(coin, 90)            -- degrees per second
 -- Motion.Bob(pickup, 0.6, 1.5)     -- height (studs), seconds per cycle

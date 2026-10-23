@@ -21,6 +21,25 @@ description: lyopz's library of reusable Roblox Studio templates (ModuleScripts,
    - every `.rbxmx` → `Documents\Roblox Templates\` (also usable via right-click → Insert from File).
 4. Restart Studio (or reload plugins) to see new templates.
 
+## Templates are examples, and they improve
+Templates are **starting points**: copy one into the game, adapt it, and make it better. When lyopz says he likes an improved version (only then), save it back:
+
+| Situation | What to do |
+|---|---|
+| Same job, just better (bug fix, cleaner, faster, nicer feel), works the same way for existing games | **Overwrite** `templates/<Name>.lua`, bump `-- version: N` in the header, add a `-- changelog:` line, and keep the old file as `templates/archive/<Name>@v<old>.lua` |
+| Different behavior, look or options (e.g. a punchier button style, a pet follow that orbits) | **Save as a variant**: `templates/<Name>-<variant>.lua` (e.g. `ButtonFeel-squishy.lua`), with its own header saying when to use it vs the original |
+| Only makes sense for one game | Keep it in that game's folder, not in templates; add a lesson if something general was learned |
+| Not sure | Ask lyopz in one line: "overwrite <Name> or save as <Name>-<variant>?" |
+After saving: run `make_rbxmx.py`, add a line to `roblox-dev/lessons.md` ("improved <Name>: …"), commit + push. `archive/` is not packed into the Studio plugin.
+
+Header every template keeps at the top:
+```lua
+-- <Name>.lua — one-line what it does
+-- version: 1
+-- use: <how to require/use it>
+-- changelog: v1 2026-10-23 first version
+```
+
 ## Rules for adding a template
 - Only reusable, tested, general things (systems, kits, effects, UI pieces) — not one game's content.
 - Must follow `roblox-design` (UI sizes, feel), `roblox-art-style` (palette is passed in, not hard-coded), and `roblox-scripter` rules (server authority, pcall on DataStores/Marketplace).

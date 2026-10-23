@@ -1,4 +1,6 @@
 -- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
 -- instance location, distance; rate-limit per player.
 -- local Guard = require(game.ReplicatedStorage.RemoteGuard)

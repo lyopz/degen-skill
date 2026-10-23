@@ -1,4 +1,6 @@
 -- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Tags: "FloatOnWaves" (Model; optional attributes BobScale, Length, Width; its pivot's
 -- LookVector = bow direction), "Sway" (Model; optional attribute SwayDegrees).
 -- Needs Waves + OceanMesh in ReplicatedStorage. Terrain water should fill to y = 0 for swimming.

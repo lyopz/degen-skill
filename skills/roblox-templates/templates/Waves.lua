@@ -1,4 +1,6 @@
 -- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.
 -- Part of the ocean kit: Waves (ModuleScript) + OceanMesh (ModuleScript) + OceanClient (LocalScript),
 -- all from the island build 2026-10-23. Put Waves and OceanMesh in ReplicatedStorage.

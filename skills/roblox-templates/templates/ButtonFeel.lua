@@ -1,4 +1,6 @@
 -- ButtonFeel.lua — make every button feel alive (ModuleScript, require from a LocalScript).
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- local ButtonFeel = require(game.ReplicatedStorage.ButtonFeel)
 -- ButtonFeel.Apply(button, { sound = true })        -- one button
 -- ButtonFeel.ApplyAll(playerGui)                    -- every GuiButton under it (and new ones)

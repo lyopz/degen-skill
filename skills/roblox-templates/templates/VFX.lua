@@ -1,4 +1,6 @@
 -- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+-- version: 1
+-- changelog: v1 2026-10-23 first version
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
 -- Usage:  local VFX = require(game.ReplicatedStorage.VFX)
 --         VFX.Fireball(hrp.Position + hrp.CFrame.LookVector*3, hrp.CFrame.LookVector)
