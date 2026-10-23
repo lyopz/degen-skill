@@ -26,7 +26,7 @@ while (Date.now() - t0 < 15 * 60000) {
   await sleep(3000);
   const s = await page.evaluate(b => {
     const before = new Set(b);
-    const busy = !!document.querySelector('[data-testid="stop-button"], button[aria-label*="Stop"]');
+    const busy = !!document.querySelector('[data-testid="stop-button"]');
     const imgs = [...document.images].filter(i => { const s = i.currentSrc || i.src; return s && !before.has(s) && i.complete && i.naturalWidth >= 400 && i.naturalHeight >= 400 && !/avatar|profile|favicon/i.test(s); });
     imgs.sort((x, y) => y.naturalWidth * y.naturalHeight - x.naturalWidth * x.naturalHeight);
     const im = imgs[0];
@@ -34,7 +34,7 @@ while (Date.now() - t0 < 15 * 60000) {
   }, [...before]).catch(() => null);
   if (!s) continue;
   if ((Date.now() - t0) % 30000 < 3000) log(`  ...still waiting (busy=${s.busy}, new pictures=${s.n})`);
-  if (s.src && !s.busy) { if (s.src === last) stable++; else { stable = 0; last = s.src; } if (stable >= 2) { src = s.src; break; } }
+  if (s.src) { if (s.src === last) stable++; else { stable = 0; last = s.src; } if ((stable >= 2 && !s.busy) || stable >= 4) { src = s.src; break; } }
 }
 if (!src) { log('No new picture found'); process.exit(3); }
 log('[4/4] Saving the picture...');
