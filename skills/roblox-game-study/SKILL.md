@@ -26,11 +26,15 @@ Goal: understand **why a game works** and reuse the *ideas*, not the *content*.
 - **Core loop & progression:** what you do every 30 s / 5 min / session, upgrades, rebirth, unlock curve, rough numbers seen.
 - **Economy & monetization:** currencies, sinks, passes/products seen (names, prices if shown), where purchase prompts appear.
 - **UI/HUD:** layout (where currency, menus, main buttons sit), button style (shape, stroke, color, motion), popups, reward feedback.
+- **How each system works (mechanics, in detail):** for every system seen (combat, pets, eggs, trading, building, quests, vehicles, tools…) write it as a spec we could rebuild: trigger → what happens → numbers/timings → feedback → edge cases. E.g. "Egg: walk up → prompt shows odds → press E (cost 250) → egg shakes 3× over ~2 s → crack → pet reveal with rarity color → pet joins follow slots (max 3, +1 per pass)". Note what's server-side (money, drops) vs client-side (effects) as best we can infer.
 - **Feel:** effects, sounds, camera, hit feedback, what feels satisfying.
 - **Art style:** preset closest match (from `roblox-art-style`), palette impression, scale.
 - **Why it's fun / why players stay:** 3–5 bullets.
 - **Weak spots:** what's annoying or missing (our opportunity).
 - **Steal the idea, not the content:** 5–10 original takeaways for lyopz's games (e.g. "gate zones by rebirth instead of coins", "put the shop on the grind path").
+
+## Rebuild in our own style
+Each system spec → a build ticket for the Roblox agents: same *behavior*, our art style bible, our code, our numbers tuned for our game. Reusable systems become `roblox-templates`.
 
 ## Turn it into his games
 - Feed takeaways into `roblox-design/references/maps.md` (layout patterns) and `ui.md`/`game-feel.md` when they're general, with "seen in <game>".
