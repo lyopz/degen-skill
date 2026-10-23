@@ -42,7 +42,7 @@
   void main(){ vec2 q = gl_PointCoord-0.5; float a = smoothstep(0.5, 0.15, length(q)); o = vec4(vCol.rgb, vCol.a*a); }`;
 
   function ParticleMedia(canvas, src, opt) {
-    opt = Object.assign({ density: 2, radius: 0.22, strength: 0.18, point: 1.8, cut: 0.06, alpha: 0.8, tint: null, tintAmount: 0.6, follow: 0.08, intro: 1800 }, opt || {});
+    opt = Object.assign({ density: 2, radius: 0.22, strength: 0.18, point: 1.8, cut: 0.06, alpha: 0.8, tint: null, tintAmount: 0.6, follow: 0.08, intro: 1800, max: 60000, dpr: 1.5, fps: 60 }, opt || {});
     const gl = canvas.getContext('webgl2', { premultipliedAlpha: false, alpha: true });
     if (!gl) return null;
     const sh = (t, s) => { const x = gl.createShader(t); gl.shaderSource(x, s); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(x); return x; };
@@ -55,10 +55,11 @@
     let isVid = src.tagName === 'VIDEO';
     const mw = () => isVid ? src.videoWidth : src.naturalWidth, mh = () => isVid ? src.videoHeight : src.naturalHeight;
     function grid() {
-      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const dpr = Math.min(devicePixelRatio || 1, opt.dpr);
       W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr;
       gl.viewport(0, 0, canvas.width, canvas.height);
-      const step = opt.density; const cols = Math.floor(W / step), rows = Math.floor(H / step);
+      let step = opt.density; if ((W / step) * (H / step) > opt.max) step = Math.sqrt((W * H) / opt.max);
+      const cols = Math.floor(W / step), rows = Math.floor(H / step);
       const a = new Float32Array(cols * rows * 3); let k = 0;
       for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) { a[k++] = (x + .5) / cols; a[k++] = (y + .5) / rows; a[k++] = Math.random(); }
       count = cols * rows;
@@ -83,9 +84,14 @@
     const tc = opt.tint ? opt.tint.replace('#', '').match(/../g).map(x => parseInt(x, 16) / 255) : [1, 1, 1];
     gl.uniform3f(U('uTint'), tc[0], tc[1], tc[2]); gl.uniform1f(U('uTintAmt'), opt.tint ? opt.tintAmount : 0);
     grid(); const ro = new ResizeObserver(grid); ro.observe(canvas);
-    let t0 = performance.now(), raf = 0, uploaded = false, live = true;
+    let t0 = performance.now(), raf = 0, uploaded = false, live = true, vis = true, last = 0;
+    const io = new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis && live && !raf) raf = requestAnimationFrame(frame); }); io.observe(canvas);
+    const onVis = () => { if (!document.hidden && vis && live && !raf) raf = requestAnimationFrame(frame); }; document.addEventListener('visibilitychange', onVis);
     function frame(now) {
-      if (!live) return;
+      raf = 0;
+      if (!live || !vis || document.hidden) return;
+      if (now - last < 1000 / opt.fps - 2) { raf = requestAnimationFrame(frame); return; }
+      last = now;
       const ready = isVid ? src.readyState >= 2 : src.complete && src.naturalWidth;
       if (ready && (isVid || !uploaded)) {
         gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -100,7 +106,7 @@
       raf = requestAnimationFrame(frame);
     }
     raf = requestAnimationFrame(frame);
-    return { count: () => count, setSource(el) { src = el; isVid = el.tagName === 'VIDEO'; uploaded = false; opt.intro = 0; }, destroy() { live = false; cancelAnimationFrame(raf); ro.disconnect(); host.removeEventListener('pointermove', move); host.removeEventListener('pointerleave', leave); } };
+    return { count: () => count, setSource(el) { src = el; isVid = el.tagName === 'VIDEO'; uploaded = false; opt.intro = 0; }, destroy() { live = false; cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); document.removeEventListener('visibilitychange', onVis); host.removeEventListener('pointermove', move); host.removeEventListener('pointerleave', leave); } };
   }
   g.ParticleMedia = ParticleMedia;
 })(typeof window !== 'undefined' ? window : this);

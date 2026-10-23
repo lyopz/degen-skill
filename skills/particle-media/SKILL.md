@@ -25,7 +25,10 @@ video.addEventListener('playing', () => pm.setSource(video), { once: true });
 ## Options
 | option | default | what it does |
 |---|---|---|
-| `density` | 2 | pixels between particles. 2 ≈ 200k on a 1080p hero; use 3–4 on phones |
+| `density` | 2 | pixels between particles (smaller = more) |
+| `max` | 60000 | hard cap on particles; density is loosened to stay under it |
+| `dpr` | 1.5 | max pixel ratio (lower = lighter on high-res screens) |
+| `fps` | 60 | frame cap; 30 for small or background effects |
 | `radius` | 0.22 | cursor reach (screen-height units) |
 | `strength` | 0.18 | how far particles get pushed |
 | `point` | 1.8 | particle size |
@@ -42,6 +45,8 @@ video.addEventListener('playing', () => pm.setSource(video), { once: true });
 - `ParticleMedia` returns `null` without WebGL2, so keep the normal image visible as the fallback.
 - The image must be same-origin or a data/blob URL (WebGL can't read cross-origin pixels without CORS).
 - Works best on dark backgrounds with bright subjects. Add a dark gradient behind any text on top.
+- Pauses by itself when scrolled off screen or the tab is hidden, so idle effects cost nothing.
+- Keep it light: hero `max` 40–60k, small cards 6–10k with `fps: 30`. A video source re-uploads every frame, so use ~720p.
 - Several on one page are fine (each is its own WebGL canvas). Start small ones lazily, e.g. on first hover or when scrolled into view.
 - Examples in use on the Degen Skills showcase site:
   - **Hero:** an animated Higgsfield video, tinted red, full screen.

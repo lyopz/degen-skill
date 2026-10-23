@@ -78,7 +78,7 @@
         if (ad <= 1 && it.img && o.particles && !RM && !c._pm && g.ParticleMedia) {
           c._pm = 1; const face = c.querySelector('.wb-face'); const im = new Image(); im.src = it.img;
           const cv = document.createElement('canvas'); face.appendChild(cv);
-          if (g.ParticleMedia(cv, im, { density: 1.5, point: 1.8, cut: 0.03, radius: 0.4, strength: 0.3, intro: 800, tint: o.accent, tintAmount: 0.35, target: c })) face.style.backgroundImage = 'none'; else cv.remove();
+          if (g.ParticleMedia(cv, im, { density: 1.5, max: 5000, fps: 30, point: 2, cut: 0.03, radius: 0.4, strength: 0.3, intro: 800, tint: o.accent, tintAmount: 0.35, target: c })) face.style.backgroundImage = 'none'; else cv.remove();
         }
       });
     }
