@@ -1,0 +1,104 @@
+-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+-- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.
+-- Part of the ocean kit: Waves (ModuleScript) + OceanMesh (ModuleScript) + OceanClient (LocalScript),
+-- all from the island build 2026-10-23. Put Waves and OceanMesh in ReplicatedStorage.
+-- Per map, set: Center (island XZ), CalmRadius/FullRadius (calm lagoon -> open sea),
+-- and IslandShape (the coastline, used for shore foam; match your terrain).
+-- Needs EditableMesh enabled: Game Settings > Security > allow Mesh/Image APIs. Without it,
+-- OceanClient falls back to terrain water and sets Lift = 0.
+local Waves = {}
+
+Waves.SeaLevel = 0.3
+-- Lift raises the waves so troughs stay above the terrain water (y = 0) that sits under the
+-- mesh ocean for swimming. Set to 0 when the mesh ocean isn't running.
+Waves.Lift = 1
+Waves.Center = Vector2.new(0, 0)   -- island center (XZ); water is calmer near it
+Waves.CalmRadius = 45              -- inside this the sea is a calm lagoon
+Waves.FullRadius = 140             -- full-size waves from here out
+Waves.FadeStart = 420              -- waves fade to flat toward the horizon
+Waves.FadeEnd = 900
+
+-- dir (XZ), wavelength (studs), amplitude (studs)
+local LIST = {
+	{ Vector2.new(1, 0.25), 110, 1.3 },
+	{ Vector2.new(0.75, 0.65), 62, 0.8 },
+	{ Vector2.new(0.2, 1), 34, 0.42 },
+	{ Vector2.new(-0.55, 0.85), 19, 0.2 },
+}
+local W = {}
+for _, w in ipairs(LIST) do
+	local d = w[1].Unit
+	local k = 2 * math.pi / w[2]
+	local c = math.sqrt(w[2]) * 1.15            -- phase speed, studs/s
+	local q = math.min(1, 0.8 / (k * w[3] * #LIST)) -- steepness, no loops
+	table.insert(W, { dx = d.X, dz = d.Y, k = k, kc = k * c, a = w[3], qa = q * w[3] })
+end
+Waves.MaxAmplitude = 0
+for _, w in ipairs(W) do Waves.MaxAmplitude += w.a end
+
+local function smooth(e0, e1, x)
+	local t = math.clamp((x - e0) / (e1 - e0), 0, 1)
+	return t * t * (3 - 2 * t)
+end
+
+-- 0..1 wave strength at a point (calm lagoon near the island, flat horizon far away)
+function Waves.Strength(x: number, z: number): number
+	local r = math.sqrt((x - Waves.Center.X) ^ 2 + (z - Waves.Center.Y) ^ 2)
+	local near = 0.18 + 0.82 * smooth(Waves.CalmRadius, Waves.FullRadius, r)
+	local far = 1 - smooth(Waves.FadeStart, Waves.FadeEnd, r)
+	return near * far
+end
+
+-- Full Gerstner displacement: returns dx, dy, dz
+function Waves.Displace(x: number, z: number, t: number, s: number?)
+	s = s or Waves.Strength(x, z)
+	if s <= 0 then return 0, 0, 0 end
+	local ox, oy, oz = 0, 0, 0
+	for _, w in ipairs(W) do
+		local f = w.k * (w.dx * x + w.dz * z) - w.kc * t
+		local cf, sf = math.cos(f), math.sin(f)
+		ox += w.qa * w.dx * cf
+		oz += w.qa * w.dz * cf
+		oy += w.a * sf
+	end
+	return ox * s, (oy + Waves.MaxAmplitude * Waves.Lift) * s, oz * s
+end
+
+-- Displacement + surface normal (Gerstner): returns dx, dy, dz, nx, ny, nz
+function Waves.DisplaceNormal(x: number, z: number, t: number, s: number?)
+	s = s or Waves.Strength(x, z)
+	if s <= 0 then return 0, 0, 0, 0, 1, 0 end
+	local ox, oy, oz, nx, ny, nz = 0, 0, 0, 0, 0, 0
+	for _, w in ipairs(W) do
+		local f = w.k * (w.dx * x + w.dz * z) - w.kc * t
+		local cf, sf = math.cos(f), math.sin(f)
+		ox += w.qa * w.dx * cf
+		oz += w.qa * w.dz * cf
+		oy += w.a * sf
+		local wa = w.k * w.a
+		nx += w.dx * wa * cf
+		nz += w.dz * wa * cf
+		ny += w.k * w.qa * sf
+	end
+	return ox * s, (oy + Waves.MaxAmplitude * Waves.Lift) * s, oz * s, -nx * s, 1 - ny * s, -nz * s
+end
+
+-- Surface height (ignores the small horizontal shift; good enough for floating objects)
+function Waves.Height(x: number, z: number, t: number): number
+	local _, dy = Waves.Displace(x, z, t)
+	return Waves.SeaLevel + dy
+end
+
+-- Island coastline (matches the terrain height map): ~1 at the waterline, <1 inland
+function Waves.IslandShape(x: number, z: number): number
+	local dx, dz = x - Waves.Center.X, z - Waves.Center.Y
+	local th = math.atan2(dz, dx)
+	local R = 54 + 9 * math.sin(2 * th + 1) + 6 * math.sin(3 * th + 2.2) + 3 * math.sin(5 * th + 0.4)
+	return math.sqrt(dx * dx + dz * dz) / R
+end
+
+function Waves.Now(): number
+	return workspace:GetServerTimeNow()
+end
+
+return Waves

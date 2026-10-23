@@ -1,0 +1,146 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
+<Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">OceanMesh</string><ProtectedString name="Source"><![CDATA[-- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
+-- Dense rings near the island, wide rings out to the horizon (flat there, hidden by haze).
+-- Usage (client): local o = OceanMesh.Build(folder, Waves.Now()); each frame o.Update(Waves.Now(), doColor)
+-- Edit-time preview: Build into workspace.OceanPreview and delete it on server start
+-- (the EditableMesh content isn't saved with the place).
+-- Lessons: max mesh extent is 2048 studs (FAR_RADIUS 1020); the MeshPart keeps the size it was
+-- created with, so two hidden triangles lock the height range; vertex colors get multiplied by
+-- Lighting.Brightness, so use dark base colors in bright presets.
+local AssetService = game:GetService("AssetService")
+local Waves = require(script.Parent:WaitForChild("Waves"))
+
+local OceanMesh = {}
+
+local SEGMENTS = 120
+local NEAR_STEP = 5        -- radial spacing near the island
+local NEAR_RADIUS = 260
+local FAR_RADIUS = 1020
+local FAR_RINGS = 12
+local ANIMATE_RADIUS = Waves.FadeEnd + 50
+
+-- tuned for the bright cartoon preset (Brightness 3); brighten for darker lighting
+local SHALLOW = Color3.fromRGB(18, 95, 100)
+local MID = Color3.fromRGB(6, 48, 85)
+local DEEP = Color3.fromRGB(3, 24, 55)
+local SHORE_FOAM = Color3.fromRGB(150, 160, 160)
+
+local function depthColor(r)
+	if r < 50 then return SHALLOW end
+	if r < 110 then return SHALLOW:Lerp(MID, (r - 50) / 60) end
+	if r < 320 then return MID:Lerp(DEEP, (r - 110) / 210) end
+	return DEEP
+end
+
+function OceanMesh.Build(parent: Instance, t: number?)
+	local em = AssetService:CreateEditableMesh({ FixedSize = false })
+	local radii = { 0 }
+	local r = 0
+	while r < NEAR_RADIUS do r += NEAR_STEP; table.insert(radii, r) end
+	local grow = (FAR_RADIUS / NEAR_RADIUS) ^ (1 / FAR_RINGS)
+	for _ = 1, FAR_RINGS do r *= grow; table.insert(radii, r) end
+
+	local cx, cz = Waves.Center.X, Waves.Center.Y
+	-- { vid, cid, bx, bz, strength, base color, animate, nid, island shape }
+	local verts = {}
+	local rings = {}
+	for ri, rad in ipairs(radii) do
+		local ring = {}
+		local count = (rad == 0) and 1 or SEGMENTS
+		for s = 0, count - 1 do
+			local a = s / SEGMENTS * math.pi * 2
+			local bx, bz = cx + math.cos(a) * rad, cz + math.sin(a) * rad
+			local vid = em:AddVertex(Vector3.new(bx, Waves.SeaLevel, bz))
+			local base = depthColor(rad)
+			local cid = em:AddColor(base, 1)
+			local nid = em:AddNormal(Vector3.yAxis)
+			local v = { vid, cid, bx, bz, Waves.Strength(bx, bz), base, rad <= ANIMATE_RADIUS, nid, Waves.IslandShape(bx, bz) }
+			table.insert(verts, v)
+			table.insert(ring, v)
+		end
+		rings[ri] = ring
+	end
+	local function tri(a, b, c)
+		local f = em:AddTriangle(a[1], b[1], c[1])
+		em:SetFaceColors(f, { a[2], b[2], c[2] })
+		em:SetFaceNormals(f, { a[8], b[8], c[8] })
+	end
+	-- center fan
+	local c0 = rings[1][1]
+	for s = 1, SEGMENTS do
+		local a, b = rings[2][s], rings[2][s % SEGMENTS + 1]
+		tri(c0, b, a)
+	end
+	for ri = 2, #rings - 1 do
+		local A, B = rings[ri], rings[ri + 1]
+		for s = 1, SEGMENTS do
+			local s2 = s % SEGMENTS + 1
+			tri(A[s], B[s2], B[s])
+			tri(A[s], A[s2], B[s2])
+		end
+	end
+
+	-- two tiny hidden triangles under the island lock the mesh height to +-8 studs,
+	-- so wave motion never gets rescaled by the MeshPart's fixed size
+	for _, y in ipairs({ 8, -8 }) do
+		local p = Vector3.new(cx, Waves.SeaLevel + y, cz)
+		local a = em:AddVertex(p); local b = em:AddVertex(p + Vector3.new(0.01, 0, 0)); local c = em:AddVertex(p + Vector3.new(0, 0, 0.01))
+		em:AddTriangle(a, c, b)
+	end
+
+	local part = AssetService:CreateMeshPartAsync(Content.fromObject(em))
+	part.Name = "Ocean"
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.CastShadow = false
+	part.Material = Enum.Material.SmoothPlastic
+	part.Transparency = 0.1
+	part.Reflectance = 0.1
+	part.Color = Color3.new(1, 1, 1)
+	part.Parent = parent
+
+	-- only vertices that actually move get updated each frame
+	local live = {}
+	for _, v in ipairs(verts) do if v[7] and v[5] > 0 then table.insert(live, v) end end
+
+	local self = { Part = part, Mesh = em, Live = live, VertCount = #verts }
+	function self.Update(time: number, doColor: boolean?)
+		for _, v in ipairs(live) do
+			local dx, dy, dz, nx, ny, nz = Waves.DisplaceNormal(v[3], v[4], time, v[5])
+			em:SetPosition(v[1], Vector3.new(v[3] + dx, Waves.SeaLevel + dy, v[4] + dz))
+			em:SetNormal(v[8], Vector3.new(nx, ny, nz).Unit)
+			if doColor then
+				local crest = math.clamp((dy - (Waves.MaxAmplitude * Waves.Lift * v[5]) - 1.1) / 1.1, 0, 1)
+				-- shore foam: a band at the waterline that pulses like breaking waves
+				local s = v[9]
+				if s > 0.8 and s < 1.25 then
+					local band = 1 - math.abs(s - 0.97) / 0.2
+					if band > 0 then
+						local pulse = 0.55 + 0.45 * math.sin(time * 1.7 - s * 28)
+						crest = math.max(crest, band * pulse)
+					end
+				end
+				em:SetColor(v[2], crest > 0 and v[6]:Lerp(SHORE_FOAM, crest * 0.9) or v[6])
+			end
+		end
+	end
+	if t then self.Update(t, true) end
+	-- the mesh position is baked in world space; keep the part at the origin
+	part.CFrame = CFrame.new()
+	return self
+end
+
+-- Terrain water fills to sea level (for swimming). When the mesh ocean is running, hide the
+-- terrain water surface on this client; otherwise leave the saved terrain-water look.
+function OceanMesh.HideTerrainWater()
+	local T = workspace.Terrain
+	T.WaterTransparency = 1
+	T.WaterReflectance = 0
+	T.WaterWaveSize = 0
+end
+
+return OceanMesh
+]]></ProtectedString></Properties></Item>
+</roblox>

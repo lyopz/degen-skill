@@ -1,0 +1,90 @@
+-- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
+-- Tags: "FloatOnWaves" (Model; optional attributes BobScale, Length, Width; its pivot's
+-- LookVector = bow direction), "Sway" (Model; optional attribute SwayDegrees).
+-- Needs Waves + OceanMesh in ReplicatedStorage. Terrain water should fill to y = 0 for swimming.
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+local RS = game:GetService("ReplicatedStorage")
+local Waves = require(RS:WaitForChild("Waves"))
+local OceanMesh = require(RS:WaitForChild("OceanMesh"))
+
+local holder = Instance.new("Folder")
+holder.Name = "OceanLocal"
+holder.Parent = workspace
+local ok, ocean = pcall(OceanMesh.Build, holder, Waves.Now())
+if not ok then
+	-- EditableMesh disabled for this experience: the saved terrain water stays visible
+	warn("[OceanClient] mesh ocean unavailable: " .. tostring(ocean))
+	ocean = nil
+	Waves.Lift = 0
+else
+	OceanMesh.HideTerrainWater()
+end
+
+-- floating models: remember their rest pose once
+local floaters = {}
+local function addFloater(m)
+	if not m:IsA("Model") or floaters[m] then return end
+	local cf, size = m:GetBoundingBox()
+	local pivot = m:GetPivot()
+	floaters[m] = {
+		rest = pivot,
+		look = Vector3.new(pivot.LookVector.X, 0, pivot.LookVector.Z).Unit,
+		length = m:GetAttribute("Length") or size.Z * 0.4,
+		width = m:GetAttribute("Width") or size.X * 0.35,
+		bob = m:GetAttribute("BobScale") or 0.8,
+	}
+end
+for _, m in ipairs(CollectionService:GetTagged("FloatOnWaves")) do addFloater(m) end
+CollectionService:GetInstanceAddedSignal("FloatOnWaves"):Connect(addFloater)
+
+local swayers = {}
+local function addSway(m)
+	if not m:IsA("Model") or swayers[m] then return end
+	local cf, size = m:GetBoundingBox()
+	local pivot = m:GetPivot()
+	local base = Vector3.new(cf.Position.X, cf.Position.Y - size.Y / 2, cf.Position.Z)
+	swayers[m] = { rest = pivot, base = base, phase = math.random() * 10, amp = math.rad(m:GetAttribute("SwayDegrees") or 1.6) }
+end
+for _, m in ipairs(CollectionService:GetTagged("Sway")) do addSway(m) end
+CollectionService:GetInstanceAddedSignal("Sway"):Connect(addSway)
+
+local frame = 0
+local stride, updates, avg = 1, 0, 0
+RunService.Heartbeat:Connect(function()
+	local t = Waves.Now()
+	frame += 1
+	-- ocean: adaptive rate. Every frame on fast devices; every 2nd/3rd frame if updates get
+	-- expensive (phones). Foam colors refresh on every 3rd update.
+	if ocean and frame % stride == 0 then
+		local c0 = os.clock()
+		updates += 1
+		ocean.Update(t, updates % 3 == 0)
+		local cost = os.clock() - c0
+		avg = avg * 0.9 + cost * 0.1
+		if avg > 0.006 then stride = 3 elseif avg > 0.0035 then stride = 2 else stride = 1 end
+	end
+
+	for m, f in pairs(floaters) do
+		if not m.Parent then floaters[m] = nil; continue end
+		local p = f.rest.Position
+		local fwd, right = f.look, f.look:Cross(Vector3.yAxis)
+		local hc = Waves.Height(p.X, p.Z, t)
+		local hb = Waves.Height(p.X + fwd.X * f.length, p.Z + fwd.Z * f.length, t)
+		local hs = Waves.Height(p.X - fwd.X * f.length, p.Z - fwd.Z * f.length, t)
+		local hr = Waves.Height(p.X + right.X * f.width, p.Z + right.Z * f.width, t)
+		local hl = Waves.Height(p.X - right.X * f.width, p.Z - right.Z * f.width, t)
+		local pitch = math.atan2(hb - hs, 2 * f.length) * f.bob
+		local roll = math.atan2(hr - hl, 2 * f.width) * f.bob
+		local rot = f.rest - f.rest.Position
+		m:PivotTo(CFrame.new(p + Vector3.new(0, (hc - Waves.SeaLevel) * f.bob, 0)) * rot * CFrame.Angles(pitch, 0, -roll))
+	end
+
+	for m, s in pairs(swayers) do
+		if not m.Parent then swayers[m] = nil; continue end
+		local a = s.amp * math.sin(t * 0.9 + s.phase) + s.amp * 0.4 * math.sin(t * 2.1 + s.phase * 1.7)
+		local b = s.amp * 0.6 * math.cos(t * 0.7 + s.phase)
+		local hinge = CFrame.new(s.base)
+		m:PivotTo(hinge * CFrame.Angles(b, 0, a) * hinge:Inverse() * s.rest)
+	end
+end)

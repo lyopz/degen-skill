@@ -11,6 +11,7 @@ description: lyopz's library of reusable Roblox Studio templates (ModuleScripts,
 `templates/` — one `.lua` file per template:
 - `Name.lua` → ModuleScript (goes to ReplicatedStorage), `Name.server.lua` → Script (ServerScriptService), `Name.client.lua` → LocalScript (StarterPlayerScripts).
 - Current: `VFX` (fireball, flaming legs, aura, explosion, camera shake), `Motion` (spin, bob, pet follow, waddle, collect pop), `ButtonFeel` (button hover/press/bounce/sounds, panel open/close, deny shake).
+- Ocean kit (use all three together): `Waves` (shared Gerstner wave math), `OceanMesh` (animated EditableMesh ocean with depth colors, whitecaps, shore foam), `OceanClient` (runs the ocean, floats `FloatOnWaves`-tagged ships, sways `Sway`-tagged trees). Needs EditableMesh enabled in Game Settings > Security; falls back to terrain water.
 
 ## How templates reach his Roblox Studio
 1. Add/update the `.lua` in `templates/`, keep a header comment with usage.

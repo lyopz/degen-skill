@@ -204,7 +204,240 @@ function Motion.Collect(part)
 end
 
 return Motion
-]]></ProtectedString></Properties></Item><Item class="Script" referent="T2"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+]]></ProtectedString></Properties></Item><Item class="LocalScript" referent="T2"><Properties><string name="Name">OceanClient</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
+-- Tags: "FloatOnWaves" (Model; optional attributes BobScale, Length, Width; its pivot's
+-- LookVector = bow direction), "Sway" (Model; optional attribute SwayDegrees).
+-- Needs Waves + OceanMesh in ReplicatedStorage. Terrain water should fill to y = 0 for swimming.
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+local RS = game:GetService("ReplicatedStorage")
+local Waves = require(RS:WaitForChild("Waves"))
+local OceanMesh = require(RS:WaitForChild("OceanMesh"))
+
+local holder = Instance.new("Folder")
+holder.Name = "OceanLocal"
+holder.Parent = workspace
+local ok, ocean = pcall(OceanMesh.Build, holder, Waves.Now())
+if not ok then
+	-- EditableMesh disabled for this experience: the saved terrain water stays visible
+	warn("[OceanClient] mesh ocean unavailable: " .. tostring(ocean))
+	ocean = nil
+	Waves.Lift = 0
+else
+	OceanMesh.HideTerrainWater()
+end
+
+-- floating models: remember their rest pose once
+local floaters = {}
+local function addFloater(m)
+	if not m:IsA("Model") or floaters[m] then return end
+	local cf, size = m:GetBoundingBox()
+	local pivot = m:GetPivot()
+	floaters[m] = {
+		rest = pivot,
+		look = Vector3.new(pivot.LookVector.X, 0, pivot.LookVector.Z).Unit,
+		length = m:GetAttribute("Length") or size.Z * 0.4,
+		width = m:GetAttribute("Width") or size.X * 0.35,
+		bob = m:GetAttribute("BobScale") or 0.8,
+	}
+end
+for _, m in ipairs(CollectionService:GetTagged("FloatOnWaves")) do addFloater(m) end
+CollectionService:GetInstanceAddedSignal("FloatOnWaves"):Connect(addFloater)
+
+local swayers = {}
+local function addSway(m)
+	if not m:IsA("Model") or swayers[m] then return end
+	local cf, size = m:GetBoundingBox()
+	local pivot = m:GetPivot()
+	local base = Vector3.new(cf.Position.X, cf.Position.Y - size.Y / 2, cf.Position.Z)
+	swayers[m] = { rest = pivot, base = base, phase = math.random() * 10, amp = math.rad(m:GetAttribute("SwayDegrees") or 1.6) }
+end
+for _, m in ipairs(CollectionService:GetTagged("Sway")) do addSway(m) end
+CollectionService:GetInstanceAddedSignal("Sway"):Connect(addSway)
+
+local frame = 0
+local stride, updates, avg = 1, 0, 0
+RunService.Heartbeat:Connect(function()
+	local t = Waves.Now()
+	frame += 1
+	-- ocean: adaptive rate. Every frame on fast devices; every 2nd/3rd frame if updates get
+	-- expensive (phones). Foam colors refresh on every 3rd update.
+	if ocean and frame % stride == 0 then
+		local c0 = os.clock()
+		updates += 1
+		ocean.Update(t, updates % 3 == 0)
+		local cost = os.clock() - c0
+		avg = avg * 0.9 + cost * 0.1
+		if avg > 0.006 then stride = 3 elseif avg > 0.0035 then stride = 2 else stride = 1 end
+	end
+
+	for m, f in pairs(floaters) do
+		if not m.Parent then floaters[m] = nil; continue end
+		local p = f.rest.Position
+		local fwd, right = f.look, f.look:Cross(Vector3.yAxis)
+		local hc = Waves.Height(p.X, p.Z, t)
+		local hb = Waves.Height(p.X + fwd.X * f.length, p.Z + fwd.Z * f.length, t)
+		local hs = Waves.Height(p.X - fwd.X * f.length, p.Z - fwd.Z * f.length, t)
+		local hr = Waves.Height(p.X + right.X * f.width, p.Z + right.Z * f.width, t)
+		local hl = Waves.Height(p.X - right.X * f.width, p.Z - right.Z * f.width, t)
+		local pitch = math.atan2(hb - hs, 2 * f.length) * f.bob
+		local roll = math.atan2(hr - hl, 2 * f.width) * f.bob
+		local rot = f.rest - f.rest.Position
+		m:PivotTo(CFrame.new(p + Vector3.new(0, (hc - Waves.SeaLevel) * f.bob, 0)) * rot * CFrame.Angles(pitch, 0, -roll))
+	end
+
+	for m, s in pairs(swayers) do
+		if not m.Parent then swayers[m] = nil; continue end
+		local a = s.amp * math.sin(t * 0.9 + s.phase) + s.amp * 0.4 * math.sin(t * 2.1 + s.phase * 1.7)
+		local b = s.amp * 0.6 * math.cos(t * 0.7 + s.phase)
+		local hinge = CFrame.new(s.base)
+		m:PivotTo(hinge * CFrame.Angles(b, 0, a) * hinge:Inverse() * s.rest)
+	end
+end)
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T3"><Properties><string name="Name">OceanMesh</string><ProtectedString name="Source"><![CDATA[-- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
+-- Dense rings near the island, wide rings out to the horizon (flat there, hidden by haze).
+-- Usage (client): local o = OceanMesh.Build(folder, Waves.Now()); each frame o.Update(Waves.Now(), doColor)
+-- Edit-time preview: Build into workspace.OceanPreview and delete it on server start
+-- (the EditableMesh content isn't saved with the place).
+-- Lessons: max mesh extent is 2048 studs (FAR_RADIUS 1020); the MeshPart keeps the size it was
+-- created with, so two hidden triangles lock the height range; vertex colors get multiplied by
+-- Lighting.Brightness, so use dark base colors in bright presets.
+local AssetService = game:GetService("AssetService")
+local Waves = require(script.Parent:WaitForChild("Waves"))
+
+local OceanMesh = {}
+
+local SEGMENTS = 120
+local NEAR_STEP = 5        -- radial spacing near the island
+local NEAR_RADIUS = 260
+local FAR_RADIUS = 1020
+local FAR_RINGS = 12
+local ANIMATE_RADIUS = Waves.FadeEnd + 50
+
+-- tuned for the bright cartoon preset (Brightness 3); brighten for darker lighting
+local SHALLOW = Color3.fromRGB(18, 95, 100)
+local MID = Color3.fromRGB(6, 48, 85)
+local DEEP = Color3.fromRGB(3, 24, 55)
+local SHORE_FOAM = Color3.fromRGB(150, 160, 160)
+
+local function depthColor(r)
+	if r < 50 then return SHALLOW end
+	if r < 110 then return SHALLOW:Lerp(MID, (r - 50) / 60) end
+	if r < 320 then return MID:Lerp(DEEP, (r - 110) / 210) end
+	return DEEP
+end
+
+function OceanMesh.Build(parent: Instance, t: number?)
+	local em = AssetService:CreateEditableMesh({ FixedSize = false })
+	local radii = { 0 }
+	local r = 0
+	while r < NEAR_RADIUS do r += NEAR_STEP; table.insert(radii, r) end
+	local grow = (FAR_RADIUS / NEAR_RADIUS) ^ (1 / FAR_RINGS)
+	for _ = 1, FAR_RINGS do r *= grow; table.insert(radii, r) end
+
+	local cx, cz = Waves.Center.X, Waves.Center.Y
+	-- { vid, cid, bx, bz, strength, base color, animate, nid, island shape }
+	local verts = {}
+	local rings = {}
+	for ri, rad in ipairs(radii) do
+		local ring = {}
+		local count = (rad == 0) and 1 or SEGMENTS
+		for s = 0, count - 1 do
+			local a = s / SEGMENTS * math.pi * 2
+			local bx, bz = cx + math.cos(a) * rad, cz + math.sin(a) * rad
+			local vid = em:AddVertex(Vector3.new(bx, Waves.SeaLevel, bz))
+			local base = depthColor(rad)
+			local cid = em:AddColor(base, 1)
+			local nid = em:AddNormal(Vector3.yAxis)
+			local v = { vid, cid, bx, bz, Waves.Strength(bx, bz), base, rad <= ANIMATE_RADIUS, nid, Waves.IslandShape(bx, bz) }
+			table.insert(verts, v)
+			table.insert(ring, v)
+		end
+		rings[ri] = ring
+	end
+	local function tri(a, b, c)
+		local f = em:AddTriangle(a[1], b[1], c[1])
+		em:SetFaceColors(f, { a[2], b[2], c[2] })
+		em:SetFaceNormals(f, { a[8], b[8], c[8] })
+	end
+	-- center fan
+	local c0 = rings[1][1]
+	for s = 1, SEGMENTS do
+		local a, b = rings[2][s], rings[2][s % SEGMENTS + 1]
+		tri(c0, b, a)
+	end
+	for ri = 2, #rings - 1 do
+		local A, B = rings[ri], rings[ri + 1]
+		for s = 1, SEGMENTS do
+			local s2 = s % SEGMENTS + 1
+			tri(A[s], B[s2], B[s])
+			tri(A[s], A[s2], B[s2])
+		end
+	end
+
+	-- two tiny hidden triangles under the island lock the mesh height to +-8 studs,
+	-- so wave motion never gets rescaled by the MeshPart's fixed size
+	for _, y in ipairs({ 8, -8 }) do
+		local p = Vector3.new(cx, Waves.SeaLevel + y, cz)
+		local a = em:AddVertex(p); local b = em:AddVertex(p + Vector3.new(0.01, 0, 0)); local c = em:AddVertex(p + Vector3.new(0, 0, 0.01))
+		em:AddTriangle(a, c, b)
+	end
+
+	local part = AssetService:CreateMeshPartAsync(Content.fromObject(em))
+	part.Name = "Ocean"
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.CastShadow = false
+	part.Material = Enum.Material.SmoothPlastic
+	part.Transparency = 0.1
+	part.Reflectance = 0.1
+	part.Color = Color3.new(1, 1, 1)
+	part.Parent = parent
+
+	-- only vertices that actually move get updated each frame
+	local live = {}
+	for _, v in ipairs(verts) do if v[7] and v[5] > 0 then table.insert(live, v) end end
+
+	local self = { Part = part, Mesh = em, Live = live, VertCount = #verts }
+	function self.Update(time: number, doColor: boolean?)
+		for _, v in ipairs(live) do
+			local dx, dy, dz, nx, ny, nz = Waves.DisplaceNormal(v[3], v[4], time, v[5])
+			em:SetPosition(v[1], Vector3.new(v[3] + dx, Waves.SeaLevel + dy, v[4] + dz))
+			em:SetNormal(v[8], Vector3.new(nx, ny, nz).Unit)
+			if doColor then
+				local crest = math.clamp((dy - (Waves.MaxAmplitude * Waves.Lift * v[5]) - 1.1) / 1.1, 0, 1)
+				-- shore foam: a band at the waterline that pulses like breaking waves
+				local s = v[9]
+				if s > 0.8 and s < 1.25 then
+					local band = 1 - math.abs(s - 0.97) / 0.2
+					if band > 0 then
+						local pulse = 0.55 + 0.45 * math.sin(time * 1.7 - s * 28)
+						crest = math.max(crest, band * pulse)
+					end
+				end
+				em:SetColor(v[2], crest > 0 and v[6]:Lerp(SHORE_FOAM, crest * 0.9) or v[6])
+			end
+		end
+	end
+	if t then self.Update(t, true) end
+	-- the mesh position is baked in world space; keep the part at the origin
+	part.CFrame = CFrame.new()
+	return self
+end
+
+-- Terrain water fills to sea level (for swimming). When the mesh ocean is running, hide the
+-- terrain water surface on this client; otherwise leave the saved terrain-water look.
+function OceanMesh.HideTerrainWater()
+	local T = workspace.Terrain
+	T.WaterTransparency = 1
+	T.WaterReflectance = 0
+	T.WaterWaveSize = 0
+end
+
+return OceanMesh
+]]></ProtectedString></Properties></Item><Item class="Script" referent="T4"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
 -- isn't here or saving fails (Roblox retries). One handler for the whole game.
 -- Fill PRODUCTS / PASSES, and connect Data.Get/Data.Update to your data module (ProfileStore recommended).
@@ -256,7 +489,7 @@ for _, p in ipairs(Players:GetPlayers()) do task.spawn(checkPasses, p) end
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T3"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T5"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
 -- instance location, distance; rate-limit per player.
 -- local Guard = require(game.ReplicatedStorage.RemoteGuard)
@@ -358,7 +591,7 @@ function Guard.Fire(name, ...) folder:WaitForChild(name):FireServer(...) end
 function Guard.Invoke(name, ...) return folder:WaitForChild(name):InvokeServer(...) end
 
 return Guard
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T4"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T6"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
 -- Usage:  local VFX = require(game.ReplicatedStorage.VFX)
 --         VFX.Fireball(hrp.Position + hrp.CFrame.LookVector*3, hrp.CFrame.LookVector)
@@ -497,5 +730,109 @@ function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
 end
 
 return VFX
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+-- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.
+-- Part of the ocean kit: Waves (ModuleScript) + OceanMesh (ModuleScript) + OceanClient (LocalScript),
+-- all from the island build 2026-10-23. Put Waves and OceanMesh in ReplicatedStorage.
+-- Per map, set: Center (island XZ), CalmRadius/FullRadius (calm lagoon -> open sea),
+-- and IslandShape (the coastline, used for shore foam; match your terrain).
+-- Needs EditableMesh enabled: Game Settings > Security > allow Mesh/Image APIs. Without it,
+-- OceanClient falls back to terrain water and sets Lift = 0.
+local Waves = {}
+
+Waves.SeaLevel = 0.3
+-- Lift raises the waves so troughs stay above the terrain water (y = 0) that sits under the
+-- mesh ocean for swimming. Set to 0 when the mesh ocean isn't running.
+Waves.Lift = 1
+Waves.Center = Vector2.new(0, 0)   -- island center (XZ); water is calmer near it
+Waves.CalmRadius = 45              -- inside this the sea is a calm lagoon
+Waves.FullRadius = 140             -- full-size waves from here out
+Waves.FadeStart = 420              -- waves fade to flat toward the horizon
+Waves.FadeEnd = 900
+
+-- dir (XZ), wavelength (studs), amplitude (studs)
+local LIST = {
+	{ Vector2.new(1, 0.25), 110, 1.3 },
+	{ Vector2.new(0.75, 0.65), 62, 0.8 },
+	{ Vector2.new(0.2, 1), 34, 0.42 },
+	{ Vector2.new(-0.55, 0.85), 19, 0.2 },
+}
+local W = {}
+for _, w in ipairs(LIST) do
+	local d = w[1].Unit
+	local k = 2 * math.pi / w[2]
+	local c = math.sqrt(w[2]) * 1.15            -- phase speed, studs/s
+	local q = math.min(1, 0.8 / (k * w[3] * #LIST)) -- steepness, no loops
+	table.insert(W, { dx = d.X, dz = d.Y, k = k, kc = k * c, a = w[3], qa = q * w[3] })
+end
+Waves.MaxAmplitude = 0
+for _, w in ipairs(W) do Waves.MaxAmplitude += w.a end
+
+local function smooth(e0, e1, x)
+	local t = math.clamp((x - e0) / (e1 - e0), 0, 1)
+	return t * t * (3 - 2 * t)
+end
+
+-- 0..1 wave strength at a point (calm lagoon near the island, flat horizon far away)
+function Waves.Strength(x: number, z: number): number
+	local r = math.sqrt((x - Waves.Center.X) ^ 2 + (z - Waves.Center.Y) ^ 2)
+	local near = 0.18 + 0.82 * smooth(Waves.CalmRadius, Waves.FullRadius, r)
+	local far = 1 - smooth(Waves.FadeStart, Waves.FadeEnd, r)
+	return near * far
+end
+
+-- Full Gerstner displacement: returns dx, dy, dz
+function Waves.Displace(x: number, z: number, t: number, s: number?)
+	s = s or Waves.Strength(x, z)
+	if s <= 0 then return 0, 0, 0 end
+	local ox, oy, oz = 0, 0, 0
+	for _, w in ipairs(W) do
+		local f = w.k * (w.dx * x + w.dz * z) - w.kc * t
+		local cf, sf = math.cos(f), math.sin(f)
+		ox += w.qa * w.dx * cf
+		oz += w.qa * w.dz * cf
+		oy += w.a * sf
+	end
+	return ox * s, (oy + Waves.MaxAmplitude * Waves.Lift) * s, oz * s
+end
+
+-- Displacement + surface normal (Gerstner): returns dx, dy, dz, nx, ny, nz
+function Waves.DisplaceNormal(x: number, z: number, t: number, s: number?)
+	s = s or Waves.Strength(x, z)
+	if s <= 0 then return 0, 0, 0, 0, 1, 0 end
+	local ox, oy, oz, nx, ny, nz = 0, 0, 0, 0, 0, 0
+	for _, w in ipairs(W) do
+		local f = w.k * (w.dx * x + w.dz * z) - w.kc * t
+		local cf, sf = math.cos(f), math.sin(f)
+		ox += w.qa * w.dx * cf
+		oz += w.qa * w.dz * cf
+		oy += w.a * sf
+		local wa = w.k * w.a
+		nx += w.dx * wa * cf
+		nz += w.dz * wa * cf
+		ny += w.k * w.qa * sf
+	end
+	return ox * s, (oy + Waves.MaxAmplitude * Waves.Lift) * s, oz * s, -nx * s, 1 - ny * s, -nz * s
+end
+
+-- Surface height (ignores the small horizontal shift; good enough for floating objects)
+function Waves.Height(x: number, z: number, t: number): number
+	local _, dy = Waves.Displace(x, z, t)
+	return Waves.SeaLevel + dy
+end
+
+-- Island coastline (matches the terrain height map): ~1 at the waterline, <1 inland
+function Waves.IslandShape(x: number, z: number): number
+	local dx, dz = x - Waves.Center.X, z - Waves.Center.Y
+	local th = math.atan2(dz, dx)
+	local R = 54 + 9 * math.sin(2 * th + 1) + 6 * math.sin(3 * th + 2.2) + 3 * math.sin(5 * th + 0.4)
+	return math.sqrt(dx * dx + dz * dz) / R
+end
+
+function Waves.Now(): number
+	return workspace:GetServerTimeNow()
+end
+
+return Waves
 ]]></ProtectedString></Properties></Item></Item></Item>
 </roblox>
