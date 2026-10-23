@@ -4,7 +4,8 @@
 #   powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project mythic-cube-pets -Name kappa-concept -From roblox-art-director -Prompt "<detailed prompt>"
 # Prints the saved path. If the automatic way fails it falls back to: prompt pasted, lyopz clicks download, picked up from Downloads.
 # Other outputs: SKIPPED / NO_IMAGE.
-param([string]$Prompt, [string]$Name = 'image', [string]$Project = '', [string]$From = 'Lead', [int]$Minutes = 15)
+# Edit an existing asset: add -Ref "<current approved picture>" and a prompt like "Edit this exact picture: keep everything the same, only add ...".
+param([string]$Prompt, [string]$Name = 'image', [string]$Project = '', [string]$From = 'Lead', [int]$Minutes = 15, [string]$Ref = '')
 $ErrorActionPreference = 'Continue'
 $RG = Join-Path $env:USERPROFILE 'RobloxGames'; $D = Join-Path $RG '.degen'
 New-Item -ItemType Directory -Force -Path "$D\inbox", "$D\answers" | Out-Null
@@ -76,7 +77,7 @@ if ($targets -and $node) {
   if (-not (Test-Path $nm)) { Write-Host '  first run: installing the browser helper (one time)...'; Push-Location $app; npm install --no-save --no-audit --no-fund playwright-core@1.48.2 2>&1 | Out-Null; Pop-Location }
   $pf = Join-Path $env:TEMP ('gpt-prompt-' + $id + '.txt'); [IO.File]::WriteAllText($pf, $Prompt, (New-Object Text.UTF8Encoding $false))
   $outBase = Join-Path $destDir ($safe + '-' + (Get-Date -Format 'HHmmss'))
-  $saved = & $node (Join-Path $app 'gpt-image.mjs') $pf $outBase $url | Select-Object -Last 1
+  $saved = & $node (Join-Path $app 'gpt-image.mjs') $pf $outBase $url $Ref | Select-Object -Last 1
   Remove-Item $pf -Force -ErrorAction SilentlyContinue
   if ($saved -and (Test-Path $saved)) { Done $saved }
   $auto = $true   # prompt was (probably) sent; fall back to the download pick-up below

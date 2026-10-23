@@ -2,7 +2,7 @@
 // node gpt-image.mjs <promptFile> <outFileNoExt> <url>   -> prints the saved path on the last line
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
-const [,, promptFile, outBase, url] = process.argv;
+const [,, promptFile, outBase, url, refImage] = process.argv;
 const prompt = fs.readFileSync(promptFile, 'utf8');
 const log = (...a) => console.error(...a);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -14,10 +14,16 @@ await page.goto(url, { waitUntil: 'domcontentloaded' });
 const box = page.locator('#prompt-textarea, div[contenteditable="true"]').first();
 try { await box.waitFor({ timeout: 60000 }); } catch { log('ChatGPT message box not found (signed out?)'); process.exit(2); }
 await sleep(1500);
-const before = new Set(await page.evaluate(() => [...document.images].map(i => i.currentSrc || i.src)));
+
+if (refImage && fs.existsSync(refImage)) {
+  // attach the current picture so ChatGPT edits it instead of starting over
+  const input = page.locator('input[type="file"]').first();
+  try { await input.setInputFiles(refImage); log('  attached the current picture'); await sleep(4000); } catch (e) { log('  could not attach the picture: ' + e.message); }
+}
 await box.click();
 await page.keyboard.insertText(prompt);
 await sleep(800);
+const before = new Set(await page.evaluate(() => [...document.images].map(i => i.currentSrc || i.src)));
 const send = page.locator('[data-testid="send-button"], button[aria-label*="Send"]').first();
 if (await send.count() && await send.isEnabled()) await send.click(); else await page.keyboard.press('Enter');
 log('[3/4] Prompt sent - waiting for the picture...');

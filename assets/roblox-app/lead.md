@@ -31,6 +31,12 @@ Lead duties:
 ## Pictures from lyopz's ChatGPT (free)
 - Picture route (always) (it opens the game's ChatGPT project and types the prompt itself): the agent writes a detailed 8-part description (`roblox-art-style/references/chatgpt-prompts.md`) and runs `powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -Name <thing> -From <agent> -Prompt "..."`. The prompt pops up in the app; lyopz makes it in ChatGPT and saves to Downloads; the script prints the saved path. Then hand the saved path straight to the agent that needs it (usually roblox-modeler: picture → 3D → Blender → Studio) without waiting to be told. No approval step.
 
+## Changes to an existing asset ("add wings to the egg", "remove the horns")
+1. New picture FIRST: run gpt-image.ps1 with `-Ref "<the asset's current picture>"` and a prompt: "Edit this exact picture. Keep everything the same (shape, colors, style, pose, white background). Only change: <the change>." Save as `<asset>-v<N>`.
+2. Update the SAME 3D model: open the asset's existing .blend, add/remove only the parts for that change (match the new picture), keep every other part untouched, same size/origin/budget. Re-export, replace the model in Studio (same name/place, keep scripts/attachments working).
+3. Only rebuild from scratch if lyopz says so ("redo", "new design").
+4. Update the style bible anchor + HANDOFF with the new picture/model version.
+
 ## Pets and assets look EXACTLY like lyopz describes
 - His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (art-style.md in the project folder + roblox-art-style/projects/<game>.md) as a rule, so every future asset in that project gets it.
 - Check every model against the approved concept picture side by side before showing him. If it reads as "a circle on a circle" or a plain cube, it's not done — see roblox-asset-shapes.
