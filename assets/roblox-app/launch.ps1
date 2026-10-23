@@ -4,6 +4,19 @@ param([switch]$AppOnly)
 if (-not $PSBoundParameters.ContainsKey('AppOnly')) { $AppOnly = $true }  # app opens alone; start tasks from the app (or use -AppOnly:$false)
 $ErrorActionPreference = 'SilentlyContinue'
 $app  = $PSScriptRoot
+function Start-Activity($app) {
+  $logDir = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+  $hook = (Join-Path $app 'activity-hook.ps1')
+  $cmdline = 'powershell -NoProfile -ExecutionPolicy Bypass -File "' + $hook + '"'
+  $h = @{ type = 'command'; command = $cmdline }
+  $settings = @{ hooks = @{ PreToolUse = @(@{ matcher = '*'; hooks = @($h) }); SubagentStop = @(@{ hooks = @($h) }); Stop = @(@{ hooks = @($h) }); UserPromptSubmit = @(@{ hooks = @($h) }) } }
+  $sf = Join-Path $app 'roblox-hooks.json'
+  [IO.File]::WriteAllText($sf, ($settings | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding $false))
+  $open = Get-Process powershell -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq 'Roblox Activity' }
+  if (-not $open) { Start-Process powershell.exe -ArgumentList @('-NoExit','-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $app 'activity.ps1')) }
+  return $sf
+}
+
 $repo = Split-Path -Parent (Split-Path -Parent $app)
 if (-not $env:DEGEN_NO_PULL) { git -C $repo pull --quiet --ff-only 2>$null | Out-Null }
 
@@ -58,7 +71,7 @@ if (-not $AppOnly) {
   $games = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path $games | Out-Null
   $mcp = Join-Path $app 'roblox-mcp.json'
   # Fast Roblox Claude: only Roblox_Studio MCP, Claude credits (API key hidden for this window only)
-  $lead = Join-Path $app 'lead.md'
-  $cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location '$games'; `$host.UI.RawUI.WindowTitle='Roblox Lead'; claude --strict-mcp-config --mcp-config '$mcp' --append-system-prompt (Get-Content -Raw '$lead') '/roblox'"
+  $lead = Join-Path $app 'lead.md'; $sf = Start-Activity $app
+  $cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location '$games'; `$host.UI.RawUI.WindowTitle='Roblox Lead'; claude --strict-mcp-config --mcp-config '$mcp' --settings '$sf' --append-system-prompt (Get-Content -Raw '$lead') '/roblox'"
   Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-Command', $cmd)
 }
