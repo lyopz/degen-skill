@@ -69,6 +69,12 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 .recent{display:flex;flex-direction:column;gap:8px}
 .ri{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px}
 .ri span{color:var(--muted);font-size:12px;white-space:nowrap}.ri button{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer}
+.plan{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.plan-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}.plan h3{font-size:16px}
+.wave{margin-top:10px}.wave-t{font:11px "JetBrains Mono",monospace;letter-spacing:.15em;color:var(--red2);text-transform:uppercase;margin-bottom:6px}
+.ws{display:flex;flex-direction:row;gap:10px;font-size:14px;color:var(--text);align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:var(--panel2);cursor:pointer}
+.ws input{margin-top:3px;accent-color:#e11d2e}.ws b{font-family:"JetBrains Mono",monospace;font-size:13px}.ws span{color:var(--muted);font-size:13px;display:block}
+.ws.off{opacity:.45}
 </style>
 </head>
 <body>
@@ -93,6 +99,12 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 <label>Run as team in parallel?<select id="b-team"><option value="yes">Yes — lead splits it across agents</option><option value="no">No — one job</option></select></label>
 <label class="full">Describe it (what, where, the vibe)<textarea id="b-desc" placeholder="e.g. a pigeon pet, cube style, with flapping wings, follows the player"></textarea></label>
 <label class="full">Reference (optional: game study, picture, anchor, link)<input id="b-ref" placeholder="e.g. like the pets in Pet Simulator 99, or studies/grow-a-garden"></label>
+</div>
+<div class="plan" id="plan-box">
+<div class="plan-hd"><div><h3>Recommended split</h3><p class="tip" style="margin:2px 0 0">Based on what you typed. Untick anything you don't need. Same wave = runs at the same time.</p></div>
+<div class="tabs" id="plan-mode" style="margin:0"></div></div>
+<div id="plan"></div>
+<p class="tip" id="plan-sum"></p>
 </div>
 <details class="out"><summary>Show the full brief</summary><pre id="b-out"></pre></details>
 <div class="row"><button class="btn big" id="b-start">▶ Start task</button><button class="btn ghost" id="b-copy">⧉ Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
@@ -167,18 +179,59 @@ const gSel=document.getElementById('b-game');
 gSel.innerHTML='<option value="">New game (make a style bible first)</option>'+R.bibles.map(b=>`<option>${esc(b.n)}</option>`).join('');
 const AG={asset:['roblox-art-director (concept + translation)','roblox-modeler','roblox-animator / roblox-vfx-artist if it moves or glows'],map:['roblox-map-builder','roblox-modeler for detailed props'],ui:['roblox-ui-designer','roblox-scripter for any server logic'],vfx:['roblox-vfx-artist'],anim:['roblox-animator'],system:['roblox-scripter'],cooler:['roblox-reviewer (10,000x cooler checklist)','then the agents it names']};
 const SK={asset:'roblox-art-style, roblox-assets, 3d-assets',map:'roblox-design (maps.md), roblox-art-style, 3d-assets',ui:'roblox-design (ui.md + ButtonFeel), roblox-art-style',vfx:'roblox-assets (vfx.lua), roblox-design (game-feel.md)',anim:'roblox-assets (motion), roblox-design (game-feel.md)',system:'roblox-dev (RemoteGuard, PurchaseHandler, lessons)',cooler:'roblox-design (10,000x cooler checklist), roblox-art-style'};
-function build(){const g=gSel.value,t=document.getElementById('b-type').value,c=+document.getElementById('b-cred').value||0,team=document.getElementById('b-team').value==='yes',d=document.getElementById('b-desc').value.trim()||'[describe it]',r=document.getElementById('b-ref').value.trim();
+
+// ---- task splitter: recommends parallel workstreams in waves ----
+const KW=(d,re)=>re.test(d);
+function recommend(t,d){d=(d||'').toLowerCase();const W=[];const add=(agent,job,wave,why,core)=>W.push({agent,job,wave,why,core:!!core,on:true});
+ const pet=KW(d,/pet|creature|animal|npc|mob|monster|character|bird|dog|cat|dragon|chicken|pigeon/),moves=KW(d,/walk|fly|flap|follow|move|run|jump|attack|anim|wings?/),glow=KW(d,/fire|flame|glow|aura|magic|sparkle|explod|effect|trail|rare|legendary|golden|rainbow/),
+ shop=KW(d,/shop|buy|sell|coin|gem|currency|egg|hatch|rebirth|upgrade|save|data|leaderboard|quest|trade|inventory/),ui=KW(d,/ui|hud|button|menu|shop|inventory|popup|screen|counter/),map=KW(d,/map|island|lobby|zone|world|level|obby|arena|biome|terrain|spawn|tree|forest|city|town/),newStyle=!gSel.value;
+ if(newStyle)add('roblox-art-director','Style bible + 1 concept picture for approval',0,'everything else copies this look',true);
+ if(t==='asset'){add('roblox-art-director','Look up the real thing → translate into the game style (3–5 bullets) + concept picture',1,'locks the design before modeling',true);
+  add('roblox-modeler','Build the model (Blender if simple, Higgsfield if detailed), Roblox-ready',2,'needs the approved concept',true);
+  if(moves||pet)add('roblox-animator',pet?'Rig + idle/walk (or fly) loop + follow motion':'Motion loop',3,'needs the finished model');
+  if(glow||pet)add('roblox-vfx-artist',glow?'Effects from the description (layered, palette colors)':'Rarity glow/aura for rare variants',2,'independent of the mesh, uses the palette');
+  if(shop||pet)add('roblox-scripter',pet?'Pet follow/equip system, server-owned, saved':'Systems the asset needs',2,'logic can be built against a placeholder');}
+ if(t==='map'){add('roblox-map-builder','Layout + terrain + lighting preset, landmark, spawn view',1,'sets the space everything sits in',true);
+  add('roblox-modeler','Detailed props (1–3 variants each, duplicated)',1,'props can be made while terrain is built');
+  if(glow||KW(d,/water|ambient|firefl|snow|mist/))add('roblox-vfx-artist','Ambient effects (mist, fireflies, waterfalls…)',2,'needs the layout');
+  add('roblox-map-builder','Place props, snap to ground, ambient motion, streaming/perf',2,'needs props + terrain');
+  if(shop||ui)add('roblox-ui-designer','Zone/shop UI the map needs',2,'independent');}
+ if(t==='ui'){add('roblox-ui-designer','Layout (Scale + constraints), ButtonFeel, phone/console checks',1,'',true);
+  if(shop)add('roblox-scripter','Server side: purchases/data via RemoteGuard + PurchaseHandler',1,'UI and server logic split cleanly');
+  if(glow)add('roblox-vfx-artist','UI pop effects (sparkles, reward bursts)',2,'needs the buttons/panels');}
+ if(t==='vfx'){add('roblox-vfx-artist','Build the effect (3–5 layers), sound + camera shake',1,'',true);if(shop||KW(d,/damage|hit|attack|skill|ability/))add('roblox-scripter','Server-side trigger, damage, cooldowns',1,'logic separate from visuals');}
+ if(t==='anim'){add('roblox-animator','Rig + loops / scripted motion',1,'',true);if(glow)add('roblox-vfx-artist','Effects attached to bones/attachments',2,'needs the rig');}
+ if(t==='system'){add('roblox-scripter','Server systems (data, remotes, purchases) + tests',1,'',true);if(ui)add('roblox-ui-designer','UI for the system',1,'UI can be built against the remote names');}
+ if(t==='cooler'){add('roblox-reviewer','Run the 10,000x cooler checklist → ranked fix list',1,'decides what to change',true);
+  add('roblox-map-builder','Lighting + landmark + ambient motion fixes',2,'');add('roblox-vfx-artist','Effects/juice fixes',2,'');add('roblox-ui-designer','Button feel + UI polish fixes',2,'');}
+ if(!W.length)add('lead','Do it directly (small job)',1,'',true);
+ add('roblox-reviewer','Final check: style, budgets, phone, errors, "done means"',9,'always last',true);
+ return W}
+let PLAN=[],MODE='balanced';
+const MODES=[['fast','Fast (fewest agents)'],['balanced','Balanced'],['max','Max parallel']];
+function applyMode(list){if(MODE==='fast')list.forEach(w=>{if(!w.core)w.on=false});if(MODE==='max'){const ws=[...new Set(list.filter(w=>w.wave>0&&w.wave<9).map(w=>w.wave))];list.forEach(w=>{if(w.wave>1&&w.wave<9&&w.agent!=='roblox-animator'&&w.agent!=='roblox-map-builder')w.wave=Math.min(...ws)})}return list}
+function drawPlan(){const box=document.getElementById('plan');const team=document.getElementById('b-team').value==='yes';document.getElementById('plan-box').style.display=team?'':'none';
+ const waves=[...new Set(PLAN.map(w=>w.wave))].sort((a,b)=>a-b);box.innerHTML='';
+ waves.forEach((wv,i)=>{const d=document.createElement('div');d.className='wave';d.innerHTML=`<div class="wave-t">${wv===9?'Last':wv===0?'First':'Wave '+i}</div>`;
+  PLAN.filter(w=>w.wave===wv).forEach(w=>{const l=document.createElement('label');l.className='ws'+(w.on?'':' off');l.innerHTML='<input type="checkbox"><div><b></b><span></span></div>';const cb=l.querySelector('input');cb.checked=w.on;cb.disabled=w.agent==='roblox-reviewer'&&w.wave===9;
+   l.querySelector('b').textContent=w.agent;l.querySelector('span').textContent=w.job+(w.why?' — '+w.why:'');cb.onchange=()=>{w.on=cb.checked;l.classList.toggle('off',!w.on);sum();build(true)};d.appendChild(l)});box.appendChild(d)});sum()}
+function sum(){const on=PLAN.filter(w=>w.on),n=new Set(on.map(w=>w.wave)).size,par=Math.max(...[...new Set(on.map(w=>w.wave))].map(v=>on.filter(w=>w.wave===v).length));document.getElementById('plan-sum').textContent=`${on.length} jobs in ${n} waves · up to ${par} agents at once`}
+function replan(){PLAN=applyMode(recommend(document.getElementById('b-type').value,document.getElementById('b-desc').value));drawPlan()}
+const pm=document.getElementById('plan-mode');MODES.forEach(([m,l])=>{const b=document.createElement('button');b.textContent=l;if(m===MODE)b.className='on';b.onclick=()=>{MODE=m;pm.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));replan();build(true)};pm.appendChild(b)});
+function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementById('b-type').value,c=+document.getElementById('b-cred').value||0,team=document.getElementById('b-team').value==='yes',d=document.getElementById('b-desc').value.trim()||'[describe it]',r=document.getElementById('b-ref').value.trim();
  const L=[];
  L.push(`Task: ${d}`);
  L.push(g?`Game: "${g}" — follow its style bible (roblox-art-style/projects/${g}.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
  if(r)L.push(`Reference: ${r}`);
  L.push(`Skills: ${SK[t]}. Read roblox-dev/lessons.md first.`);
- L.push(team?`Run as the lead with the Roblox team in parallel: ${AG[t].join('; ')}. Give each agent the game, bible path, spec and its credit budget; then roblox-reviewer checks everything.`:`Use: ${AG[t].join('; ')}.`);
+ if(team){const on=PLAN.filter(w=>w.on),wv=[...new Set(on.map(w=>w.wave))].sort((a,b)=>a-b);
+  L.push('Run as the LEAD with this split (same wave = run in parallel; start a wave only when the one before it is done):\n'+wv.map((v,i)=>'  '+(v===9?'Last':v===0?'First':'Wave '+i)+': '+on.filter(w=>w.wave===v).map(w=>w.agent+' → '+w.job).join(' | ')).join('\n')+'\nGive each agent the game, bible path, spec, its share of the credit budget, and what NOT to touch. If the split looks wrong once you see the place, adjust it and tell me in one line.');}
+ else L.push(`Use: ${AG[t].join('; ')}.`);
  L.push(`Credits: max ${c} Higgsfield credits${c?'':' (use free routes only: Blender, Roblox parts/terrain/VFX, scripts, free Creator Store assets that match the style)'}. Preflight cost before any generation.`);
  L.push(`Follow roblox-design/references/first-try.md:\n  1) Write the spec (what/where, style, reference, numbers, 3–6 "done means" checks, credits) and show it to me in 5 lines.\n  2) Build ONE piece, screenshot it in Studio, compare to the reference + bible, fix, then scale up.\n  3) Before saying done: player-view + wide screenshots, phone check for UI, no Output errors, budgets OK, tick every "done means".`);
  L.push(`Finish: short report (what, where in the place, credits spent), add lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo.`);
  document.getElementById('b-out').textContent=L.join('\n\n')}
-['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',build));build();
+['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',()=>build()));build();
 document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='⧉ Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};
 const b64u=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const go=t=>{location.href='degenroblox://task'+(t?'?b='+b64u(t):'')};
