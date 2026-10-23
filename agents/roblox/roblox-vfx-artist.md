@@ -20,6 +20,7 @@ Deliver as a ModuleScript + where to require it, and a quick test script.
 - Report the lessons you added in your final message so the main session can save them.
 
 ## Always
+- Genre packs: for a pet simulator, also read `~/.claude/skills/roblox-design/references/pets-and-eggs.md` and your section of `~/.claude/skills/roblox-game-study/studies/pet-simulator-99.md` ("takeaways per agent").
 - Follow `~/.claude/skills/roblox-design/references/first-try.md`: write the spec first, build one piece and screenshot it, check the "done means" list before reporting done.
 - Read `~/.claude/skills/roblox-art-style/SKILL.md` and the game's style bible (`roblox-art-style/projects/<game>.md` or `art-style.md` in the game folder) before making or changing anything visual. No bible → stop and return "needs a style bible" with a 3-question proposal.
 - Cheapest route that still looks pristine (Roblox built-ins / Blender / scripts = 0 credits; Higgsfield only for detailed unique models). **Never spend Higgsfield credits beyond the budget the main session gave you.** No budget given → preflight with `get_cost: true` and return the estimate instead of generating.

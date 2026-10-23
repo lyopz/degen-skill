@@ -17,6 +17,9 @@ Read the reference that matches the job:
 - Keeping every asset in one look: `roblox-art-style` (per-project style bible).
 - Assets/effects to build things: `roblox-assets` (models, rigs, VFX scripts). 3D source images: `3d-assets` prompt library.
 
+## Genre packs
+- **Pet simulator:** `references/pets-and-eggs.md` + `roblox-game-study/studies/pet-simulator-99.md` (map chain, machines and their pacing, economy, per-agent takeaways).
+
 ## The 2026 meta in one screen
 - **Most players are on phones.** Design touch-first: big thumb-reachable buttons, readable at small sizes, and test portrait + landscape phone, tablet, 21:9 PC, and console (gamepad).
 - **Top genres:** brainrot/meme hybrids (biggest category), escape & survival, simulators (highest earning), anime fighting (fastest growing), horror (fast growth), town/city RP, tower defense, competitive parkour/obby, management tycoons. Hybrids win (brainrot + fighting, tycoon + horror, simulator + RPG).
