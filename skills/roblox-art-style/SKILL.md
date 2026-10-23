@@ -24,6 +24,8 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 7. **Save** the approved asset in the bible's anchor list (picture job id + file) and add any new rule learned. The bible gets stronger with every asset.
 
 ## Making a style bible (new project)
+
+**Saved styles first.** lyopz saves looks he likes in the app's **Save for later** tab, each with his own name: `styles/<name>/` in this repo (`style.md` = what he likes + the look/palette/rules, `prompts.md` = the ChatGPT/Customuse prompts that worked, `pic-*.png` = anchor pictures). If the brief names one, start the new bible from it: copy its shapes, palette and rules, use its pictures as the anchors/reference images, and reuse its prompt wording. These are the best examples of his taste, so check them when writing any prompt for a new game too.
 Ask lyopz only what's missing: game genre, vibe words (3), 1–3 games/pictures he likes. Then:
 1. Make **one concept picture** (Higgsfield, cheap) of the world + 2–3 sample assets in the chosen preset. Iterate until he says yes — this becomes **anchor #1**.
 2. Fill `references/bible-template.md` → `~/RobloxGames/<project>/art-style.md` (palette hexes pulled from the approved picture).

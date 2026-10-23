@@ -15,6 +15,8 @@ Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks o
 - `~/RobloxGames/.degen/taste-log.jsonl` — same lines, all projects.
 - The project's style bible (`~/RobloxGames/<project>/art-style.md`, local only) — game-specific rules go in its **Learned rules**.
 
+- `styles/<name>/` (repo root) — whole looks lyopz liked and named in the app's **Save for later** tab, with the prompts used. Use the one the brief names; otherwise use them as examples of prompts that worked.
+
 ## Making a design
 1. **Load taste:** `references/taste.md` + the project's style bible. Every "Never" is a hard rule; every "Likes" goes into the prompt if it fits.
 2. **Write the prompt** the same way as ChatGPT pictures (`roblox-art-style/references/chatgpt-prompts.md`: one asset, full detail, white background) and add the matching taste lines. Write which taste lines you used in one line of the report.

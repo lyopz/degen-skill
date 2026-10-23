@@ -2,13 +2,18 @@
 #  - GET  /api/state          activity feed, who is working, pending approvals/questions, projects
 #  - POST /api/answer         {id, answer}  -> answers a question / approval the Lead is waiting on
 #  - POST /api/task           {brief}       -> opens a Roblox Lead window with that task
-#  - GET  /f?p=<path>         images/files from ~/RobloxGames only (for approvals + project assets)
+#  - GET  /f?p=<path>         images/files from ~/RobloxGames or the repo's styles/ folder only
+#  - GET  /api/styles         saved styles ("Save for later" tab), from <repo>/styles/<name>/
+#  - GET  /api/style-draft?project=<name>  that project's bible + rated prompts + pictures, to pre-fill a save
+#  - POST /api/styles/save    {name, project, notes, bible, prompts, images[]} -> writes styles/<slug>/ and pushes to GitHub
 # Runs hidden; started by launch.ps1. Only listens on localhost.
 $ErrorActionPreference = 'SilentlyContinue'
 $app  = $PSScriptRoot
+$repo = Split-Path -Parent (Split-Path -Parent $app)
+$ST   = Join-Path $repo 'styles'
 $RG   = Join-Path $env:USERPROFILE 'RobloxGames'
 $D    = Join-Path $RG '.degen'
-foreach ($p in @($RG, $D, "$D\inbox", "$D\answers")) { New-Item -ItemType Directory -Force -Path $p | Out-Null }
+foreach ($p in @($RG, $D, "$D\inbox", "$D\answers", $ST)) { New-Item -ItemType Directory -Force -Path $p | Out-Null }
 $port = 7777
 $http = New-Object Net.HttpListener
 $http.Prefixes.Add("http://localhost:$port/")
@@ -23,7 +28,7 @@ function Send($ctx, $code, $type, [byte[]]$bytes) {
 }
 function SendJson($ctx, $obj) { Send $ctx 200 'application/json; charset=utf-8' ($utf8.GetBytes(($obj | ConvertTo-Json -Depth 8 -Compress))) }
 function ReadBody($ctx) { $sr = New-Object IO.StreamReader($ctx.Request.InputStream, [Text.Encoding]::UTF8); $t = $sr.ReadToEnd(); $sr.Close(); if ($t) { $t | ConvertFrom-Json } }
-function Under($path, $root) { try { $f = [IO.Path]::GetFullPath($path); return $f.StartsWith([IO.Path]::GetFullPath($root), [StringComparison]::OrdinalIgnoreCase) } catch { return $false } }
+function Under($path, $root) { try { $f = [IO.Path]::GetFullPath($path); $r = [IO.Path]::GetFullPath($root).TrimEnd('\') + '\'; return $f.StartsWith($r, [StringComparison]::OrdinalIgnoreCase) } catch { return $false } }
 
 function Get-Projects {
   foreach ($d in Get-ChildItem $RG -Directory | Where-Object { $_.Name -notlike '.*' -and $_.Name -ne 'imports' } | Sort-Object LastWriteTime -Descending) {
@@ -36,6 +41,57 @@ function Get-Projects {
                 chatgpt = $(if (Test-Path $cu) { (Get-Content $cu -TotalCount 1) } else { '' }); handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' }) }
   }
 }
+# Saved styles (lyopz names them in the app's "Save for later" tab). The ONLY game-derived content that goes to the repo,
+# and only what he picked + reviewed in that tab.
+function Slug($t) { ((([string]$t).ToLower() -replace '[^a-z0-9]+', '-').Trim('-')) }
+function Get-Styles {
+  foreach ($d in Get-ChildItem $ST -Directory | Sort-Object LastWriteTime -Descending) {
+    $f = Join-Path $d.FullName 'style.md'; if (-not (Test-Path $f)) { continue }
+    $t = [IO.File]::ReadAllText($f); $n = if ($t -match '(?m)^# (.+)$') { $Matches[1].Trim() } else { $d.Name }
+    $pf = Join-Path $d.FullName 'prompts.md'
+    [ordered]@{ slug = $d.Name; n = $n; updated = $d.LastWriteTime.ToString('yyyy-MM-dd'); text = $t; prompts = $(if (Test-Path $pf) { [IO.File]::ReadAllText($pf) } else { '' })
+                images = @(Get-ChildItem $d.FullName -File | Where-Object { $_.Extension -in '.png','.jpg','.jpeg','.webp' } | Sort-Object Name | ForEach-Object { $_.FullName }) }
+  }
+}
+function Get-StyleDraft($project) {
+  $pdir = Join-Path $RG (([string]$project -replace '[^\w\-\. ]', '') -replace '^\.+', '')
+  if (-not $project -or -not (Test-Path $pdir) -or (Under $RG $pdir)) { return @{ ok = $false } }
+  $bf = Join-Path $pdir 'art-style.md'
+  $fb = @(Get-ChildItem $pdir -Recurse -Filter feedback.jsonl | ForEach-Object { Get-Content $_.FullName -Encoding UTF8 } | Where-Object { $_ } | ForEach-Object { try { $_ | ConvertFrom-Json } catch {} })
+  $prompts = @($fb | Where-Object { $_.prompt } | ForEach-Object { [ordered]@{ name = $_.name; rating = $_.rating; answer = $_.answer; prompt = $_.prompt; image = $_.image } })
+  $imgs = @(Get-ChildItem $pdir -Recurse -File | Where-Object { $_.Extension -in '.png','.jpg','.jpeg','.webp' -and $_.FullName -notmatch '\\(checks|tex)\\' } | Sort-Object LastWriteTime -Descending | Select-Object -First 60 | ForEach-Object { $_.FullName })
+  [ordered]@{ ok = $true; bible = $(if (Test-Path $bf) { [IO.File]::ReadAllText($bf) } else { '' }); prompts = $prompts; images = $imgs }
+}
+function Save-Style($b) {
+  $name = ([string]$b.name).Trim(); $slug = Slug $name
+  if (-not $slug) { return @{ ok = $false; msg = 'Give the style a name' } }
+  $proj = ([string]$b.project -replace '[^\w\-\. ]', '') -replace '^\.+', ''; $pdir = Join-Path $RG $proj
+  if (-not $proj -or -not (Test-Path $pdir)) { return @{ ok = $false; msg = 'Pick a project first' } }
+  $dir = Join-Path $ST $slug
+  if (Test-Path $dir) { Get-ChildItem $dir -File | Remove-Item -Force }   # same name = update it
+  New-Item -ItemType Directory -Force -Path $dir | Out-Null
+  $pics = @(); $i = 0
+  foreach ($p in @($b.images)) {
+    if ($i -ge 8) { break }
+    if ((Under $p $pdir) -and (Test-Path $p -PathType Leaf)) { $i++; $dest = "pic-$i" + [IO.Path]::GetExtension($p).ToLower(); Copy-Item $p (Join-Path $dir $dest) -Force; $pics += $dest }
+  }
+  $md = "# $name`n`n_Saved $(Get-Date -Format 'yyyy-MM-dd') from the Degen Roblox app (Save for later). Named by lyopz._`n`n"
+  if ($b.notes) { $md += "## What lyopz likes about it`n`n$([string]$b.notes)`n`n" }
+  if ($pics.Count) { $md += "## Pictures`n`n" + (($pics | ForEach-Object { "![]($_)" }) -join "`n") + "`n`n" }
+  if ($b.bible) { $md += "## Style (look, shapes, palette, rules)`n`n$([string]$b.bible)`n" }
+  [IO.File]::WriteAllText((Join-Path $dir 'style.md'), $md, $utf8)
+  if ($b.prompts) { [IO.File]::WriteAllText((Join-Path $dir 'prompts.md'), "# Prompts used - $name`n`n$([string]$b.prompts)`n", $utf8) }
+  # push only this style folder
+  $env:GIT_TERMINAL_PROMPT = '0'
+  $rel = "styles/$slug"
+  git -C $repo add -A -- $rel 2>&1 | Out-Null
+  $c = git -C $repo commit -m "Save style: $name" -- $rel 2>&1 | Out-String
+  $out = git -C $repo push 2>&1 | Out-String
+  if ($LASTEXITCODE -ne 0) { git -C $repo pull --rebase --autostash --quiet 2>&1 | Out-Null; $out = git -C $repo push 2>&1 | Out-String }
+  $pushed = ($LASTEXITCODE -eq 0)
+  @{ ok = $true; slug = $slug; pushed = $pushed; msg = $(if ($pushed) { 'Saved and pushed to GitHub' } else { 'Saved on this PC, push failed: ' + $out.Trim() }) }
+}
+
 function Get-State {
   $act = Join-Path $D 'activity.json'
   $a = if (Test-Path $act) { [IO.File]::ReadAllText($act) | ConvertFrom-Json } else { $null }
@@ -55,6 +111,9 @@ while ($http.IsListening) {
     elseif ($path -eq '/api/projects') {
       if (((Get-Date) - $projAt).TotalSeconds -gt 10) { $projCache = @(Get-Projects); $projAt = Get-Date }
       SendJson $ctx @{ projects = $projCache } }
+    elseif ($path -eq '/api/styles') { SendJson $ctx @{ styles = @(Get-Styles) } }
+    elseif ($path -eq '/api/style-draft') { SendJson $ctx (Get-StyleDraft ([Uri]::UnescapeDataString(($u.Query -replace '^\?project=', '')))) }
+    elseif ($path -eq '/api/styles/save' -and $ctx.Request.HttpMethod -eq 'POST') { SendJson $ctx (Save-Style (ReadBody $ctx)) }
     elseif ($path -eq '/api/answer' -and $ctx.Request.HttpMethod -eq 'POST') {
       $b = ReadBody $ctx; $id = ($b.id -replace '[^\w\-]', '')
       if ($id) {
@@ -80,7 +139,7 @@ while ($http.IsListening) {
       SendJson $ctx @{ ok = $true } }
     elseif ($path -eq '/f') {
       $p = [Uri]::UnescapeDataString(($u.Query -replace '^\?p=', ''))
-      if ((Under $p $RG) -and (Test-Path $p -PathType Leaf)) { $ext = [IO.Path]::GetExtension($p).ToLower(); Send $ctx 200 ($(if ($MIME[$ext]) { $MIME[$ext] } else { 'application/octet-stream' })) ([IO.File]::ReadAllBytes($p)) }
+      if (((Under $p $RG) -or (Under $p $ST)) -and (Test-Path $p -PathType Leaf)) { $ext = [IO.Path]::GetExtension($p).ToLower(); Send $ctx 200 ($(if ($MIME[$ext]) { $MIME[$ext] } else { 'application/octet-stream' })) ([IO.File]::ReadAllBytes($p)) }
       else { Send $ctx 404 'text/plain' ($utf8.GetBytes('not found')) } }
     else {
       $rel = if ($path -eq '/') { 'index.html' } else { $path.TrimStart('/') -replace '/', '\' }

@@ -228,6 +228,10 @@ body.awake .orb-cap{color:var(--text)}
 .sheet-in,.drawer,.toast{text-align:left}
 .home{justify-content:flex-start;padding-top:max(84px,9vh)}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
 #orb{width:270px;height:270px}.orb-wrap{margin-top:4px}.orb-cap{margin-top:-10px}
+.pgrid img.pick{opacity:.35;cursor:pointer}.pgrid img.pick.sel{opacity:1;border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,46,.25)}
+.sv label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--dim);margin-bottom:12px}
+.sv input,.sv select,.sv textarea{font:14px Inter;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none}.sv textarea{min-height:90px;resize:vertical;font:12.5px/1.55 "JetBrains Mono",monospace}.sv input:focus,.sv select:focus,.sv textarea:focus{border-color:var(--red)}
+.warn{font-size:12.5px;color:#fbbf24;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:9px 12px;margin-bottom:12px}
 .gpt-p{white-space:pre-wrap;font:13px/1.6 Inter,system-ui;color:#e4e4e7;background:#0b0b0e;border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:260px;overflow:auto;user-select:text}
 </style>
 </head>
@@ -253,6 +257,7 @@ body.awake .orb-cap{color:var(--text)}
   <div class="menu"><button data-v="">Any</button><button data-v="Pet simulator">Pet simulator</button><button data-v="Obby">Obby</button><button data-v="Tycoon">Tycoon</button><button data-v="Simulator">Simulator</button><button data-v="Brainrot">Brainrot</button><button data-v="Horror">Horror</button><button data-v="Fighting / PvP">Fighting / PvP</button><button data-v="Roleplay">Roleplay</button><button data-v="Tower defense">Tower defense</button><button data-v="custom">Custom…</button></div></div>
  <div class="bub" id="bub-game"><button class="bub-btn"><span>Game: <b id="game-l">New</b></span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="menu" id="game-menu"></div></div>
  <div class="bub" id="bub-proj"><button class="bub-btn" id="proj-btn"><span>Projects</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+ <div class="bub" id="bub-save"><button class="bub-btn" id="save-btn"><span>Save for later</span></button></div>
  <div class="bub" id="bub-appr"><button class="bub-btn" id="appr-btn"><span>Approvals</span><i class="cnt" id="appr-n">0</i></button></div>
 </div>
 <div class="home">
@@ -299,6 +304,7 @@ body.awake .orb-cap{color:var(--text)}
 <div class="voice-live" id="voice-live"></div>
 <div class="sheet" id="appr-sheet"><div class="sheet-in"><div class="sheet-hd"><h3>Approvals &amp; questions</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="appr-list"></div></div></div>
 <div class="sheet" id="proj-sheet"><div class="sheet-in"><div class="sheet-hd"><button class="x" id="proj-back" style="display:none">←</button><h3 id="proj-title">Projects</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="proj-body"></div></div></div>
+<div class="sheet" id="save-sheet"><div class="sheet-in"><div class="sheet-hd"><button class="x" id="save-back" style="display:none">←</button><h3 id="save-title">Save for later</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="save-body"></div></div></div>
 <div class="zoom" id="zoom"><img alt=""></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -537,6 +543,46 @@ function showProj(p){$('proj-title').textContent=p.n;$('proj-back').style.displa
  $('pj-gpt').value=p.chatgpt||'';$('pj-gpt-save').onclick=async()=>{const url=$('pj-gpt').value.trim();let ok=false;try{ok=(await fetch('/api/chatgpt-url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project:p.n,url})}).then(r=>r.json())).ok}catch(e){}if(ok)p.chatgpt=url;toast(ok?'Saved — pictures for '+p.n+' open in that ChatGPT project':'Paste a chatgpt.com link')};
  $('pj-go').onclick=()=>{setProj(p.n);$('proj-sheet').classList.remove('open');$('hint2').textContent='Working on '+p.n+' — say or type what to do next';ta.focus()}}
 $('proj-back').onclick=listProj;
+
+// ---- save for later (named styles -> repo styles/<name>/, so future games can reuse them) ----
+let ST=[];
+$('save-btn').onclick=async e=>{e.stopPropagation();$('save-sheet').classList.add('open');listStyles()};
+async function listStyles(){$('save-title').textContent='Save for later';$('save-back').style.display='none';const el=$('save-body');
+ if(!API){el.innerHTML='<div class="empty">Open the app from its shortcut to save styles.</div>';return}
+ el.innerHTML='<div class="empty">Loading…</div>';try{ST=(await fetch('/api/styles').then(r=>r.json())).styles||[]}catch(e){ST=[]}
+ el.innerHTML='<div class="ap-act" style="margin:0 0 12px"><button class="btn" id="sv-new">Save a game\'s style</button></div><div class="hint" style="margin-bottom:8px">Saved styles. Claude reads these when you start a new game with one.</div>'+(ST.length?'':'<div class="empty">Nothing saved yet. Save the look of a game you like and give it a name.</div>');
+ $('sv-new').onclick=()=>newStyle();
+ ST.forEach(s=>{const d=document.createElement('div');d.className='pj';d.innerHTML=(s.images[0]?`<img src="${img(s.images[0])}" alt="">`:'<div class="ph"></div>')+`<div><b>${esc(s.n)}</b><span>${s.images.length} pictures · saved ${esc(s.updated)}</span></div>`;d.onclick=()=>showStyle(s);el.appendChild(d)})}
+function showStyle(s){$('save-title').textContent=s.n;$('save-back').style.display='';const el=$('save-body');
+ el.innerHTML='<div class="ap-act" style="margin:0 0 12px"><button class="btn" id="sv-use">Use for a new game</button></div>'+(s.images.length?`<div class="pgrid">${s.images.map(i=>`<img src="${img(i)}" data-z alt="">`).join('')}</div>`:'')+`<div class="md" style="margin-bottom:12px">${md(s.text.replace(/^!\[\]\(.*\)$/gm,''))}</div>`+(s.prompts?`<div class="md">${md(s.prompts)}</div>`:'');
+ el.querySelectorAll('[data-z]').forEach(i=>i.onclick=()=>zoom(i.src));
+ $('sv-use').onclick=()=>{$('save-sheet').classList.remove('open');ta.value=`New game in my saved style "${s.n}" (styles/${s.slug}). `;ta.dispatchEvent(new Event('input'));ta.focus();$('hint2').textContent='Using style '+s.n+' — say what the game is, then send'}}
+async function newStyle(){$('save-title').textContent='Save a style';$('save-back').style.display='';const el=$('save-body');
+ if(!PJ.length){try{PJ=(await fetch('/api/projects').then(r=>r.json())).projects||[]}catch(e){PJ=[]}}
+ if(!PJ.length){el.innerHTML='<div class="empty">No projects yet. Make a game first, then save its style.</div>';return}
+ el.innerHTML=`<div class="sv"><div class="warn">Only what you keep on this page goes to GitHub (the degen-skill repo, which is public right now). Nothing else from the game folder.</div>
+ <label>Game to save the style from<select id="sv-proj">${PJ.map(p=>`<option${p.n===window.PROJECT?' selected':''}>${esc(p.n)}</option>`).join('')}</select></label>
+ <label>Name this style<input id="sv-name" placeholder="e.g. Soft candy cubes"></label>
+ <label>What you like about it<textarea id="sv-notes" placeholder="round soft edges, bright pastel colors, big shiny eyes…"></textarea></label>
+ <div class="hint" style="color:var(--dim);font-size:12px;margin-bottom:6px">Pictures to keep (click to pick, up to 8)</div><div class="pgrid" id="sv-pics"></div>
+ <label>Style: look, shapes, palette (from the game's style bible; edit out anything you don't want saved)<textarea id="sv-bible" style="min-height:180px"></textarea></label>
+ <label>Prompts used (from your rated designs; edit freely)<textarea id="sv-prompts" style="min-height:140px"></textarea></label>
+ <div class="ap-act"><button class="btn" id="sv-save">Save style</button></div></div>`;
+ const pick=new Set();
+ const load=async()=>{const pj=$('sv-proj').value;let d={};try{d=await fetch('/api/style-draft?project='+encodeURIComponent(pj)).then(r=>r.json())}catch(e){}
+  pick.clear();const liked=new Set((d.prompts||[]).filter(x=>/love|like/.test(x.rating)).map(x=>x.image));
+  $('sv-pics').innerHTML=(d.images||[]).map(i=>`<img class="pick" data-p="${esc(i)}" src="${img(i)}" alt="">`).join('')||'<div class="empty">No pictures in this game yet.</div>';
+  $('sv-pics').querySelectorAll('img').forEach(im=>{const p=im.dataset.p;if(liked.has(p)&&pick.size<8){pick.add(p);im.classList.add('sel')}im.onclick=()=>{if(pick.has(p)){pick.delete(p);im.classList.remove('sel')}else if(pick.size<8){pick.add(p);im.classList.add('sel')}else toast('Up to 8 pictures')}});
+  $('sv-bible').value=d.bible||'';
+  const R={love:0,like:1,note:2,change:3,dislike:4};
+  $('sv-prompts').value=(d.prompts||[]).slice().sort((a,b)=>(R[a.rating]??2)-(R[b.rating]??2)).map(x=>`### ${x.name||'design'} (${x.rating||'not rated'})\n${x.answer&&x.answer!==x.rating?'lyopz: '+x.answer+'\n':''}\n\`\`\`\n${x.prompt}\n\`\`\``).join('\n\n')};
+ $('sv-proj').onchange=load;load();
+ $('sv-save').onclick=async()=>{const name=$('sv-name').value.trim();if(!name){toast('Give the style a name');$('sv-name').focus();return}
+  const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');if(ST.some(s=>s.slug===slug)&&!confirm('A style called "'+name+'" already exists. Replace it?'))return;
+  const b=$('sv-save');b.disabled=true;b.textContent='Saving + pushing…';let j={};
+  try{j=await fetch('/api/styles/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,project:$('sv-proj').value,notes:$('sv-notes').value.trim(),bible:$('sv-bible').value.trim(),prompts:$('sv-prompts').value.trim(),images:[...pick]})}).then(r=>r.json())}catch(e){j={msg:'Could not reach the app server'}}
+  b.disabled=false;b.textContent='Save style';toast(j.msg||'Saved');if(j.ok)listStyles()}}
+$('save-back').onclick=listStyles;
 
 // ---- voice ring (particle orb) ----
 const cv=$('orb'),cx=cv.getContext('2d');let level=0,target=0,awake=false,rot=0;
