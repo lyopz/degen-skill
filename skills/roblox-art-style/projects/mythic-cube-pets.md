@@ -104,3 +104,5 @@ Normal → Golden (flame gold body, sparkle) → Rainbow (hue-shift body, glow s
   - Eggs: faceted/sculpted shell with ornate gold band + gem, crystal crown, glowing swirl rune, on a carved stone pedestal with glowing rune ring.
 - Route: approved picture → image-to-3D (Higgsfield or free Tripo/Meshy/Hunyuan3D) → Blender cleanup to budget. Studio parts alone can't reach this look.
 - lyopz edits as we go: every change he asks for becomes a rule here.
+
+- 2026-10-23 lyopz: v2 Kraken (image-to-3D, decimated) looked faceted/jagged and heavy — rebuild every pet/egg clean in Blender: smooth shading, few tris, crisp glossy eyes with highlights, picture colors. See roblox-asset-shapes rule 0.

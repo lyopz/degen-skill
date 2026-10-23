@@ -39,3 +39,6 @@ When a lesson repeats 2–3 times or is clearly general, promote it into `SKILL.
 - Never force-kill the ChatGPT window — the sign-in cookies get lost. Close it gently.
 - ChatGPT's stop button can stay visible after the image is done: save when the picture is unchanged for ~12 s.
 - "Verify you are human" / sign-in: lyopz does it himself; never try to get around it.
+
+## 2026-10-23 — Models looked faceted and heavy
+- Decimated image-to-3D meshes = jagged facets, lumpy surface, lost eyes, wasted tris. Use them only as a blockout; build clean low-poly + smooth shading in Blender.

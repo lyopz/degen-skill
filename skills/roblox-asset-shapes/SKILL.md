@@ -9,12 +9,15 @@ description: How to give Roblox assets real shape definition so they never look 
 
 **Rule:** a model is done when its **silhouette alone** says what it is, and it matches the approved concept picture side by side. Plain spheres/cubes stacked = not done.
 
+## 0. Smooth + light (lyopz rule)
+Never ship a faceted, lumpy, decimated image-to-3D mesh (`examples/bad-faceted-kraken.png`). Build clean in Blender: few faces + Shade Smooth + Weighted Normal, crisp separate eyes, colors from the picture, small budget (pet 1.5–3k tris). Image-to-3D output = reference only. Details: `references/blender-part-by-part.md`.
+
 ## 1. Pick the build route
 | Looks like | Route | Why |
 |---|---|---|
 | Boxy/simple (crate, coin, cube body, pedestal) | Studio parts **with bevels** (or Blender) | 0 credits, exact colors |
 | Curvy/organic (egg with trims, bush, tree, rock, creature, pet design parts) | **Blender** (Blender connector on lyopz's PC) → MeshPart | Studio parts can't do smooth curves without looking stacked |
-| Very detailed / matches a concept picture exactly | **Image → 3D** from the approved picture, then clean in Blender | fastest path to "looks like the picture" |
+| Very detailed / matches a concept picture exactly | **Blender part by part** from the picture; image→3D only as a blockout to trace (never shipped as-is) | smooth, light, matches the picture |
 | Many copies | 1–3 variants, random rotation/scale ±15% | variety without cost |
 
 **Image → 3D options:** Higgsfield `generate_3d` (credits) · **free:** Tripo, Meshy (free monthly credits, commercial use on free tier per their pages — check), **Hunyuan3D-2** and **TRELLIS 2** (open source, run free on lyopz's PC if the GPU has ~8 GB+ VRAM, unlimited). Always: approved picture first → 3D → Blender cleanup (decimate, fix normals, merge parts, vertex colors / 1 texture) → under budget → import.

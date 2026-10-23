@@ -1,5 +1,16 @@
 # Blender: build every piece to match the picture (part by part)
 
+## RULE: smooth + light, not faceted + heavy (lyopz 2026-10-23)
+Bad: `../examples/bad-faceted-kraken.png` — a decimated image-to-3D mesh: jagged facets everywhere, lumpy surface, eyes lost, too many tris for what it shows. Target: `../examples/target-tidefrost.webp` — smooth toy-like surfaces, clean shapes, crisp details.
+- **Model each asset clean from simple shapes** (rounded cube, cylinders, curves) in Blender, using the picture (and any image-to-3D mesh) only as a **reference/blockout** — never ship a decimated AI mesh.
+- **Low poly but smooth:** few clean faces + **Shade Smooth + Weighted Normal modifier** (or Shade Auto Smooth 30–40°) so it looks round with few tris. Subdivision only at level 1, applied, on curved parts; bevels 2–3 segments.
+- **Flat shading only on crystals/gems** (they're meant to be faceted). Everything else smooth.
+- Budget targets: pet **1.5–3k tris total** (body ~200–400), egg **800–1.5k**, pedestal **≤1k**. Texture: vertex colors or ONE 512 texture; no per-part textures.
+- **Eyes must read:** separate glossy eye parts — dark pupil #1B1530, iris in element color, big white highlight piece top-left, small second highlight. Never let eyes merge into the body.
+- **Colors from the picture:** eyedropper every part; body, accents, glow. Glow only on runes/gems/tips (Neon/emissive in Studio).
+- Simplify, don't lose identity: keep every feature the picture has (crest, dots, side fins, tentacle crystal tips, rune) as a clean simple shape; drop noise (lumps, micro-cracks, random bumps).
+
+
 Goal: the Blender model matches the approved picture **piece by piece**, and fits next to the project's other models in **size and shape language**. Never one blob, never stacked primitives.
 
 ## 0. Before modeling
