@@ -24,6 +24,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 
 ## Desktop app
 - `assets/app/`: Degen Skills desktop app (Edge app-mode window). `launch.ps1` = git pull + build skills.js from SKILL.md files + open window; `install.ps1` makes Desktop/Start shortcuts.
+- Skills show as piles by creator (from reviews/SKILLS_REGISTRY.md at build time) or by task. Skills added after the last build land in a "New" pile until `build.py` is rerun — rerun it whenever a skill is added. Prompt library is NOT shown in the app; `skills/3d-assets/prompts.md` is for Claude to use as examples.
 - Design changes: edit `assets/app/src/template.html`, run `python assets/app/src/build.py`, commit `index.html`. New skills need nothing (app reads the skill folders). New "core" skills with plain descriptions go in `assets/make_assets.py` CORE.
 - Also published as a claude.ai artifact ("Degen Skills") for previews.
 

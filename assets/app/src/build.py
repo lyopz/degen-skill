@@ -20,7 +20,19 @@ for k in ['hero', 'swarm', 'cards']: h = h.replace(f'__{k.upper()}__', 'data:ima
 h = h.replace('__VID__', b64('hero.mp4'))
 h = h.replace('__SKILLS_RAW__', json.dumps(raw, ensure_ascii=False).replace('</', '<\\/'))
 h = h.replace('__CORE__', json.dumps({n: t.title() for t, _, it in CORE for n, _ in it}))
-h = h.replace('__PROMPTS__', json.dumps(open(os.path.join(REPO, 'skills/3d-assets/prompts.md'), encoding='utf-8').read()).replace('</', '<\\/'))
+names = [r['n'] for r in raw]; src = {}
+for row in open(os.path.join(REPO, 'reviews/SKILLS_REGISTRY.md'), encoding='utf-8').read().split('## Reviewed')[0].splitlines():
+    c = [x.strip() for x in row.split('|')]
+    if len(c) < 4 or not c[3] or c[1] in ('Repo', '---'): continue
+    repo = 'lyopz (own)' if c[1].startswith('lyopz') else c[1]
+    for f in re.findall(r'`([\w.-]+)/?`', c[3]):
+        if f in names: src[f] = repo
+for n in names:
+    if n in src: continue
+    if re.match(r'(omni-|cli-|config-)', n): src[n] = 'diegosouzapw/OmniRoute'
+    elif re.match(r'(agentdb|reasoningbank|swarm|hive-mind|sparc|stream-chain|worker-|hooks-|agentic-|pair-prog|verification|performance-an|skill-builder|github-|browser|dual-)', n): src[n] = 'ruvnet/ruflo'
+    elif re.match(r'(animate|animation|emil|apple-design|ask-sonner|break-ui|find-animation|improve-anim|review-anim|pick-ui|prototype|mobile-native|write-swift)', n): src[n] = 'emilkowalski/skills'
+h = h.replace('__SRC__', json.dumps(src))
 h = h.replace('__PLAIN__', json.dumps({n: d for t, _, it in CORE for n, d in it}))
 h = h.replace('<title>Degen Skills</title>', '<title>Degen Skills</title>\n<link rel="icon" href="icon.png">\n<script src="skills.js"></script>', 1)
 open(os.path.join(APP, 'index.html'), 'w', encoding='utf-8').write(h)
