@@ -38,10 +38,11 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-23** — Added `roblox-dev` + templates RemoteGuard, PurchaseHandler. Roblox Studio MCP being set up on his PC (Claude desktop config). 126 skills.
 - **2026-10-23** — Added `roblox-game-study` (study games for ideas; never extract/copy). 125 skills.
 - **2026-10-23** — Added `roblox-templates` (Studio plugin "Degen Templates" + Documents\Roblox Templates, synced by launch.ps1). Daily Roblox refresh scheduled task (8:35 AM ET) also saves important templates. 124 skills.
 - **2026-10-22** — Added the Roblox agent team (`agents/roblox/`, 8 agents; routing in AGENT_ROUTING.md). 83 agents.
-- **2026-10-22** — Added own `roblox-art-style` (per-project style bibles in `skills/roblox-art-style/projects/`). 123 skills. Offered a `roblox-dev` skill (code structure, anti-exploit, DataStores, economy, onboarding, monetization, publishing) — not built yet.
+- **2026-10-22** — Added own `roblox-art-style` (per-project style bibles in `skills/roblox-art-style/projects/`). 123 skills. 
 - **2026-10-22** — Added own `roblox-assets` and `roblox-design` (researched Roblox meta). 3d-assets now splits Web vs Roblox. 122 skills.
 - **2026-10-22** — Robot chicken 3D model (Higgsfield, 35 credits) replaces the Spline robot in the app. Added own `3d-assets` skill (renamed from ai-3d-assets; examples + prompts.md library) (also for Roblox assets). Cursor particle effect follows faster. 120 skills.
 - **2026-10-22** — Added emalorenzo/three-agent-skills (three-best-practices, r3f-best-practices). 119 skills.

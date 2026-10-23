@@ -30,6 +30,7 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 | lyopz (own) | 2026-10-22 | `roblox-art-style/` (SKILL.md + projects/_template.md + examples/pigeon-cube-pet.md) | — | active | Per-project style bibles so all Roblox assets match: reference lookup → style translation → anchors → consistency check. Style presets. |
 | lyopz (own) | 2026-10-23 | `roblox-templates/` (templates/*.lua, make_rbxmx.py, plugin.lua, DegenTemplates.rbxmx) | — | active | Reusable Roblox templates; packed into a Studio plugin + Documents\Roblox Templates by the desktop app launcher. |
 | lyopz (own) | 2026-10-23 | `roblox-game-study/` (SKILL.md + studies/) | — | active | Design breakdowns of Roblox games (research + screenshots), ideas only — no extracting/copying, no botting. |
+| lyopz (own) | 2026-10-23 | `roblox-dev/` (SKILL.md) + templates RemoteGuard, PurchaseHandler | — | active | Roblox scripting: structure, security, data (ProfileStore, limits), purchases, performance, testing. Sources in the skill. |
 | emalorenzo/three-agent-skills | 2026-10-22 | `three-best-practices/`, `r3f-best-practices/` (SKILL.md + rules/) | — | trial | Three.js and React Three Fiber performance rules. Markdown only, no scripts. Skipped the .zip copies and repo-level docs. MIT, upstream f950f95. |
 
 ## Reviewed, not added
