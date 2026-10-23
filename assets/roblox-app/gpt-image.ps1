@@ -78,7 +78,8 @@ if ($page -and (Cdp-Open $page.webSocketDebuggerUrl)) {
   $loggedOut = [bool](Js "!!document.querySelector('[data-testid=login-button], a[href*=""/auth/login""]')")
   if (-not $ready) { Write-Host 'ChatGPT message box not found.' }
   if ($ready -and -not $loggedOut) {
-    $before = [int](Js "document.querySelectorAll('[data-message-author-role=assistant] img').length")
+    $beforeJson = Js "JSON.stringify([...document.images].map(i=>i.currentSrc||i.src))"
+    $bj = if ($beforeJson) { $beforeJson } else { '[]' }
     $p = ($Prompt | ConvertTo-Json -Compress)
     $typed = Js @"
 (async()=>{const box=document.querySelector('#prompt-textarea')||document.querySelector('[contenteditable=true]');box.focus();
@@ -94,18 +95,23 @@ box.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:
       while ((Get-Date) -lt $deadline) {
         Start-Sleep -Seconds 3
         $state = Js @"
-(()=>{const imgs=[...document.querySelectorAll('[data-message-author-role=assistant] img')].filter(i=>i.naturalWidth>=512);
-const busy=!!document.querySelector('[data-testid=stop-button]');const n=document.querySelectorAll('[data-message-author-role=assistant] img').length;
-const im=imgs[imgs.length-1];return JSON.stringify({busy,n,src:im?im.currentSrc||im.src:'',w:im?im.naturalWidth:0})})()
+(()=>{const before=new Set($bj);const busy=!!document.querySelector('[data-testid=stop-button],button[aria-label*=Stop]');
+const imgs=[...document.images].filter(i=>{const s=i.currentSrc||i.src;return s&&!before.has(s)&&i.naturalWidth>=400&&i.naturalHeight>=400&&!/avatar|profile|favicon/i.test(s)});
+const im=imgs.sort((x,y)=>y.naturalWidth*y.naturalHeight-x.naturalWidth*x.naturalHeight)[0];
+return JSON.stringify({busy,n:imgs.length,src:im?im.currentSrc||im.src:'',w:im?im.naturalWidth:0})})()
 "@
         if (-not $state) { continue }
         $s = $state | ConvertFrom-Json
-        if ($s.n -gt $before -and $s.src -and -not $s.busy) { if ($s.src -eq $last) { $stable++ } else { $stable = 0; $last = $s.src }; if ($stable -ge 2) { $src = $s.src; break } }
+        if ($s.src -and -not $s.busy) { if ($s.src -eq $last) { $stable++ } else { $stable = 0; $last = $s.src }; if ($stable -ge 2) { $src = $s.src; break } }
       }
       if ($src) { Write-Host '[4/4] Saving the picture...'
         # ---------- 3) save it into the project ----------
         $s2 = ($src | ConvertTo-Json -Compress)
         $data = Js "(async()=>{const r=await fetch($s2,{credentials:'include'});const b=await r.blob();return await new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.readAsDataURL(b)})})()"
+        if (-not ($data -match '^data:image/')) {
+          try { $tmp = Join-Path $env:TEMP ('gpt-' + $id + '.img'); Invoke-WebRequest -Uri $src -OutFile $tmp -UseBasicParsing -TimeoutSec 60
+                $b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($tmp)); $data = 'data:image/png;base64,' + $b64; Remove-Item $tmp -Force } catch {}
+        }
         if ($data -match '^data:image/(\w+);base64,(.+)$') {
           $ext = if ($Matches[1] -eq 'jpeg') { '.jpg' } else { '.' + $Matches[1] }
           $dest = Join-Path $destDir ($safe + '-' + (Get-Date -Format 'HHmmss') + $ext)
