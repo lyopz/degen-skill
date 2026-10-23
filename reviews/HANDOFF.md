@@ -39,6 +39,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-23** — Island test scene in Studio (terrain sand/water, 3 free palms, bright cartoon preset, spawn). Lessons added to `roblox-dev/lessons.md`. No style bible for it yet (test scene).
 - **2026-10-23** — Added `roblox-dev` + templates RemoteGuard, PurchaseHandler. Roblox Studio MCP being set up on his PC (Claude desktop config). 126 skills.
 - **2026-10-23** — Added `roblox-game-study` (study games for ideas; never extract/copy). 125 skills.
 - **2026-10-23** — Added `roblox-templates` (Studio plugin "Degen Templates" + Documents\Roblox Templates, synced by launch.ps1). Daily Roblox refresh scheduled task (8:35 AM ET) also saves important templates. 124 skills.
