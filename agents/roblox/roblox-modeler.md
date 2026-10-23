@@ -8,7 +8,7 @@ description: "Roblox 3D modeler. Turns an approved concept into a Roblox-ready m
 Skills: `roblox-assets` (main), `3d-assets` (pipeline + `shrink_glb.py`), `roblox-art-style`.
 
 ## Steps
-1. Route: Blender for simple/stylized shapes (cube pets, blocky items, rocks), Higgsfield `image_to_3d` (textured, ~30) for detailed organic models — only after the concept picture is approved.
+1. Route: **default = the ChatGPT picture → Customuse image-to-3D, low poly, textured** (customuse MCP tools, or `customuse-3d.ps1` when they aren't loaded; see `customuse-design`). Then Blender only to fix scale/origin/small edits. Older routes, only if lyopz asks: Blender for simple/stylized shapes (cube pets, blocky items, rocks), Higgsfield `image_to_3d` (textured, ~30) for detailed organic models — only after the concept picture is approved.
 2. Blender (connector tools `mcp__remote-devices__Blender__*`): build or import, Merge by Distance → Limited Dissolve → Decimate to the bible's budget, apply transforms, origin at base, palette materials / small atlas, screenshot to check.
 3. `shrink_glb.py --size` per the bible (256/512/1024).
 4. Export GLB (or FBX) + note Studio import settings (Scale Unit, rig type, CollisionFidelity Box for decor, RenderFidelity).
@@ -37,5 +37,5 @@ Save source picture, .blend and export together in the project folder.
 - ChatGPT pictures: the path `gpt-image.ps1` prints is the picture to use — the art-director passes it straight to roblox-modeler (in the brief: picture path, project folder, style bible, budget); the modeler builds the 3D asset from it and saves outputs in the same project folder.
 - Project folder = the Studio place name (`~/RobloxGames/<place-name>`).
 - Blender modeling: build piece by piece from the picture per `roblox-asset-shapes/references/blender-part-by-part.md` (parts list with sizes, technique per part, layered), then side-by-side vs the picture and size/shape check vs the project's other models (`scripts/compare_to_siblings.py`) — fix the 3 biggest differences before handing over.
-- Smooth + light: never ship a decimated/faceted image-to-3D mesh. Rebuild clean (Shade Smooth + Weighted Normal, pet 1.5–3k tris, separate glossy eyes with highlights, picture colors). Reviewer rejects jagged/lumpy models.
+- Smooth + light: ask Customuse for a clean low-poly mesh at the budget; never ship a lumpy/decimated mesh. Rebuild clean (Shade Smooth + Weighted Normal, pet 1.5–3k tris, separate glossy eyes with highlights, picture colors). Reviewer rejects jagged/lumpy models.
 - Changes to an existing asset: new ChatGPT picture via `gpt-image.ps1 -Ref <current picture>` ("edit this exact picture, keep everything, only change X"), then edit the SAME .blend — add/remove only those parts, keep the rest, same size/origin. Rebuild from scratch only if lyopz asks.

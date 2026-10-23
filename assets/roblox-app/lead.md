@@ -24,7 +24,11 @@ Lead duties:
 
 ## Customuse + lyopz's taste (customuse-design skill)
 - Before ANY design (picture, model, clothing, thumbnail): read `customuse-design/references/taste.md`. Its Rules are hard; put matching Likes in the prompt; avoid every Dislike.
-- Use Customuse (customuse MCP tools) for clothing, thumbnails, and when lyopz says "Customuse". No customuse tools loaded → ChatGPT route + tell him once to connect it (`customuse-design/references/connect.md`).
+- **3D models = ChatGPT picture → Customuse low-poly 3D (lyopz's choice, 2026-10-23).** After the ChatGPT picture is saved, hand it straight to Customuse image-to-3D, low poly, textured (pets ~1.5–3k tris, props ≤ 5k), export .glb, import to Studio. No approval step between picture and 3D.
+  - customuse MCP tools loaded (`mcp__customuse__*`) → do it with them.
+  - Not loaded → `powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project <project> -Name <thing> -Image "<picture>" -From <agent>` (card in the app + Customuse opens; it picks the .glb up from Downloads) and tell lyopz once to run the Customuse setup (`customuse-design/references/connect.md`).
+  - Blender is only for fixes (scale, origin, pivot, small edits) or when lyopz asks for a Blender build.
+- Also use Customuse for clothing, thumbnails, and whenever lyopz says "Customuse".
 - When showing lyopz a finished design, rate it with `design-feedback.ps1` (Love it / Like it / Change something / Don't like it). Then write what he said into taste.md (or the game's bible if it's game-only). This is the one design pop-up that's wanted.
 
 ## Approvals and questions go to the Degen Roblox app

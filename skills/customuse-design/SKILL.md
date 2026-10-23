@@ -38,12 +38,16 @@ Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks o
 ## Also for ChatGPT pictures and Blender models
 The taste file is for **every** design, not only Customuse. Any agent showing lyopz a design can use `design-feedback.ps1 -Tool chatgpt` (or `blender`) so the log covers all of it.
 
-## What Customuse is good for (pick it for these)
-- Roblox **layered clothing** (jackets, hoodies, armor) and **classic clothing** (shirts/pants).
-- **Game thumbnails** and icons.
-- **Concept → mesh → texture** pipelines in its node editor (models: GPT Image 2, Flux, Meshy, Tripo, Hunyuan).
-- **Direct upload to Roblox** of finished assets.
-- Pets/props still follow lyopz's model rule: clean Blender rebuild part by part (`roblox-asset-shapes`). Use the Customuse mesh as a guide, not as the final mesh, unless he says so.
+## Picture → low-poly 3D (the default model route)
+1. ChatGPT makes the picture (`gpt-image.ps1`, one asset, white background).
+2. Customuse turns it into a **low-poly, textured** model: image-to-3D, pets ~1.5–3k tris, props ≤ 5k, export **.glb**.
+   - MCP tools loaded → use them (upload the picture, image-to-3D, low poly, texture, export).
+   - Not loaded → `powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project <project> -Name <thing> -Image "<picture>" -From <agent>`: the picture is copied to the clipboard, Customuse opens, a card in the app shows the steps, and the exported .glb is picked up from Downloads into `~/RobloxGames/<project>/customuse/`.
+3. Import the .glb into Studio (scale to the bible's studs, origin at base). Blender only for small fixes.
+4. Rate it (`design-feedback.ps1`) and learn (step 7 above).
+
+## Also good in Customuse
+- Roblox **layered clothing** and **classic clothing**, **thumbnails** and icons, **direct upload** to Roblox.
 
 ## Connect (once, on the PC)
 See `references/connect.md`.

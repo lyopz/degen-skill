@@ -10,4 +10,16 @@ function Q([string]$s) { ($s -replace '(\\*)"', '$1$1\"') }   # escape quotes fo
 $rules = Q ([IO.File]::ReadAllText((Join-Path $app 'lead.md')))
 $task = [IO.File]::ReadAllText($TaskFile).Trim()
 $prompt = if ($task -eq '/roblox' -or -not $task) { '/roblox' } else { Q ("Do this task now (full brief below; also saved at $TaskFile):`n`n" + $task) }
-& claude --strict-mcp-config --mcp-config (Join-Path $app 'roblox-mcp.json') --settings $Settings --append-system-prompt $rules $prompt
+# Add Customuse if lyopz set it up (customuse-setup.ps1 saves the address outside the repo)
+$mcp = Join-Path $app 'roblox-mcp.json'
+$cu = Join-Path $env:USERPROFILE 'RobloxGames\.degen\customuse-mcp.txt'
+if (Test-Path $cu) {
+  $u = ([IO.File]::ReadAllText($cu)).Trim()
+  if ($u -match '^https://') {
+    $cfg = [IO.File]::ReadAllText($mcp) | ConvertFrom-Json
+    $cfg.mcpServers | Add-Member -NotePropertyName customuse -NotePropertyValue ([pscustomobject]@{ type = 'http'; url = $u }) -Force
+    $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
+    [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
+  }
+}
+& claude --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules $prompt
