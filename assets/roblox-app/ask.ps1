@@ -16,4 +16,4 @@ $ans = "$D\answers\$id.json"; $until = (Get-Date).AddMinutes($Minutes)
 while (-not (Test-Path $ans) -and (Get-Date) -lt $until) { Start-Sleep -Milliseconds 700 }
 if (-not (Test-Path $ans)) { Remove-Item "$D\inbox\$id.json" -Force; 'NO_ANSWER'; exit 0 }
 $a = [IO.File]::ReadAllText($ans) | ConvertFrom-Json; Remove-Item $ans -Force
-[string]$a.answer
+switch ([string]$a.answer) { '__decline__' { 'DECLINED - do not do this, skip it and continue' } '__dismiss__' { 'DISMISSED - decide yourself and continue' } default { [string]$a.answer } }

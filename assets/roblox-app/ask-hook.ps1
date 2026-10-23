@@ -26,7 +26,11 @@ while (-not (Test-Path $ans) -and (Get-Date) -lt $until) { Start-Sleep -Millisec
 if (-not (Test-Path $ans)) { Remove-Item "$D\inbox\$id.json" -Force; exit 0 }
 $a = [IO.File]::ReadAllText($ans) | ConvertFrom-Json; Remove-Item $ans -Force
 if ([string]$a.answer -eq '__terminal__') { exit 0 }
+$txt = switch ([string]$a.answer) {
+  '__decline__' { 'lyopz DECLINED this. Do not do what was asked about; skip it, do not ask again, and continue with the rest of the task.' }
+  '__dismiss__' { 'lyopz dismissed this question without answering. Do not ask again: pick the most sensible option yourself and continue.' }
+  default { "lyopz already answered this in the Degen Roblox app (do not ask again, continue with it): $($a.answer)" } }
 $out = @{ hookSpecificOutput = @{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'
-  permissionDecisionReason = "lyopz already answered this in the Degen Roblox app (do not ask again, continue with it): $($a.answer)" } }
+  permissionDecisionReason = $txt } }
 $out | ConvertTo-Json -Depth 5 -Compress
 exit 0
