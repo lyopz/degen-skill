@@ -39,6 +39,17 @@ if ((Test-Path $glb) -and (-not (Test-Path $cj) -or (Get-Item $glb).LastWriteTim
   [IO.File]::WriteAllText($cj, 'window.CHICKEN="' + [Convert]::ToBase64String([IO.File]::ReadAllBytes($glb)) + '";')
 }
 
+# Roblox templates -> Studio plugin + a templates folder
+$tpl = Join-Path $repo 'skills\roblox-templates'
+if (Test-Path (Join-Path $tpl 'DegenTemplates.rbxmx')) {
+  $plugins = Join-Path $env:LOCALAPPDATA 'Roblox\Plugins'
+  New-Item -ItemType Directory -Force -Path $plugins | Out-Null
+  Copy-Item (Join-Path $tpl 'DegenTemplates.rbxmx') $plugins -Force
+  $docs = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Roblox Templates'
+  New-Item -ItemType Directory -Force -Path $docs | Out-Null
+  Copy-Item (Join-Path $tpl 'templates\rbxmx\*.rbxmx') $docs -Force
+}
+
 $url = 'file:///' + ((Join-Path $app 'index.html') -replace '\\', '/')
 $dataDir = Join-Path $env:LOCALAPPDATA 'DegenSkillsApp'
 $argList = @("--app=$url", "--user-data-dir=$dataDir", '--window-size=1280,860', '--no-first-run')

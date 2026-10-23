@@ -1,0 +1,86 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
+<Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">ButtonFeel</string><ProtectedString name="Source"><![CDATA[-- ButtonFeel.lua — make every button feel alive (ModuleScript, require from a LocalScript).
+-- local ButtonFeel = require(game.ReplicatedStorage.ButtonFeel)
+-- ButtonFeel.Apply(button, { sound = true })        -- one button
+-- ButtonFeel.ApplyAll(playerGui)                    -- every GuiButton under it (and new ones)
+-- ButtonFeel.Deny(button)                           -- "not enough coins" shake
+
+local TweenService = game:GetService("TweenService")
+local SoundService = game:GetService("SoundService")
+
+local ButtonFeel = {}
+
+local SOUNDS = { -- replace with your own uploaded ids
+	hover = "rbxasset://sounds/electronicpingshort.wav",
+	click = "rbxasset://sounds/button.wav",
+	deny  = "rbxasset://sounds/uuhhh.mp3",
+}
+
+local function play(id, vol)
+	if not id then return end
+	local s = Instance.new("Sound"); s.SoundId = id; s.Volume = vol or 0.4
+	s.PlaybackSpeed = 1 + (math.random() - 0.5) * 0.1
+	SoundService:PlayLocalSound(s); task.delay(2, function() s:Destroy() end)
+end
+
+local function scaleOf(btn)
+	local sc = btn:FindFirstChild("FeelScale")
+	if not sc then sc = Instance.new("UIScale"); sc.Name = "FeelScale"; sc.Parent = btn end
+	return sc
+end
+
+local function tween(obj, t, style, props)
+	local tw = TweenService:Create(obj, TweenInfo.new(t, style or Enum.EasingStyle.Quad, Enum.EasingDirection.Out), props)
+	tw:Play(); return tw
+end
+
+function ButtonFeel.Apply(btn, opts)
+	if btn:GetAttribute("Feel") then return end
+	btn:SetAttribute("Feel", true)
+	opts = opts or {}
+	local sc = scaleOf(btn)
+	local hoverScale, pressScale = opts.hover or 1.06, opts.press or 0.92
+	local hovering = false
+	local function over() hovering = true; tween(sc, 0.12, nil, { Scale = hoverScale }); if opts.sound ~= false then play(SOUNDS.hover, 0.2) end end
+	local function out() hovering = false; tween(sc, 0.15, nil, { Scale = 1 }) end
+	btn.MouseEnter:Connect(over); btn.MouseLeave:Connect(out)
+	btn.SelectionGained:Connect(over); btn.SelectionLost:Connect(out)
+	btn.MouseButton1Down:Connect(function() tween(sc, 0.06, nil, { Scale = pressScale }) end)
+	btn.Activated:Connect(function()
+		tween(sc, 0.22, Enum.EasingStyle.Back, { Scale = hovering and hoverScale or 1 })
+		if opts.sound ~= false then play(SOUNDS.click, 0.45) end
+	end)
+end
+
+function ButtonFeel.ApplyAll(root, opts)
+	for _, d in ipairs(root:GetDescendants()) do if d:IsA("GuiButton") then ButtonFeel.Apply(d, opts) end end
+	root.DescendantAdded:Connect(function(d) if d:IsA("GuiButton") then ButtonFeel.Apply(d, opts) end end)
+end
+
+function ButtonFeel.Deny(btn)
+	local start = btn.Position
+	play(SOUNDS.deny, 0.4)
+	task.spawn(function()
+		for i = 1, 3 do
+			tween(btn, 0.04, nil, { Position = start + UDim2.fromOffset(6, 0) }).Completed:Wait()
+			tween(btn, 0.04, nil, { Position = start - UDim2.fromOffset(6, 0) }).Completed:Wait()
+		end
+		tween(btn, 0.05, nil, { Position = start })
+	end)
+end
+
+-- Panel open/close with a CanvasGroup (one tween fades everything inside)
+function ButtonFeel.Open(canvasGroup)
+	local sc = scaleOf(canvasGroup); sc.Scale = 0.85; canvasGroup.GroupTransparency = 1; canvasGroup.Visible = true
+	tween(sc, 0.3, Enum.EasingStyle.Back, { Scale = 1 }); tween(canvasGroup, 0.25, nil, { GroupTransparency = 0 })
+end
+function ButtonFeel.Close(canvasGroup)
+	local sc = scaleOf(canvasGroup)
+	tween(sc, 0.18, nil, { Scale = 0.9 })
+	tween(canvasGroup, 0.18, nil, { GroupTransparency = 1 }).Completed:Wait()
+	canvasGroup.Visible = false
+end
+
+return ButtonFeel
+]]></ProtectedString></Properties></Item>
+</roblox>

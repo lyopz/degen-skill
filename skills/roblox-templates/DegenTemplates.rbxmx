@@ -1,0 +1,347 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
+<Item class="Script" referent="P0"><Properties><string name="Name">DegenTemplates</string><ProtectedString name="Source"><![CDATA[-- Degen Templates — Roblox Studio plugin (built by make_rbxmx.py; lives in %LOCALAPPDATA%\Roblox\Plugins).
+-- Toolbar "Degen Templates" → opens a list of every template; click one to insert it.
+local ChangeHistoryService = game:GetService("ChangeHistoryService")
+local Selection = game:GetService("Selection")
+local templates = script:WaitForChild("Templates")
+
+local toolbar = plugin:CreateToolbar("Degen Templates")
+local button = toolbar:CreateButton("Templates", "Insert a Degen template", "rbxasset://textures/StudioToolbox/AssetPreview/MoreDetails.png")
+button.ClickableWhenViewportHidden = true
+
+local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 280, 420, 220, 260)
+local widget = plugin:CreateDockWidgetPluginGui("DegenTemplates", info)
+widget.Title = "Degen Templates"
+
+local frame = Instance.new("ScrollingFrame")
+frame.Size = UDim2.fromScale(1, 1); frame.CanvasSize = UDim2.new(); frame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+frame.BackgroundColor3 = Color3.fromRGB(11, 11, 13); frame.BorderSizePixel = 0; frame.ScrollBarThickness = 6
+frame.Parent = widget
+local list = Instance.new("UIListLayout"); list.Padding = UDim.new(0, 6); list.Parent = frame
+local pad = Instance.new("UIPadding"); for _, k in ipairs({"PaddingTop","PaddingBottom","PaddingLeft","PaddingRight"}) do pad[k] = UDim.new(0, 8) end; pad.Parent = frame
+
+local function where(t)
+	local sel = Selection:Get()[1]
+	if sel then return sel end
+	if t:IsA("LocalScript") then return game:GetService("StarterPlayer"):FindFirstChildOfClass("StarterPlayerScripts") end
+	if t:IsA("Script") then return game:GetService("ServerScriptService") end
+	return game:GetService("ReplicatedStorage")
+end
+
+for _, t in ipairs(templates:GetChildren()) do
+	local b = Instance.new("TextButton")
+	b.Size = UDim2.new(1, 0, 0, 40); b.BackgroundColor3 = Color3.fromRGB(20, 20, 26); b.TextColor3 = Color3.new(1, 1, 1)
+	b.Font = Enum.Font.GothamBold; b.TextSize = 14; b.TextXAlignment = Enum.TextXAlignment.Left
+	b.Text = "  " .. t.Name .. "  ·  " .. t.ClassName; b.AutoButtonColor = true
+	local c = Instance.new("UICorner"); c.CornerRadius = UDim.new(0, 8); c.Parent = b
+	local s = Instance.new("UIStroke"); s.Color = Color3.fromRGB(225, 29, 46); s.Thickness = 1; s.Parent = b
+	b.Parent = frame
+	b.Activated:Connect(function()
+		local rec = ChangeHistoryService:TryBeginRecording("Insert " .. t.Name)
+		local copy = t:Clone(); copy.Parent = where(t)
+		Selection:Set({ copy })
+		if rec then ChangeHistoryService:FinishRecording(rec, Enum.FinishRecordingOperation.Commit) end
+		print("[Degen Templates] inserted " .. t.Name .. " into " .. copy.Parent:GetFullName())
+	end)
+end
+
+button.Click:Connect(function() widget.Enabled = not widget.Enabled end)
+]]></ProtectedString></Properties><Item class="Folder" referent="F0"><Properties><string name="Name">Templates</string></Properties><Item class="ModuleScript" referent="T0"><Properties><string name="Name">ButtonFeel</string><ProtectedString name="Source"><![CDATA[-- ButtonFeel.lua — make every button feel alive (ModuleScript, require from a LocalScript).
+-- local ButtonFeel = require(game.ReplicatedStorage.ButtonFeel)
+-- ButtonFeel.Apply(button, { sound = true })        -- one button
+-- ButtonFeel.ApplyAll(playerGui)                    -- every GuiButton under it (and new ones)
+-- ButtonFeel.Deny(button)                           -- "not enough coins" shake
+
+local TweenService = game:GetService("TweenService")
+local SoundService = game:GetService("SoundService")
+
+local ButtonFeel = {}
+
+local SOUNDS = { -- replace with your own uploaded ids
+	hover = "rbxasset://sounds/electronicpingshort.wav",
+	click = "rbxasset://sounds/button.wav",
+	deny  = "rbxasset://sounds/uuhhh.mp3",
+}
+
+local function play(id, vol)
+	if not id then return end
+	local s = Instance.new("Sound"); s.SoundId = id; s.Volume = vol or 0.4
+	s.PlaybackSpeed = 1 + (math.random() - 0.5) * 0.1
+	SoundService:PlayLocalSound(s); task.delay(2, function() s:Destroy() end)
+end
+
+local function scaleOf(btn)
+	local sc = btn:FindFirstChild("FeelScale")
+	if not sc then sc = Instance.new("UIScale"); sc.Name = "FeelScale"; sc.Parent = btn end
+	return sc
+end
+
+local function tween(obj, t, style, props)
+	local tw = TweenService:Create(obj, TweenInfo.new(t, style or Enum.EasingStyle.Quad, Enum.EasingDirection.Out), props)
+	tw:Play(); return tw
+end
+
+function ButtonFeel.Apply(btn, opts)
+	if btn:GetAttribute("Feel") then return end
+	btn:SetAttribute("Feel", true)
+	opts = opts or {}
+	local sc = scaleOf(btn)
+	local hoverScale, pressScale = opts.hover or 1.06, opts.press or 0.92
+	local hovering = false
+	local function over() hovering = true; tween(sc, 0.12, nil, { Scale = hoverScale }); if opts.sound ~= false then play(SOUNDS.hover, 0.2) end end
+	local function out() hovering = false; tween(sc, 0.15, nil, { Scale = 1 }) end
+	btn.MouseEnter:Connect(over); btn.MouseLeave:Connect(out)
+	btn.SelectionGained:Connect(over); btn.SelectionLost:Connect(out)
+	btn.MouseButton1Down:Connect(function() tween(sc, 0.06, nil, { Scale = pressScale }) end)
+	btn.Activated:Connect(function()
+		tween(sc, 0.22, Enum.EasingStyle.Back, { Scale = hovering and hoverScale or 1 })
+		if opts.sound ~= false then play(SOUNDS.click, 0.45) end
+	end)
+end
+
+function ButtonFeel.ApplyAll(root, opts)
+	for _, d in ipairs(root:GetDescendants()) do if d:IsA("GuiButton") then ButtonFeel.Apply(d, opts) end end
+	root.DescendantAdded:Connect(function(d) if d:IsA("GuiButton") then ButtonFeel.Apply(d, opts) end end)
+end
+
+function ButtonFeel.Deny(btn)
+	local start = btn.Position
+	play(SOUNDS.deny, 0.4)
+	task.spawn(function()
+		for i = 1, 3 do
+			tween(btn, 0.04, nil, { Position = start + UDim2.fromOffset(6, 0) }).Completed:Wait()
+			tween(btn, 0.04, nil, { Position = start - UDim2.fromOffset(6, 0) }).Completed:Wait()
+		end
+		tween(btn, 0.05, nil, { Position = start })
+	end)
+end
+
+-- Panel open/close with a CanvasGroup (one tween fades everything inside)
+function ButtonFeel.Open(canvasGroup)
+	local sc = scaleOf(canvasGroup); sc.Scale = 0.85; canvasGroup.GroupTransparency = 1; canvasGroup.Visible = true
+	tween(sc, 0.3, Enum.EasingStyle.Back, { Scale = 1 }); tween(canvasGroup, 0.25, nil, { GroupTransparency = 0 })
+end
+function ButtonFeel.Close(canvasGroup)
+	local sc = scaleOf(canvasGroup)
+	tween(sc, 0.18, nil, { Scale = 0.9 })
+	tween(canvasGroup, 0.18, nil, { GroupTransparency = 1 }).Completed:Wait()
+	canvasGroup.Visible = false
+end
+
+return ButtonFeel
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T1"><Properties><string name="Name">Motion</string><ProtectedString name="Source"><![CDATA[-- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
+-- local Motion = require(game.ReplicatedStorage.Motion)
+-- Motion.Spin(coin, 90)            -- degrees per second
+-- Motion.Bob(pickup, 0.6, 1.5)     -- height (studs), seconds per cycle
+-- Motion.Follow(pet, player, Vector3.new(3, 1, 3))
+-- Motion.Waddle(model, 6)          -- cheap "walking" wobble for simple creatures moving between points
+
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Motion = {}
+
+local function pivotOf(m) return m:IsA("Model") and m:GetPivot() or m.CFrame end
+local function setPivot(m, cf) if m:IsA("Model") then m:PivotTo(cf) else m.CFrame = cf end end
+
+function Motion.Spin(obj, degPerSec)
+	local base = pivotOf(obj)
+	local a = 0
+	return RunService.Heartbeat:Connect(function(dt)
+		a += math.rad(degPerSec or 90) * dt
+		setPivot(obj, base * CFrame.Angles(0, a, 0))
+	end)
+end
+
+function Motion.Bob(obj, height, period)
+	local base = pivotOf(obj); local t = 0
+	return RunService.Heartbeat:Connect(function(dt)
+		t += dt
+		setPivot(obj, base + Vector3.new(0, math.sin(t / (period or 1.5) * math.pi * 2) * (height or 0.5), 0))
+	end)
+end
+
+-- Smooth pet follow (run on the client for the owner, or server for everyone)
+function Motion.Follow(obj, player, offset)
+	offset = offset or Vector3.new(3, 0, 3)
+	local t = 0
+	return RunService.Heartbeat:Connect(function(dt)
+		local char = player.Character; local hrp = char and char:FindFirstChild("HumanoidRootPart")
+		if not hrp then return end
+		t += dt
+		local target = hrp.CFrame * CFrame.new(offset) * CFrame.new(0, math.sin(t * 4) * 0.25, 0)
+		local cur = pivotOf(obj)
+		setPivot(obj, cur:Lerp(target, math.clamp(dt * 8, 0, 1)))
+	end)
+end
+
+-- Move between points with a body waddle (fake walk for simple creatures, no animation needed)
+function Motion.Waddle(model, speed, points)
+	speed = speed or 6
+	task.spawn(function()
+		local i = 1
+		while model.Parent do
+			local from = pivotOf(model); local to = points[i]
+			local dist = (to - from.Position).Magnitude
+			local t, dur = 0, dist / speed
+			while t < dur and model.Parent do
+				t += RunService.Heartbeat:Wait()
+				local p = math.clamp(t / dur, 0, 1)
+				local pos = from.Position:Lerp(to, p)
+				local sway = math.sin(t * speed * 2) * 0.12
+				local hop = math.abs(math.sin(t * speed * 2)) * 0.25
+				setPivot(model, CFrame.lookAt(pos, Vector3.new(to.X, pos.Y, to.Z)) * CFrame.new(0, hop, 0) * CFrame.Angles(0, 0, sway))
+			end
+			i = i % #points + 1
+		end
+	end)
+end
+
+-- Satisfying pickup: scale pop + fly up + fade (use on coins/orbs when collected)
+function Motion.Collect(part)
+	local info = TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	TweenService:Create(part, info, { Size = part.Size * 1.6, CFrame = part.CFrame + Vector3.new(0, 3, 0), Transparency = 1 }):Play()
+	game:GetService("Debris"):AddItem(part, 0.4)
+end
+
+return Motion
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T2"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+-- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
+-- Usage:  local VFX = require(game.ReplicatedStorage.VFX)
+--         VFX.Fireball(hrp.Position + hrp.CFrame.LookVector*3, hrp.CFrame.LookVector)
+--         VFX.IgniteLegs(workspace.RobotChicken)
+--         VFX.Aura(character.HumanoidRootPart, Color3.fromRGB(255, 40, 60))
+
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local VFX = {}
+
+local SPARK = "rbxasset://textures/particles/sparkles_main.dds"
+local FIRE = "rbxasset://textures/particles/fire_main.dds"
+local SMOKE = "rbxasset://textures/particles/smoke_main.dds"
+
+local function seq(...) local k = {} ; local a = {...}
+	for i = 1, #a, 2 do table.insert(k, NumberSequenceKeypoint.new(a[i], a[i+1])) end
+	return NumberSequence.new(k) end
+local function cseq(c0: Color3, c1: Color3) return ColorSequence.new(c0, c1) end
+
+local function emitter(parent: Instance, props: {[string]: any}): ParticleEmitter
+	local e = Instance.new("ParticleEmitter")
+	e.LightInfluence = 0
+	e.LightEmission = 1           -- additive glow for fire/magic
+	for k, v in pairs(props) do (e :: any)[k] = v end
+	e.Parent = parent
+	return e
+end
+
+-- Flame layers shared by fireball + legs
+local function flameLayers(att: Attachment, scale: number)
+	emitter(att, { Name = "Core", Texture = FIRE, Rate = 40, Lifetime = NumberRange.new(0.15, 0.3),
+		Speed = NumberRange.new(0.5, 1), Size = seq(0, 1.6*scale, 1, 0.2*scale), Transparency = seq(0, 0.1, 1, 1),
+		Color = cseq(Color3.fromRGB(255, 240, 200), Color3.fromRGB(255, 140, 40)), ZOffset = 1 })
+	emitter(att, { Name = "Flame", Texture = FIRE, Rate = 35, Lifetime = NumberRange.new(0.3, 0.6),
+		Speed = NumberRange.new(2, 4), SpreadAngle = Vector2.new(15, 15), Acceleration = Vector3.new(0, 6, 0),
+		Size = seq(0, 1.2*scale, 1, 0), Transparency = seq(0, 0.2, 1, 1), RotSpeed = NumberRange.new(-90, 90),
+		Rotation = NumberRange.new(0, 360), Color = cseq(Color3.fromRGB(255, 120, 30), Color3.fromRGB(200, 20, 20)) })
+	emitter(att, { Name = "Embers", Texture = SPARK, Rate = 12, Lifetime = NumberRange.new(0.6, 1.2),
+		Speed = NumberRange.new(3, 6), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, 4, 0),
+		Size = seq(0, 0.25*scale, 1, 0), Color = cseq(Color3.fromRGB(255, 200, 80), Color3.fromRGB(255, 60, 0)) })
+	local smoke = emitter(att, { Name = "Smoke", Texture = SMOKE, Rate = 6, Lifetime = NumberRange.new(0.8, 1.4),
+		Speed = NumberRange.new(1, 2), Acceleration = Vector3.new(0, 3, 0), Size = seq(0, 0.6*scale, 1, 2*scale),
+		Transparency = seq(0, 0.7, 1, 1), Color = cseq(Color3.fromRGB(60, 40, 40), Color3.fromRGB(20, 20, 20)) })
+	smoke.LightEmission = 0
+	local light = Instance.new("PointLight"); light.Color = Color3.fromRGB(255, 120, 40)
+	light.Brightness = 2; light.Range = 8 * scale; light.Shadows = false; light.Parent = att
+end
+
+-- Small camera shake for the local player (call on the client)
+function VFX.Shake(intensity: number?, duration: number?)
+	local cam = workspace.CurrentCamera; if not cam then return end
+	local i, d = intensity or 0.4, duration or 0.25
+	local t0 = os.clock()
+	local conn; conn = game:GetService("RunService").RenderStepped:Connect(function()
+		local p = (os.clock() - t0) / d
+		if p >= 1 then conn:Disconnect() return end
+		local a = i * (1 - p)
+		cam.CFrame = cam.CFrame * CFrame.Angles(math.rad((math.random()-0.5)*a*4), math.rad((math.random()-0.5)*a*4), 0)
+	end)
+end
+
+function VFX.Explosion(pos: Vector3, scale: number?)
+	local s = scale or 1
+	local p = Instance.new("Part"); p.Anchored = true; p.CanCollide = false; p.CanQuery = false; p.Transparency = 1
+	p.Size = Vector3.one; p.Position = pos; p.Parent = workspace
+	local att = Instance.new("Attachment", p)
+	local burst = emitter(att, { Texture = FIRE, Rate = 0, Lifetime = NumberRange.new(0.25, 0.5), Speed = NumberRange.new(10*s, 22*s),
+		SpreadAngle = Vector2.new(180, 180), Size = seq(0, 2*s, 1, 0), Transparency = seq(0, 0, 1, 1),
+		Color = cseq(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 40, 20)), Drag = 6 })
+	local sparks = emitter(att, { Texture = SPARK, Rate = 0, Lifetime = NumberRange.new(0.4, 0.8), Speed = NumberRange.new(20*s, 40*s),
+		SpreadAngle = Vector2.new(180, 180), Size = seq(0, 0.3*s, 1, 0), Drag = 4, Acceleration = Vector3.new(0, -30, 0) })
+	burst:Emit(40); sparks:Emit(30)
+	local light = Instance.new("PointLight"); light.Color = Color3.fromRGB(255, 140, 60); light.Range = 18*s; light.Brightness = 6; light.Parent = att
+	TweenService:Create(light, TweenInfo.new(0.4), { Brightness = 0 }):Play()
+	Debris:AddItem(p, 1.5)
+end
+
+-- Fireball: projectile with core, flames, embers, smoke, trail and light. Explodes on hit or after range.
+function VFX.Fireball(origin: Vector3, direction: Vector3, speed: number?, range: number?, onHit: ((RaycastResult) -> ())?)
+	local spd, rng = speed or 80, range or 200
+	local ball = Instance.new("Part"); ball.Shape = Enum.PartType.Ball; ball.Size = Vector3.one * 1.6
+	ball.Material = Enum.Material.Neon; ball.Color = Color3.fromRGB(255, 120, 30); ball.Anchored = true
+	ball.CanCollide = false; ball.CanQuery = false; ball.CastShadow = false; ball.Parent = workspace
+	local att = Instance.new("Attachment", ball); flameLayers(att, 1.4)
+	local a0 = Instance.new("Attachment", ball); a0.Position = Vector3.new(0, 0.6, 0)
+	local a1 = Instance.new("Attachment", ball); a1.Position = Vector3.new(0, -0.6, 0)
+	local trail = Instance.new("Trail"); trail.Attachment0 = a0; trail.Attachment1 = a1; trail.Lifetime = 0.25
+	trail.LightEmission = 1; trail.FaceCamera = true; trail.Color = cseq(Color3.fromRGB(255, 200, 80), Color3.fromRGB(255, 30, 20))
+	trail.Transparency = seq(0, 0.2, 1, 1); trail.WidthScale = seq(0, 1, 1, 0); trail.Parent = ball
+	local dir = direction.Unit; local pos = origin; local travelled = 0
+	local params = RaycastParams.new(); params.FilterDescendantsInstances = { ball }
+	local hb; hb = game:GetService("RunService").Heartbeat:Connect(function(dt)
+		local step = dir * spd * dt
+		local hit = workspace:Raycast(pos, step, params)
+		if hit or travelled > rng then
+			hb:Disconnect()
+			local at = hit and hit.Position or pos
+			VFX.Explosion(at, 1.2)
+			if hit and onHit then onHit(hit) end
+			ball.Transparency = 1; for _, e in ipairs(att:GetChildren()) do if e:IsA("ParticleEmitter") then e.Enabled = false end end
+			Debris:AddItem(ball, 1)
+			return
+		end
+		pos += step; travelled += step.Magnitude
+		ball.CFrame = CFrame.lookAt(pos, pos + dir)
+	end)
+	return ball
+end
+
+-- Put flames on every leg/foot of a model (bones or parts named Leg/Foot/Shin/Thigh/Ankle)
+function VFX.IgniteLegs(model: Instance, scale: number?)
+	local s = scale or 0.6
+	local found = 0
+	for _, d in ipairs(model:GetDescendants()) do
+		local n = d.Name:lower()
+		local isLeg = n:find("leg") or n:find("foot") or n:find("shin") or n:find("thigh") or n:find("ankle")
+		if isLeg and (d:IsA("Bone") or d:IsA("BasePart")) then
+			local att = d:IsA("Bone") and d or Instance.new("Attachment", d)
+			flameLayers(att :: any, s); found += 1
+		end
+	end
+	return found
+end
+
+-- Rising aura around a part (power-up, rebirth, rare pet)
+function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
+	local c, s = color or Color3.fromRGB(255, 40, 60), scale or 1
+	local att = Instance.new("Attachment", part); att.Position = Vector3.new(0, -2.5*s, 0)
+	emitter(att, { Texture = SPARK, Rate = 30, Lifetime = NumberRange.new(0.8, 1.4), Speed = NumberRange.new(2, 4),
+		Shape = Enum.ParticleEmitterShape.Cylinder, ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface,
+		EmissionDirection = Enum.NormalId.Top, Size = seq(0, 0.35*s, 1, 0), Color = cseq(c, Color3.new(1, 1, 1)) })
+	local light = Instance.new("PointLight"); light.Color = c; light.Range = 10*s; light.Brightness = 1.5; light.Parent = att
+	return att
+end
+
+return VFX
+]]></ProtectedString></Properties></Item></Item></Item>
+</roblox>

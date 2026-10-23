@@ -1,0 +1,139 @@
+-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+-- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
+-- Usage:  local VFX = require(game.ReplicatedStorage.VFX)
+--         VFX.Fireball(hrp.Position + hrp.CFrame.LookVector*3, hrp.CFrame.LookVector)
+--         VFX.IgniteLegs(workspace.RobotChicken)
+--         VFX.Aura(character.HumanoidRootPart, Color3.fromRGB(255, 40, 60))
+
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local VFX = {}
+
+local SPARK = "rbxasset://textures/particles/sparkles_main.dds"
+local FIRE = "rbxasset://textures/particles/fire_main.dds"
+local SMOKE = "rbxasset://textures/particles/smoke_main.dds"
+
+local function seq(...) local k = {} ; local a = {...}
+	for i = 1, #a, 2 do table.insert(k, NumberSequenceKeypoint.new(a[i], a[i+1])) end
+	return NumberSequence.new(k) end
+local function cseq(c0: Color3, c1: Color3) return ColorSequence.new(c0, c1) end
+
+local function emitter(parent: Instance, props: {[string]: any}): ParticleEmitter
+	local e = Instance.new("ParticleEmitter")
+	e.LightInfluence = 0
+	e.LightEmission = 1           -- additive glow for fire/magic
+	for k, v in pairs(props) do (e :: any)[k] = v end
+	e.Parent = parent
+	return e
+end
+
+-- Flame layers shared by fireball + legs
+local function flameLayers(att: Attachment, scale: number)
+	emitter(att, { Name = "Core", Texture = FIRE, Rate = 40, Lifetime = NumberRange.new(0.15, 0.3),
+		Speed = NumberRange.new(0.5, 1), Size = seq(0, 1.6*scale, 1, 0.2*scale), Transparency = seq(0, 0.1, 1, 1),
+		Color = cseq(Color3.fromRGB(255, 240, 200), Color3.fromRGB(255, 140, 40)), ZOffset = 1 })
+	emitter(att, { Name = "Flame", Texture = FIRE, Rate = 35, Lifetime = NumberRange.new(0.3, 0.6),
+		Speed = NumberRange.new(2, 4), SpreadAngle = Vector2.new(15, 15), Acceleration = Vector3.new(0, 6, 0),
+		Size = seq(0, 1.2*scale, 1, 0), Transparency = seq(0, 0.2, 1, 1), RotSpeed = NumberRange.new(-90, 90),
+		Rotation = NumberRange.new(0, 360), Color = cseq(Color3.fromRGB(255, 120, 30), Color3.fromRGB(200, 20, 20)) })
+	emitter(att, { Name = "Embers", Texture = SPARK, Rate = 12, Lifetime = NumberRange.new(0.6, 1.2),
+		Speed = NumberRange.new(3, 6), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, 4, 0),
+		Size = seq(0, 0.25*scale, 1, 0), Color = cseq(Color3.fromRGB(255, 200, 80), Color3.fromRGB(255, 60, 0)) })
+	local smoke = emitter(att, { Name = "Smoke", Texture = SMOKE, Rate = 6, Lifetime = NumberRange.new(0.8, 1.4),
+		Speed = NumberRange.new(1, 2), Acceleration = Vector3.new(0, 3, 0), Size = seq(0, 0.6*scale, 1, 2*scale),
+		Transparency = seq(0, 0.7, 1, 1), Color = cseq(Color3.fromRGB(60, 40, 40), Color3.fromRGB(20, 20, 20)) })
+	smoke.LightEmission = 0
+	local light = Instance.new("PointLight"); light.Color = Color3.fromRGB(255, 120, 40)
+	light.Brightness = 2; light.Range = 8 * scale; light.Shadows = false; light.Parent = att
+end
+
+-- Small camera shake for the local player (call on the client)
+function VFX.Shake(intensity: number?, duration: number?)
+	local cam = workspace.CurrentCamera; if not cam then return end
+	local i, d = intensity or 0.4, duration or 0.25
+	local t0 = os.clock()
+	local conn; conn = game:GetService("RunService").RenderStepped:Connect(function()
+		local p = (os.clock() - t0) / d
+		if p >= 1 then conn:Disconnect() return end
+		local a = i * (1 - p)
+		cam.CFrame = cam.CFrame * CFrame.Angles(math.rad((math.random()-0.5)*a*4), math.rad((math.random()-0.5)*a*4), 0)
+	end)
+end
+
+function VFX.Explosion(pos: Vector3, scale: number?)
+	local s = scale or 1
+	local p = Instance.new("Part"); p.Anchored = true; p.CanCollide = false; p.CanQuery = false; p.Transparency = 1
+	p.Size = Vector3.one; p.Position = pos; p.Parent = workspace
+	local att = Instance.new("Attachment", p)
+	local burst = emitter(att, { Texture = FIRE, Rate = 0, Lifetime = NumberRange.new(0.25, 0.5), Speed = NumberRange.new(10*s, 22*s),
+		SpreadAngle = Vector2.new(180, 180), Size = seq(0, 2*s, 1, 0), Transparency = seq(0, 0, 1, 1),
+		Color = cseq(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 40, 20)), Drag = 6 })
+	local sparks = emitter(att, { Texture = SPARK, Rate = 0, Lifetime = NumberRange.new(0.4, 0.8), Speed = NumberRange.new(20*s, 40*s),
+		SpreadAngle = Vector2.new(180, 180), Size = seq(0, 0.3*s, 1, 0), Drag = 4, Acceleration = Vector3.new(0, -30, 0) })
+	burst:Emit(40); sparks:Emit(30)
+	local light = Instance.new("PointLight"); light.Color = Color3.fromRGB(255, 140, 60); light.Range = 18*s; light.Brightness = 6; light.Parent = att
+	TweenService:Create(light, TweenInfo.new(0.4), { Brightness = 0 }):Play()
+	Debris:AddItem(p, 1.5)
+end
+
+-- Fireball: projectile with core, flames, embers, smoke, trail and light. Explodes on hit or after range.
+function VFX.Fireball(origin: Vector3, direction: Vector3, speed: number?, range: number?, onHit: ((RaycastResult) -> ())?)
+	local spd, rng = speed or 80, range or 200
+	local ball = Instance.new("Part"); ball.Shape = Enum.PartType.Ball; ball.Size = Vector3.one * 1.6
+	ball.Material = Enum.Material.Neon; ball.Color = Color3.fromRGB(255, 120, 30); ball.Anchored = true
+	ball.CanCollide = false; ball.CanQuery = false; ball.CastShadow = false; ball.Parent = workspace
+	local att = Instance.new("Attachment", ball); flameLayers(att, 1.4)
+	local a0 = Instance.new("Attachment", ball); a0.Position = Vector3.new(0, 0.6, 0)
+	local a1 = Instance.new("Attachment", ball); a1.Position = Vector3.new(0, -0.6, 0)
+	local trail = Instance.new("Trail"); trail.Attachment0 = a0; trail.Attachment1 = a1; trail.Lifetime = 0.25
+	trail.LightEmission = 1; trail.FaceCamera = true; trail.Color = cseq(Color3.fromRGB(255, 200, 80), Color3.fromRGB(255, 30, 20))
+	trail.Transparency = seq(0, 0.2, 1, 1); trail.WidthScale = seq(0, 1, 1, 0); trail.Parent = ball
+	local dir = direction.Unit; local pos = origin; local travelled = 0
+	local params = RaycastParams.new(); params.FilterDescendantsInstances = { ball }
+	local hb; hb = game:GetService("RunService").Heartbeat:Connect(function(dt)
+		local step = dir * spd * dt
+		local hit = workspace:Raycast(pos, step, params)
+		if hit or travelled > rng then
+			hb:Disconnect()
+			local at = hit and hit.Position or pos
+			VFX.Explosion(at, 1.2)
+			if hit and onHit then onHit(hit) end
+			ball.Transparency = 1; for _, e in ipairs(att:GetChildren()) do if e:IsA("ParticleEmitter") then e.Enabled = false end end
+			Debris:AddItem(ball, 1)
+			return
+		end
+		pos += step; travelled += step.Magnitude
+		ball.CFrame = CFrame.lookAt(pos, pos + dir)
+	end)
+	return ball
+end
+
+-- Put flames on every leg/foot of a model (bones or parts named Leg/Foot/Shin/Thigh/Ankle)
+function VFX.IgniteLegs(model: Instance, scale: number?)
+	local s = scale or 0.6
+	local found = 0
+	for _, d in ipairs(model:GetDescendants()) do
+		local n = d.Name:lower()
+		local isLeg = n:find("leg") or n:find("foot") or n:find("shin") or n:find("thigh") or n:find("ankle")
+		if isLeg and (d:IsA("Bone") or d:IsA("BasePart")) then
+			local att = d:IsA("Bone") and d or Instance.new("Attachment", d)
+			flameLayers(att :: any, s); found += 1
+		end
+	end
+	return found
+end
+
+-- Rising aura around a part (power-up, rebirth, rare pet)
+function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
+	local c, s = color or Color3.fromRGB(255, 40, 60), scale or 1
+	local att = Instance.new("Attachment", part); att.Position = Vector3.new(0, -2.5*s, 0)
+	emitter(att, { Texture = SPARK, Rate = 30, Lifetime = NumberRange.new(0.8, 1.4), Speed = NumberRange.new(2, 4),
+		Shape = Enum.ParticleEmitterShape.Cylinder, ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface,
+		EmissionDirection = Enum.NormalId.Top, Size = seq(0, 0.35*s, 1, 0), Color = cseq(c, Color3.new(1, 1, 1)) })
+	local light = Instance.new("PointLight"); light.Color = c; light.Range = 10*s; light.Brightness = 1.5; light.Parent = att
+	return att
+end
+
+return VFX
