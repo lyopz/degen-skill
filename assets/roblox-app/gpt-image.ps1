@@ -66,62 +66,19 @@ if (-not $targets) {
   if ($edge) { Start-Process $edge -ArgumentList @("--app=$url", "--user-data-dir=$prof", "--remote-debugging-port=$port", '--window-size=1100,900', '--no-first-run') }
   for ($i = 0; $i -lt 20 -and -not $targets; $i++) { Start-Sleep -Milliseconds 700; $targets = Get-Targets }
 }
-$page = @($targets | Where-Object { $_.type -eq 'page' -and $_.url -match 'chatgpt\.com|openai\.com' }) | Select-Object -First 1
-if (-not $page) { Write-Host 'Could not connect to the ChatGPT window.' } else { Write-Host '[2/4] Connected to ChatGPT' }
+if (-not $targets) { Write-Host 'Could not open ChatGPT with remote control.' } else { Write-Host '[2/4] ChatGPT open' }
 $auto = $false
-if ($page -and (Cdp-Open $page.webSocketDebuggerUrl)) {
-  Cdp 'Page.bringToFront' @{} | Out-Null
-  Cdp 'Page.navigate' @{ url = $url } | Out-Null
-  # wait for the message box
-  $ready = $false
-  for ($i = 0; $i -lt 40 -and -not $ready; $i++) { Start-Sleep -Milliseconds 800; $ready = [bool](Js "!!document.querySelector('#prompt-textarea, [contenteditable=true]')") }
-  $loggedOut = [bool](Js "!!document.querySelector('[data-testid=login-button], a[href*=""/auth/login""]')")
-  if (-not $ready) { Write-Host 'ChatGPT message box not found.' }
-  if ($ready -and -not $loggedOut) {
-    $beforeJson = Js "JSON.stringify([...document.images].map(i=>i.currentSrc||i.src))"
-    $bj = if ($beforeJson) { $beforeJson } else { '[]' }
-    $p = ($Prompt | ConvertTo-Json -Compress)
-    $typed = Js @"
-(async()=>{const box=document.querySelector('#prompt-textarea')||document.querySelector('[contenteditable=true]');box.focus();
-document.execCommand('selectAll',false,null);document.execCommand('insertText',false,$p);await new Promise(r=>setTimeout(r,700));
-const b=document.querySelector('[data-testid=send-button]')||document.querySelector('button[aria-label*=Send]');if(b&&!b.disabled){b.click();return true}
-box.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,bubbles:true}));return true})()
-"@
-    if ($typed) {
-      Write-Host '[3/4] Prompt sent - waiting for the picture (about 1 minute)...'
-      $auto = $true
-      # ---------- 2) wait for the finished picture ----------
-      $deadline = $start.AddMinutes($Minutes); $src = $null; $stable = 0; $last = ''
-      while ((Get-Date) -lt $deadline) {
-        Start-Sleep -Seconds 3
-        $state = Js @"
-(()=>{const before=new Set($bj);const busy=!!document.querySelector('[data-testid=stop-button],button[aria-label*=Stop]');
-const imgs=[...document.images].filter(i=>{const s=i.currentSrc||i.src;return s&&!before.has(s)&&i.naturalWidth>=400&&i.naturalHeight>=400&&!/avatar|profile|favicon/i.test(s)});
-const im=imgs.sort((x,y)=>y.naturalWidth*y.naturalHeight-x.naturalWidth*x.naturalHeight)[0];
-return JSON.stringify({busy,n:imgs.length,src:im?im.currentSrc||im.src:'',w:im?im.naturalWidth:0})})()
-"@
-        if (-not $state) { continue }
-        $s = $state | ConvertFrom-Json
-        if ($s.src -and -not $s.busy) { if ($s.src -eq $last) { $stable++ } else { $stable = 0; $last = $s.src }; if ($stable -ge 2) { $src = $s.src; break } }
-      }
-      if ($src) { Write-Host '[4/4] Saving the picture...'
-        # ---------- 3) save it into the project ----------
-        $s2 = ($src | ConvertTo-Json -Compress)
-        $data = Js "(async()=>{const r=await fetch($s2,{credentials:'include'});const b=await r.blob();return await new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.readAsDataURL(b)})})()"
-        if (-not ($data -match '^data:image/')) {
-          try { $tmp = Join-Path $env:TEMP ('gpt-' + $id + '.img'); Invoke-WebRequest -Uri $src -OutFile $tmp -UseBasicParsing -TimeoutSec 60
-                $b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($tmp)); $data = 'data:image/png;base64,' + $b64; Remove-Item $tmp -Force } catch {}
-        }
-        if ($data -match '^data:image/(\w+);base64,(.+)$') {
-          $ext = if ($Matches[1] -eq 'jpeg') { '.jpg' } else { '.' + $Matches[1] }
-          $dest = Join-Path $destDir ($safe + '-' + (Get-Date -Format 'HHmmss') + $ext)
-          [IO.File]::WriteAllBytes($dest, [Convert]::FromBase64String($Matches[2]))
-          Done $dest
-        }
-      }
-    }
-  } elseif ($loggedOut) { Write-Output 'ChatGPT is signed out - sign in once in the ChatGPT window, then run again.' }
-}
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
+if ($targets -and $node) {
+  $app = $PSScriptRoot; $nm = Join-Path $app 'node_modules\playwright-core'
+  if (-not (Test-Path $nm)) { Write-Host '  first run: installing the browser helper (one time)...'; Push-Location $app; npm install --no-save --no-audit --no-fund playwright-core@1.48.2 2>&1 | Out-Null; Pop-Location }
+  $pf = Join-Path $env:TEMP ('gpt-prompt-' + $id + '.txt'); [IO.File]::WriteAllText($pf, $Prompt, (New-Object Text.UTF8Encoding $false))
+  $outBase = Join-Path $destDir ($safe + '-' + (Get-Date -Format 'HHmmss'))
+  $saved = & $node (Join-Path $app 'gpt-image.mjs') $pf $outBase $url | Select-Object -Last 1
+  Remove-Item $pf -Force -ErrorAction SilentlyContinue
+  if ($saved -and (Test-Path $saved)) { Done $saved }
+  $auto = $true   # prompt was (probably) sent; fall back to the download pick-up below
+} elseif (-not $node) { Write-Host 'Node.js not found - using the simple way.' }
 
 # ---------- fallback: paste + lyopz clicks download ----------
 if (-not $auto) {
