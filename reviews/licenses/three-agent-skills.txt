@@ -1,0 +1,1 @@
+emalorenzo/three-agent-skills — MIT (declared in package.json and each SKILL.md; no LICENSE file upstream). Upstream commit f950f95.

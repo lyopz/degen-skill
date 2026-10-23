@@ -35,6 +35,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-22** — Added emalorenzo/three-agent-skills (three-best-practices, r3f-best-practices). 119 skills.
 - **2026-10-22** — Added Degen Skills desktop app (`assets/app/`), auto-updates from the repo on launch. Site made lighter (particle caps, pause off-screen).
 - **2026-10-22** — Added own `widget-board` skill (bottom tab wheel of action cards: jump/link/copy). Cards are picked per project by relevance. 117 skills.
 - **2026-10-22** — Added own `particle-media` skill (image/video → liquid cursor particles, WebGL2). Used it on the Degen Skills showcase hero. 116 skills.
