@@ -6,6 +6,9 @@
 #  - GET  /api/styles         saved styles ("Save for later" tab), from <repo>/styles/<name>/
 #  - GET  /api/style-draft?project=<name>  that project's bible + rated prompts + pictures, to pre-fill a save
 #  - POST /api/styles/save    {name, project, notes, bible, prompts, images[]} -> writes styles/<slug>/ and pushes to GitHub
+#  - GET  /api/watch          "Watch me play" recorder state + past sessions (~/RobloxGames/.degen/watch/, local only)
+#  - POST /api/watch/start    {game} -> starts watch-play.ps1 hidden;  /api/watch/stop -> stops it
+#  - POST /api/watch/note     {text, kind} -> adds what lyopz said/typed to the running session's notes.jsonl
 # Runs hidden; started by launch.ps1. Only listens on localhost.
 $ErrorActionPreference = 'SilentlyContinue'
 $app  = $PSScriptRoot
@@ -92,6 +95,26 @@ function Save-Style($b) {
   @{ ok = $true; slug = $slug; pushed = $pushed; msg = $(if ($pushed) { 'Saved and pushed to GitHub' } else { 'Saved on this PC, push failed: ' + $out.Trim() }) }
 }
 
+# "Watch me play" (watch-play.ps1): screenshots + lyopz's notes while he plays, for roblox-game-study to learn from.
+$WD = Join-Path $D 'watch'
+function Get-WatchNow {
+  $f = Join-Path $D 'watch.json'; if (-not (Test-Path $f)) { return $null }
+  $w = [IO.File]::ReadAllText($f) | ConvertFrom-Json
+  if ($w.running -and -not (Get-Process -Id $w.pid -ErrorAction SilentlyContinue)) { $w.running = $false }
+  $w
+}
+function Get-Watch {
+  $sessions = foreach ($d in @(Get-ChildItem $WD -Directory | Sort-Object Name -Descending | Select-Object -First 12)) {
+    $sj = Join-Path $d.FullName 'session.json'; $s = if (Test-Path $sj) { [IO.File]::ReadAllText($sj) | ConvertFrom-Json } else { $null }
+    $nf = Join-Path $d.FullName 'notes.jsonl'; $notes = if (Test-Path $nf) { @(Get-Content $nf -Encoding UTF8 | Where-Object { $_ -notmatch '"kind":"end"' }).Count } else { 0 }
+    $pic = Get-ChildItem (Join-Path $d.FullName 'sheets') -Filter *.jpg | Sort-Object Name | Select-Object -First 1
+    if (-not $pic) { $pic = Get-ChildItem $d.FullName -Filter *.jpg | Sort-Object Name | Select-Object -Last 1 }
+    [ordered]@{ n = $d.Name; path = $d.FullName; game = $(if ($s) { $s.game } else { $d.Name }); shots = @(Get-ChildItem $d.FullName -Filter *.jpg).Count
+                notes = $notes; learned = (Test-Path (Join-Path $d.FullName 'learned.md')); pic = $(if ($pic) { $pic.FullName } else { '' }) }
+  }
+  @{ now = (Get-WatchNow); sessions = @($sessions) }
+}
+
 function Get-State {
   $act = Join-Path $D 'activity.json'
   $a = if (Test-Path $act) { [IO.File]::ReadAllText($act) | ConvertFrom-Json } else { $null }
@@ -121,6 +144,25 @@ while ($http.IsListening) {
         Remove-Item "$D\inbox\$id.json" -Force
       }
       SendJson $ctx @{ ok = [bool]$id } }
+    elseif ($path -eq '/api/watch') { SendJson $ctx (Get-Watch) }
+    elseif ($path -eq '/api/watch/start' -and $ctx.Request.HttpMethod -eq 'POST') {
+      $b = ReadBody $ctx; $w = Get-WatchNow
+      if (-not ($w -and $w.running)) {
+        $game = (([string]$b.game -replace '[^\w\- ]', '').Trim()); if (-not $game) { $game = 'roblox' }
+        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', ('"' + (Join-Path $app 'watch-play.ps1') + '"'), '-Game', ('"' + $game + '"'))
+        Start-Sleep -Milliseconds 1500
+      }
+      SendJson $ctx (Get-Watch) }
+    elseif ($path -eq '/api/watch/stop' -and $ctx.Request.HttpMethod -eq 'POST') {
+      [IO.File]::WriteAllText((Join-Path $D 'watch.stop'), 'stop', $utf8)
+      SendJson $ctx @{ ok = $true } }
+    elseif ($path -eq '/api/watch/note' -and $ctx.Request.HttpMethod -eq 'POST') {
+      $b = ReadBody $ctx; $w = Get-WatchNow; $ok = $false
+      if ($w -and $w.running -and [string]$b.text -and (Under $w.dir $WD)) {
+        $l = [ordered]@{ s = [int]((Get-Date) - [datetime]$w.started).TotalSeconds; at = (Get-Date -Format 'HH:mm:ss'); kind = $(if ($b.kind -eq 'say') { 'say' } else { 'note' }); text = [string]$b.text; shot = $null } | ConvertTo-Json -Compress
+        [IO.File]::AppendAllText((Join-Path $w.dir 'notes.jsonl'), "$l`n", $utf8); $ok = $true
+      }
+      SendJson $ctx @{ ok = $ok } }
     elseif ($path -eq '/api/chatgpt-url' -and $ctx.Request.HttpMethod -eq 'POST') {
       $b = ReadBody $ctx; $pdir = Join-Path $RG ([string]$b.project -replace '[^\w\-\. ]', '')
       $ok = (Test-Path $pdir) -and ([string]$b.url -match '^https://(chatgpt\.com|chat\.openai\.com)/')

@@ -231,6 +231,7 @@ body.awake .orb-cap{color:var(--text)}
 .pgrid img.pick{opacity:.35;cursor:pointer}.pgrid img.pick.sel{opacity:1;border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,46,.25)}
 .sv label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--dim);margin-bottom:12px}
 .sv input,.sv select,.sv textarea{font:14px Inter;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none}.sv textarea{min-height:90px;resize:vertical;font:12.5px/1.55 "JetBrains Mono",monospace}.sv input:focus,.sv select:focus,.sv textarea:focus{border-color:var(--red)}
+.rec{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:7px;animation:recb 1.2s infinite}@keyframes recb{50%{opacity:.25}}
 .warn{font-size:12.5px;color:#fbbf24;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:9px 12px;margin-bottom:12px}
 .gpt-p{white-space:pre-wrap;font:13px/1.6 Inter,system-ui;color:#e4e4e7;background:#0b0b0e;border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:260px;overflow:auto;user-select:text}
 </style>
@@ -258,6 +259,7 @@ body.awake .orb-cap{color:var(--text)}
  <div class="bub" id="bub-game"><button class="bub-btn"><span>Game: <b id="game-l">New</b></span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="menu" id="game-menu"></div></div>
  <div class="bub" id="bub-proj"><button class="bub-btn" id="proj-btn"><span>Projects</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
  <div class="bub" id="bub-save"><button class="bub-btn" id="save-btn"><span>Save for later</span></button></div>
+ <div class="bub" id="bub-watch"><button class="bub-btn" id="watch-btn"><span id="watch-l">Watch me play</span></button></div>
  <div class="bub" id="bub-appr"><button class="bub-btn" id="appr-btn"><span>Approvals</span><i class="cnt" id="appr-n">0</i></button></div>
 </div>
 <div class="home">
@@ -305,6 +307,7 @@ body.awake .orb-cap{color:var(--text)}
 <div class="sheet" id="appr-sheet"><div class="sheet-in"><div class="sheet-hd"><h3>Approvals &amp; questions</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="appr-list"></div></div></div>
 <div class="sheet" id="proj-sheet"><div class="sheet-in"><div class="sheet-hd"><button class="x" id="proj-back" style="display:none">←</button><h3 id="proj-title">Projects</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="proj-body"></div></div></div>
 <div class="sheet" id="save-sheet"><div class="sheet-in"><div class="sheet-hd"><button class="x" id="save-back" style="display:none">←</button><h3 id="save-title">Save for later</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="save-body"></div></div></div>
+<div class="sheet" id="watch-sheet"><div class="sheet-in"><div class="sheet-hd"><h3>Watch me play</h3><div class="sp"></div><button class="x" data-close>✕</button></div><div id="watch-body"></div></div></div>
 <div class="zoom" id="zoom"><img alt=""></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -599,6 +602,36 @@ const TL=[[0,1,.34],[1.05,1,.4],[2.1,1,.36],[.55,.78,.92],[2.6,.95,.22]];
 let an=null;async function meter(){if(an)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const a=getAC(),src=a.createMediaStreamSource(st);an=a.createAnalyser();an.fftSize=512;src.connect(an);const buf=new Uint8Array(512);
  (function lv(){an.getByteTimeDomainData(buf);let m=0;for(let i=0;i<buf.length;i++)m=Math.max(m,Math.abs(buf[i]-128));target=awake?Math.min(1,m/45):Math.min(.25,m/140);requestAnimationFrame(lv)})()}catch(e){}}
 
+// ---- watch me play (watch-play.ps1: screenshots + F7/F8 marks + what you say; Claude learns from it later) ----
+let WN=null;
+const wpost=(u,b)=>fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}).then(r=>r.json());
+const wLabel=()=>{$('watch-l').innerHTML=WN&&WN.running?`<i class="rec"></i>Watching · ${WN.shots}`:'Watch me play';window.WATCHING=!!(WN&&WN.running)};
+async function wPoll(){if(!API)return;let j;try{j=await fetch('/api/watch').then(r=>r.json())}catch(e){return}WN=j.now;wLabel();return j}
+setInterval(()=>{if(window.WATCHING||$('watch-sheet').classList.contains('open'))wPoll().then(j=>{if(j&&$('watch-sheet').classList.contains('open'))drawWatch(j)})},4000);wPoll();
+$('watch-btn').onclick=async e=>{e.stopPropagation();$('watch-sheet').classList.add('open');$('watch-body').innerHTML='<div class="empty">Loading…</div>';if(!API){$('watch-body').innerHTML='<div class="empty">Open the app from its shortcut to use this.</div>';return}drawWatch(await wPoll(),true)};
+let wSig='';
+function drawWatch(j,force){if(!j)return;const el=$('watch-body'),now=j.now&&j.now.running?j.now:null;
+ const sig=JSON.stringify([now&&[now.shots,now.marks],j.sessions.map(x=>[x.n,x.shots,x.learned])]);if(!force&&sig===wSig)return;
+ const keep=$('w-note')?$('w-note').value:'';wSig=sig;
+ el.innerHTML=(now?`<div class="sv"><div class="hint" style="margin-bottom:10px"><i class="rec"></i><b>Watching ${esc(now.game)}</b> · ${now.shots} screenshots · ${now.marks} marks</div>
+  <div class="warn">Play normally. Press <b>F7</b> when you like something, <b>F8</b> when you don't. Talk out loud about what you like or hate (the mic picks it up while this app is open), or type it here.</div>
+  <label>Note<textarea id="w-note" style="min-height:60px" placeholder="the pet hatch effect is sick, the shop is too cluttered…"></textarea></label>
+  <div class="ap-act"><button class="btn ghost" id="w-add">Add note</button><span style="flex:1"></span><button class="btn" id="w-stop">Stop watching</button></div></div>`
+ :`<div class="sv"><div class="hint" style="margin-bottom:10px">Play any Roblox game and Claude saves a screenshot every 5 seconds while Roblox is in front, plus your notes. Then press <b>Learn from it</b> and Claude writes what makes it good, and what you like, into the skills. Screenshots stay on this PC.</div>
+  <label>Which game are you playing?<input id="w-game" placeholder="e.g. Pet Simulator 99"></label>
+  <div class="ap-act"><button class="btn" id="w-start">Start watching</button></div></div>`)+
+  (j.sessions.length?'<div class="hint" style="margin:16px 0 8px">Past sessions</div>':'');
+ j.sessions.forEach(x=>{const d=document.createElement('div');d.className='pj';d.style.cursor='default';
+  d.innerHTML=(x.pic?`<img src="${img(x.pic)}" data-z alt="" style="cursor:zoom-in">`:'<div class="ph"></div>')+`<div style="flex:1"><b>${esc(x.game)}</b><span>${esc(x.n.slice(0,15).replace('_',' '))} · ${x.shots} screenshots · ${x.notes} notes${x.learned?' · learned ✓':''}</span></div>`+(now&&now.dir===x.path?'':`<button class="btn${x.learned?' ghost':''}">${x.learned?'Learn again':'Learn from it'}</button>`);
+  const im=d.querySelector('[data-z]');if(im)im.onclick=()=>zoom(im.src);
+  const b=d.querySelector('button');if(b)b.onclick=()=>{$('watch-sheet').classList.remove('open');window.startTask(`Learn from my Roblox play session (${x.game}): ${x.path}\nFollow roblox-game-study → "Learn from a play session". Screenshots stay on this PC; write the study and lessons into the skills and push.`)};
+  el.appendChild(d)});
+ if(now){$('w-note').value=keep;const add=async(text,kind)=>{if(!text.trim())return;try{const r=await wpost('/api/watch/note',{text,kind});toast(r.ok?'Noted':'Not watching right now')}catch(e){}};
+  $('w-add').onclick=()=>{add($('w-note').value,'note');$('w-note').value=''};
+  $('w-stop').onclick=async()=>{await wpost('/api/watch/stop');toast('Stopping… making the contact sheets');setTimeout(async()=>drawWatch(await wPoll(),true),2500)}}
+ else $('w-start').onclick=async()=>{const game=$('w-game').value.trim()||'roblox';try{drawWatch(await wpost('/api/watch/start',{game}),true);WN=(await wPoll());toast('Watching — go play. F7 = like, F8 = don\'t like')}catch(e){toast('Could not start — reopen the app from its shortcut')}}}
+window.watchSay=t=>{if(window.WATCHING&&t.trim().split(' ').length>=3)wpost('/api/watch/note',{text:t.trim(),kind:'say'}).catch(()=>{})};
+
 // ---- "Hey Claude" voice commands ----
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition,cap=$('orb-cap');
 const WAKE=/\b(hey|hi|okay|ok)[,\s]+claude\b/i,STRIP=/^[\s\S]*?\b(hey|hi|okay|ok)[,\s]+claude\b[,.!?\s]*/i,DONE=/\b(start (the )?task|finish(ed)? (the )?prompt|send it)\b[.!?\s]*$/i,CANCEL=/\b(never ?mind|cancel that|stop listening)\b/i;
@@ -610,7 +643,7 @@ function finish(){const t=ta.value.replace(DONE,'').trim();setAwake(false);said=
 function startRec(){if(!SR||run||blocked)return;rec=new SR();rec.lang=navigator.language||'en-US';rec.continuous=true;rec.interimResults=true;
  rec.onstart=()=>{run=true;meter()};
  rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript}
-  if(!awake){if(WAKE.test(fin+' '+tmp)){setAwake(true);ta.value=''}else return}
+  if(!awake){if(WAKE.test(fin+' '+tmp)){setAwake(true);ta.value=''}else{if(fin)window.watchSay&&window.watchSay(fin);return}}
   const strip=x=>WAKE.test(x)?x.replace(STRIP,''):x;
   if(fin)said+=strip(fin).trim()+' ';
   const show=(said+strip(tmp)).replace(/^\s+/,'');
