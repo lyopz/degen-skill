@@ -60,8 +60,10 @@ function Js($code) {
 $targets = Get-Targets
 if (-not $targets) {
   # a ChatGPT window opened the old way (without remote control) blocks it: close those first
-  Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -like '*DegenChatGPT*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
-  Start-Sleep -Milliseconds 800
+  $old = @(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -like '*DegenChatGPT*' })
+  if ($old.Count) { $old | ForEach-Object { $p = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; if ($p -and $p.MainWindowHandle -ne 0) { [void]$p.CloseMainWindow() } }
+    Start-Sleep -Seconds 4   # let it close cleanly so the sign-in is kept
+    @(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -like '*DegenChatGPT*' }) | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue } }
   Write-Host '[1/4] Opening ChatGPT...'
   if ($edge) { Start-Process $edge -ArgumentList @("--app=$url", "--user-data-dir=$prof", "--remote-debugging-port=$port", '--window-size=1100,900', '--no-first-run') }
   for ($i = 0; $i -lt 20 -and -not $targets; $i++) { Start-Sleep -Milliseconds 700; $targets = Get-Targets }
