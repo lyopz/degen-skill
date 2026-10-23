@@ -167,6 +167,16 @@ body.listening .ic.mic{background:var(--red);border-color:var(--red);animation:b
 .voice{display:none}
 .side-tab{position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;z-index:39;font:600 12.5px Inter,system-ui;color:var(--text);background:var(--panel);border:1px solid var(--line2);border-right:0;border-radius:0 12px 12px 0;padding:14px 9px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:right .42s cubic-bezier(.2,.8,.2,1),background .15s}
 .side-tab:hover{background:var(--panel2);border-color:rgba(225,29,46,.5)}body.drawer-open .side-tab{right:min(380px,92vw)}
+
+/* modern thin scrollbar */
+*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.14) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:999px;border:3px solid transparent;background-clip:padding-box;transition:background .2s}
+*::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.24);border:2px solid transparent;background-clip:padding-box}
+*::-webkit-scrollbar-thumb:active{background:rgba(225,29,46,.55);background-clip:padding-box}
+*::-webkit-scrollbar-corner{background:transparent}
+html,.mainwrap,.act-body,.menu,.md{scroll-behavior:smooth;overscroll-behavior:contain}
 </style>
 </head>
 <body>
