@@ -10,7 +10,7 @@ description: lyopz's Roblox design playbook — what's in meta for Roblox games 
 Read the reference that matches the job:
 - `references/first-try.md` — **spec → build one piece → check**, so designs come out right the first time. Always.
 - `references/ui.md` — sizes, layout, buttons, click/hover feedback, sounds, mobile/console. **Includes a ready button-feel script.**
-- `references/pets-and-eggs.md` — egg stands (floating vs grounded), egg designs per theme, hatching sequence, odds/rarity, pet styles, golden/rainbow/huge variants, pet movement.
+- `references/pets-and-eggs.md` — egg stands (floating vs grounded), egg designs per theme, hatching sequence, odds/rarity, pet styles, golden/rainbow/huge variants, pet movement, and upgrading (chance/timed machines, fuse rituals, enchants, a landmark "Forge").
 - `references/maps.md` — genres in meta, map layouts per genre, lighting presets, building style.
 - `references/game-feel.md` — motion, camera, hit feedback, VFX layering, rewards.
 - `references/performance.md` — budgets so it runs on phones (most players).

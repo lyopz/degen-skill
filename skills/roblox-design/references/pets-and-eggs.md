@@ -1,4 +1,4 @@
-# Pets & eggs (pet simulators, Adopt Me–style, Grow a Garden–style) — 2026-10-23
+# Pets, eggs & upgrades (pet simulators, Adopt Me–style, Grow a Garden–style) — 2026-10-23
 
 How the genre's eggs and pets are designed, so ours feel right on the first try. "Seen in" = observed genre pattern; numbers marked *(source)* come from the sources at the bottom; the rest are common practice to tune per game.
 
@@ -61,6 +61,52 @@ Pick ONE pet style per game (style bible) — mixing breaks the look.
 - Index/collection book (rewards for completing an egg's set).
 - Trading (later; server-validated, both sides confirm, logs).
 - Data: pets saved by ID + variant + level, never as models (`roblox-dev`).
+
+
+## 7. Upgrading pets (evolve · fuse · merge · enchant)
+
+### The systems the big games use
+| System | How it works | Seen in |
+|---|---|---|
+| **Chance machine** (Golden / Rainbow) | put **1–6 of the same pet** in; more pets = higher chance and higher cost; fail = pets are lost. Golden machine: 1 pet 13% (250 💎) · 2 = 29% (400) · 3 = 47% (600) · 4 = 63% (800) · 5 = 88% (1,000) · 6 = 100% (1,250) | Pet Simulator X *(GGRecon)*; Rainbow machine: 1 golden 13% … 6 golden 100% (2,250 💎) *(Gfinity)* |
+| **Timed machine** (Dark Matter) | always succeeds, but **takes time**; more pets = shorter wait (1 pet 5 days … 6 pets 30 min); collect from a "view" queue; Robux skip that gets cheaper as time runs down; 6 slots, 8 with a pass | Pet Simulator X *(Pet Sim wiki)* |
+| **Ritual fuse** (Neon / Mega Neon) | **4 fully-grown** pets of the same kind on **4 glowing circles** in a hidden cave → 1 neon pet (starts small again); 4 max-age neons → Mega Neon that cycles rainbow colors every 1–2 s | Adopt Me *(Pro Game Guides)* |
+| **Fuse / combine any pets** | throw several (often lower-tier) pets in → one random better pet; doubles as a pet-trash sink | Pet Sim 99 style fusers |
+| **Enchant circle** | pay coins to roll **perks** onto a pet (Coins +15%…+100%, Strength, Luck…; tiers I–V; 2–4 slots by rarity); fusing can re-roll them | Pet Simulator X *(Pet Sim wiki)* |
+| **Level / feed / age up** | pets gain XP from use or food; max level unlocks the next evolution | Adopt Me ages, many sims |
+
+**Variant ladder (pick one, keep it everywhere):** Normal → **Golden** (~3× stats) → **Rainbow** (stronger) → **Dark Matter / Mega** (~20× normal in Pet Sim X) *(Gfinity, Pet Sim wiki)*. Same mesh, new material + effects each step (see section 5).
+
+### Which to use (recommended defaults for lyopz's games)
+- **Main path:** Chance machine for Golden and Rainbow (simple, exciting, a strong currency + pet sink), plus a **guarantee at max slots** so it never feels like a scam.
+- **Top tier:** Timed machine for the highest variant (always succeeds, creates a reason to come back, optional skip).
+- **Cozy games:** Ritual fuse (4 circles) instead of chance; no losing pets.
+- **Extra depth later:** Enchants for perks; a "fuse anything" machine as a trash sink.
+- Show the exact **odds, cost and time** before confirming, and the **result preview** (ghost of the upgraded pet).
+
+### A cool place to upgrade (the "Forge")
+Make the upgrade spot a **landmark**, not a menu button:
+- **Location:** a special area next to the hub or at the end of each world (the reward for getting there), visible from spawn with a beam of light / particles.
+- **Look per game style:**
+  - *Simulator / neon:* a glowing **Pet Forge** — big machine with a transparent chamber, conveyor or tubes feeding pets in, energy rings, screen showing odds; each variant has its own colored machine (gold, rainbow, dark void).
+  - *Cozy / garden:* a **Moon Shrine / Fairy Ring** — 4 stone circles that light up, fireflies, soft music (Adopt Me–style ritual).
+  - *Fantasy:* an **Enchanting Altar** with floating runes and books.
+  - *Sci-fi / brainrot:* a **Mutation Lab** — tubes of goo, warning lights, a big lever.
+- **Interaction:** walk up → prompt → pick pets in a grid (only valid pets selectable; auto-fill best combo) → slot count + live odds bar fills as you add pets → big **FUSE** button (hold 1 s to confirm, ButtonFeel).
+- **The moment (≤ 4 s):** pets fly from the player into the machine → machine charges (rising hum, shake, lights speed up) → flash + camera shake → upgraded pet pops out on a pedestal with variant colors, beam, confetti; fail = sad fizzle + smoke (short, never mocking). Legendary results get a server-wide announcement.
+- **Timed machines:** pets visible "cooking" inside, countdown above the machine (BillboardGui), "Collect" glow when ready, optional skip product.
+
+### Rules (stable + fair)
+- **Server does everything:** validate pet ownership, same-type rules, levels, cost, and roll the result on the server; remove input pets and add the output in **one save step** (no duplication); log it. Use `RemoteGuard` + the data rules in `roblox-dev`. Robux skips/boosts via `PurchaseHandler`.
+- Lock favorite pets so they can't be fused by accident; confirm before using rare pets.
+- Balance: each upgrade should feel worth it (big stat jump, clear new look) and cost enough to matter; check the math in one config module.
+
+### Sources (upgrades)
+- GGRecon — Golden machine odds and costs (Pet Simulator X): https://ggrecon.com/guides/pet-simulator-x-how-to-make-golden-pets
+- Gfinity — Rainbow machine (Pet Simulator X): https://www.gfinityesports.com/roblox/rainbow-pets-pet-simulator-x
+- Pet Simulator wiki — Dark Matter machine: https://pet-simulator.fandom.com/wiki/Dark_Matter_Machine_(Pet_Simulator_X)
+- Pet Simulator wiki — Enchants: https://pet-simulator.fandom.com/wiki/Enchants_(Pet_Simulator_X)
+- Pro Game Guides — Neon & Mega Neon pets (Adopt Me): https://progameguides.com/roblox/how-to-make-a-neon-pet-in-adopt-me
 
 ## Sources
 - creation.dev — how to make a pet simulator (tiers, colors, odds, eggs per world, pity, evolutions, limited eggs, performance): https://www.creation.dev/learn/how-to-make-pet-simulator-roblox
