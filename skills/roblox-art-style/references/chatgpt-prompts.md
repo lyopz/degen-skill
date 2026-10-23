@@ -1,11 +1,11 @@
 # ChatGPT picture prompts (free route, lyopz's ChatGPT)
 
-lyopz makes great pictures in ChatGPT. Default picture route when credits are 0 (or whenever he picks it): the agent writes a **detailed** prompt → `gpt-image.ps1` shows it in the app (Copy + Open ChatGPT) → lyopz saves the image to Downloads → the script copies it into the project and prints the path → continue (approve → 3D → Blender → Studio).
+lyopz makes great pictures in ChatGPT. The ONLY picture route (always — never Higgsfield for pictures): the agent writes a **detailed** prompt → `gpt-image.ps1` shows it in the app (Copy + Open ChatGPT) → lyopz saves the image to Downloads → the script copies it into the project and prints the path → continue (approve → 3D → Blender → Studio).
 
 ```powershell
 powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -Name <thing>-concept -From <agent> -Prompt "<prompt>"
 ```
-One picture per call. Several pictures → several calls (one card each). Then approve with `ask.ps1` (or lyopz approves by saying so).
+**One asset per picture, white background, every time.** Several assets → several calls, one after another. No approval step — hand the picture to the modeler.
 
 ## How to describe it (always all 8 parts, plain words, 120–250 words)
 1. **What + purpose:** "A single collectible pet for a Roblox pet simulator game: a Kappa (Japanese water spirit)."
@@ -15,7 +15,7 @@ One picture per call. Several pictures → several calls (one card each). Then a
 5. **Surface & markings:** "smooth toy-like soft-touch material, painted soft gradients, glowing cyan rune markings carved into the sides (wave and spiral symbols)."
 6. **Colors (hex from the bible):** main / secondary / glow / accent — max 2 glow colors.
 7. **Style words:** bible's prompt suffix + "stylized 3D game asset, Pixar-like toy render, clean shapes, high detail on the design parts, simple readable silhouette".
-8. **Framing (for 3D later):** "single full-body object, three-quarter front view, whole object visible, centered, plain flat purple (#3B2A8F) or neutral grey background, soft even studio lighting, no text, no watermark, no other objects."
+8. **Framing (for 3D later):** "single full-body object, three-quarter front view, whole object visible, centered, pure plain white background (#FFFFFF), nothing else in the image, soft even studio lighting, no text, no watermark, no other objects."
 Extra lines when useful: "matching the style of the attached reference" (tell lyopz to attach `reference/target-look.webp` in ChatGPT), "same character as before but …" for edits, "turnaround: front, side, back" for rigging.
 
 ## Good / bad
