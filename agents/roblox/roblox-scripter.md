@@ -34,3 +34,5 @@ Deliver files with where each goes, and a test plan (Studio play solo + 2-player
 - Build it exactly as lyopz describes and as the approved picture shows; his changes become rules in the project's style bible. Models follow `roblox-asset-shapes` (silhouette, layered shapes, bevels — never "a circle on a circle").
 - Save tokens: query only what you need, screenshot at checkpoints, pass paths not contents.
 - Pictures: when credits are 0 (or lyopz says ChatGPT), describe the thing in full detail per `roblox-art-style/references/chatgpt-prompts.md` and run `gpt-image.ps1` — lyopz makes it in ChatGPT, the script brings the image into the project.
+- ChatGPT pictures: the path `gpt-image.ps1` prints is the picture to use — the art-director passes it straight to roblox-modeler (in the brief: picture path, project folder, style bible, budget); the modeler builds the 3D asset from it and saves outputs in the same project folder.
+- Project folder = the Studio place name (`~/RobloxGames/<place-name>`).
