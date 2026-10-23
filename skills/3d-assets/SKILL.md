@@ -1,6 +1,6 @@
 ---
-name: ai-3d-assets
-description: Turns any idea into 3D assets or a whole 3D scene — single props or full environments like "an island with trees". Makes reference pictures with Higgsfield, converts them to GLB models with Higgsfield image-to-3D and/or builds and assembles them in Blender, then exports for a website, the Degen Skills app or Roblox Studio. Use when lyopz asks for any 3D model, asset, prop, character, map, level, environment or scene ("make a 3D ___", "set me on an island", "build a Roblox map", "make game assets").
+name: 3d-assets
+description: Turns any idea into 3D assets or a whole 3D scene (single props or environments like "an island with trees"). Makes reference pictures with Higgsfield, converts them to GLB with image-to-3D and/or builds and assembles them in Blender, then exports for a website, the Degen Skills app or Roblox Studio. Also holds lyopz's prompt & design library (prompts.md). Use for any 3D model, asset, prop, character, map, level or scene request ("make a 3D ___", "build a Roblox map", "make game assets"), and whenever writing or saving an image/video/design prompt.
 ---
 
 <!-- from: lyopz (own workflow, first used for the robot chicken in the Degen Skills app) -->
@@ -63,6 +63,11 @@ Save the `.blend` file with the project so it can be edited later.
 - Scale: Roblox studs (~1 stud ≈ 0.28 m). Resize in Studio or set scale on import; a character is ~5 studs tall.
 - Moving characters need an R15 rig that matches Roblox's rules. AI meshes aren't rigged that way, so use them as props, pets (with simple tween/spin scripts), statues, accessories, or rig them in Blender with Roblox's R15 template.
 - Upload costs: importing to your own place is free; publishing to the Creator Store/marketplace may need verification.
+
+## Examples and prompt library
+- `examples/robot-chicken.md` — single object, start to finish, real prompt + costs.
+- `examples/island-scene.md` — scene plan (what's made in Blender vs Higgsfield, prompts, estimate).
+- `prompts.md` — **every prompt and design that worked**, for images, video, 3D and sites. Read it before writing a new prompt; add to it whenever lyopz shares or approves a prompt, a look or a design.
 
 ## Notes
 - Save the source picture and GLB with the project so it can be re-converted or edited later.

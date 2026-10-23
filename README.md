@@ -27,7 +27,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Add my 21st.dev spotlight card to this page" | `21st-dev` |
 | "Make my hero image break into particles when I move the mouse" | `particle-media` |
 | "Add a widget board / tab wheel to the bottom of my site" | `widget-board` |
-| "Make a 3D robot chicken / a Roblox prop" | `ai-3d-assets` |
+| "Make a 3D robot chicken / a Roblox prop" | `3d-assets` |
 | "Build a fast 3D scene for my site" | `three-best-practices`, `r3f-best-practices` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |

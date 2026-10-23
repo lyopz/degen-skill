@@ -8,6 +8,7 @@ Read this first in any new conversation. It says where things stand so we can pi
 - Every new skill goes to both the repo and his PC (push, then he runs `git pull`).
 - When building a site, ask whether he wants animations (Higgsfield video, particle-media, motion).
 - Sites: professional standard, a fresh design each time (not a copy of an old template). Tag each section with the skills it used.
+- Prompts & designs: any prompt, look or design lyopz shares/approves (images, video, 3D, sites) gets added to `skills/3d-assets/prompts.md`; full worked examples go in `skills/3d-assets/examples/`.
 - "Widget board" = the bottom tab wheel (`widget-board`). Use the Degen Skills site version as the base idea; pick cards and actions (links, copy buttons…) by what matters for that project; follow his edits as he changes it.
 
 ## What this repo is
@@ -35,7 +36,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
-- **2026-10-22** — Robot chicken 3D model (Higgsfield, 35 credits) replaces the Spline robot in the app. Added own `ai-3d-assets` skill (also for Roblox assets). Cursor particle effect follows faster. 120 skills.
+- **2026-10-22** — Robot chicken 3D model (Higgsfield, 35 credits) replaces the Spline robot in the app. Added own `3d-assets` skill (renamed from ai-3d-assets; examples + prompts.md library) (also for Roblox assets). Cursor particle effect follows faster. 120 skills.
 - **2026-10-22** — Added emalorenzo/three-agent-skills (three-best-practices, r3f-best-practices). 119 skills.
 - **2026-10-22** — Added Degen Skills desktop app (`assets/app/`), auto-updates from the repo on launch. Site made lighter (particle caps, pause off-screen).
 - **2026-10-22** — Added own `widget-board` skill (bottom tab wheel of action cards: jump/link/copy). Cards are picked per project by relevance. 117 skills.

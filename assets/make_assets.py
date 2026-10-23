@@ -32,7 +32,7 @@ CORE = [
         ("21st-dev", "Your saved 21st.dev components, ready to drop in"),
         ("particle-media", "Turns pictures and videos into particles that follow the mouse"),
         ("widget-board", "Spinning bottom wheel of shortcut cards: links, copy buttons"),
-        ("ai-3d-assets", "Turns an idea into a 3D model for sites, apps and Roblox"),
+        ("3d-assets", "Turns an idea into a 3D model for sites, apps and Roblox"),
         ("three-best-practices", "Rules for fast, smooth 3D scenes with Three.js"),
         ("r3f-best-practices", "Same 3D rules for React Three Fiber"),
         ("design", "Logos, icons, mockups and social images"),
