@@ -12,12 +12,12 @@ $task = [IO.File]::ReadAllText($TaskFile).Trim()
 $prompt = if ($task -eq '/roblox' -or -not $task) { '/roblox' } else { Q ("Do this task now (full brief below; also saved at $TaskFile):`n`n" + $task) }
 # Add Customuse if lyopz set it up (customuse-setup.ps1 saves the address outside the repo)
 $mcp = Join-Path $app 'roblox-mcp.json'
-$cu = Join-Path $env:USERPROFILE 'RobloxGames\.degen\customuse-mcp.txt'
+$cu = Join-Path $env:USERPROFILE 'RobloxGames\.degen\customuse-mcp.json'
 if (Test-Path $cu) {
-  $u = ([IO.File]::ReadAllText($cu)).Trim()
-  if ($u -match '^https://') {
+  $srv = [IO.File]::ReadAllText($cu) | ConvertFrom-Json
+  if ($srv.url -match '^https://') {
     $cfg = [IO.File]::ReadAllText($mcp) | ConvertFrom-Json
-    $cfg.mcpServers | Add-Member -NotePropertyName customuse -NotePropertyValue ([pscustomobject]@{ type = 'http'; url = $u }) -Force
+    $cfg.mcpServers | Add-Member -NotePropertyName customuse -NotePropertyValue $srv -Force
     $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
     [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
   }
