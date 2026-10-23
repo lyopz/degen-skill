@@ -18,6 +18,22 @@ powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -N
 8. **Framing (for 3D later):** "single full-body object, three-quarter front view, whole object visible, centered, pure plain white background (#FFFFFF), nothing else in the image, soft even studio lighting, no text, no watermark, no other objects."
 Extra lines when useful: "matching the style of the attached reference" (tell lyopz to attach `reference/target-look.webp` in ChatGPT), "same character as before but …" for edits, "turnaround: front, side, back" for rigging.
 
+## Premium polished pets (default for pets, lyopz 2026-10-23)
+lyopz wants pets that look polished and premium, **not cartoonish**. What the top Roblox pet games do for their best (legendary / huge) pets:
+- **Sleek, confident silhouette** instead of a round blob: a clear head, chest, and pose; one strong shape idea you can read from far away.
+- **Smaller, sharper eyes** (almond or slanted, gem-like with a glint) instead of huge googly eyes. Small or no mouth. Never a big open cartoon smile.
+- **Separate materials**: matte soft body + glossy armor/shell + polished metal trim (gold, silver) + glowing crystal or rune parts. Material contrast is what makes it look expensive.
+- **Clean hard edges with small bevels** that catch a thin highlight. Crisp panel lines and trim, not fuzzy or noisy detail.
+- **Limited palette**: 1 main color, 1 dark secondary, 1 metal, 1 glow color. Darker values and richer colors, not pastel candy.
+- **Rim light + soft studio light** so the edges glow and the form reads. Emissive parts glow a little, not blown out.
+- **Big detail only where it counts** (head piece, wings, tail tip, chest gem); the rest stays simple so Customuse can build it low-poly.
+
+Add these lines to part 7 (style words) for every pet:
+"premium collectible game pet, polished stylized 3D, not cartoonish, sleek confident silhouette, small sharp gem eyes, matte body with glossy armor plates and polished gold trim, glowing crystal accents, crisp beveled edges catching thin highlights, rich deep colors, rim lighting, high-end mobile game hero asset, clean low-poly-friendly shapes, no fur strands, no noisy detail"
+
+Template (fill the <...>; still one pet, white background):
+"A single premium collectible pet for a Roblox pet game: <creature>. Sleek, confident stylized body in a proud standing pose, <body shape and proportions>, head about one third of the body. Identity features: <3 to 5 features, each with shape, size, position, material, color>. Face: small almond-shaped glowing gem eyes in <eye color> with a sharp white glint, no big cartoon eyes, small closed mouth. Materials: soft matte <main color> body, glossy <secondary color> armor plates with crisp beveled edges, polished gold trim lines, glowing <glow color> crystal accents and thin rune lines. Colors: <hex list, max 4>. Style: premium collectible game pet, polished stylized 3D, not cartoonish, high-end mobile game hero asset, clean low-poly-friendly shapes, rim lighting, soft studio light, rich deep colors, no fur strands, no noisy detail. Single full-body object, three-quarter front view, whole pet visible and centered, pure plain white background (#FFFFFF), nothing else in the image, no text, no watermark, no shadow scenery."
+
 ## Automation notes (gpt-image.ps1 / gpt-image.mjs)
 - Edge with `--remote-debugging-port=9333` + Playwright `connectOverCDP` works (raw PowerShell websockets were unreliable).
 - Never force-kill the ChatGPT window (sign-in cookies get lost); close it gently.
