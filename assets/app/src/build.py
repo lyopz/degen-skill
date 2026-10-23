@@ -20,6 +20,7 @@ for k in ['hero', 'swarm', 'cards']: h = h.replace(f'__{k.upper()}__', 'data:ima
 h = h.replace('__VID__', b64('hero.mp4'))
 h = h.replace('__SKILLS_RAW__', json.dumps(raw, ensure_ascii=False).replace('</', '<\\/'))
 h = h.replace('__CORE__', json.dumps({n: t.title() for t, _, it in CORE for n, _ in it}))
+h = h.replace('__PROMPTS__', json.dumps(open(os.path.join(REPO, 'skills/3d-assets/prompts.md'), encoding='utf-8').read()).replace('</', '<\\/'))
 h = h.replace('__PLAIN__', json.dumps({n: d for t, _, it in CORE for n, d in it}))
 h = h.replace('<title>Degen Skills</title>', '<title>Degen Skills</title>\n<link rel="icon" href="icon.png">\n<script src="skills.js"></script>', 1)
 open(os.path.join(APP, 'index.html'), 'w', encoding='utf-8').write(h)

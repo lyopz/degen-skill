@@ -30,6 +30,7 @@ $data = [ordered]@{
   skills   = @($skills)
   agents   = @(Get-ChildItem (Join-Path $repo 'agents') -Recurse -Filter *.md).Count
   commands = @(Get-ChildItem (Join-Path $repo 'commands') -Recurse -Filter *.md).Count
+  prompts  = $(if (Test-Path (Join-Path $repo 'skills\3d-assets\prompts.md')) { Get-Content (Join-Path $repo 'skills\3d-assets\prompts.md') -Raw -Encoding UTF8 } else { '' })
 }
 $json = $data | ConvertTo-Json -Depth 5 -Compress
 [IO.File]::WriteAllText((Join-Path $app 'skills.js'), "window.DEGEN=$json;", (New-Object Text.UTF8Encoding $false))

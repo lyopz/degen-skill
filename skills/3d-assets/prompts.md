@@ -1,10 +1,10 @@
 # Prompt & design library
 
-Every prompt or design style that worked (or didn't), newest at top. Add to this whenever lyopz shares or approves a prompt, a look, or a design for images, video, 3D or sites. Keep each entry short: what it was for, the prompt/settings, model, cost, result notes.
+Every prompt or design style that worked (or didn't), newest at top. The Degen Skills app shows this file as its Prompt library (each `- **Name** — notes "prompt"` line becomes a card with a copy button; put the prompt itself in double quotes). Add to this whenever lyopz shares or approves a prompt, a look, or a design for images, video, 3D or sites. Keep each entry short: what it was for, the prompt/settings, model, cost, result notes.
 
 ## 3D source pictures (for image-to-3D)
 - **Robot chicken** — see `examples/robot-chicken.md`. Template that worked:
-  `A single full-body [THING], [style], [materials/colors], three-quarter view, whole object fully visible, centered, plain neutral grey background, soft even lighting, no text` · `gpt_image_2_5` 1:1.
+  "A single full-body [THING], [style], [materials/colors], three-quarter view, whole object fully visible, centered, plain neutral grey background, soft even lighting, no text" · gpt_image_2_5 1:1.
 
 ## Site art (Degen Skills site/app, black + red)
 - **Hero** — `recraft_v4_1` 16:9, colors #0b0b0d #e11d2e #ff4d5e #f5f5f7: "Abstract dark cinematic artwork: a glowing red neural network of fine light filaments forming a brain-like constellation, floating over deep black, volumetric red haze, sharp highlights, high contrast, no text".
