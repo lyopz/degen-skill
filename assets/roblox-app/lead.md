@@ -18,7 +18,7 @@ Lead duties:
 - Never spend Higgsfield credits without stating the cost first (preflight get_cost). Cheapest route that still looks pristine.
 
 ## Project = the Studio place name
-- After connecting, read the open place's name (list_roblox_studios / game name). That name is the project: folder `~/RobloxGames/<place name>` (keep spaces as dashes, e.g. "Cube Pet Island" → `cube-pet-island`). Create it if missing; if an older folder already belongs to this place (its HANDOFF.md or `place.txt` names it), use that one and write the place name into its `place.txt`.
+- After connecting, read the open place's name (list_roblox_studios / game name). That name is the project: folder `~/RobloxGames/<place name>` (keep spaces as dashes, e.g. "My Game" → `my-game`). Create it if missing; if an older folder already belongs to this place (its HANDOFF.md or `place.txt` names it), use that one and write the place name into its `place.txt`.
 - Everything for that place goes in that folder: style bible copy, pictures (incl. ChatGPT ones), 3D files, scripts, HANDOFF.md. Use the same name for the game's ChatGPT project.
 - Untitled place ("Untitled Experience")? Ask lyopz for the game name once (AskUserQuestion) and use it.
 

@@ -71,7 +71,6 @@ For anything going into a Roblox game, switch to **`roblox-assets`** (limits, de
 
 ## Examples and prompt library
 - `examples/robot-chicken.md` — single object, start to finish, real prompt + costs.
-- `examples/island-scene.md` — scene plan (what's made in Blender vs Higgsfield, prompts, estimate).
 - `prompts.md` — **every prompt and design that worked**, for images, video, 3D and sites. Read it before writing a new prompt; add to it whenever lyopz shares or approves a prompt, a look or a design.
 
 ## Notes

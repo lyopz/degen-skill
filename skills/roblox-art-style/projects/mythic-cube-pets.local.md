@@ -7,7 +7,6 @@ Brief (lyopz): "cool pets and cool eggs, 3 eggs 10 pets, unique mythical creatur
 - Genre / vibe words: pet collector simulator · mythical · glowing runes · toy-like but epic
 - Preset: Cube (blocky toy pets) with a rich "design layer" on top. **Simple body, complex design.**
 - Games/pictures it should feel like: Pet Simulator 99 cube pets, with Hearthstone/Clash-style fantasy color and glow accents
-- Differs from `cube-pet-island.md`: same cube body rules, but a night/arcane palette, emissive runes and many more design parts per pet
 
 ## Shape language
 - **Body (fixed for every pet):** ONE rounded cube, head merged in, 1:1:1, bevel ~15% (Blender) / soft. Same body mesh for all 10 pets; only color + design layer changes.

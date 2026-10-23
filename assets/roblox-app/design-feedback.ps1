@@ -1,6 +1,6 @@
 # Rate a design in the Degen Roblox app and log lyopz's like/dislike, so future designs follow his taste (customuse-design skill).
 # Usage (from Claude Code):
-#   powershell -NoProfile -File "$env:DEGEN_APP\design-feedback.ps1" -Project cube-pet-island -Name dragon-pet-v1 -Image "C:\...\dragon-pet-v1.png" -Tool customuse -Prompt "<prompt used>" -From roblox-art-director
+#   powershell -NoProfile -File "$env:DEGEN_APP\design-feedback.ps1" -Project my-game -Name dragon-pet-v1 -Image "C:\...\dragon-pet-v1.png" -Tool customuse -Prompt "<prompt used>" -From roblox-art-director
 # Prints the answer (e.g. "Love it" or "Change something: eyes bigger"). APP_CLOSED -> ask in the terminal, then run again with -Answer "<his words>" to only log it.
 param([string]$Project = '', [string]$Name = 'design', [string]$Image = '', [string]$Tool = 'customuse', [string]$Prompt = '', [string]$From = 'Lead', [string]$Answer = '')
 $RG = Join-Path $env:USERPROFILE 'RobloxGames'; $D = Join-Path $RG '.degen'

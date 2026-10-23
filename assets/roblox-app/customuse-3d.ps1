@@ -1,7 +1,7 @@
 # Picture -> low-poly 3D model in Customuse, by hand (use only when the Customuse MCP tools are NOT loaded).
 # Shows a card in the Degen app with the picture and steps, opens Customuse, then picks the exported model up from Downloads.
 # Usage (from Claude Code):
-#   powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project cube-pet-island -Name dragon-pet -Image "C:\...\chatgpt\dragon-pet.png" -From roblox-modeler
+#   powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project my-game -Name dragon-pet -Image "C:\...\chatgpt\dragon-pet.png" -From roblox-modeler
 # Prints the saved model path (~/RobloxGames/<project>/customuse/<name>-<time>.glb/.fbx/.obj), or SKIPPED / NO_MODEL.
 param([string]$Project = '', [string]$Name = 'model', [string]$Image = '', [string]$From = 'Lead', [int]$Minutes = 30, [int]$Tris = 3000)
 $RG = Join-Path $env:USERPROFILE 'RobloxGames'; $D = Join-Path $RG '.degen'
