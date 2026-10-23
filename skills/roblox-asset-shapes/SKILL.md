@@ -20,6 +20,9 @@ description: How to give Roblox assets real shape definition so they never look 
 **Image → 3D options:** Higgsfield `generate_3d` (credits) · **free:** Tripo, Meshy (free monthly credits, commercial use on free tier per their pages — check), **Hunyuan3D-2** and **TRELLIS 2** (open source, run free on lyopz's PC if the GPU has ~8 GB+ VRAM, unlimited). Always: approved picture first → 3D → Blender cleanup (decimate, fix normals, merge parts, vertex colors / 1 texture) → under budget → import.
 **Pictures:** Higgsfield, or lyopz can make them in ChatGPT and drop them in (no ChatGPT connector here) — same prompt template from `3d-assets/prompts.md`.
 
+## 1b. Blender part by part (default for anything from a picture)
+Follow `references/blender-part-by-part.md`: parts list from the picture (8–25 parts for a pet, each with size relative to the body, position, shape, color), the right technique per part (curves for manes/tails, inset plates for shells, bent cones for horns/tentacles, shrinkwrapped carved runes…), layered and overlapping, then `scripts/compare_to_siblings.py` → side-by-side with the picture + size/shape check against the project's other models. Fix the 3 biggest differences, repeat.
+
 ## 2. Shape language (every asset)
 1. **Primary shape** (big read, ~60–70% of volume): egg, cube body, bush mass, trunk.
 2. **Secondary shapes** (2–5): trims, horns, leaf clumps, roots, wings — they **break the outline**. Silhouette must change when you add them.
