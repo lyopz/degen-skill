@@ -28,6 +28,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Make my hero image break into particles when I move the mouse" | `particle-media` |
 | "Add a widget board / tab wheel to the bottom of my site" | `widget-board` |
 | "Make a 3D robot chicken / a Roblox prop" | `3d-assets` |
+| "Use Customuse for this hoodie" / "I don't like the eyes" | `customuse-design` |
 | "Make a Roblox fireball / make my chicken walk in Roblox" | `roblox-assets` |
 | "Make my Roblox game 10,000x cooler" | `roblox-design` |
 | "Make a pigeon cube pet that fits my game" | `roblox-art-style` |

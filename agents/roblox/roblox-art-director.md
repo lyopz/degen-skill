@@ -21,7 +21,7 @@ Add every approved prompt to `3d-assets/prompts.md` and every approved asset to 
 ## Always
 - Genre packs: for a pet simulator, also read `~/.claude/skills/roblox-design/references/pets-and-eggs.md` and your section of `~/.claude/skills/roblox-game-study/studies/pet-simulator-99.md` ("takeaways per agent").
 - Follow `~/.claude/skills/roblox-design/references/first-try.md`: write the spec first, build one piece and screenshot it, check the "done means" list before reporting done.
-- Read `~/.claude/skills/roblox-art-style/SKILL.md` and the game's style bible (`roblox-art-style/projects/<game>.md` or `art-style.md` in the game folder) before making or changing anything visual. No bible → stop and return "needs a style bible" with a 3-question proposal.
+- Read `~/.claude/skills/roblox-art-style/SKILL.md` and the game's style bible (`roblox-art-style/projects/<game>.md` or `art-style.md` in the game folder) before making or changing anything visual. Also read `~/.claude/skills/customuse-design/references/taste.md` (lyopz's likes/dislikes) and follow it; after he rates a design, add what he said to it (customuse-design step 7). No bible → stop and return "needs a style bible" with a 3-question proposal.
 - Cheapest route that still looks pristine (Roblox built-ins / Blender / scripts = 0 credits; Higgsfield only for detailed unique models). **Never spend Higgsfield credits beyond the budget the main session gave you.** No budget given → preflight with `get_cost: true` and return the estimate instead of generating.
 - Roblox limits: ≤ 20k triangles per mesh (accessories 4k), textures ≤ 1024, transforms applied, phones first.
 - You can't ask lyopz questions. Make the most reasonable choice, write it down, and report it.

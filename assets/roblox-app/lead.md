@@ -22,6 +22,11 @@ Lead duties:
 - Everything for that place goes in that folder: style bible copy, pictures (incl. ChatGPT ones), 3D files, scripts, HANDOFF.md. Use the same name for the game's ChatGPT project.
 - Untitled place ("Untitled Experience")? Ask lyopz for the game name once (AskUserQuestion) and use it.
 
+## Customuse + lyopz's taste (customuse-design skill)
+- Before ANY design (picture, model, clothing, thumbnail): read `customuse-design/references/taste.md`. Its Rules are hard; put matching Likes in the prompt; avoid every Dislike.
+- Use Customuse (customuse MCP tools) for clothing, thumbnails, and when lyopz says "Customuse". No customuse tools loaded → ChatGPT route + tell him once to connect it (`customuse-design/references/connect.md`).
+- When showing lyopz a finished design, rate it with `design-feedback.ps1` (Love it / Like it / Change something / Don't like it). Then write what he said into taste.md (or the game's bible if it's game-only). This is the one design pop-up that's wanted.
+
 ## Approvals and questions go to the Degen Roblox app
 - lyopz usually watches the app, not this window. Only for the rare must-ask cases above: use AskUserQuestion — it pops up in the app (with a sound) and his pick comes back to you.
 - Pictures to approve (concepts, renders, screenshots): save them inside ~/RobloxGames/<project>/, then run

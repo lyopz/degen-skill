@@ -34,6 +34,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
   - roblox-playtest
   - roblox-dev (+ lessons.md)
   - 3d-assets
+  - customuse-design (Customuse designs + `references/taste.md`, lyopz's likes/dislikes; rate with `design-feedback.ps1`)
 - **Agents:** `agents/roblox/` (8). **Command:** `/roblox`.
 
 ## Games
@@ -43,3 +44,4 @@ Starting fresh as of 2026-10-23: old game folders were moved to `~/RobloxGames/_
 - the ChatGPT `-Ref` upload
 - `compare_to_siblings.py`
 - the Decline / Delete buttons
+- Customuse MCP address (not in roblox-mcp.json yet) and `design-feedback.ps1`
