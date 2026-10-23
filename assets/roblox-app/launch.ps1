@@ -1,6 +1,7 @@
 # Degen Roblox launcher: pull updates, build roblox-data.js, sync Studio templates, open the app,
 # and (unless -AppOnly) open a FAST Roblox Claude Code window (only the Roblox_Studio connection, no claude-flow).
 param([switch]$AppOnly)
+if (-not $PSBoundParameters.ContainsKey('AppOnly')) { $AppOnly = $true }  # app opens alone; start tasks from the app (or use -AppOnly:$false)
 $ErrorActionPreference = 'SilentlyContinue'
 $app  = $PSScriptRoot
 $repo = Split-Path -Parent (Split-Path -Parent $app)
@@ -57,6 +58,7 @@ if (-not $AppOnly) {
   $games = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path $games | Out-Null
   $mcp = Join-Path $app 'roblox-mcp.json'
   # Fast Roblox Claude: only Roblox_Studio MCP, Claude credits (API key hidden for this window only)
-  $cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location '$games'; claude --strict-mcp-config --mcp-config '$mcp'"
+  $lead = Join-Path $app 'lead.md'
+  $cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location '$games'; `$host.UI.RawUI.WindowTitle='Roblox Lead'; claude --strict-mcp-config --mcp-config '$mcp' --append-system-prompt (Get-Content -Raw '$lead') '/roblox'"
   Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-Command', $cmd)
 }

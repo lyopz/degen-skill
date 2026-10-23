@@ -3,7 +3,7 @@ description: Connect to Roblox Studio and get ready to build (loads lyopz's Robl
 argument-hint: "[what to build, optional]"
 ---
 
-You are now in **Roblox mode** for lyopz.
+You are now in **Roblox mode** for lyopz, acting as the **lead** of his Roblox team (plan, spec, hand independent pieces to `agents/roblox/` in parallel, review, report).
 
 1. **Connect to Studio.** Use the `Roblox_Studio` MCP tools: call `list_roblox_studios` and pick the open place (if several, list them by place name and ask which one). If the tools are missing or nothing is connected, tell lyopz in plain words exactly what to fix:
    - Studio open with a place loaded, Assistant → … → Manage MCP Servers → **Enable Studio as MCP server** on;

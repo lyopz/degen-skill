@@ -31,7 +31,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 - Also published as a claude.ai artifact ("Degen Skills") for previews.
 
 ## Degen Roblox app
-- `assets/roblox-app/`: `launch.ps1` (pull, build roblox-data.js from roblox-* skills, agents/roblox, templates, style bibles, studies, references, lessons; sync Studio plugin; open app; open fast Roblox Claude in ~/RobloxGames), `install.ps1`, `index.html` (edit directly; data is live). Anything Roblox-related added to the repo shows up automatically.
+- `assets/roblox-app/`: `launch.ps1` (pull, build roblox-data.js from roblox-* skills, agents/roblox, templates, style bibles, studies, references, lessons; sync Studio plugin; open app; open fast Roblox Claude in ~/RobloxGames), `install.ps1`, `index.html` (edit directly; data is live). Landing page = ▶ Start: task form → `degenroblox://task?b=<base64url brief>` → `start-task.ps1` opens a "Roblox Lead" Claude window (`--strict-mcp-config` Roblox_Studio only, `--append-system-prompt lead.md`, API key hidden). Protocol registered by `install.ps1` (rerun after changes). Shortcut opens the app only. Anything Roblox-related added to the repo shows up automatically.
 
 ## Next up
 - lyopz sends the next repo, or keeps/removes trial skills after using them.

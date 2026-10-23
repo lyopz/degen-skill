@@ -59,6 +59,16 @@ textarea{min-height:90px;resize:vertical}
 .md a{color:var(--red2)}
 .empty{color:var(--muted);font-size:14px;padding:18px;border:1px dashed var(--line);border-radius:12px}
 .tip{color:var(--muted);font-size:13px;margin-top:10px}
+.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.btn.big{font-size:16px;padding:13px 26px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:-8px 0 18px}
+.chips button{font:inherit;font-size:13px;color:#fecaca;background:rgba(225,29,46,.1);border:1px solid rgba(225,29,46,.35);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chips button:hover{background:rgba(225,29,46,.2)}
+details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out[open] summary{margin-bottom:10px}
+.rh{margin:28px 0 10px;font-size:16px}
+.recent{display:flex;flex-direction:column;gap:8px}
+.ri{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px}
+.ri span{color:var(--muted);font-size:12px;white-space:nowrap}.ri button{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -70,21 +80,24 @@ textarea{min-height:90px;resize:vertical}
 <main class="wrap">
 
 <section id="brief" class="on">
-<h2>Brief <em>builder</em></h2>
-<p class="sub">Fill this in, copy the brief, paste it into your Roblox Claude window. It bakes in the style bible, budgets and the spec → build one → check flow so it comes out right the first time.</p>
+<div class="hero"><div><h2>What are we <em>building?</em></h2>
+<p class="sub">Describe it, hit Start. A Roblox Lead window opens, connects to Studio and runs your team — with the style bible, budgets and the spec → build one → check flow baked in.</p></div>
+<div class="row" style="margin:0"><button class="btn ghost" id="open-lead">Open Roblox Lead</button></div></div>
+<div class="chips" id="chips"></div>
 <div class="form">
 <label>Game (style bible)<select id="b-game"></select></label>
 <label>What are we making<select id="b-type">
 <option value="asset">Asset (pet, prop, item, creature)</option><option value="map">Map / zone / lobby</option><option value="ui">UI / HUD / shop</option>
 <option value="vfx">Effect (fireball, aura, hit…)</option><option value="anim">Animation / motion</option><option value="system">Game system / script</option><option value="cooler">Make it 10,000x cooler</option></select></label>
 <label>Credit budget (Higgsfield)<input id="b-cred" type="number" min="0" value="0"></label>
-<label>Run as team in parallel?<select id="b-team"><option value="no">No — one job</option><option value="yes">Yes — split across agents</option></select></label>
+<label>Run as team in parallel?<select id="b-team"><option value="yes">Yes — lead splits it across agents</option><option value="no">No — one job</option></select></label>
 <label class="full">Describe it (what, where, the vibe)<textarea id="b-desc" placeholder="e.g. a pigeon pet, cube style, with flapping wings, follows the player"></textarea></label>
 <label class="full">Reference (optional: game study, picture, anchor, link)<input id="b-ref" placeholder="e.g. like the pets in Pet Simulator 99, or studies/grow-a-garden"></label>
 </div>
-<div class="out"><pre id="b-out"></pre></div>
-<div class="row"><button class="btn" id="b-copy">⧉ Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
-<p class="tip">Fast mode: the Degen Roblox shortcut opens a Claude window with only the Roblox Studio connection (no claude-flow), on your Claude credits.</p>
+<details class="out"><summary>Show the full brief</summary><pre id="b-out"></pre></details>
+<div class="row"><button class="btn big" id="b-start">▶ Start task</button><button class="btn ghost" id="b-copy">⧉ Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
+<p class="tip">First time: your browser asks to open "Degen Roblox" — tick <b>Always allow</b>. Studio must be open with the MCP switch on.</p>
+<h3 class="rh">Recent tasks</h3><div id="recent" class="recent"></div>
 </section>
 
 <section id="ref">
@@ -133,7 +146,7 @@ const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"
 const short=d=>{d=(d||'').replace(/\s+/g,' ');const i=d.search(/ Use (it )?(when|for|whenever) /i);return i>40?d.slice(0,i):d};
 document.getElementById('stats').innerHTML=[[R.agents.length,'agents'],[R.skills.length,'skills'],[R.templates.length,'templates'],[R.bibles.length,'games']].map(([n,l])=>`<span class="stat"><b>${n}</b>${l}</span>`).join('')+`<span class="stat">updated ${esc(R.built)}</span>`;
 // nav
-const secs=[['brief','Brief builder'],['ref','Quick reference'],['team','Team'],['skills','Skills'],['templates','Templates'],['games','Games'],['lessons','Lessons']];
+const secs=[['brief','▶ Start'],['ref','Quick reference'],['team','Team'],['skills','Skills'],['templates','Templates'],['games','Games'],['lessons','Lessons']];
 const nav=document.getElementById('nav');
 secs.forEach(([id,l],i)=>{const b=document.createElement('button');b.textContent=l;if(!i)b.className='on';b.onclick=()=>{nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));try{localStorage.setItem('rbx-tab',id)}catch(e){}};nav.appendChild(b)});
 try{const t=localStorage.getItem('rbx-tab');if(t){[...nav.children][secs.findIndex(s=>s[0]===t)]?.click()}}catch(e){}
@@ -167,6 +180,15 @@ function build(){const g=gSel.value,t=document.getElementById('b-type').value,c=
  document.getElementById('b-out').textContent=L.join('\n\n')}
 ['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',build));build();
 document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='⧉ Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};
+const b64u=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const go=t=>{location.href='degenroblox://task'+(t?'?b='+b64u(t):'')};
+let recent=[];try{recent=JSON.parse(localStorage.getItem('rbx-recent')||'[]')}catch(e){}
+function drawRecent(){const el=document.getElementById('recent');el.innerHTML=recent.length?'':'<div class="empty">No tasks yet.</div>';recent.slice(0,8).forEach((r,i)=>{const d=document.createElement('div');d.className='ri';d.innerHTML='<div></div><span></span><button>Run again</button>';d.children[0].textContent=r.d;d.children[1].textContent=r.when;d.children[2].onclick=()=>go(r.brief);el.appendChild(d)})}
+drawRecent();
+document.getElementById('b-start').onclick=()=>{build();const d=document.getElementById('b-desc').value.trim();if(!d){document.getElementById('b-desc').focus();return}const brief=document.getElementById('b-out').textContent;recent.unshift({d:d.slice(0,90),brief,when:new Date().toLocaleString()});recent=recent.slice(0,20);try{localStorage.setItem('rbx-recent',JSON.stringify(recent))}catch(e){}drawRecent();go(brief)};
+document.getElementById('open-lead').onclick=()=>go('');
+const IDEAS=[['asset','A pet that follows the player, in this game\'s style'],['map','A spawn lobby with shops, leaderboards and a landmark'],['ui','HUD: currency top-center, menu stack left, main action bottom-right'],['vfx','Coin pickup effect with sparkle + sound'],['system','Safe coin saving with ProfileStore + a shop'],['cooler','Make the current place 10,000x cooler']];
+const chips=document.getElementById('chips');IDEAS.forEach(([t,d])=>{const b=document.createElement('button');b.textContent=d;b.onclick=()=>{document.getElementById('b-type').value=t;document.getElementById('b-desc').value=d;build();document.getElementById('b-desc').focus()};chips.appendChild(b)});
 document.getElementById('b-clear').onclick=()=>{document.getElementById('b-desc').value='';document.getElementById('b-ref').value='';build()};
 </script>
 </body>
