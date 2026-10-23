@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("120", "skills"), ("75", "agents"), ("159", "commands"), ("14", "sources")]
+STATS = [("122", "skills"), ("75", "agents"), ("159", "commands"), ("14", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -40,6 +40,10 @@ CORE = [
         ("brand", "Sets your brand's look and voice"),
         ("banner-design", "Banners for posts, ads and websites"),
         ("slides", "Builds presentations"),
+    ]),
+    ("ROBLOX", "Build Roblox games", [
+        ("roblox-assets", "Roblox models that move: rigs, walks, fireballs, fire"),
+        ("roblox-design", "What looks and feels good in Roblox right now"),
     ]),
     ("PLANNING", "Think it through", [
         ("idea-refine", "Turns a rough idea into a clear plan"),

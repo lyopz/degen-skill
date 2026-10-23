@@ -336,7 +336,7 @@ const CORE=__CORE__;
 function cat(n){if(CORE[n])return CORE[n];if(/^(omni-|cli-|config-)/.test(n))return'OmniRoute';if(/^(agentdb|reasoningbank|swarm|hive-mind|sparc|stream-chain|worker-|hooks-|agentic-|pair-prog|verification|performance-an|skill-builder|github-)/.test(n))return'Swarms';if(/^(obsidian|json-canvas|defuddle)/.test(n))return'Obsidian';if(/anim|emil|apple-design|sonner|break-ui|pick-ui|prototype|mobile-native|swift/.test(n))return'Motion';return'More'}
 const PLAIN=__PLAIN__;
 function short(d,n){if(n&&PLAIN[n])return PLAIN[n];d=(d||'').replace(/\s+/g,' ').trim();const s=d.split(/(?<=\.)\s/)[0];return (s.length>140?s.slice(0,137)+'…':s).replace(/\s*Use (it )?when.*$/i,'')||d.slice(0,120)}
-const ORDER=['Coding','Design','Planning','Motion','Obsidian','Swarms','OmniRoute','More'];
+const ORDER=['Coding','Design','Roblox','Planning','Motion','Obsidian','Swarms','OmniRoute','More'];
 const S=D.skills.map(s=>[cat(s.n),s.n,short(s.d,s.n)]).sort((a,b)=>ORDER.indexOf(a[0])-ORDER.indexOf(b[0]));
 document.querySelectorAll('[data-n="117"]').forEach(b=>b.dataset.n=D.skills.length);
 document.querySelectorAll('[data-n="75"]').forEach(b=>b.dataset.n=D.agents);

@@ -22,5 +22,5 @@ A single stylized palm tree, curved trunk, 6 large leaves, low-poly game asset, 
 whole object fully visible, centered, plain neutral grey background, soft even lighting, no text
 ```
 **Assemble in Blender:** import tree/rock GLBs, scatter 8–12 copies on the grass (random rotation, scale 0.8–1.2, snap to ground), add sun + sky, screenshot to check.
-**Export:** web/app = one GLB of the scene. Roblox = trees/rocks/hut as separate FBX/GLB (under ~10k tris each, 1024 textures) + terrain via Roblox Terrain Editor heightmap (or the island mesh).
+**Export:** web/app = one GLB of the scene. Roblox = trees/rocks/hut as separate FBX/GLB (≤ 20k tris per mesh, 3–4k for repeated props, 1024 textures) + terrain via Roblox Terrain Editor heightmap (or the island mesh).
 **Estimate:** ~80–180 credits depending on prop count.

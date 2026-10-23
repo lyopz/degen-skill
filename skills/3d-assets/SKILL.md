@@ -5,7 +5,17 @@ description: Turns any idea into 3D assets or a whole 3D scene (single props or 
 
 <!-- from: lyopz (own workflow, first used for the robot chicken in the Degen Skills app) -->
 
-# AI 3D Assets
+# 3D Assets
+
+## Two kinds of 3D — pick first
+| | **Web 3D** (this skill) | **Roblox 3D** (`roblox-assets`) |
+|---|---|---|
+| Goal | Looks great on a web page / the Degen Skills app | Imports into Roblox Studio and usually **moves** |
+| Output | One GLB, shown with three.js | MeshParts under 20k tris, 1024 textures, rigs (Custom/R15), animations, VFX scripts |
+| Motion | three.js spin/tilt, optional baked animation | Blender rig + Animation Editor, scripted motion, ParticleEmitter/Beam/Trail effects |
+| Polish rules | `three-best-practices` | `roblox-design` (meta, UI sizes, game feel, "10,000x cooler") |
+
+**Credits rule (both):** use the cheapest route that still looks pristine — Roblox VFX / Blender / scripted motion cost 0; Higgsfield only for detailed unique models (~35 per model, picture first so the look is approved before the 3D step). Many copies = 1–3 variants duplicated.
 
 A general process for any 3D request: **idea → break it into assets → picture of each → 3D model of each (Higgsfield or Blender) → assemble the scene in Blender → shrink/export → use it.** (First used to make a robot chicken, but it works for anything.)
 
@@ -57,12 +67,7 @@ Save the `.blend` file with the project so it can be edited later.
 - **Roblox Studio:** see below. For terrain, Roblox's own Terrain Editor (Generate / Import heightmap) is often better than a mesh island: export a heightmap image from Blender and import it.
 
 ## Roblox notes
-- Import: Studio → **Avatar/Home tab → Import 3D** (accepts `.glb`/`.gltf`, `.fbx`, `.obj`). It becomes a MeshPart with its texture.
-- Keep it light: aim under **~10k triangles** per mesh (Roblox has a per-mesh triangle limit, and lower is better for phones). AI meshes are often 50–100k, so **decimate in Blender** first (Modifiers → Decimate, ratio until under the limit) and export GLB/FBX.
-- Textures max **1024×1024** (`shrink_glb.py --size 1024`).
-- Scale: Roblox studs (~1 stud ≈ 0.28 m). Resize in Studio or set scale on import; a character is ~5 studs tall.
-- Moving characters need an R15 rig that matches Roblox's rules. AI meshes aren't rigged that way, so use them as props, pets (with simple tween/spin scripts), statues, accessories, or rig them in Blender with Roblox's R15 template.
-- Upload costs: importing to your own place is free; publishing to the Creator Store/marketplace may need verification.
+For anything going into a Roblox game, switch to **`roblox-assets`** (limits, decimation, rigging, animation, VFX like fireballs/flaming legs, import steps) and **`roblox-design`** (what looks and feels good in Roblox right now).
 
 ## Examples and prompt library
 - `examples/robot-chicken.md` — single object, start to finish, real prompt + costs.
