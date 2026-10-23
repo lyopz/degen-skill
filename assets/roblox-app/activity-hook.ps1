@@ -40,5 +40,9 @@ if ($msg) {
   $line = (Get-Date -Format 'HH:mm') + '  ' + $msg
   $last = if (Test-Path $log) { Get-Content $log -Tail 1 } else { '' }
   if ($last -notlike "*  $msg") { Add-Content -Path $log -Value $line -Encoding UTF8 }
+  # live copy for the Degen Roblox app (file:// pages can read .js, not .log)
+  $lines = @(Get-Content $log -Tail 40 -Encoding UTF8)
+  $json = ConvertTo-Json -InputObject $lines -Compress
+  [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'activity-data.js'), "window.ACT=$json;", (New-Object Text.UTF8Encoding $false))
 }
 exit 0

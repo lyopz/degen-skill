@@ -75,6 +75,13 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 .ws{display:flex;flex-direction:row;gap:10px;font-size:14px;color:var(--text);align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:var(--panel2);cursor:pointer}
 .ws input{margin-top:3px;accent-color:#e11d2e}.ws b{font-family:"JetBrains Mono",monospace;font-size:13px}.ws span{color:var(--muted);font-size:13px;display:block}
 .ws.off{opacity:.45}
+.act{background:#000;border:1px solid var(--line);border-radius:14px;margin:0 0 18px;overflow:hidden}
+.act-hd{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px}.act-hd span{color:var(--muted);font-size:12px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#52525b;margin-right:8px;vertical-align:middle}.dot.live{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.act-body{max-height:190px;overflow:auto;padding:8px 14px;font:12.5px/1.7 "JetBrains Mono",monospace}
+.act-l{color:#d4d4d8;white-space:pre-wrap}.act-l.mute{color:var(--muted)}.act-l.done{color:#4ade80}.act-l.agent{color:#facc15}.act-l.hf{color:#e879f9}.act-l.err{color:var(--red2)}
+.act-l.new{animation:fadein .4s}@keyframes fadein{from{opacity:0;transform:translateY(4px)}}
 </style>
 </head>
 <body>
@@ -89,6 +96,7 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 <div class="hero"><div><h2>What are we <em>building?</em></h2>
 <p class="sub">Describe it, hit Start. A Roblox Lead window opens, connects to Studio and runs your team — with the style bible, budgets and the spec → build one → check flow baked in.</p></div>
 <div class="row" style="margin:0"><button class="btn ghost" id="open-lead">Open Roblox Lead</button></div></div>
+<div class="act" id="act"><div class="act-hd"><b><i class="dot" id="act-dot"></i>Team activity</b><span id="act-when">idle</span></div><div class="act-body" id="act-body"><div class="act-l mute">Nothing running yet. Start a task and you'll see what the team is doing here.</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="form">
 <label>Game (style bible)<select id="b-game"></select></label>
@@ -243,6 +251,14 @@ document.getElementById('open-lead').onclick=()=>go('');
 const IDEAS=[['asset','A pet that follows the player, in this game\'s style'],['map','A spawn lobby with shops, leaderboards and a landmark'],['ui','HUD: currency top-center, menu stack left, main action bottom-right'],['vfx','Coin pickup effect with sparkle + sound'],['system','Safe coin saving with ProfileStore + a shop'],['cooler','Make the current place 10,000x cooler']];
 const chips=document.getElementById('chips');IDEAS.forEach(([t,d])=>{const b=document.createElement('button');b.textContent=d;b.onclick=()=>{document.getElementById('b-type').value=t;document.getElementById('b-desc').value=d;build();document.getElementById('b-desc').focus()};chips.appendChild(b)});
 document.getElementById('b-clear').onclick=()=>{document.getElementById('b-desc').value='';document.getElementById('b-ref').value='';build()};
+
+// live team activity (activity-data.js is rewritten by the hook on every action)
+(()=>{let seen=0;const body=document.getElementById('act-body'),dot=document.getElementById('act-dot'),when=document.getElementById('act-when');
+ function render(){const A=window.ACT||[];if(!A.length)return;if(A.length===seen&&A[A.length-1]===body.dataset.last)return;
+  body.innerHTML='';A.forEach((l,i)=>{const d=document.createElement('div');d.className='act-l'+(/Done/.test(l)?' done':/Started|finished/.test(l)?' agent':/Higgsfield/.test(l)?' hf':/error/i.test(l)?' err':'')+(i>=seen?' new':'');d.textContent=l;body.appendChild(d)});
+  seen=A.length;body.dataset.last=A[A.length-1];body.scrollTop=body.scrollHeight;const last=A[A.length-1]||'';const live=!/Done - waiting/.test(last);dot.classList.toggle('live',live);when.textContent=live?'working…':'idle'}
+ function poll(){const s=document.createElement('script');s.src='activity-data.js?t='+Date.now();s.onload=()=>{render();s.remove()};s.onerror=()=>s.remove();document.head.appendChild(s)}
+ poll();setInterval(poll,2000)})();
 </script>
 </body>
 </html>

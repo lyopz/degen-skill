@@ -9,8 +9,7 @@ function Start-Activity($app) {
   $settings = @{ hooks = @{ PreToolUse = @(@{ matcher = '*'; hooks = @($h) }); SubagentStop = @(@{ hooks = @($h) }); Stop = @(@{ hooks = @($h) }); UserPromptSubmit = @(@{ hooks = @($h) }) } }
   $sf = Join-Path $app 'roblox-hooks.json'
   [IO.File]::WriteAllText($sf, ($settings | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding $false))
-  $open = Get-Process powershell -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq 'Roblox Activity' }
-  if (-not $open) { Start-Process powershell.exe -ArgumentList @('-NoExit','-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $app 'activity.ps1')) }
+  # live feed shows in the Degen Roblox app (Activity panel); activity.ps1 is an optional separate window
   return $sf
 }
 
