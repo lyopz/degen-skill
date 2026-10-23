@@ -8,6 +8,7 @@ description: lyopz's Roblox design playbook — what's in meta for Roblox games 
 # Roblox Design Playbook
 
 Read the reference that matches the job:
+- `references/first-try.md` — **spec → build one piece → check**, so designs come out right the first time. Always.
 - `references/ui.md` — sizes, layout, buttons, click/hover feedback, sounds, mobile/console. **Includes a ready button-feel script.**
 - `references/maps.md` — genres in meta, map layouts per genre, lighting presets, building style.
 - `references/game-feel.md` — motion, camera, hit feedback, VFX layering, rewards.

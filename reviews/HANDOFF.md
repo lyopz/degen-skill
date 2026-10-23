@@ -30,6 +30,9 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 - Design changes: edit `assets/app/src/template.html`, run `python assets/app/src/build.py`, commit `index.html`. New skills need nothing (app reads the skill folders). New "core" skills with plain descriptions go in `assets/make_assets.py` CORE.
 - Also published as a claude.ai artifact ("Degen Skills") for previews.
 
+## Degen Roblox app
+- `assets/roblox-app/`: `launch.ps1` (pull, build roblox-data.js from roblox-* skills, agents/roblox, templates, style bibles, studies, references, lessons; sync Studio plugin; open app; open fast Roblox Claude in ~/RobloxGames), `install.ps1`, `index.html` (edit directly; data is live). Anything Roblox-related added to the repo shows up automatically.
+
 ## Next up
 - lyopz sends the next repo, or keeps/removes trial skills after using them.
 
@@ -41,6 +44,7 @@ Newest at top. One short entry per session: date, what changed, anything left un
 
 - **2026-10-23** — Island upgrade: height-map terrain (beach, grass, rock lookout), pirate ship, dock, props, seagulls, sounds, real mesh-ocean waves. New ocean kit in roblox-templates (Waves, OceanMesh, OceanClient). Open: lyopz must enable EditableMesh (Game Settings > Security) to see the waves in play.
 - **2026-10-23** — Island test scene in Studio (terrain sand/water, 3 free palms, bright cartoon preset, spawn). Lessons added to `roblox-dev/lessons.md`. No style bible for it yet (test scene).
+- **2026-10-23** — Added Degen Roblox desktop app (`assets/roblox-app/`): brief builder, reference, team, templates, games, lessons; launcher also opens fast Roblox Claude (`--strict-mcp-config` with only Roblox_Studio, API key hidden). Added `roblox-design/references/first-try.md`; all Roblox agents follow spec → build one → check.
 - **2026-10-23** — Added `roblox-dev` + templates RemoteGuard, PurchaseHandler. Roblox Studio MCP being set up on his PC (Claude desktop config). 126 skills.
 - **2026-10-23** — Added `roblox-game-study` (study games for ideas; never extract/copy). 125 skills.
 - **2026-10-23** — Added `roblox-templates` (Studio plugin "Degen Templates" + Documents\Roblox Templates, synced by launch.ps1). Daily Roblox refresh scheduled task (8:35 AM ET) also saves important templates. 124 skills.

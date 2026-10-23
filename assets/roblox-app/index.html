@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Degen Roblox</title>
+<link rel="icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="roblox-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<style>
+:root{--bg:#07070a;--panel:#111116;--panel2:#16161c;--line:#26262e;--red:#e11d2e;--red2:#ff4d5e;--text:#f5f5f7;--muted:#a1a1aa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);background:radial-gradient(800px 200px at 20% 0%,rgba(225,29,46,.18),transparent)}
+header .wrap{display:flex;align-items:center;gap:16px;padding:22px 20px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.1em;font-size:20px}
+.logo i{width:26px;height:26px;background:var(--red);border-radius:6px;transform:rotate(15deg);box-shadow:0 0 18px var(--red);position:relative}
+.logo i::after{content:"";position:absolute;inset:9px;background:var(--bg);border-radius:2px}
+.stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.stat b{color:var(--red2);margin-right:4px}
+nav{position:sticky;top:0;z-index:5;background:rgba(7,7,10,.95);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto}
+nav button{font:inherit;font-size:14px;color:var(--muted);background:none;border:0;padding:14px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+nav button.on{color:var(--text);border-color:var(--red)}
+main{padding:28px 0 80px}
+section{display:none}section.on{display:block}
+h2{font-size:28px;letter-spacing:-.01em}h2 em{font-style:normal;color:var(--red)}
+.sub{color:var(--muted);margin:6px 0 22px;max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:rgba(225,29,46,.6);transform:translateY(-2px)}
+.card h3{font-family:"JetBrains Mono",monospace;font-size:15px;margin-bottom:6px;word-break:break-word}
+.card p{color:var(--muted);font-size:14px}
+.card pre{white-space:pre-wrap;font:12px/1.5 "JetBrains Mono",monospace;color:#fca5a5;margin-top:8px}
+.k{font:11px "JetBrains Mono",monospace;letter-spacing:.15em;color:var(--red2);text-transform:uppercase;margin-bottom:6px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+input,select,textarea{font:inherit;font-size:14px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--red)}
+textarea{min-height:90px;resize:vertical}
+.full{grid-column:1/-1}
+.out{margin-top:16px;background:#000;border:1px solid var(--line);border-radius:14px;padding:16px;position:relative}
+.out pre{white-space:pre-wrap;font:13px/1.6 "JetBrains Mono",monospace;color:#fecaca}
+.btn{font:inherit;font-weight:600;font-size:14px;color:#fff;background:var(--red);border:0;border-radius:999px;padding:10px 18px;cursor:pointer;box-shadow:0 0 20px rgba(225,29,46,.35);transition:transform .1s}
+.btn:active{transform:scale(.95)}.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{font:inherit;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.tabs button.on{color:var(--text);border-color:var(--red);background:rgba(225,29,46,.12)}
+.md{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;overflow-x:auto}
+.md h1,.md h2,.md h3{margin:18px 0 8px}.md h1:first-child,.md h2:first-child{margin-top:0}
+.md p,.md li{color:#d4d4d8;font-size:14.5px}.md ul,.md ol{padding-left:20px;margin:6px 0}
+.md code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:#fca5a5;background:#000;padding:1px 5px;border-radius:4px}
+.md pre{background:#000;padding:12px;border-radius:10px;overflow-x:auto;margin:8px 0}.md pre code{background:none;padding:0}
+.md table{border-collapse:collapse;margin:10px 0;font-size:13px;width:100%}.md th,.md td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.md th{background:var(--panel2)}
+.md a{color:var(--red2)}
+.empty{color:var(--muted);font-size:14px;padding:18px;border:1px dashed var(--line);border-radius:12px}
+.tip{color:var(--muted);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="logo"><i></i>DEGEN ROBLOX</div>
+<div class="stats" id="stats"></div>
+</div></header>
+<nav><div class="wrap" id="nav"></div></nav>
+<main class="wrap">
+
+<section id="brief" class="on">
+<h2>Brief <em>builder</em></h2>
+<p class="sub">Fill this in, copy the brief, paste it into your Roblox Claude window. It bakes in the style bible, budgets and the spec → build one → check flow so it comes out right the first time.</p>
+<div class="form">
+<label>Game (style bible)<select id="b-game"></select></label>
+<label>What are we making<select id="b-type">
+<option value="asset">Asset (pet, prop, item, creature)</option><option value="map">Map / zone / lobby</option><option value="ui">UI / HUD / shop</option>
+<option value="vfx">Effect (fireball, aura, hit…)</option><option value="anim">Animation / motion</option><option value="system">Game system / script</option><option value="cooler">Make it 10,000x cooler</option></select></label>
+<label>Credit budget (Higgsfield)<input id="b-cred" type="number" min="0" value="0"></label>
+<label>Run as team in parallel?<select id="b-team"><option value="no">No — one job</option><option value="yes">Yes — split across agents</option></select></label>
+<label class="full">Describe it (what, where, the vibe)<textarea id="b-desc" placeholder="e.g. a pigeon pet, cube style, with flapping wings, follows the player"></textarea></label>
+<label class="full">Reference (optional: game study, picture, anchor, link)<input id="b-ref" placeholder="e.g. like the pets in Pet Simulator 99, or studies/grow-a-garden"></label>
+</div>
+<div class="out"><pre id="b-out"></pre></div>
+<div class="row"><button class="btn" id="b-copy">⧉ Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
+<p class="tip">Fast mode: the Degen Roblox shortcut opens a Claude window with only the Roblox Studio connection (no claude-flow), on your Claude credits.</p>
+</section>
+
+<section id="ref">
+<h2>Quick <em>reference</em></h2>
+<p class="sub">Always-current copies of the Roblox playbook — they update when the app opens.</p>
+<div class="tabs" id="ref-tabs"></div>
+<div class="md" id="ref-body"></div>
+</section>
+
+<section id="team">
+<h2>Roblox <em>team</em></h2>
+<p class="sub">Your agents. Say "use the Roblox team in parallel" and the lead hands each piece to the right one.</p>
+<div class="grid" id="team-grid"></div>
+</section>
+
+<section id="skills">
+<h2>Roblox <em>skills</em></h2>
+<p class="sub">What Claude reads for Roblox work.</p>
+<div class="grid" id="skills-grid"></div>
+</section>
+
+<section id="templates">
+<h2>Studio <em>templates</em></h2>
+<p class="sub">In Roblox Studio: Plugins tab → Degen Templates → Templates. Click one to insert it.</p>
+<div class="grid" id="tpl-grid"></div>
+</section>
+
+<section id="games">
+<h2>Games &amp; <em>studies</em></h2>
+<p class="sub">Style bibles (one per game) and game breakdowns used as examples.</p>
+<div class="tabs" id="game-tabs"></div>
+<div class="md" id="game-body"></div>
+</section>
+
+<section id="lessons">
+<h2>Lessons <em>learned</em></h2>
+<p class="sub">What broke and what worked in past projects. Every agent reads this before starting.</p>
+<div class="md" id="lessons-body"></div>
+</section>
+
+</main>
+<script>
+const R=window.RBX||{skills:[],agents:[],templates:[],bibles:[],studies:[],refs:{},built:'—'};
+const md=t=>{if(!t)return'<div class="empty">Nothing here yet.</div>';try{return window.marked?marked.parse(t):'<pre>'+t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>'}catch(e){return'<pre>'+t+'</pre>'}};
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const short=d=>{d=(d||'').replace(/\s+/g,' ');const i=d.search(/ Use (it )?(when|for|whenever) /i);return i>40?d.slice(0,i):d};
+document.getElementById('stats').innerHTML=[[R.agents.length,'agents'],[R.skills.length,'skills'],[R.templates.length,'templates'],[R.bibles.length,'games']].map(([n,l])=>`<span class="stat"><b>${n}</b>${l}</span>`).join('')+`<span class="stat">updated ${esc(R.built)}</span>`;
+// nav
+const secs=[['brief','Brief builder'],['ref','Quick reference'],['team','Team'],['skills','Skills'],['templates','Templates'],['games','Games'],['lessons','Lessons']];
+const nav=document.getElementById('nav');
+secs.forEach(([id,l],i)=>{const b=document.createElement('button');b.textContent=l;if(!i)b.className='on';b.onclick=()=>{nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));try{localStorage.setItem('rbx-tab',id)}catch(e){}};nav.appendChild(b)});
+try{const t=localStorage.getItem('rbx-tab');if(t){[...nav.children][secs.findIndex(s=>s[0]===t)]?.click()}}catch(e){}
+// cards
+const cards=(el,items,kind)=>{el.innerHTML=items.length?items.map(x=>`<div class="card"><div class="k">${kind}</div><h3>${esc(x.n)}</h3>${x.d?`<p>${esc(short(x.d))}</p>`:''}${x.h?`<pre>${esc(x.h)}</pre>`:''}</div>`).join(''):'<div class="empty">Nothing here yet.</div>'};
+cards(document.getElementById('team-grid'),R.agents,'agent');
+cards(document.getElementById('skills-grid'),R.skills,'skill');
+cards(document.getElementById('tpl-grid'),R.templates,'template');
+// tabs helper
+function tabs(tabsEl,bodyEl,list){tabsEl.innerHTML='';if(!list.length){bodyEl.innerHTML='<div class="empty">Nothing here yet.</div>';return}
+ list.forEach(([l,t],i)=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{tabsEl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));bodyEl.innerHTML=md(t)};tabsEl.appendChild(b);if(!i)b.click()})}
+const F=R.refs||{};
+tabs(document.getElementById('ref-tabs'),document.getElementById('ref-body'),[['First try ✓',F.checklist],['Maps & lighting',F.maps],['UI & buttons',F.ui],['Game feel',F.feel],['Performance',F.perf],['Art style',F.style],['Prompts',F.prompts]].filter(x=>x[1]));
+tabs(document.getElementById('game-tabs'),document.getElementById('game-body'),[...R.bibles.map(b=>['🎨 '+b.n,b.t]),...R.studies.map(s=>['🔍 '+s.n,s.t])]);
+document.getElementById('lessons-body').innerHTML=md(F.lessons);
+// brief builder
+const gSel=document.getElementById('b-game');
+gSel.innerHTML='<option value="">New game (make a style bible first)</option>'+R.bibles.map(b=>`<option>${esc(b.n)}</option>`).join('');
+const AG={asset:['roblox-art-director (concept + translation)','roblox-modeler','roblox-animator / roblox-vfx-artist if it moves or glows'],map:['roblox-map-builder','roblox-modeler for detailed props'],ui:['roblox-ui-designer','roblox-scripter for any server logic'],vfx:['roblox-vfx-artist'],anim:['roblox-animator'],system:['roblox-scripter'],cooler:['roblox-reviewer (10,000x cooler checklist)','then the agents it names']};
+const SK={asset:'roblox-art-style, roblox-assets, 3d-assets',map:'roblox-design (maps.md), roblox-art-style, 3d-assets',ui:'roblox-design (ui.md + ButtonFeel), roblox-art-style',vfx:'roblox-assets (vfx.lua), roblox-design (game-feel.md)',anim:'roblox-assets (motion), roblox-design (game-feel.md)',system:'roblox-dev (RemoteGuard, PurchaseHandler, lessons)',cooler:'roblox-design (10,000x cooler checklist), roblox-art-style'};
+function build(){const g=gSel.value,t=document.getElementById('b-type').value,c=+document.getElementById('b-cred').value||0,team=document.getElementById('b-team').value==='yes',d=document.getElementById('b-desc').value.trim()||'[describe it]',r=document.getElementById('b-ref').value.trim();
+ const L=[];
+ L.push(`Task: ${d}`);
+ L.push(g?`Game: "${g}" — follow its style bible (roblox-art-style/projects/${g}.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
+ if(r)L.push(`Reference: ${r}`);
+ L.push(`Skills: ${SK[t]}. Read roblox-dev/lessons.md first.`);
+ L.push(team?`Run as the lead with the Roblox team in parallel: ${AG[t].join('; ')}. Give each agent the game, bible path, spec and its credit budget; then roblox-reviewer checks everything.`:`Use: ${AG[t].join('; ')}.`);
+ L.push(`Credits: max ${c} Higgsfield credits${c?'':' (use free routes only: Blender, Roblox parts/terrain/VFX, scripts, free Creator Store assets that match the style)'}. Preflight cost before any generation.`);
+ L.push(`Follow roblox-design/references/first-try.md:\n  1) Write the spec (what/where, style, reference, numbers, 3–6 "done means" checks, credits) and show it to me in 5 lines.\n  2) Build ONE piece, screenshot it in Studio, compare to the reference + bible, fix, then scale up.\n  3) Before saying done: player-view + wide screenshots, phone check for UI, no Output errors, budgets OK, tick every "done means".`);
+ L.push(`Finish: short report (what, where in the place, credits spent), add lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo.`);
+ document.getElementById('b-out').textContent=L.join('\n\n')}
+['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',build));build();
+document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='⧉ Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};
+document.getElementById('b-clear').onclick=()=>{document.getElementById('b-desc').value='';document.getElementById('b-ref').value='';build()};
+</script>
+</body>
+</html>

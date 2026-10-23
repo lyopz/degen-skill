@@ -198,6 +198,14 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\degen-skill\a
 
 Then open **Degen Skills** from your Desktop or Start menu.
 
+## Degen Roblox app
+
+A second desktop app just for Roblox: brief builder (makes first-try prompts with your style bible, budgets and checks), quick reference, team, templates, games and lessons. Its shortcut also opens a **fast Roblox Claude window** (only the Roblox Studio connection, on your Claude credits). Set it up once:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\degen-skill\assets\roblox-app\install.ps1"
+```
+
 ## Install
 
 **Windows (PowerShell)**
