@@ -23,6 +23,7 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 | pbakaus/impeccable | 2026-10-21 | `impeccable/` (SKILL.md, 41 reference files, scripts) | — | trial | Frontend design skill with sub-commands (audit, critique, polish, animate, harden...). Its launcher downloads the impeccable engine binary from the author's GitHub releases on first use and refuses it unless the sha256 matches. Took only the Claude Code build (.claude/skills/impeccable); skipped other-tool copies, CLI, extension, tests. Apache-2.0, upstream dad8dbb. |
 | lyopz (own) — 21st.dev | 2026-10-22 | `21st-dev/` (SKILL.md + `components/`) | — | active | lyopz's saved 21st.dev component prompts, one .md each. Started with spotlight-card (GlowCard). New ones get saved as-is and added to the table. |
 | lyopz (own) | 2026-10-22 | `particle-media/` (SKILL.md + particle-media.js) | — | active | Own WebGL2 code: turns an image or video into liquid particles that flow from the cursor. Inspired by the liquid-sculpture-hero look on 21st.dev; no code copied. |
+| lyopz (own) | 2026-10-22 | `widget-board/` (SKILL.md + widget-board.js) | — | active | Floating bottom "tab wheel" of widget cards (section jump, link, copy, custom action). First built for the Degen Skills showcase site. Cards chosen per project. |
 
 ## Reviewed, not added
 

@@ -8,6 +8,7 @@ Read this first in any new conversation. It says where things stand so we can pi
 - Every new skill goes to both the repo and his PC (push, then he runs `git pull`).
 - When building a site, ask whether he wants animations (Higgsfield video, particle-media, motion).
 - Sites: professional standard, a fresh design each time (not a copy of an old template). Tag each section with the skills it used.
+- "Widget board" = the bottom tab wheel (`widget-board`). Use the Degen Skills site version as the base idea; pick cards and actions (links, copy buttons…) by what matters for that project; follow his edits as he changes it.
 
 ## What this repo is
 lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public), cloned to `~/.claude/degen-skill`, with `~/.claude/skills`, `~/.claude/agents`, `~/.claude/commands` linked to its `skills/`, `agents/`, `commands/` folders. Reviews and registry are in `reviews/`. Each skill is a folder with a `SKILL.md`. The `skill-intake` skill holds the rules for adding, merging, and removing skills.
@@ -29,6 +30,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-22** — Added own `widget-board` skill (bottom tab wheel of action cards: jump/link/copy). Cards are picked per project by relevance. 117 skills.
 - **2026-10-22** — Added own `particle-media` skill (image/video → liquid cursor particles, WebGL2). Used it on the Degen Skills showcase hero. 116 skills.
 - **2026-10-22** — 21st-dev: added spline-scene (3D Spline hero). Voice Powered Orb still to come.
 - **2026-10-22** — Added `21st-dev` skill folder for lyopz's 21st.dev components (first: spotlight-card). 115 skills.
