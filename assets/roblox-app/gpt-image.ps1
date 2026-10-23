@@ -59,10 +59,15 @@ function Js($code) {
 # ---------- 1) open ChatGPT with remote control on ----------
 $targets = Get-Targets
 if (-not $targets) {
+  # a ChatGPT window opened the old way (without remote control) blocks it: close those first
+  Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -like '*DegenChatGPT*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+  Start-Sleep -Milliseconds 800
+  Write-Host '[1/4] Opening ChatGPT...'
   if ($edge) { Start-Process $edge -ArgumentList @("--app=$url", "--user-data-dir=$prof", "--remote-debugging-port=$port", '--window-size=1100,900', '--no-first-run') }
   for ($i = 0; $i -lt 20 -and -not $targets; $i++) { Start-Sleep -Milliseconds 700; $targets = Get-Targets }
 }
 $page = @($targets | Where-Object { $_.type -eq 'page' -and $_.url -match 'chatgpt\.com|openai\.com' }) | Select-Object -First 1
+if (-not $page) { Write-Host 'Could not connect to the ChatGPT window.' } else { Write-Host '[2/4] Connected to ChatGPT' }
 $auto = $false
 if ($page -and (Cdp-Open $page.webSocketDebuggerUrl)) {
   Cdp 'Page.bringToFront' @{} | Out-Null
@@ -71,6 +76,7 @@ if ($page -and (Cdp-Open $page.webSocketDebuggerUrl)) {
   $ready = $false
   for ($i = 0; $i -lt 40 -and -not $ready; $i++) { Start-Sleep -Milliseconds 800; $ready = [bool](Js "!!document.querySelector('#prompt-textarea, [contenteditable=true]')") }
   $loggedOut = [bool](Js "!!document.querySelector('[data-testid=login-button], a[href*=""/auth/login""]')")
+  if (-not $ready) { Write-Host 'ChatGPT message box not found.' }
   if ($ready -and -not $loggedOut) {
     $before = [int](Js "document.querySelectorAll('[data-message-author-role=assistant] img').length")
     $p = ($Prompt | ConvertTo-Json -Compress)
@@ -81,6 +87,7 @@ const b=document.querySelector('[data-testid=send-button]')||document.querySelec
 box.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,bubbles:true}));return true})()
 "@
     if ($typed) {
+      Write-Host '[3/4] Prompt sent - waiting for the picture (about 1 minute)...'
       $auto = $true
       # ---------- 2) wait for the finished picture ----------
       $deadline = $start.AddMinutes($Minutes); $src = $null; $stable = 0; $last = ''
@@ -95,7 +102,7 @@ const im=imgs[imgs.length-1];return JSON.stringify({busy,n,src:im?im.currentSrc|
         $s = $state | ConvertFrom-Json
         if ($s.n -gt $before -and $s.src -and -not $s.busy) { if ($s.src -eq $last) { $stable++ } else { $stable = 0; $last = $s.src }; if ($stable -ge 2) { $src = $s.src; break } }
       }
-      if ($src) {
+      if ($src) { Write-Host '[4/4] Saving the picture...'
         # ---------- 3) save it into the project ----------
         $s2 = ($src | ConvertTo-Json -Compress)
         $data = Js "(async()=>{const r=await fetch($s2,{credentials:'include'});const b=await r.blob();return await new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.readAsDataURL(b)})})()"
