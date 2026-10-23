@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/skills-115-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="115 skills">
+<img src="https://img.shields.io/badge/skills-116-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="116 skills">
 <img src="https://img.shields.io/badge/agents-75-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="75 agents">
 <img src="https://img.shields.io/badge/commands-159-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="159 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
@@ -25,6 +25,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Make my landing page look less generic" | `design-taste-frontend` |
 | "Audit and polish this page's design" | `impeccable` |
 | "Add my 21st.dev spotlight card to this page" | `21st-dev` |
+| "Make my hero image break into particles when I move the mouse" | `particle-media` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |
 | "I have an idea for an app, help me plan it" | `idea-refine` |
@@ -172,7 +173,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 
 | Folder | What's in it |
 |:--|:--|
-| [`skills/`](skills) | All 115 skills, one folder each |
+| [`skills/`](skills) | All 116 skills, one folder each |
 | [`agents/`](agents) | 75 specialist agents |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |

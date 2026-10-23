@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("115", "skills"), ("75", "agents"), ("159", "commands"), ("13", "sources")]
+STATS = [("116", "skills"), ("75", "agents"), ("159", "commands"), ("13", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -30,6 +30,7 @@ CORE = [
         ("design-taste-frontend", "Art direction so sites don't look generic"),
         ("impeccable", "Audits, polishes and fixes any interface"),
         ("21st-dev", "Your saved 21st.dev components, ready to drop in"),
+        ("particle-media", "Turns pictures and videos into particles that follow the mouse"),
         ("design", "Logos, icons, mockups and social images"),
         ("design-system", "Keeps colors and buttons the same everywhere"),
         ("brand", "Sets your brand's look and voice"),
