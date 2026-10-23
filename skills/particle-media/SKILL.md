@@ -42,4 +42,8 @@ video.addEventListener('playing', () => pm.setSource(video), { once: true });
 - `ParticleMedia` returns `null` without WebGL2, so keep the normal image visible as the fallback.
 - The image must be same-origin or a data/blob URL (WebGL can't read cross-origin pixels without CORS).
 - Works best on dark backgrounds with bright subjects. Add a dark gradient behind any text on top.
-- Example in use: the hero of the Degen Skills showcase site (an animated Higgsfield video, tinted red).
+- Several on one page are fine (each is its own WebGL canvas). Start small ones lazily, e.g. on first hover or when scrolled into view.
+- Examples in use on the Degen Skills showcase site:
+  - **Hero:** an animated Higgsfield video, tinted red, full screen.
+  - **Nav hover previews:** each menu tab's dropdown picture turns into particles on first hover (`density 1.4`, `radius .35`, `intro 900`).
+  - **Closing banner:** a background picture behind the call-to-action, started when it scrolls into view.
