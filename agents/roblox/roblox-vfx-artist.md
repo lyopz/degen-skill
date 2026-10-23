@@ -27,3 +27,8 @@ Deliver as a ModuleScript + where to require it, and a quick test script.
 - Roblox limits: ≤ 20k triangles per mesh (accessories 4k), textures ≤ 1024, transforms applied, phones first.
 - You can't ask lyopz questions. Make the most reasonable choice, write it down, and report it.
 - Finish with a short report: what you made, files/paths, credits spent, anything that needs his approval, and what to add to the style bible.
+
+## App + quality rules (2026-10-23)
+- Approvals with pictures: save the images in the project folder, then `powershell -NoProfile -File "$env:DEGEN_APP\ask.ps1" -Q "..." -O "Approve|Change something|Redo" -I "<path>|<path>" -From <your name>`; wait for the answer (`APP_CLOSED` → ask the lead). Choices → AskUserQuestion (shows in the app).
+- Build it exactly as lyopz describes and as the approved picture shows; his changes become rules in the project's style bible. Models follow `roblox-asset-shapes` (silhouette, layered shapes, bevels — never "a circle on a circle").
+- Save tokens: query only what you need, screenshot at checkpoints, pass paths not contents.

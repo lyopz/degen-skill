@@ -43,3 +43,7 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 | Repo | Added | Removed | Reason |
 |---|---|---|---|
 | ruvnet/ruflo (partial: flow-nexus-neural, flow-nexus-platform, flow-nexus-swarm, dual-spawn, dual-coordinate, dual-collect) | 2026-10-18 | 2026-10-18 | Need a paid Flow Nexus account or the OpenAI Codex CLI |
+| lyopz (own) | 2026-10-23 | `roblox-shops/` (SKILL.md) | — | active | Monetization + shop playbook: what players buy per genre, layouts that convert, pricing ladders, Roblox rules; grows with studies/. |
+| lyopz (own) | 2026-10-23 | `roblox-asset-shapes/` (SKILL.md) | — | active | Shape definition for Roblox assets (eggs, bushes, trees, rocks, pets) — never "circle on a circle"; Blender / image-to-3D routes incl. free tools. |
+| lyopz (own) | 2026-10-23 | `roblox-game-strip/` (SKILL.md) | — | active | Reverse-engineer a game from video/screens/game file, file findings into the right skill, remake our way (ideas only). |
+| lyopz (own) | 2026-10-23 | `roblox-playtest/` (SKILL.md) | — | active | Walk through Roblox games via computer use, look and learn only — never buys or approves payments. |

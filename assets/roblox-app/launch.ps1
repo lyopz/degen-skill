@@ -4,18 +4,6 @@ param([switch]$AppOnly)
 if (-not $PSBoundParameters.ContainsKey('AppOnly')) { $AppOnly = $true }  # app opens alone; start tasks from the app (or use -AppOnly:$false)
 $ErrorActionPreference = 'SilentlyContinue'
 $app  = $PSScriptRoot
-function Start-Activity($app) {
-  $logDir = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path $logDir | Out-Null
-  $hook = (Join-Path $app 'activity-hook.ps1')
-  $cmdline = 'powershell -NoProfile -ExecutionPolicy Bypass -File "' + $hook + '"'
-  $h = @{ type = 'command'; command = $cmdline }
-  $settings = @{ hooks = @{ PreToolUse = @(@{ matcher = '*'; hooks = @($h) }); SubagentStop = @(@{ hooks = @($h) }); Stop = @(@{ hooks = @($h) }); UserPromptSubmit = @(@{ hooks = @($h) }) } }
-  $sf = Join-Path $app 'roblox-hooks.json'
-  [IO.File]::WriteAllText($sf, ($settings | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding $false))
-  # live feed shows in the Degen Roblox app (Activity panel); activity.ps1 is an optional separate window
-  return $sf
-}
-
 $repo = Split-Path -Parent (Split-Path -Parent $app)
 if (-not $env:DEGEN_NO_PULL) { git -C $repo pull --quiet --ff-only 2>$null | Out-Null }
 
@@ -61,17 +49,16 @@ if (Test-Path (Join-Path $tpl 'DegenTemplates.rbxmx')) {
   Copy-Item (Join-Path $tpl 'DegenTemplates.rbxmx') $plugins -Force
 }
 
-$url = 'file:///' + ((Join-Path $app 'index.html') -replace '\\', '/')
+# local app server (two-way link with the Lead window)
+$alive = Join-Path $env:USERPROFILE 'RobloxGames\.degen\server.alive'
+if (-not (Test-Path $alive) -or ((Get-Date) - (Get-Item $alive).LastWriteTime).TotalSeconds -gt 20) {
+  Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', (Join-Path $app 'server.ps1'))
+  Start-Sleep -Milliseconds 1200
+}
+$url = 'http://localhost:7777/'
 $dataDir = Join-Path $env:LOCALAPPDATA 'DegenRobloxApp'
-$argList = @("--app=$url", "--user-data-dir=$dataDir", '--window-size=1300,880', '--no-first-run')
+$argList = @("--app=$url", "--user-data-dir=$dataDir", '--window-size=1300,880', '--no-first-run', '--autoplay-policy=no-user-gesture-required')
 $edge = @("${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe", "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
 if ($edge) { Start-Process $edge -ArgumentList $argList } else { Start-Process $url }
 
-if (-not $AppOnly) {
-  $games = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path $games | Out-Null
-  $mcp = Join-Path $app 'roblox-mcp.json'
-  # Fast Roblox Claude: only Roblox_Studio MCP, Claude credits (API key hidden for this window only)
-  $lead = Join-Path $app 'lead.md'; $sf = Start-Activity $app
-  $cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location '$games'; `$host.UI.RawUI.WindowTitle='Roblox Lead'; claude --strict-mcp-config --mcp-config '$mcp' --settings '$sf' --append-system-prompt (Get-Content -Raw '$lead') '/roblox'"
-  Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-Command', $cmd)
-}
+if (-not $AppOnly) { & (Join-Path $app 'lead-start.ps1') }

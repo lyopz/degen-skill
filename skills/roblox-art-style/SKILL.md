@@ -7,6 +7,8 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 
 # Roblox Art Style
 
+**Rule #0: build it exactly how lyopz describes it.** His words and his reference pictures beat the preset ("simple cube pet" is a starting point, not a limit). When he asks for a change (e.g. "good curves on the edges"), apply it AND write it into the project's bible as a rule so every future asset in that project gets it.
+
 **Rule #1: one game = one style.** A realistic dog next to a pixel-slop brainrot looks broken. Every new asset is *translated* into the project's style; never generated "as itself".
 
 ## The flow for every new asset
@@ -17,8 +19,9 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
    - Simple stylized shapes (cube pets, blocky items, crates, coins) → **build in Blender**, 0 credits, exact match to the bible's palette.
    - Organic or detailed (stylized dog, tree, statue, vehicle) → **Higgsfield picture** with the bible's **prompt template + suffix**, and pass 1–2 **approved anchor images** from the bible as reference media so it copies the look → approve → `image_to_3d` (~30).
    - Variants (golden, rainbow, shiny, dark) → **recolor/material swap**, never a new generation.
-5. **Consistency check** (against the anchors, side by side in one scene): silhouette readability, proportions (head/body ratio), palette (only bible colors + rarity accent), shading type, detail density/texel density, outline/edge treatment, poly budget, scale in studs. Fix or regenerate before it goes in the game.
-6. **Save** the approved asset in the bible's anchor list (picture job id + file) and add any new rule learned. The bible gets stronger with every asset.
+5. **Shape check** (`roblox-asset-shapes`): silhouette, primary/secondary/tertiary shapes, bevels — never "a circle on a circle".
+6. **Consistency check** (against the anchors, side by side in one scene): silhouette readability, proportions (head/body ratio), palette (only bible colors + rarity accent), shading type, detail density/texel density, outline/edge treatment, poly budget, scale in studs. Fix or regenerate before it goes in the game.
+7. **Save** the approved asset in the bible's anchor list (picture job id + file) and add any new rule learned. The bible gets stronger with every asset.
 
 ## Making a style bible (new project)
 Ask lyopz only what's missing: game genre, vibe words (3), 1–3 games/pictures he likes. Then:

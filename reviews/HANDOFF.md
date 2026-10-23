@@ -75,3 +75,12 @@ Newest at top. One short entry per session: date, what changed, anything left un
 - **2026-10-18** — Reviewed 3 repos. Added 4 skills from addyosmani/agent-skills and merged 2 tagged blocks into ponytail skills. Skipped OmniRoute. graphify pending lyopz's call.
 - **2026-10-18** — Added DietrichGebert/ponytail: ponytail, ponytail-review, ponytail-audit, ponytail-debt. Skipped gain/help and hooks.
 - **2026-10-18** — Created the skill library: intake rules, registry, handoff file. Made repo public (personal details removed). Waiting on first repo from lyopz.
+
+## 2026-10-23 — Degen Roblox app v3
+- App now runs on a local server (`assets/roblox-app/server.ps1`, http://localhost:7777) started by launch.ps1. Send → server opens a Lead window (`lead-start.ps1`); `degenroblox://` stays as a fallback.
+- Two-way approvals: `ask-hook.ps1` (PreToolUse on AskUserQuestion) sends questions to the app's Approvals bubble and returns lyopz's pick; `ask.ps1` for picture approvals. Sound + toast on new items.
+- Activity shows who is working (agent → job) + feed tagged by agent (`activity-hook.ps1` → `~/RobloxGames/.degen/activity.json`); drawer opens only when a task starts.
+- Projects bubble (folders in ~/RobloxGames: pictures, models, HANDOFF.md, Continue). Import video/game file in the + panel → `~/RobloxGames/imports/` → roblox-game-strip.
+- Voice: always-listening "Hey Claude" wake word, particle ring reacts to the mic, sends after 10 s pause or "start task"/"finished prompt". Sent prompts are cleared and saved as simplified suggestions. No scrollbars.
+- New skills: roblox-shops, roblox-asset-shapes, roblox-game-strip, roblox-playtest. lead.md: handoff per project, token-saving rules, exact-description rule. Mythic Cube Pets bible + target look in roblox-art-style/projects.
+- Not yet verified on lyopz's PC (no PowerShell in the sandbox): server.ps1, hooks, ask flow.
