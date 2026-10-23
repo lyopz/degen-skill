@@ -14,6 +14,4 @@ $sf = Join-Path $app 'roblox-hooks.json'
 if (-not $TaskFile -or -not (Test-Path $TaskFile)) {
   $TaskFile = Join-Path $env:TEMP 'degen-roblox-task-open.md'; [IO.File]::WriteAllText($TaskFile, '/roblox', (New-Object Text.UTF8Encoding $false))
 }
-$mcp = Join-Path $app 'roblox-mcp.json'; $lead = Join-Path $app 'lead.md'
-$cmd = "Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; `$env:DEGEN_APP='$app'; Set-Location '$games'; `$host.UI.RawUI.WindowTitle='Roblox Lead'; claude --strict-mcp-config --mcp-config '$mcp' --settings '$sf' --append-system-prompt (Get-Content -Raw '$lead') (Get-Content -Raw '$TaskFile')"
-Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-Command', $cmd)
+Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $app 'lead-run.ps1'), $TaskFile, $sf)
