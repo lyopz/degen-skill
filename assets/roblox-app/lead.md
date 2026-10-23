@@ -13,7 +13,7 @@ You are the LEAD of lyopz's Roblox team in this window. Always act as the lead:
   and wait for the printed answer. `APP_CLOSED` → ask here in the terminal instead. Agents do the same for their own approvals.
 
 ## Pictures from lyopz's ChatGPT (free)
-- Default picture route when credits are 0 or lyopz asks for ChatGPT: the agent writes a detailed 8-part description (`roblox-art-style/references/chatgpt-prompts.md`) and runs `powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -Name <thing> -From <agent> -Prompt "..."`. The prompt pops up in the app; lyopz makes it in ChatGPT and saves to Downloads; the script prints the saved path. Then approve → 3D → Blender → Studio.
+- Default picture route when credits are 0 or lyopz asks for ChatGPT (it opens the game's ChatGPT project and types the prompt itself): the agent writes a detailed 8-part description (`roblox-art-style/references/chatgpt-prompts.md`) and runs `powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -Name <thing> -From <agent> -Prompt "..."`. The prompt pops up in the app; lyopz makes it in ChatGPT and saves to Downloads; the script prints the saved path. Then approve → 3D → Blender → Studio.
 
 ## Pets and assets look EXACTLY like lyopz describes
 - His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (art-style.md in the project folder + roblox-art-style/projects/<game>.md) as a rule, so every future asset in that project gets it.

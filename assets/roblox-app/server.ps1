@@ -31,9 +31,9 @@ function Get-Projects {
     $imgs  = @($files | Where-Object { $_.Extension -in '.png','.jpg','.jpeg','.webp' } | Sort-Object LastWriteTime -Descending | Select-Object -First 40 | ForEach-Object { $_.FullName })
     $models = @($files | Where-Object { $_.Extension -in '.glb','.fbx','.rbxm','.rbxmx' } | ForEach-Object { $_.FullName.Substring($d.FullName.Length + 1) })
     $docs  = @($files | Where-Object { $_.Extension -eq '.md' } | ForEach-Object { $_.FullName.Substring($d.FullName.Length + 1) })
-    $ho = Join-Path $d.FullName 'HANDOFF.md'
+    $ho = Join-Path $d.FullName 'HANDOFF.md'; $cu = Join-Path $d.FullName 'chatgpt-url.txt'
     [ordered]@{ n = $d.Name; path = $d.FullName; updated = $d.LastWriteTime.ToString('yyyy-MM-dd HH:mm'); images = $imgs; models = $models; docs = $docs
-                handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' }) }
+                chatgpt = $(if (Test-Path $cu) { (Get-Content $cu -TotalCount 1) } else { '' }); handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' }) }
   }
 }
 function Get-State {
@@ -62,6 +62,11 @@ while ($http.IsListening) {
         Remove-Item "$D\inbox\$id.json" -Force
       }
       SendJson $ctx @{ ok = [bool]$id } }
+    elseif ($path -eq '/api/chatgpt-url' -and $ctx.Request.HttpMethod -eq 'POST') {
+      $b = ReadBody $ctx; $pdir = Join-Path $RG ([string]$b.project -replace '[^\w\-\. ]', '')
+      $ok = (Test-Path $pdir) -and ([string]$b.url -match '^https://(chatgpt\.com|chat\.openai\.com)/')
+      if ($ok) { [IO.File]::WriteAllText((Join-Path $pdir 'chatgpt-url.txt'), [string]$b.url, $utf8); $projAt = [datetime]::MinValue }
+      SendJson $ctx @{ ok = $ok } }
     elseif ($path -eq '/api/upload' -and $ctx.Request.HttpMethod -eq 'POST') {
       $name = [Uri]::UnescapeDataString(($u.Query -replace '^\?name=', '')) -replace '[^\w\.\- ]', '_'
       $dir = Join-Path $RG ('imports\' + (Get-Date -Format 'yyyy-MM-dd')); New-Item -ItemType Directory -Force -Path $dir | Out-Null
