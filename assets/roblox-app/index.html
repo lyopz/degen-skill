@@ -293,7 +293,7 @@ body.awake .orb-cap{color:var(--text)}
 <div class="act-hd"><b>Team activity</b><span id="act-when">idle</span><button class="x" id="drawer-x" aria-label="Close">✕</button></div>
 <div class="who" id="who"></div>
 <div class="act-body" id="act-body"><div class="act-l mute">Nothing running yet. Start a task and you'll see what the team is doing here.</div></div>
-<label class="auto"><input type="checkbox" id="auto-open" checked> Pop open when I start a task</label>
+<label class="auto"><input type="checkbox" id="auto-open"> Pop open when I start a task</label>
 </aside>
 <button class="voice" id="voice" title="Talk (Ctrl+Space)" aria-label="Talk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
 <div class="voice-live" id="voice-live"></div>
@@ -403,8 +403,9 @@ const drawer=document.getElementById('drawer'),tab=document.getElementById('draw
 function setDrawer(o){drawer.classList.toggle('open',o);document.body.classList.toggle('drawer-open',o);tab.setAttribute('aria-expanded',o);try{localStorage.setItem('rbx-drawer',o?'1':'0')}catch(e){}}
 tab.onclick=()=>setDrawer(!drawer.classList.contains('open'));document.getElementById('side-tab').onclick=()=>setDrawer(!drawer.classList.contains('open'));document.getElementById('drawer-x').onclick=()=>setDrawer(false);
 addEventListener('keydown',e=>{if(e.key==='Escape')setDrawer(false)});
-try{auto.checked=localStorage.getItem('rbx-auto')!=='0';if(localStorage.getItem('rbx-drawer')==='1')setDrawer(true)}catch(e){}
-auto.onchange=()=>{try{localStorage.setItem('rbx-auto',auto.checked?'1':'0')}catch(e){}};
+// Activity stays shut on open; only opens when clicked (or if the pop-open box is ticked)
+try{auto.checked=localStorage.getItem('rbx-auto2')==='1'}catch(e){}
+auto.onchange=()=>{try{localStorage.setItem('rbx-auto2',auto.checked?'1':'0')}catch(e){}};
 drawer.addEventListener('pointermove',e=>{const r=drawer.getBoundingClientRect(),s=document.getElementById('drawer-spot');s.style.left=(e.clientX-r.left)+'px';s.style.top=(e.clientY-r.top)+'px'});
 document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--x',(e.clientX-r.left)+'px');c.style.setProperty('--y',(e.clientY-r.top)+'px')});
 
