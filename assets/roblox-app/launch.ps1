@@ -53,6 +53,13 @@ if (Test-Path (Join-Path $tpl 'DegenTemplates.rbxmx')) {
 
 # local app server (two-way link with the Lead window)
 $alive = Join-Path $env:USERPROFILE 'RobloxGames\.degen\server.alive'
+# server.ps1 changed (git pull) since the running server started? stop the old one so the new code runs
+$ver = Join-Path $env:USERPROFILE 'RobloxGames\.degen\server.ver'
+$cur = [string](Get-Item (Join-Path $app 'server.ps1')).LastWriteTimeUtc.Ticks
+if (-not (Test-Path $ver) -or ([IO.File]::ReadAllText($ver).Trim() -ne $cur)) {
+  Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object { $_.CommandLine -like '*roblox-app*server.ps1*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+  Remove-Item $alive -Force; Start-Sleep -Milliseconds 600
+}
 if (-not (Test-Path $alive) -or ((Get-Date) - (Get-Item $alive).LastWriteTime).TotalSeconds -gt 20) {
   Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', (Join-Path $app 'server.ps1'))
   Start-Sleep -Milliseconds 1200

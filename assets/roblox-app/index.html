@@ -608,7 +608,7 @@ const wpost=(u,b)=>fetch(u,{method:'POST',headers:{'Content-Type':'application/j
 const wLabel=()=>{$('watch-l').innerHTML=WN&&WN.running?`<i class="rec"></i>Watching · ${WN.shots}`:'Watch me play';window.WATCHING=!!(WN&&WN.running)};
 async function wPoll(){if(!API)return;let j;try{j=await fetch('/api/watch').then(r=>r.json())}catch(e){return}WN=j.now;wLabel();return j}
 setInterval(()=>{if(window.WATCHING||$('watch-sheet').classList.contains('open'))wPoll().then(j=>{if(j&&$('watch-sheet').classList.contains('open'))drawWatch(j)})},4000);wPoll();
-$('watch-btn').onclick=async e=>{e.stopPropagation();$('watch-sheet').classList.add('open');$('watch-body').innerHTML='<div class="empty">Loading…</div>';if(!API){$('watch-body').innerHTML='<div class="empty">Open the app from its shortcut to use this.</div>';return}drawWatch(await wPoll(),true)};
+$('watch-btn').onclick=async e=>{e.stopPropagation();$('watch-sheet').classList.add('open');$('watch-body').innerHTML='<div class="empty">Loading…</div>';if(!API){$('watch-body').innerHTML='<div class="empty">Open the app from its shortcut to use this.</div>';return}const j=await wPoll();if(!j){$('watch-body').innerHTML='<div class="empty">The app\'s helper is an old version. Close this app and open it again from its shortcut.</div>';return}drawWatch(j,true)};
 let wSig='';
 function drawWatch(j,force){if(!j)return;const el=$('watch-body'),now=j.now&&j.now.running?j.now:null;
  const sig=JSON.stringify([now&&[now.shots,now.marks],j.sessions.map(x=>[x.n,x.shots,x.learned])]);if(!force&&sig===wSig)return;

@@ -21,6 +21,8 @@ $port = 7777
 $http = New-Object Net.HttpListener
 $http.Prefixes.Add("http://localhost:$port/")
 try { $http.Start() } catch { exit 0 }   # already running
+# launch.ps1 restarts the server when this file changed since it started (after a git pull)
+[IO.File]::WriteAllText("$D\server.ver", [string](Get-Item $PSCommandPath).LastWriteTimeUtc.Ticks)
 $MIME = @{ '.html'='text/html; charset=utf-8'; '.js'='text/javascript; charset=utf-8'; '.css'='text/css'; '.png'='image/png'; '.jpg'='image/jpeg'; '.jpeg'='image/jpeg'; '.webp'='image/webp'; '.gif'='image/gif'; '.ico'='image/x-icon'; '.json'='application/json'; '.md'='text/plain; charset=utf-8'; '.glb'='model/gltf-binary'; '.svg'='image/svg+xml'; '.mp3'='audio/mpeg'; '.wav'='audio/wav' }
 $utf8 = New-Object Text.UTF8Encoding $false
 
