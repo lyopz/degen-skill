@@ -11,6 +11,9 @@ Two kinds of 3D work in this library:
 - **Web 3D** (`3d-assets`): looks only; one GLB on a web page.
 - **Roblox 3D** (this skill): must import into Studio, stay under Roblox limits, and usually **move** — rigged animation, scripted motion, or particle effects.
 
+## 0. Match the game's style first
+Before making anything, load the project's style bible with **`roblox-art-style`** (look up the real subject → translate it into the game's style → anchors as references → consistency check). Every route below uses the bible's palette, shapes, prompt suffix and budgets.
+
 ## 1. Pick the cheapest route that still looks great
 
 Decide per piece, top to bottom. Stop at the first route that can do it well.

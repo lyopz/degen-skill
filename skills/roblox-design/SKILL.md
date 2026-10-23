@@ -12,6 +12,7 @@ Read the reference that matches the job:
 - `references/maps.md` — genres in meta, map layouts per genre, lighting presets, building style.
 - `references/game-feel.md` — motion, camera, hit feedback, VFX layering, rewards.
 - `references/performance.md` — budgets so it runs on phones (most players).
+- Keeping every asset in one look: `roblox-art-style` (per-project style bible).
 - Assets/effects to build things: `roblox-assets` (models, rigs, VFX scripts). 3D source images: `3d-assets` prompt library.
 
 ## The 2026 meta in one screen

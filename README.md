@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.svg" alt="Degen Skills — lyopz's toolbox for Claude Code" width="100%"></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/skills-122-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="122 skills">
+<img src="https://img.shields.io/badge/skills-123-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="123 skills">
 <img src="https://img.shields.io/badge/agents-75-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="75 agents">
 <img src="https://img.shields.io/badge/commands-159-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="159 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
@@ -30,6 +30,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Make a 3D robot chicken / a Roblox prop" | `3d-assets` |
 | "Make a Roblox fireball / make my chicken walk in Roblox" | `roblox-assets` |
 | "Make my Roblox game 10,000x cooler" | `roblox-design` |
+| "Make a pigeon cube pet that fits my game" | `roblox-art-style` |
 | "Build a fast 3D scene for my site" | `three-best-practices`, `r3f-best-practices` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |
@@ -178,7 +179,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 
 | Folder | What's in it |
 |:--|:--|
-| [`skills/`](skills) | All 122 skills, one folder each |
+| [`skills/`](skills) | All 123 skills, one folder each |
 | [`agents/`](agents) | 75 specialist agents |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
