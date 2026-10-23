@@ -42,7 +42,7 @@
   void main(){ vec2 q = gl_PointCoord-0.5; float a = smoothstep(0.5, 0.15, length(q)); o = vec4(vCol.rgb, vCol.a*a); }`;
 
   function ParticleMedia(canvas, src, opt) {
-    opt = Object.assign({ density: 2, radius: 0.22, strength: 0.18, point: 1.8, cut: 0.06, alpha: 0.8, tint: null, tintAmount: 0.6, follow: 0.08, intro: 1800, max: 60000, dpr: 1.5, fps: 60 }, opt || {});
+    opt = Object.assign({ density: 2, radius: 0.22, strength: 0.18, point: 1.8, cut: 0.06, alpha: 0.8, tint: null, tintAmount: 0.6, follow: 0.08, intro: 1800, max: 60000, dpr: 1.5, fps: 60, videoFps: 15 }, opt || {});
     const gl = canvas.getContext('webgl2', { premultipliedAlpha: false, alpha: true });
     if (!gl) return null;
     const sh = (t, s) => { const x = gl.createShader(t); gl.shaderSource(x, s); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(x); return x; };
@@ -84,7 +84,7 @@
     const tc = opt.tint ? opt.tint.replace('#', '').match(/../g).map(x => parseInt(x, 16) / 255) : [1, 1, 1];
     gl.uniform3f(U('uTint'), tc[0], tc[1], tc[2]); gl.uniform1f(U('uTintAmt'), opt.tint ? opt.tintAmount : 0);
     grid(); const ro = new ResizeObserver(grid); ro.observe(canvas);
-    let t0 = performance.now(), raf = 0, uploaded = false, live = true, vis = true, last = 0;
+    let t0 = performance.now(), raf = 0, uploaded = false, live = true, vis = true, last = 0, lastUp = 0;
     const io = new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis && live && !raf) raf = requestAnimationFrame(frame); }); io.observe(canvas);
     const onVis = () => { if (!document.hidden && vis && live && !raf) raf = requestAnimationFrame(frame); }; document.addEventListener('visibilitychange', onVis);
     function frame(now) {
@@ -93,7 +93,8 @@
       if (now - last < 1000 / opt.fps - 2) { raf = requestAnimationFrame(frame); return; }
       last = now;
       const ready = isVid ? src.readyState >= 2 : src.complete && src.naturalWidth;
-      if (ready && (isVid || !uploaded)) {
+      if (ready && (!uploaded || (isVid && now - lastUp > 1000 / opt.videoFps))) {
+        lastUp = now;
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
         if (!uploaded && opt.intro) t0 = now; uploaded = true; cover();

@@ -29,6 +29,7 @@ video.addEventListener('playing', () => pm.setSource(video), { once: true });
 | `max` | 60000 | hard cap on particles; density is loosened to stay under it |
 | `dpr` | 1.5 | max pixel ratio (lower = lighter on high-res screens) |
 | `fps` | 60 | frame cap; 30 for small or background effects |
+| `videoFps` | 15 | how often a video source recolors the particles (uploads are the costly part) |
 | `radius` | 0.22 | cursor reach (screen-height units) |
 | `strength` | 0.18 | how far particles get pushed |
 | `point` | 1.8 | particle size |
@@ -47,7 +48,7 @@ video.addEventListener('playing', () => pm.setSource(video), { once: true });
 - Works best on dark backgrounds with bright subjects. Add a dark gradient behind any text on top.
 - Pauses by itself when scrolled off screen or the tab is hidden, so idle effects cost nothing.
 - Keep it light: hero `max` 40–60k, small cards 6–10k with `fps: 30`. A video source re-uploads every frame, so use ~720p.
-- Several on one page are fine (each is its own WebGL canvas). Start small ones lazily, e.g. on first hover or when scrolled into view.
+- Each one is its own WebGL canvas, so use 1–2 per page (hero + one accent). Small thumbnails look fine as plain images. Start small ones lazily, e.g. on first hover or when scrolled into view.
 - Examples in use on the Degen Skills showcase site:
   - **Hero:** an animated Higgsfield video, tinted red, full screen.
   - **Nav hover previews:** each menu tab's dropdown picture turns into particles on first hover (`density 1.4`, `radius .35`, `intro 900`).
