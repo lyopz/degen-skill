@@ -26,6 +26,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-22** — 21st-dev: added spline-scene (3D Spline hero). Voice Powered Orb still to come.
 - **2026-10-22** — Added `21st-dev` skill folder for lyopz's 21st.dev components (first: spotlight-card). 115 skills.
 - **2026-10-21** — Added pbakaus/impeccable. 114 skills.
 - **2026-10-20** — Added taste-skill (design-taste-frontend) and jcode's optimization skill. llm-council was already in. 113 skills.

@@ -1,6 +1,6 @@
 ---
 name: 21st-dev
-description: Lyopz's saved 21st.dev React components (shadcn + Tailwind + TypeScript), with a standard way to install them into a project. Use when lyopz asks for a 21st.dev component, names one in components/ (e.g. "spotlight card", "glow card"), or wants a fancy prebuilt UI piece: glowing borders, glow or spotlight effects that follow the mouse, glowing cards, heroes, buttons or backgrounds. Check components/ before building one of these from scratch.
+description: Lyopz's saved 21st.dev React components (shadcn + Tailwind + TypeScript), with a standard way to install them into a project. Use when lyopz asks for a 21st.dev component, names one in components/ (e.g. "spotlight card", "glow card"), or wants a fancy prebuilt UI piece: glowing borders, glow or spotlight effects that follow the mouse, glowing cards, interactive 3D scenes (Spline), heroes, buttons or backgrounds. Check components/ before building one of these from scratch.
 ---
 
 <!-- lyopz's own collection. Each file in components/ is a 21st.dev "copy prompt" he saved. -->
@@ -12,6 +12,7 @@ Saved components live in `components/` next to this file, one `.md` per componen
 | File | Component | What it is |
 |---|---|---|
 | `components/spotlight-card.md` | `GlowCard` | Card with a glowing border/spotlight that follows the mouse. Colors: blue, purple, green, red, orange. Sizes sm/md/lg or custom. |
+| `components/spline-scene.md` | `SplineScene` (+ `Spotlight`, shadcn `Card`) | Interactive 3D scene from Spline in a dark hero card, with a soft spotlight that follows the mouse. Needs `@splinetool/runtime`, `@splinetool/react-spline`, `framer-motion`. Note: the demo passes `fill="white"` to `Spotlight`, which this Spotlight doesn't accept; drop it or add the prop. |
 
 ## Install one into a project
 
