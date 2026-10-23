@@ -11,7 +11,7 @@ GREY = "#a1a1aa"
 FONT = "Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Cascadia Code, Consolas, Menlo, monospace"
 
-STATS = [("124", "skills"), ("83", "agents"), ("159", "commands"), ("14", "sources")]
+STATS = [("125", "skills"), ("83", "agents"), ("159", "commands"), ("14", "sources")]
 
 CORE = [
     ("CODING", "Write and fix code", [
@@ -46,6 +46,7 @@ CORE = [
         ("roblox-design", "What looks and feels good in Roblox right now"),
         ("roblox-art-style", "Keeps every asset in your game one matching style"),
         ("roblox-templates", "Ready scripts that show up in your Roblox Studio"),
+        ("roblox-game-study", "Breaks down a Roblox game so you can learn from it"),
     ]),
     ("PLANNING", "Think it through", [
         ("idea-refine", "Turns a rough idea into a clear plan"),

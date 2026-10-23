@@ -30,6 +30,7 @@ For Roblox games, the main session is the lead: it plans, sets the credit budget
 | HUD, menus, shop, inventory, button feel | `roblox-ui-designer` |
 | Game systems: data saving, remotes/anti-exploit, currencies, eggs, purchases | `roblox-scripter` |
 | Review / "make it 10,000x cooler" / ready to publish? | `roblox-reviewer` |
+| Study another game for ideas | main session with `roblox-game-study` (needs his PC + OK), then hand takeaways to the agents above |
 
 Typical order for a new asset: art-director (concept) → modeler → animator / vfx-artist → reviewer. Pass each agent the game name, the bible path, the approved concept, and its credit budget.
 

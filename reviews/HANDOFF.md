@@ -38,6 +38,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-23** — Added `roblox-game-study` (study games for ideas; never extract/copy). 125 skills.
 - **2026-10-23** — Added `roblox-templates` (Studio plugin "Degen Templates" + Documents\Roblox Templates, synced by launch.ps1). Daily Roblox refresh scheduled task (8:35 AM ET) also saves important templates. 124 skills.
 - **2026-10-22** — Added the Roblox agent team (`agents/roblox/`, 8 agents; routing in AGENT_ROUTING.md). 83 agents.
 - **2026-10-22** — Added own `roblox-art-style` (per-project style bibles in `skills/roblox-art-style/projects/`). 123 skills. Offered a `roblox-dev` skill (code structure, anti-exploit, DataStores, economy, onboarding, monetization, publishing) — not built yet.
