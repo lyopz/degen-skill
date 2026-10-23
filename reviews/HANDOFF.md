@@ -21,6 +21,11 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 - Ruflo tools need the `claude-flow` MCP server added at user scope.
 - Image generation: lyopz will add a custom Higgsfield connector in the Claude app. Once it exists, use it for image/video generation as needed (prefer it over the design skill's Gemini/Atlas/MuAPI scripts). ChatGPT idea dropped.
 
+## Desktop app
+- `assets/app/`: Degen Skills desktop app (Edge app-mode window). `launch.ps1` = git pull + build skills.js from SKILL.md files + open window; `install.ps1` makes Desktop/Start shortcuts.
+- Design changes: edit `assets/app/src/template.html`, run `python assets/app/src/build.py`, commit `index.html`. New skills need nothing (app reads the skill folders). New "core" skills with plain descriptions go in `assets/make_assets.py` CORE.
+- Also published as a claude.ai artifact ("Degen Skills") for previews.
+
 ## Next up
 - lyopz sends the next repo, or keeps/removes trial skills after using them.
 
@@ -30,6 +35,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-22** — Added Degen Skills desktop app (`assets/app/`), auto-updates from the repo on launch. Site made lighter (particle caps, pause off-screen).
 - **2026-10-22** — Added own `widget-board` skill (bottom tab wheel of action cards: jump/link/copy). Cards are picked per project by relevance. 117 skills.
 - **2026-10-22** — Added own `particle-media` skill (image/video → liquid cursor particles, WebGL2). Used it on the Degen Skills showcase hero. 116 skills.
 - **2026-10-22** — 21st-dev: added spline-scene (3D Spline hero). Voice Powered Orb still to come.

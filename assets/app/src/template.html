@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Degen Skills</title>
+<script>window.IMG={HERO:"__HERO__",CARDS:"__CARDS__",SWARM:"__SWARM__"};for(const k in IMG)document.documentElement.style.setProperty("--img-"+k.toLowerCase(),`url(${IMG[k]})`);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070a;--panel:#111116;--line:#26262e;--red:#e11d2e;--red2:#ff4d5e;--text:#f5f5f7;--muted:#a1a1aa}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#07070a}}
+:root[data-theme="dark"]{--bg:#07070a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+nav{position:sticky;top:0;z-index:20;background:rgba(7,7,10,.92);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:700;letter-spacing:.12em;display:flex;align-items:center;gap:10px}
+.logo i{width:10px;height:22px;background:var(--red);display:block;box-shadow:0 0 16px var(--red)}
+nav .links{display:flex;gap:22px;align-items:center;font-size:14px;color:var(--muted)}
+nav .links a{text-decoration:none}nav .links a:hover{color:var(--text)}
+@media(max-width:640px){nav .links{display:none}}
+.hero{position:relative;min-height:88vh;display:flex;align-items:flex-end;padding-bottom:9vh;overflow:hidden}
+.hero .bg{position:absolute;inset:0;background:var(--img-hero) center 40%/cover no-repeat;animation:drift 18s ease-in-out infinite alternate}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,7,10,.85) 0%,rgba(7,7,10,.4) 45%,transparent 70%),linear-gradient(180deg,transparent 0%,rgba(7,7,10,.25) 60%,var(--bg) 100%)}
+@keyframes drift{from{transform:scale(1.04)}to{transform:scale(1.12) translateY(-1.5%)}}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.tag{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--red2);letter-spacing:.2em;text-transform:uppercase}
+h1{font-size:clamp(48px,10vw,124px);line-height:.92;font-weight:700;letter-spacing:-.03em;margin:14px 0 18px}
+h1 span{color:var(--red);text-shadow:0 0 40px rgba(225,29,46,.6)}
+.lead{font-size:clamp(17px,2vw,21px);color:#d4d4d8;max-width:560px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{padding:13px 22px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--red);transition:.2s}
+.btn.p{background:var(--red);box-shadow:0 0 30px rgba(225,29,46,.45)}
+.btn.p:hover{background:var(--red2)}
+.btn:not(.p):hover{background:rgba(225,29,46,.12)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:-30px;position:relative;z-index:3}
+.stats div{background:var(--panel);padding:24px 20px}
+.stats b{display:block;font-size:42px;color:var(--red2);font-weight:700;line-height:1}
+.stats span{color:var(--muted);font-size:14px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+section{padding:96px 0 0}
+h2{font-size:clamp(32px,5vw,52px);letter-spacing:-.02em;line-height:1.05}
+h2 em{font-style:normal;color:var(--red)}
+.sub{color:var(--muted);margin-top:10px;max-width:620px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 22px}
+.filters button{font:inherit;font-size:14px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+.filters button.on{color:var(--text);border-color:var(--red);background:rgba(225,29,46,.12)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{--x:50%;--y:50%;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;overflow:hidden;transition:transform .2s,border-color .2s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(320px circle at var(--x) var(--y),rgba(225,29,46,.22),transparent 60%);opacity:0;transition:opacity .25s}
+.card::after{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;background:radial-gradient(220px circle at var(--x) var(--y),var(--red2),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .25s}
+.card:hover::before,.card:hover::after{opacity:1}
+.card:hover{transform:translateY(-3px)}
+.card>*{position:relative;z-index:1}
+.card .k{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.15em;color:var(--red2);text-transform:uppercase}
+.card h3{font-family:"JetBrains Mono",monospace;font-size:16px;font-weight:600;margin:10px 0 6px;word-break:break-word}
+.card p{color:var(--muted);font-size:15px}
+.card.hide{display:none}
+.split{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+.img{border-radius:20px;overflow:hidden;border:1px solid var(--line);aspect-ratio:16/10;background-size:cover;background-position:center;box-shadow:0 30px 80px rgba(225,29,46,.18)}
+.pack{display:flex;gap:18px;margin-top:22px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(225,29,46,.18),rgba(225,29,46,.03));border:1px solid rgba(225,29,46,.35)}
+.pack b{font-size:44px;line-height:1;color:var(--red2)}
+.pack h4{font-size:18px;letter-spacing:.08em}
+.pack p{color:#d4d4d8;font-size:15px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.step .n{font-family:"JetBrains Mono",monospace;color:var(--red2);font-size:13px}
+.step h3{margin:8px 0}
+.step p{color:var(--muted);font-size:15px}
+pre{margin-top:12px;background:#000;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:#fca5a5;overflow-x:auto;white-space:pre}
+.band{margin-top:96px;position:relative;border-radius:24px;overflow:hidden;padding:72px 32px;text-align:center;border:1px solid var(--line);background:radial-gradient(600px circle at 50% 120%,rgba(225,29,46,.22),transparent 70%),var(--panel)}
+.band>*{position:relative}
+footer{padding:48px 0;color:var(--muted);font-size:14px;text-align:center}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.hero .bg{animation:none}.reveal{opacity:1;transform:none}}
+.built{display:inline-flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.built span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:3px 8px}
+.built span::before{content:"⚡ ";color:var(--red2)}
+.s3d{position:relative;margin-top:30px;height:520px;border-radius:20px;border:1px solid var(--line);background:rgba(0,0,0,.96);overflow:hidden;display:flex}
+.s3d .spot{pointer-events:none;position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,94,.55),rgba(225,29,46,.15) 40%,transparent 70%);filter:blur(28px);opacity:0;transition:opacity .25s;transform:translate(-50%,-50%);z-index:1}
+.s3d:hover .spot{opacity:1}
+.s3d .side{flex:1;padding:40px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}
+.s3d .side h3{font-size:clamp(34px,5vw,52px);line-height:1;background:linear-gradient(180deg,#fafafa,#a3a3a3);-webkit-background-clip:text;background-clip:text;color:transparent}
+.s3d .side p{color:#d4d4d8;margin-top:14px;max-width:420px}
+.s3d .view{flex:1;position:relative;z-index:2}
+.s3d spline-viewer,.s3d .fb{position:absolute;inset:0;width:100%;height:100%}
+.s3d .fb{background:var(--img-hero) center/cover;opacity:.9;mask:radial-gradient(circle at 60% 50%,#000 40%,transparent 75%);-webkit-mask:radial-gradient(circle at 60% 50%,#000 40%,transparent 75%)}
+.loader{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:820px){.s3d{flex-direction:column;height:auto}.s3d .view{height:320px}}
+.hero .bg video,.s3d .fb video{width:100%;height:100%;object-fit:cover;display:block}
+.s3d .fb{background:none}
+#pm{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:block}
+.hero.pm-on .bg{opacity:0;animation:none;visibility:hidden}
+.hero::after{z-index:1;pointer-events:none}
+.ni{position:relative}
+.ni>a{display:block;padding:20px 0}
+.pv{position:absolute;top:100%;left:50%;width:240px;padding:10px;border-radius:14px;background:rgba(17,17,22,.96);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 0 1px rgba(225,29,46,.15);opacity:0;pointer-events:none;transform:translate(-50%,8px) scale(.97);transform-origin:top center;transition:opacity .18s,transform .22s cubic-bezier(.2,.8,.2,1)}
+.ni:last-child .pv{left:auto;right:0;transform:translate(0,8px) scale(.97);transform-origin:top right}
+.ni:hover .pv,.ni:focus-within .pv{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
+.ni:last-child:hover .pv,.ni:last-child:focus-within .pv{transform:translate(0,0) scale(1)}
+.pi{height:110px;border-radius:9px;background-size:cover;background-position:center;margin-bottom:10px;position:relative;overflow:hidden}
+.ni:hover .pi{animation:pz 4s ease-out forwards}
+@keyframes pz{from{background-size:110%}to{background-size:130%}}
+.pv b{display:block;color:var(--text);font-size:14px}
+.pv p{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.pv code{font-family:"JetBrains Mono",monospace;color:#fca5a5;font-size:11.5px}
+.ni:nth-child(4) .pi::after{content:"$ git clone …/degen-skill\A$ git pull\A✓ skills ready";white-space:pre;position:absolute;left:12px;top:14px;font:12px/1.7 "JetBrains Mono",monospace;color:#fca5a5}
+.ni:nth-child(5) .pi::after{content:"★ degen-skill";position:absolute;left:14px;bottom:12px;font:700 18px "Space Grotesk",system-ui,sans-serif;color:#fff}
+.links a.on{color:var(--text)}
+.pi .pmc,.band .pmc{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pi.pm-on{background-image:none!important;background-color:#000}
+.band .pmc{z-index:0;opacity:.85}
+.band>*:not(.pmc){position:relative;z-index:1}
+.wheel{position:fixed;left:50%;bottom:14px;transform:translateX(-50%) translateY(140%);width:min(560px,calc(100vw - 32px));height:150px;perspective:900px;z-index:30;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.wheel.show{transform:translateX(-50%) translateY(0)}
+.wheel::before{content:"";position:absolute;inset:auto 0 0;height:96px;border-radius:24px;background:rgba(12,12,16,.96);border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(225,29,46,.12)}
+.ring{position:absolute;left:50%;top:6px;width:0;height:120px;transform-style:preserve-3d}
+.wc{position:absolute;left:-62px;top:0;width:124px;height:110px;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--line);text-decoration:none;transition:transform .55s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s,opacity .4s}
+.wc.front{border-color:var(--red);box-shadow:0 0 24px rgba(225,29,46,.45)}
+.wc .wi{position:absolute;inset:0;background-size:cover;background-position:center}
+.wc span{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 7px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.85));z-index:2}
+.wt{font:11px/1.7 "JetBrains Mono",monospace;color:#fca5a5;padding:14px 10px}
+.wg{background:linear-gradient(135deg,#e11d2e,#4a0710);font-weight:700;color:#fff;padding:14px 10px;font-size:14px}
+.wb{position:absolute;bottom:30px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#16161c;color:var(--text);font-size:20px;line-height:1;cursor:pointer;z-index:3}
+.wb:hover{border-color:var(--red)}.wb.l{left:12px}.wb.r{right:12px}
+footer{padding-bottom:180px}
+.cp{font-style:normal;float:right;font-size:11px;color:#fca5a5;border:1px solid rgba(252,165,165,.4);border-radius:6px;padding:0 5px}
+.cpb{margin-top:10px;font:12px "JetBrains Mono",monospace;background:transparent;color:#fca5a5;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}.cpb:hover{border-color:var(--red)}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><div class="logo"><i></i>DEGEN SKILLS</div><div class="links"><div class="ni"><a href="#skills">Skills</a><div class="pv"><div class="pi" style="background-image:var(--img-cards)" data-img="CARDS"></div><b><span class="nS">117</span> skills</b><p>Every skill as a glowing card. Filter by Coding, Design, Planning and more.</p></div></div><div class="ni"><a href="#3d">3D</a><div class="pv"><div class="pi" style="background-image:var(--img-hero)" data-img="HERO"></div><b>Interactive 3D</b><p>A live Spline scene with a spotlight that follows your cursor.</p></div></div><div class="ni"><a href="#packs">Packs</a><div class="pv"><div class="pi" style="background-image:var(--img-swarm)" data-img="SWARM"></div><b>Swarms + OmniRoute</b><p>Dozens of agents and commands in two big installs.</p></div></div><div class="ni"><a href="#install">Install</a><div class="pv"><div class="pi" style="background:#000"></div><b>Three steps</b><p><code>git clone</code> → link → <code>git pull</code>. Done.</p></div></div><div class="ni"><a href="https://github.com/lyopz/degen-skill" target="_blank" rel="noopener">GitHub</a><div class="pv"><div class="pi" style="background:linear-gradient(135deg,#e11d2e,#4a0710)"></div><b>lyopz/degen-skill</b><p>Public repo. <span class="nS">117</span> skills · 75 agents · 159 commands.</p></div></div></div></div></nav>
+
+<header class="hero" id="hero"><canvas id="pm"></canvas><div class="bg"><video class="hv" muted loop playsinline autoplay></video></div><div class="wrap">
+<div class="tag">lyopz's toolbox for Claude Code</div>
+<h1>Degen<br><span>Skills.</span></h1>
+<p class="lead">Install once. Claude picks the right skill on its own. You just ask for what you want.</p>
+<div class="cta"><a class="btn p" href="https://github.com/lyopz/degen-skill" target="_blank" rel="noopener">Get it on GitHub</a><a class="btn" href="#skills">See what's inside</a></div>
+<div class="built"><span>particle-media</span><span>design-taste-frontend</span><span>impeccable</span><span>higgsfield art</span></div>
+</div></header>
+
+<div class="wrap">
+<div class="stats reveal"><div><b data-n="117">0</b><span>skills</span></div><div><b data-n="75">0</b><span>agents</span></div><div><b data-n="159">0</b><span>commands</span></div><div><b data-n="13">0</b><span>sources</span></div></div>
+
+<section id="skills">
+<div class="reveal"><div class="tag">What's inside</div><h2>You don't need to<br>remember <em>any of these.</em></h2><p class="sub">Each skill tells Claude when it should kick in. Hover a card to light it up.</p><div class="built"><span>21st-dev / spotlight-card</span><span>emil-kowalski motion</span></div></div>
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+</section>
+
+<section id="3d"><div class="reveal"><div class="tag">Interactive 3D</div><h2>Drop in a <em>live scene.</em></h2><div class="built"><span>21st-dev / spline-scene</span><span>21st-dev / spotlight</span></div></div>
+<div class="s3d reveal" id="s3d"><div class="spot" id="spot"></div>
+<div class="side"><h3>Bring your UI<br>to life.</h3><p>The spline-scene component loads a real 3D scene you can move around. Spotlight follows your cursor across the card.</p></div>
+<div class="view" id="view"><div class="loader"></div></div></div></section>
+
+<section id="packs"><div class="split">
+<div class="reveal"><div class="tag">Big packs</div><h2>A whole <em>team</em><br>in one install.</h2><p class="sub">Two packs bring dozens of agents and commands at once.</p><div class="built"><span>ui-styling</span><span>design-system</span></div>
+<div class="pack"><b>26</b><div><h4>SWARMS · Ruflo</h4><p>A team of AI helpers that split a big job up and work on it at the same time.</p></div></div>
+<div class="pack"><b>45</b><div><h4>OMNIROUTE · AI gateway</h4><p>Run lots of AI models through one place, switch when one runs out, track what you spend.</p></div></div>
+</div>
+<div class="img reveal" style="background-image:var(--img-swarm)" data-img="SWARM"></div>
+</div></section>
+
+<section id="install">
+<div class="reveal"><div class="tag">Install</div><h2>Three steps. <em>Done.</em></h2></div>
+<div class="steps">
+<div class="step reveal"><div class="n">01</div><h3>Clone it</h3><p>Grab the repo into your Claude folder.</p><pre>git clone https://github.com/lyopz/degen-skill ~/.claude/degen-skill</pre><button class="cpb" data-c="git clone https://github.com/lyopz/degen-skill ~/.claude/degen-skill">⧉ Copy</button></div>
+<div class="step reveal"><div class="n">02</div><h3>Link it</h3><p>Point Claude's skills, agents and commands at the repo.</p><pre>skills/  agents/  commands/</pre></div>
+<div class="step reveal"><div class="n">03</div><h3>Stay fresh</h3><p>New skills land all the time. Pull to get them.</p><pre>git pull</pre><button class="cpb" data-c="cd $HOME\.claude\degen-skill; git pull">⧉ Copy</button></div>
+</div>
+</section>
+
+<div class="band reveal" id="band"><canvas class="pmc" id="bandpm"></canvas><div class="tag">Ready?</div><h2 style="margin:12px 0 22px">Make Claude a <em>degen.</em></h2><a class="btn p" href="https://github.com/lyopz/degen-skill" target="_blank" rel="noopener">github.com/lyopz/degen-skill</a></div>
+</div>
+<div class="wheel" id="wheel" aria-label="Sections">
+<div class="ring" id="ring">
+<a class="wc" href="#skills" data-s="skills"><div class="wi" data-img="CARDS"></div><span>Skills</span></a>
+<a class="wc" href="#3d" data-s="3d"><div class="wi" data-img="HERO"></div><span>3D</span></a>
+<a class="wc" href="#packs" data-s="packs"><div class="wi" data-img="SWARM"></div><span>Packs</span></a>
+<a class="wc" href="#install" data-s="install" data-copy="cd $HOME\.claude\degen-skill; git pull"><div class="wi wt">$ git pull<br>✓ <span class="nS">117</span> ready</div><span>Install <em class="cp">⧉ Copy</em></span></a>
+<a class="wc" href="https://github.com/lyopz/degen-skill" target="_blank" rel="noopener" data-s="gh"><div class="wi wg">★ degen-skill</div><span>GitHub</span></a>
+</div>
+<button class="wb l" id="wl" aria-label="Previous">‹</button><button class="wb r" id="wr" aria-label="Next">›</button>
+</div>
+<footer>Degen Skills · by lyopz · built for Claude Code</footer>
+
+<script>
+/* particle-media.js — turn any image or video into liquid particles that flow away from the cursor.
+   Original code for lyopz's degen-skill library (inspired by the "liquid sculpture" hero look on 21st.dev).
+   No dependencies. WebGL2. MIT.
+
+   Usage:
+     const pm = ParticleMedia(canvas, sourceElement, { density: 2, radius: 0.22, strength: 0.18 });
+     // sourceElement: <img> or <video> (video keeps updating live). Call pm.destroy() to stop.
+     pm.setSource(el) swaps to another image/video (e.g. start on the poster image, switch when the video plays).
+*/
+(function (g) {
+  const VS = `#version 300 es
+  in vec2 aUV; in float aRand;
+  uniform sampler2D uTex; uniform vec2 uMouse; uniform float uAspect, uTime, uRadius, uStrength, uIntro, uPoint, uCut, uAlpha, uTintAmt; uniform vec3 uTint;
+  uniform vec2 uCoverS; uniform vec2 uCoverO;
+  out vec4 vCol;
+  float h(float n){return fract(sin(n)*43758.5453);}
+  void main(){
+    vec2 suv = aUV*uCoverS+uCoverO;
+    vec4 c = texture(uTex, vec2(suv.x, 1.0-suv.y));
+    float lum = dot(c.rgb, vec3(.299,.587,.114));
+    vec2 p = aUV*2.0-1.0;
+    vec2 pa = vec2(p.x*uAspect, p.y);
+    vec2 d = pa - vec2(uMouse.x*uAspect, uMouse.y);
+    float dist = length(d);
+    float f = smoothstep(uRadius, 0.0, dist);
+    vec2 dir = dist > 1e-4 ? d/dist : vec2(0.0);
+    vec2 swirl = vec2(-dir.y, dir.x);
+    vec2 off = (dir*(0.6+aRand) + swirl*0.8*(aRand-0.5)) * f * uStrength;
+    off += vec2(sin(uTime*0.8+aRand*40.0), cos(uTime*0.7+aRand*31.0)) * 0.004 * (0.3+lum);
+    pa += off;
+    vec2 start = vec2(h(aRand*91.0)*2.0-1.0, h(aRand*57.0)*2.0-1.0) * vec2(uAspect*1.6, 1.6);
+    float t = smoothstep(0.0, 1.0, clamp(uIntro*1.4 - aRand*0.4, 0.0, 1.0));
+    pa = mix(start, pa, t);
+    gl_Position = vec4(pa.x/uAspect, pa.y, 0.0, 1.0);
+    float on = step(uCut, lum);
+    gl_PointSize = uPoint * (0.7 + lum) * on;
+    vec3 col = mix(c.rgb, uTint * (0.35 + 0.9*lum), uTintAmt);
+    vCol = vec4(col * (0.85 + f*0.6), on * uAlpha * (0.35 + 0.65*lum));
+  }`;
+  const FS = `#version 300 es
+  precision mediump float; in vec4 vCol; out vec4 o;
+  void main(){ vec2 q = gl_PointCoord-0.5; float a = smoothstep(0.5, 0.15, length(q)); o = vec4(vCol.rgb, vCol.a*a); }`;
+
+  function ParticleMedia(canvas, src, opt) {
+    opt = Object.assign({ density: 2, radius: 0.22, strength: 0.18, point: 1.8, cut: 0.06, alpha: 0.8, tint: null, tintAmount: 0.6, follow: 0.08, intro: 1800, max: 60000, dpr: 1.5, fps: 60, videoFps: 15 }, opt || {});
+    const gl = canvas.getContext('webgl2', { premultipliedAlpha: false, alpha: true });
+    if (!gl) return null;
+    const sh = (t, s) => { const x = gl.createShader(t); gl.shaderSource(x, s); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(x); return x; };
+    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+    const U = n => gl.getUniformLocation(pr, n);
+    const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
+    let count = 0, buf = gl.createBuffer(), W = 0, H = 0;
+    let isVid = src.tagName === 'VIDEO';
+    const mw = () => isVid ? src.videoWidth : src.naturalWidth, mh = () => isVid ? src.videoHeight : src.naturalHeight;
+    function grid() {
+      const dpr = Math.min(devicePixelRatio || 1, opt.dpr);
+      W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      let step = opt.density; if ((W / step) * (H / step) > opt.max) step = Math.sqrt((W * H) / opt.max);
+      const cols = Math.floor(W / step), rows = Math.floor(H / step);
+      const a = new Float32Array(cols * rows * 3); let k = 0;
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) { a[k++] = (x + .5) / cols; a[k++] = (y + .5) / rows; a[k++] = Math.random(); }
+      count = cols * rows;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, a, gl.STATIC_DRAW);
+      const l1 = gl.getAttribLocation(pr, 'aUV'), l2 = gl.getAttribLocation(pr, 'aRand');
+      gl.enableVertexAttribArray(l1); gl.vertexAttribPointer(l1, 2, gl.FLOAT, false, 12, 0);
+      gl.enableVertexAttribArray(l2); gl.vertexAttribPointer(l2, 1, gl.FLOAT, false, 12, 8);
+      gl.uniform1f(U('uAspect'), W / H); gl.uniform1f(U('uPoint'), opt.point * dpr);
+    }
+    function cover() { // object-fit: cover
+      const ar = W / H, mr = (mw() || 1) / (mh() || 1);
+      let sx = 1, sy = 1; if (mr > ar) sx = ar / mr; else sy = mr / ar;
+      gl.uniform2f(U('uCoverS'), sx, sy); gl.uniform2f(U('uCoverO'), (1 - sx) / 2, (1 - sy) / 2);
+    }
+    const m = { x: 9, y: 9, tx: 9, ty: 9 };
+    const move = e => { const r = canvas.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; m.tx = ((p.clientX - r.left) / r.width) * 2 - 1; m.ty = -(((p.clientY - r.top) / r.height) * 2 - 1); };
+    const leave = () => { m.tx = 9; m.ty = 9; };
+    const host = opt.target || canvas.parentElement || canvas;
+    host.addEventListener('pointermove', move); host.addEventListener('touchmove', move, { passive: true }); host.addEventListener('pointerleave', leave);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, opt.additive === false ? gl.ONE_MINUS_SRC_ALPHA : gl.ONE);
+    gl.uniform1f(U('uRadius'), opt.radius); gl.uniform1f(U('uStrength'), opt.strength); gl.uniform1f(U('uCut'), opt.cut); gl.uniform1f(U('uAlpha'), opt.alpha);
+    const tc = opt.tint ? opt.tint.replace('#', '').match(/../g).map(x => parseInt(x, 16) / 255) : [1, 1, 1];
+    gl.uniform3f(U('uTint'), tc[0], tc[1], tc[2]); gl.uniform1f(U('uTintAmt'), opt.tint ? opt.tintAmount : 0);
+    grid(); const ro = new ResizeObserver(grid); ro.observe(canvas);
+    let t0 = performance.now(), raf = 0, uploaded = false, live = true, vis = true, last = 0, lastUp = 0;
+    const io = new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis && live && !raf) raf = requestAnimationFrame(frame); }); io.observe(canvas);
+    const onVis = () => { if (!document.hidden && vis && live && !raf) raf = requestAnimationFrame(frame); }; document.addEventListener('visibilitychange', onVis);
+    function frame(now) {
+      raf = 0;
+      if (!live || !vis || document.hidden) return;
+      if (now - last < 1000 / opt.fps - 2) { raf = requestAnimationFrame(frame); return; }
+      last = now;
+      const ready = isVid ? src.readyState >= 2 : src.complete && src.naturalWidth;
+      if (ready && (!uploaded || (isVid && now - lastUp > 1000 / opt.videoFps))) {
+        lastUp = now;
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+        if (!uploaded && opt.intro) t0 = now; uploaded = true; cover();
+      }
+      m.x += (m.tx - m.x) * opt.follow; m.y += (m.ty - m.y) * opt.follow;
+      gl.uniform2f(U('uMouse'), m.x, m.y); gl.uniform1f(U('uTime'), now / 1000);
+      gl.uniform1f(U('uIntro'), opt.intro ? Math.min(1, (now - t0) / opt.intro) : 1);
+      gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      if (uploaded) gl.drawArrays(gl.POINTS, 0, count);
+      raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+    return { count: () => count, setSource(el) { src = el; isVid = el.tagName === 'VIDEO'; uploaded = false; opt.intro = 0; }, destroy() { live = false; cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); document.removeEventListener('visibilitychange', onVis); host.removeEventListener('pointermove', move); host.removeEventListener('pointerleave', leave); } };
+  }
+  g.ParticleMedia = ParticleMedia;
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+const VB="__VID__";let VU=null;
+function setV(){try{if(!VU){const b=atob(VB),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);VU=URL.createObjectURL(new Blob([u],{type:'video/mp4'}))}document.querySelectorAll('video.hv').forEach(v=>{if(!v.src){v.src=VU;v.play().catch(()=>{})}})}catch(e){}}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){setV();try{const hv=document.querySelector('#hero video');const im=new Image();im.src=IMG.HERO;const pm=ParticleMedia(document.getElementById('pm'),im,{tint:'#ff2a3d',tintAmount:0.5,alpha:1,point:3.4,strength:0.22,density:2,max:innerWidth<700?20000:55000,fps:45,dpr:1,videoFps:12,target:document.getElementById('hero')});if(pm){document.getElementById('hero').classList.add('pm-on');hv.addEventListener('playing',()=>pm.setSource(hv),{once:true})}}catch(e){console.log(e)}}
+const D=window.DEGEN||{skills:__SKILLS_RAW__,agents:75,commands:159};
+const CORE=__CORE__;
+function cat(n){if(CORE[n])return CORE[n];if(/^(omni-|cli-|config-)/.test(n))return'OmniRoute';if(/^(agentdb|reasoningbank|swarm|hive-mind|sparc|stream-chain|worker-|hooks-|agentic-|pair-prog|verification|performance-an|skill-builder|github-)/.test(n))return'Swarms';if(/^(obsidian|json-canvas|defuddle)/.test(n))return'Obsidian';if(/anim|emil|apple-design|sonner|break-ui|pick-ui|prototype|mobile-native|swift/.test(n))return'Motion';return'More'}
+const PLAIN=__PLAIN__;
+function short(d,n){if(n&&PLAIN[n])return PLAIN[n];d=(d||'').replace(/\s+/g,' ').trim();const s=d.split(/(?<=\.)\s/)[0];return (s.length>140?s.slice(0,137)+'…':s).replace(/\s*Use (it )?when.*$/i,'')||d.slice(0,120)}
+const ORDER=['Coding','Design','Planning','Motion','Obsidian','Swarms','OmniRoute','More'];
+const S=D.skills.map(s=>[cat(s.n),s.n,short(s.d,s.n)]).sort((a,b)=>ORDER.indexOf(a[0])-ORDER.indexOf(b[0]));
+document.querySelectorAll('[data-n="117"]').forEach(b=>b.dataset.n=D.skills.length);
+document.querySelectorAll('[data-n="75"]').forEach(b=>b.dataset.n=D.agents);
+document.querySelectorAll('[data-n="159"]').forEach(b=>b.dataset.n=D.commands);
+document.querySelectorAll('.nS').forEach(e=>e.textContent=D.skills.length);
+
+const grid=document.getElementById('grid'),fl=document.getElementById('filters');
+const cats=['All',...new Set(S.map(s=>s[0]))];
+cats.forEach((c,i)=>{const b=document.createElement('button');b.textContent=c;if(!i)b.className='on';b.onclick=()=>{fl.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');grid.querySelectorAll('.card').forEach(el=>el.classList.toggle('hide',c!=='All'&&el.dataset.c!==c))};fl.appendChild(b)});
+S.forEach(([c,n,d])=>{const el=document.createElement('div');el.className='card';el.dataset.c=c;el.innerHTML='<div class="k"></div><h3></h3><p></p>';el.children[0].textContent=c;el.children[1].textContent=n;el.children[2].textContent=d;grid.appendChild(el)});
+grid.addEventListener('pointermove',e=>{const el=e.target.closest('.card');if(!el)return;const r=el.getBoundingClientRect();el.style.setProperty('--x',(e.clientX-r.left)+'px');el.style.setProperty('--y',(e.clientY-r.top)+'px')});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-n]').forEach(b=>{const t=+b.dataset.n,t0=performance.now();const f=n=>{const p=Math.min(1,(n-t0)/1200);b.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)});io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// particle-media on the nav previews and the closing band
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function pmFromBg(box,opts){if(!box.dataset.img)return null;const im=new Image();im.src=IMG[box.dataset.img];const c=document.createElement('canvas');c.className='pmc';box.appendChild(c);const pm=ParticleMedia(c,im,opts);if(pm)box.classList.add('pm-on');else c.remove();return pm}
+if(false){document.querySelectorAll('.ni').forEach(ni=>{const pi=ni.querySelector('.pi');let pm=null;ni.addEventListener('pointerleave',()=>{if(pm){pm.destroy();pm=null;pi.querySelector('.pmc')?.remove();pi.classList.remove('pm-on')}});ni.addEventListener('pointerenter',()=>{if(pm)return;try{pm=pmFromBg(pi,{max:7000,fps:30,density:1.4,point:1.6,radius:.35,strength:.3,intro:900,cut:.03,point:2,tint:'#ff2a3d',tintAmount:.35,alpha:1,target:pi})}catch(e){}})});
+ try{const im=new Image();im.src=IMG.CARDS;const bandEl=document.getElementById('band');const bo=new IntersectionObserver(es=>{if(es[0].isIntersecting){bo.disconnect();ParticleMedia(document.getElementById('bandpm'),im,{density:2,max:14000,fps:30,dpr:1,tint:'#ff2a3d',tintAmount:.5,alpha:.9,radius:.3,strength:.25,target:bandEl})}});bo.observe(bandEl)}catch(e){}}
+
+// tab wheel
+(()=>{const ring=document.getElementById('ring'),wh=document.getElementById('wheel'),cs=[...ring.children],N=cs.length;let i=0;
+cs.forEach((c,k)=>{c.dataset.k=k});
+function set(n){i=(n%N+N)%N;cs.forEach((c,k)=>{let d=((k-i)%N+N)%N;if(d>N/2)d-=N;const ad=Math.abs(d),sp=Math.min(130,wh.clientWidth/4.6);c.style.transform=`translateX(${d*sp}px) translateZ(${-ad*90}px) rotateY(${-d*28}deg) scale(${ad?0.86:1})`;c.style.opacity=ad>2?0:ad>1?.45:1;c.style.zIndex=10-ad;c.style.pointerEvents=ad>2?'none':'auto';c.classList.toggle('front',!d);
+ if(false){const wi=c.querySelector('.wi');if(wi.dataset.img){c._pm=1;try{const im=new Image();im.src=IMG[wi.dataset.img];const cv=document.createElement('canvas');cv.className='pmc';wi.appendChild(cv);if(!ParticleMedia(cv,im,{density:1.5,max:5000,fps:30,point:2,cut:.03,radius:.4,strength:.3,intro:800,tint:'#ff2a3d',tintAmount:.35,target:c}))cv.remove();else wi.style.backgroundImage='none'}catch(e){}}else c._pm=1}})}
+cs.forEach(c=>{const wi=c.querySelector('.wi');if(wi.dataset.img)wi.style.backgroundImage=`var(--img-${wi.dataset.img.toLowerCase()})`;c.addEventListener('click',e=>{const k=+c.dataset.k;if(k!==i){e.preventDefault();set(k);return}if(c.dataset.copy){e.preventDefault();const t=c.dataset.copy,cp=c.querySelector('.cp'),ok=()=>{cp.textContent='✓ Copied';setTimeout(()=>cp.textContent='⧉ Copy',1600)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})}})});
+document.getElementById('wl').onclick=()=>set(i-1);document.getElementById('wr').onclick=()=>set(i+1);
+let acc=0;wh.addEventListener('wheel',e=>{e.preventDefault();acc+=e.deltaY+e.deltaX;if(Math.abs(acc)>60){set(i+Math.sign(acc));acc=0}},{passive:false});
+let sx=null;wh.addEventListener('pointerdown',e=>{sx=e.clientX});addEventListener('pointerup',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>30)set(i+(e.clientX<sx?1:-1));sx=null});
+const ids=['skills','3d','packs','install'];const wo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const k=ids.indexOf(e.target.id);if(k>=0)set(k)}}),{rootMargin:'-45% 0px -50% 0px'});ids.forEach(id=>{const s=document.getElementById(id);if(s)wo.observe(s)});
+const hero=document.getElementById('hero');new IntersectionObserver(es=>wh.classList.toggle('show',!es[0].isIntersecting),{threshold:.35}).observe(hero);
+set(0)})();
+document.querySelectorAll('.cpb').forEach(b=>b.onclick=()=>{const t=b.dataset.c,ok=()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='⧉ Copy',1600)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})});
+const navA=[...document.querySelectorAll('.ni>a[href^="#"]')];
+const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)navA.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-45% 0px -50% 0px'});
+['skills','3d','packs','install'].forEach(id=>{const s=document.getElementById(id);if(s)so.observe(s)});
+const s3=document.getElementById('s3d'),sp=document.getElementById('spot'),vw=document.getElementById('view');
+s3.addEventListener('pointermove',e=>{const r=s3.getBoundingClientRect();sp.style.left=(e.clientX-r.left)+'px';sp.style.top=(e.clientY-r.top)+'px'});
+const fb=()=>{vw.innerHTML='<div class="fb"><video class="hv" muted loop playsinline autoplay></video></div>';setV()};
+let ok=false,t=0;function loadSpline(){t=setTimeout(()=>{if(!ok)fb()},8000);
+const sc=document.createElement('script');sc.type='module';sc.src='https://cdn.jsdelivr.net/npm/@splinetool/viewer@2.0.103/build/spline-viewer.js';
+sc.onerror=()=>{clearTimeout(t);fb()};
+sc.onload=()=>{const v=document.createElement('spline-viewer');v.setAttribute('url','https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode');v.addEventListener('load-complete',()=>{ok=true;clearTimeout(t);vw.querySelector('.loader')?.remove()});vw.appendChild(v)};
+document.head.appendChild(sc)}
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();loadSpline()}},{rootMargin:'300px'}).observe(s3);
+</script>
+</body>
+</html>

@@ -178,7 +178,17 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 | [`agents/`](agents) | 75 specialist agents |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
-| [`assets/`](assets) | The images on this page |
+| [`assets/`](assets) | The images on this page, and the [desktop app](assets/app) |
+
+## Desktop app
+
+A Degen Skills window on your PC that lists every skill. It runs `git pull` each time it opens, so new skills show up by themselves. Set it up once:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\degen-skill\assets\app\install.ps1"
+```
+
+Then open **Degen Skills** from your Desktop or Start menu.
 
 ## Install
 
