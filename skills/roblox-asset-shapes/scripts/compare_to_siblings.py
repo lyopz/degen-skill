@@ -1,7 +1,7 @@
 # Blender: compare the active model to sibling models + render a side-by-side check with the reference picture.
 # Usage in Blender (Scripting tab or the Blender connector):
 #   exec(open(r"<repo>/skills/roblox-asset-shapes/scripts/compare_to_siblings.py").read())
-#   report(model="Kappa", siblings=["Kraken","Kelpie"], ref=r"C:\...\target.png", out=r"C:\...\checks\kappa_vs_ref.png")
+#   report(model="PetA", siblings=["PetB","PetC"], ref=r"C:\...\target.png", out=r"C:\...\checks\peta_vs_ref.png")
 import bpy, mathutils
 
 def bbox(name):

@@ -10,10 +10,10 @@ description: Makes Roblox designs with lyopz's Customuse account (concepts, 3D m
 Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks of it**.
 
 ## Files
-- `references/taste.md` — lyopz's taste, all games (likes, dislikes, rules). **Read before every design.**
+- `references/taste.md` — lyopz's taste, all games (likes, dislikes, rules). **Read before every design.** General lines only: no game names, pet names or game details (it is pushed to GitHub).
 - `~/RobloxGames/<project>/designs/feedback.jsonl` — one line per rated design (written by `design-feedback.ps1`).
 - `~/RobloxGames/.degen/taste-log.jsonl` — same lines, all projects.
-- The project's style bible (`roblox-art-style/projects/<game>.md`) — game-specific rules go in its **Learned rules**.
+- The project's style bible (`~/RobloxGames/<project>/art-style.md`, local only) — game-specific rules go in its **Learned rules**.
 
 ## Making a design
 1. **Load taste:** `references/taste.md` + the project's style bible. Every "Never" is a hard rule; every "Likes" goes into the prompt if it fits.
@@ -33,7 +33,7 @@ Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks o
    - What he disliked → **Dislikes** ("eyes too small", "muddy dark colors").
    - Same point 2+ times, or he says "always/never" → promote to **Rules** (hard). Game-only points go to that game's style bible instead.
    - Keep the date + design name next to each line. Merge duplicates; if a new rating contradicts an old line, keep the newest and delete the old one.
-   - Commit + push `~/.claude/degen-skill` with the other end-of-task commits.
+   - Commit + push `~/.claude/degen-skill` with the other end-of-task commits (taste.md only; the bible and feedback logs stay local).
 
 ## Also for ChatGPT pictures and Blender models
 The taste file is for **every** design, not only Customuse. Any agent showing lyopz a design can use `design-feedback.ps1 -Tool chatgpt` (or `blender`) so the log covers all of it.

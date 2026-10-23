@@ -14,12 +14,13 @@ Lead duties:
 - Plan the job, write the spec (roblox-design/references/first-try.md), set each piece's credit budget, and hand independent pieces to the Roblox agents in agents/roblox/ IN PARALLEL (art-director, modeler, animator, vfx-artist, map-builder, ui-designer, scripter). Do small things yourself.
 - Every agent gets: game name, project folder (~/RobloxGames/<project>), style bible path, the spec, its budget, and what NOT to touch.
 - Build one piece first, screenshot, fix, then scale up. Run roblox-reviewer before saying done.
-- Higgsfield tools (higgsfield MCP) are available for concept pictures, image-to-3D, rigging, textures and video — follow 3d-assets + roblox-assets + roblox-art-style (prompt templates in 3d-assets/prompts.md). If Higgsfield asks to sign in, tell lyopz to type /mcp → higgsfield → Authenticate. Free image→3D alternatives are in roblox-asset-shapes.
+- Higgsfield tools (higgsfield MCP) are available for concept pictures, image-to-3D, rigging, textures and video — follow 3d-assets + roblox-assets + roblox-art-style (prompt templates in 3d-assets/prompts.md; game-specific prompts go in the project's art-style.md). If Higgsfield asks to sign in, tell lyopz to type /mcp → higgsfield → Authenticate. Free image→3D alternatives are in roblox-asset-shapes.
 - Never spend Higgsfield credits without stating the cost first (preflight get_cost). Cheapest route that still looks pristine.
 
 ## Project = the Studio place name
 - After connecting, read the open place's name (list_roblox_studios / game name). That name is the project: folder `~/RobloxGames/<place name>` (keep spaces as dashes, e.g. "My Game" → `my-game`). Create it if missing; if an older folder already belongs to this place (its HANDOFF.md or `place.txt` names it), use that one and write the place name into its `place.txt`.
-- Everything for that place goes in that folder: style bible copy, pictures (incl. ChatGPT ones), 3D files, scripts, HANDOFF.md. Use the same name for the game's ChatGPT project.
+- Everything for that place goes in that folder: style bible (`art-style.md`), pictures (incl. ChatGPT ones), 3D files, scripts, prompts that worked, HANDOFF.md. Use the same name for the game's ChatGPT project.
+- **Game content stays on this PC, never in the degen-skill repo** (lyopz's rule, so nobody can copy his games). That means: style bibles, pictures, models, .blend/.rbxl files, game prompts, handoffs, game names and game-only taste notes. The repo only gets general skills, lessons, templates and the all-games taste file, written without game names or game details.
 - Untitled place ("Untitled Experience")? Ask lyopz for the game name once (AskUserQuestion) and use it.
 
 ## Customuse + lyopz's taste (customuse-design skill)
@@ -47,7 +48,7 @@ Lead duties:
 4. Update the style bible anchor + HANDOFF with the new picture/model version.
 
 ## Pets and assets look EXACTLY like lyopz describes
-- His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (art-style.md in the project folder + roblox-art-style/projects/<game>.md) as a rule, so every future asset in that project gets it.
+- His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (`~/RobloxGames/<project>/art-style.md`) as a rule, so every future asset in that project gets it.
 - Check every model against the approved concept picture side by side before showing him. If it reads as "a circle on a circle" or a plain cube, it's not done — see roblox-asset-shapes.
 
 ## Handoff (always)
@@ -63,7 +64,7 @@ Lead duties:
 - Don't re-read a file you already read this session unless it changed.
 
 ## Finish
-- Short report (what, where in the place, credits spent), lessons → roblox-dev/lessons.md, reusable code → roblox-templates (make_rbxmx.py), update HANDOFF.md, commit + push ~/.claude/degen-skill.
+- Short report (what, where in the place, credits spent), lessons → roblox-dev/lessons.md, reusable code → roblox-templates (make_rbxmx.py), update HANDOFF.md, then commit + push ~/.claude/degen-skill with ONLY skill/lesson/template changes (`git -C ~/.claude/degen-skill add skills agents commands` — never `add -A` of anything in ~/RobloxGames; check `git status` shows no game files first).
 - New knowledge goes to the skill it belongs to (see roblox-game-strip "Where findings go"); make a new reference file or skill if none fits.
 - lyopz likes short, plain answers.
 - If the task has no split yet, propose one first in 3–6 lines: waves (same wave = parallel; later waves wait on earlier ones), which agent does what, and why — offer Fast / Balanced / Max-parallel if it matters — then go with Balanced unless lyopz picks.

@@ -3,3 +3,14 @@ __pycache__/
 synced/
 skills/synced/
 node_modules/
+
+# Game content stays on the PC only (lyopz's rule): never commit
+RobloxGames/
+skills/roblox-art-style/projects/
+**/art-style.md
+**/HANDOFF.local.md
+*.rbxl
+*.rbxlx
+*.blend
+*.blend1
+*.fbx

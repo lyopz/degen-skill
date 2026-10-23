@@ -10,7 +10,7 @@ description: How to give Roblox assets real shape definition so they never look 
 **Rule:** a model is done when its **silhouette alone** says what it is, and it matches the approved concept picture side by side. Plain spheres/cubes stacked = not done.
 
 ## 0. Smooth + light (lyopz rule)
-Never ship a faceted, lumpy, decimated image-to-3D mesh (`examples/bad-faceted-kraken.png`). Build clean in Blender: few faces + Shade Smooth + Weighted Normal, crisp separate eyes, colors from the picture, small budget (pet 1.5–3k tris). Image-to-3D output = reference only. Details: `references/blender-part-by-part.md`.
+Never ship a faceted, lumpy, decimated image-to-3D mesh (jagged facets, lumpy surface, lost eyes). Build clean in Blender: few faces + Shade Smooth + Weighted Normal, crisp separate eyes, colors from the picture, small budget (pet 1.5–3k tris). Image-to-3D output = reference only. Details: `references/blender-part-by-part.md`.
 
 ## 1. Pick the build route
 | Looks like | Route | Why |

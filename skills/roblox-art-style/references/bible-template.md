@@ -1,6 +1,6 @@
 # Style bible: <GAME NAME>
 
-Copy to `projects/<game>.md`. Every new asset for this game must follow this file. Update it when lyopz approves something new.
+Copy to `~/RobloxGames/<project>/art-style.md` (local only, never commit). Every new asset for this game must follow this file. Update it when lyopz approves something new.
 
 ## Identity
 - Genre / vibe words: <e.g. brainrot PvP · chaotic · glossy · loud>

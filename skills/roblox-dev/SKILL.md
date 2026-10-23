@@ -17,7 +17,7 @@ Everything that *happens* in a Roblox game is a script: movement rules, combat, 
 ## 0. Learn with time
 - Pull first (`git -C ~/.claude/degen-skill pull`) — a stale clone misses new rules and lessons.
 - Read `lessons.md` (this folder) before writing code; it's the log of what broke and what worked in lyopz's past projects.
-- After every Roblox job, append lessons (format at the top of the file). The session that adds them **commits and pushes** the degen-skill repo (`~/.claude/degen-skill`) so every computer, agent and the daily refresh get them: `git -C ~/.claude/degen-skill add -A && git -C ~/.claude/degen-skill commit -m "roblox: lessons" && git -C ~/.claude/degen-skill push`.
+- After every Roblox job, append lessons (format at the top of the file). The session that adds them **commits and pushes** the degen-skill repo (`~/.claude/degen-skill`) so every computer, agent and the daily refresh get them: `git -C ~/.claude/degen-skill add skills agents commands && git -C ~/.claude/degen-skill commit -m "roblox: lessons" && git -C ~/.claude/degen-skill push`. Lessons are general: no game names, pet names or game details (game content stays in `~/RobloxGames/<project>/`).
 - Repeated or general lessons get promoted into this SKILL.md or a template; reusable code goes to `roblox-templates` (run `make_rbxmx.py`).
 
 ## 1. Structure (where code lives)

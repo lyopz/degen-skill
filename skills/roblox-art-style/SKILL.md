@@ -12,7 +12,7 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 **Rule #1: one game = one style.** A realistic dog next to a pixel-slop brainrot looks broken. Every new asset is *translated* into the project's style; never generated "as itself".
 
 ## The flow for every new asset
-1. **Load the project's style bible** — `projects/<game>.md` (or `art-style.md` in the game's own folder) — plus lyopz's all-games taste file `customuse-design/references/taste.md`. No bible yet → make one first (below). Never skip.
+1. **Load the project's style bible** — `~/RobloxGames/<project>/art-style.md` (local only, never in the repo) — plus lyopz's all-games taste file `customuse-design/references/taste.md`. No bible yet → make one first (below). Never skip.
 2. **Look up the real subject** (only what's needed): `image_search` / WebSearch "<subject> reference" → note 4–6 **identity traits** that make it read as that thing. Pigeon: plump grey-blue body, small round head, iridescent green-purple neck band, orange eye, short dark beak with white cere, pink feet, two dark wing bars.
 3. **Translate** the traits through the bible's **shape language** and **transform rules** (e.g. cube pets: body = rounded cube, head merged into the cube, features as flat painted shapes, wings = flat rounded paddles, feet = 2 tiny nubs). Keep the identity traits, drop everything else. Write the translation as 3–5 bullets and show lyopz if he's around.
 4. **Pick the cheapest pristine route** (pictures: lyopz's ChatGPT via `references/chatgpt-prompts.md` is free and high quality — default when credits are 0) (from `roblox-assets`):
@@ -26,8 +26,8 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 ## Making a style bible (new project)
 Ask lyopz only what's missing: game genre, vibe words (3), 1–3 games/pictures he likes. Then:
 1. Make **one concept picture** (Higgsfield, cheap) of the world + 2–3 sample assets in the chosen preset. Iterate until he says yes — this becomes **anchor #1**.
-2. Fill `projects/_template.md` → `projects/<game>.md` (palette hexes pulled from the approved picture).
-3. Commit it with the skills (and copy into the game project folder if there is one).
+2. Fill `references/bible-template.md` → `~/RobloxGames/<project>/art-style.md` (palette hexes pulled from the approved picture).
+3. **Never commit it.** Bibles, concept pictures and anchors are lyopz's game content and stay on his PC only. Only general rules (no game names or details) go back into this skill.
 
 ## Style presets (start from one, then customize)
 | Preset | Looks like | Shapes | Shading/texture | Poly / texture | Prompt suffix |

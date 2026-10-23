@@ -38,7 +38,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
 - **Agents:** `agents/roblox/` (8). **Command:** `/roblox`.
 
 ## Games
-Starting fresh as of 2026-10-23: old game folders were moved to `~/RobloxGames/_archive/`. Their style bibles (`roblox-art-style/projects/`) and the lessons are kept as examples and learned rules, not as active games.
+Starting fresh as of 2026-10-23: old game folders were moved to `~/RobloxGames/_archive/`. Game content (style bibles, pictures, models, prompts, handoffs) lives only on the PC in `~/RobloxGames/<project>/` and is never committed; `.gitignore` blocks it.
 
 ## Still to verify on the PC
 - the ChatGPT `-Ref` upload

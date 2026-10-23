@@ -10,7 +10,7 @@ Read this first in any new conversation. It says where things stand so we can pi
 - Sites: professional standard, a fresh design each time (not a copy of an old template). Tag each section with the skills it used.
 - Prompts & designs: any prompt, look or design lyopz shares/approves (images, video, 3D, sites) gets added to `skills/3d-assets/prompts.md`; full worked examples go in `skills/3d-assets/examples/`.
 - Roblox learning loop: every Roblox job reads and appends `skills/roblox-dev/lessons.md`, then commits + pushes. Promote repeated lessons into skills/templates.
-- Roblox: two 3D tracks — web (`3d-assets`) vs Roblox (`roblox-assets`); always cheapest credits that still look pristine. New Roblox findings/rules go into `roblox-design/references/`. Each Roblox game gets a style bible (`roblox-art-style/projects/<game>.md`); every new asset follows it. "Make it 10,000x cooler" → roblox-design checklist.
+- Roblox: two 3D tracks — web (`3d-assets`) vs Roblox (`roblox-assets`); always cheapest credits that still look pristine. New Roblox findings/rules go into `roblox-design/references/`. Each Roblox game gets a local style bible (`~/RobloxGames/<project>/art-style.md`, never in the repo); every new asset follows it. "Make it 10,000x cooler" → roblox-design checklist.
 - "Widget board" = the bottom tab wheel (`widget-board`). Use the Degen Skills site version as the base idea; pick cards and actions (links, copy buttons…) by what matters for that project; follow his edits as he changes it.
 
 ## What this repo is
@@ -48,7 +48,7 @@ Newest at top. One short entry per session: date, what changed, anything left un
 - **2026-10-23** — Added `roblox-game-study` (study games for ideas; never extract/copy). 125 skills.
 - **2026-10-23** — Added `roblox-templates` (Studio plugin "Degen Templates" + Documents\Roblox Templates, synced by launch.ps1). Daily Roblox refresh scheduled task (8:35 AM ET) also saves important templates. 124 skills.
 - **2026-10-22** — Added the Roblox agent team (`agents/roblox/`, 8 agents; routing in AGENT_ROUTING.md). 83 agents.
-- **2026-10-22** — Added own `roblox-art-style` (per-project style bibles in `skills/roblox-art-style/projects/`). 123 skills. 
+- **2026-10-22** — Added own `roblox-art-style` (per-project style bibles, now kept locally in `~/RobloxGames/<project>/`). 123 skills. 
 - **2026-10-22** — Added own `roblox-assets` and `roblox-design` (researched Roblox meta). 3d-assets now splits Web vs Roblox. 122 skills.
 - **2026-10-22** — Robot chicken 3D model (Higgsfield, 35 credits) replaces the Spline robot in the app. Added own `3d-assets` skill (renamed from ai-3d-assets; examples + prompts.md library) (also for Roblox assets). Cursor particle effect follows faster. 120 skills.
 - **2026-10-22** — Added emalorenzo/three-agent-skills (three-best-practices, r3f-best-practices). 119 skills.
@@ -81,5 +81,5 @@ Newest at top. One short entry per session: date, what changed, anything left un
 - Activity shows who is working (agent → job) + feed tagged by agent (`activity-hook.ps1` → `~/RobloxGames/.degen/activity.json`); drawer opens only when a task starts.
 - Projects bubble (folders in ~/RobloxGames: pictures, models, HANDOFF.md, Continue). Import video/game file in the + panel → `~/RobloxGames/imports/` → roblox-game-strip.
 - Voice: always-listening "Hey Claude" wake word, particle ring reacts to the mic, sends after 10 s pause or "start task"/"finished prompt". Sent prompts are cleared and saved as simplified suggestions. No scrollbars.
-- New skills: roblox-shops, roblox-asset-shapes, roblox-game-strip, roblox-playtest. lead.md: handoff per project, token-saving rules, exact-description rule. Mythic Cube Pets bible + target look in roblox-art-style/projects.
+- New skills: roblox-shops, roblox-asset-shapes, roblox-game-strip, roblox-playtest. lead.md: handoff per project, token-saving rules, exact-description rule.
 - Not yet verified on lyopz's PC (no PowerShell in the sandbox): server.ps1, hooks, ask flow.

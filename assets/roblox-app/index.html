@@ -373,7 +373,7 @@ function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementB
  const L=[];
  L.push(`Task: ${d}`);
  if(window.IDEA)L.push(`Game idea / genre: ${window.IDEA}${/pet/i.test(window.IDEA)?' (use the pet-sim genre pack: roblox-design/references/pets-and-eggs.md + roblox-game-study/studies/pet-simulator-99.md)':''}.`);
- L.push(g?`Game: "${g}" — follow its style bible (roblox-art-style/projects/${g}.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
+ L.push(g?`Game: "${g}" — follow its style bible (~/RobloxGames/${g}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
  if(r)L.push(`Reference: ${r}`);
  if(window.PROJECT)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — read its HANDOFF.md and art-style.md first; save new assets there.`);
  if(window.IMPORT)L.push(`Imported file to study: ${window.IMPORT} — use the roblox-game-strip skill: break it down, then put each finding into the skill it belongs to (make a new reference/area if none fits). If it's a game file, rebuild what I asked for in this place; never copy paid/protected assets.`);
@@ -383,7 +383,7 @@ function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementB
  else L.push(`Use: ${AG[t].join('; ')}.`);
  L.push(`Pictures: always ChatGPT via gpt-image.ps1 (one asset per picture, pure white background). Execute without asking me questions. Credits: max ${c} Higgsfield credits${c?'':' (use free routes only: Blender, free image-to-3D, Roblox parts/terrain/VFX, scripts, free Creator Store assets that match the style)'}. Preflight cost before any generation.`);
  L.push(`Follow roblox-design/references/first-try.md:\n  1) Write the spec (what/where, style, reference, numbers, 3–6 "done means" checks, credits) and show it to me in 5 lines.\n  2) Build ONE piece, screenshot it in Studio, compare to the reference + bible, fix, then scale up.\n  3) Before saying done: player-view + wide screenshots, phone check for UI, no Output errors, budgets OK, tick every "done means".`);
- L.push(`Finish: short report (what, where in the place, credits spent), add lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo.`);
+ L.push(`Finish: short report (what, where in the place, credits spent), add general lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo (skills only, never game content).`);
  document.getElementById('b-out').textContent=L.join('\n\n')}
 ['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',()=>build()));build();
 document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};

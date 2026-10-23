@@ -1,7 +1,7 @@
 # Blender: build every piece to match the picture (part by part)
 
 ## RULE: smooth + light, not faceted + heavy (lyopz 2026-10-23)
-Bad: `../examples/bad-faceted-kraken.png` — a decimated image-to-3D mesh: jagged facets everywhere, lumpy surface, eyes lost, too many tris for what it shows. Target: `../examples/target-tidefrost.webp` — smooth toy-like surfaces, clean shapes, crisp details.
+Bad: a decimated image-to-3D mesh: jagged facets everywhere, lumpy surface, eyes lost, too many tris for what it shows. Target: smooth toy-like surfaces, clean shapes, crisp details. (Game pictures live in `~/RobloxGames/<project>/`, not here.)
 - **Model each asset clean from simple shapes** (rounded cube, cylinders, curves) in Blender, using the picture (and any image-to-3D mesh) only as a **reference/blockout** — never ship a decimated AI mesh.
 - **Low poly but smooth:** few clean faces + **Shade Smooth + Weighted Normal modifier** (or Shade Auto Smooth 30–40°) so it looks round with few tris. Subdivision only at level 1, applied, on curved parts; bevels 2–3 segments.
 - **Flat shading only on crystals/gems** (they're meant to be faceted). Everything else smooth.

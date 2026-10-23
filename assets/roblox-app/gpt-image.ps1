@@ -1,7 +1,7 @@
 # ChatGPT picture maker (fully automatic): opens the game's ChatGPT project in its own signed-in window, types the prompt,
 # sends it, waits for the finished picture and saves it straight into the project. No clicking needed.
 # Usage (from Claude Code or PowerShell):
-#   powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project mythic-cube-pets -Name kappa-concept -From roblox-art-director -Prompt "<detailed prompt>"
+#   powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project my-game -Name dragon-concept -From roblox-art-director -Prompt "<detailed prompt>"
 # Prints the saved path. If the automatic way fails it falls back to: prompt pasted, lyopz clicks download, picked up from Downloads.
 # Other outputs: SKIPPED / NO_IMAGE.
 # Edit an existing asset: add -Ref "<current approved picture>" and a prompt like "Edit this exact picture: keep everything the same, only add ...".

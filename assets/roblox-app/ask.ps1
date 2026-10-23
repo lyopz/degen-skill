@@ -1,6 +1,6 @@
 # Ask lyopz for an approval / choice in the Degen Roblox app (with pictures) and wait for the answer.
 # Usage (from Claude Code):
-#   powershell -NoProfile -File "$env:DEGEN_APP\ask.ps1" -Q "Approve these 3 concept pictures?" -O "Approve|Change something|Redo" -I "C:\...\concept-ember.png|C:\...\concept-tidefrost.png" -From roblox-art-director
+#   powershell -NoProfile -File "$env:DEGEN_APP\ask.ps1" -Q "Approve these 3 concept pictures?" -O "Approve|Change something|Redo" -I "C:\...\concept-a.png|C:\...\concept-b.png" -From roblox-art-director
 # Prints the answer (e.g. "Approve" or "Change something: make the horns bigger"). Pictures must be inside ~/RobloxGames.
 # If the app is closed it prints APP_CLOSED -> ask in the terminal instead.
 param([string]$Q, [string]$O = 'Approve|Request changes', [string]$I = '', [string]$From = 'Lead', [int]$Minutes = 55)

@@ -26,7 +26,9 @@ $agents = foreach ($f in Get-ChildItem (Join-Path $repo 'agents\roblox') -Filter
 $tpls = foreach ($f in Get-ChildItem (Join-Path $sk 'roblox-templates\templates') -Filter *.lua | Sort-Object Name) {
   $head = (Get-Content $f.FullName -TotalCount 12 -Encoding UTF8 | Where-Object { $_ -like '--*' }) -join "`n"
   [ordered]@{ n = $f.BaseName; h = $head } }
-$bibles = foreach ($f in Get-ChildItem (Join-Path $sk 'roblox-art-style\projects') -Filter *.md | Where-Object { $_.Name -ne '_template.md' }) { [ordered]@{ n = $f.BaseName; t = (Read-Text $f.FullName) } }
+# Style bibles are local only (~/RobloxGames/<project>/art-style.md), never in the repo
+$rgDir = Join-Path $env:USERPROFILE 'RobloxGames'
+$bibles = foreach ($d in @(Get-ChildItem $rgDir -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notlike '.*' -and $_.Name -notlike '_*' -and $_.Name -ne 'imports' })) { $f = Join-Path $d.FullName 'art-style.md'; if (Test-Path $f) { [ordered]@{ n = $d.Name; t = (Read-Text $f) } } }
 $studies = foreach ($f in Get-ChildItem (Join-Path $sk 'roblox-game-study\studies') -Filter *.md) { [ordered]@{ n = $f.BaseName; t = (Read-Text $f.FullName) } }
 $refs = [ordered]@{
   checklist = Read-Text (Join-Path $sk 'roblox-design\references\first-try.md')
