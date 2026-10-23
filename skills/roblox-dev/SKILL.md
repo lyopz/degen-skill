@@ -14,6 +14,11 @@ Everything that *happens* in a Roblox game is a script: movement rules, combat, 
 - **Fairness:** exploiters run their own code on their client — only server scripts stop them from giving themselves money or killing everyone.
 - **Trust & money:** lost data or failed purchases = angry players, refunds and bad ratings. Saving and purchases must be bulletproof.
 
+## 0. Learn with time
+- Read `lessons.md` (this folder) before writing code; it's the log of what broke and what worked in lyopz's past projects.
+- After every Roblox job, append lessons (format at the top of the file). The session that adds them **commits and pushes** the degen-skill repo (`~/.claude/degen-skill`) so every computer, agent and the daily refresh get them: `git -C ~/.claude/degen-skill add -A && git -C ~/.claude/degen-skill commit -m "roblox: lessons" && git -C ~/.claude/degen-skill push`.
+- Repeated or general lessons get promoted into this SKILL.md or a template; reusable code goes to `roblox-templates` (run `make_rbxmx.py`).
+
 ## 1. Structure (where code lives)
 | Place | Runs on | Put here |
 |---|---|---|

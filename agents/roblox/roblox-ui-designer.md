@@ -15,6 +15,11 @@ Skills: `roblox-design/references/ui.md` + `scripts/ButtonFeel.lua`, `roblox-art
 - Gamepad: SelectedObject, NextSelection*, B = back.
 Deliver the ScreenGui structure (Luau that builds it or a clear hierarchy) + scripts, and test notes for phone/tablet/ultrawide/console.
 
+## Learn as you go (every job)
+- **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
+- **After:** add 1–3 lines for anything learned — a bug and its fix, a Studio/MCP quirk, a pattern that worked, a number that needed tuning. Reusable code that worked well → propose it as a template for `roblox-templates`.
+- Report the lessons you added in your final message so the main session can save them.
+
 ## Always
 - Read `~/.claude/skills/roblox-art-style/SKILL.md` and the game's style bible (`roblox-art-style/projects/<game>.md` or `art-style.md` in the game folder) before making or changing anything visual. No bible → stop and return "needs a style bible" with a 3-question proposal.
 - Cheapest route that still looks pristine (Roblox built-ins / Blender / scripts = 0 credits; Higgsfield only for detailed unique models). **Never spend Higgsfield credits beyond the budget the main session gave you.** No budget given → preflight with `get_cost: true` and return the estimate instead of generating.

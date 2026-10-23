@@ -32,6 +32,8 @@ For Roblox games, the main session is the lead: it plans, sets the credit budget
 | Review / "make it 10,000x cooler" / ready to publish? | `roblox-reviewer` |
 | Study another game for ideas | main session with `roblox-game-study` (needs his PC + OK), then hand takeaways to the agents above |
 
+After any Roblox job: collect the lessons the agents reported, append them to `skills/roblox-dev/lessons.md`, promote reusable code to `roblox-templates`, then commit + push the degen-skill repo (on his PC: `~/.claude/degen-skill`).
+
 Typical order for a new asset: art-director (concept) → modeler → animator / vfx-artist → reviewer. Pass each agent the game name, the bible path, the approved concept, and its credit budget.
 
 Rules:

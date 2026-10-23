@@ -9,6 +9,7 @@ Read this first in any new conversation. It says where things stand so we can pi
 - When building a site, ask whether he wants animations (Higgsfield video, particle-media, motion).
 - Sites: professional standard, a fresh design each time (not a copy of an old template). Tag each section with the skills it used.
 - Prompts & designs: any prompt, look or design lyopz shares/approves (images, video, 3D, sites) gets added to `skills/3d-assets/prompts.md`; full worked examples go in `skills/3d-assets/examples/`.
+- Roblox learning loop: every Roblox job reads and appends `skills/roblox-dev/lessons.md`, then commits + pushes. Promote repeated lessons into skills/templates.
 - Roblox: two 3D tracks — web (`3d-assets`) vs Roblox (`roblox-assets`); always cheapest credits that still look pristine. New Roblox findings/rules go into `roblox-design/references/`. Each Roblox game gets a style bible (`roblox-art-style/projects/<game>.md`); every new asset follows it. "Make it 10,000x cooler" → roblox-design checklist.
 - "Widget board" = the bottom tab wheel (`widget-board`). Use the Degen Skills site version as the base idea; pick cards and actions (links, copy buttons…) by what matters for that project; follow his edits as he changes it.
 
