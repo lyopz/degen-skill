@@ -18,6 +18,12 @@ powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -N
 8. **Framing (for 3D later):** "single full-body object, three-quarter front view, whole object visible, centered, pure plain white background (#FFFFFF), nothing else in the image, soft even studio lighting, no text, no watermark, no other objects."
 Extra lines when useful: "matching the style of the attached reference" (tell lyopz to attach `reference/target-look.webp` in ChatGPT), "same character as before but …" for edits, "turnaround: front, side, back" for rigging.
 
+## Automation notes (gpt-image.ps1 / gpt-image.mjs)
+- Edge with `--remote-debugging-port=9333` + Playwright `connectOverCDP` works (raw PowerShell websockets were unreliable).
+- Never force-kill the ChatGPT window (sign-in cookies get lost); close it gently.
+- The stop button can stay visible after the image is done: save once the picture is unchanged for ~12 s.
+- "Verify you are human" / sign-in: lyopz does it himself; never try to get around it.
+
 ## Good / bad
 - Bad: "a cool water pet cube". Good: the 8-part description above.
 - Name sizes relative to the body ("horns as tall as half the body"), positions ("on top, slightly back"), counts ("3 crystal spikes").

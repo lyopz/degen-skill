@@ -1,20 +1,22 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (March 2026 peaks) and why they work
-| Game | Genre | Peak CCU | What to learn |
+## Top games right now (live CCU snapshot, Oct 2026) and why they work
+| Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Brookhaven RP | Social roleplay | ~400k | Open town, houses, cars, spatial voice; freedom > goals |
-| Blox Fruits | Adventure RPG | ~350k | Islands as zones, bosses, collectible powers, frequent updates |
-| Adopt Me! | Social trading | ~300k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
-| Grow a Garden | Cozy simulator | ~250k | Plant → wait → harvest → pets; low skill, phone-first, daily loop |
-| Escape Tsunami for Brainrots! | Meme survival | ~200k | Meme characters + simple survival pressure |
-| Pet Simulator 99 | Simulator | ~180k | Grind + collect + trade, huge number upgrades |
-| Jujutsu Shenanigans | Anime fighter | ~150k | Flashy moves, deep progression |
-| RIVALS | FPS | ~130k | Tight competitive shooting |
-| Fish It! | Idle sim | ~110k | Auto-fishing → very long sessions |
-| BedWars | Strategy PvP | ~100k | Team bases, resource generators, short rounds |
+| Steal An Egg | Steal + hatch sim | ~1.1–1.9M (#1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama |
+| Murder Mystery 2 | Social deduction | ~250–700k (big Oct jump) | Short rounds, hidden roles, knife/gun cosmetics economy |
+| Brookhaven RP | Social roleplay | ~380–450k | Open town, houses, cars, spatial voice; freedom > goals |
+| Adopt Me! | Social trading | ~200k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
+| 99 Nights in the Forest | Co-op survival | ~160–190k | Night cycle pressure, base fire, friends vs monster |
+| RIVALS | FPS | ~175–220k | Tight competitive shooting |
+| Blox Fruits | Adventure RPG | ~165–250k | Islands as zones, bosses, collectible powers, frequent updates |
+| Jujutsu Shenanigans | Anime fighter | ~120–180k | Flashy moves, deep progression |
+| Steal a Brainrot | Meme steal sim | ~110–200k | Steal-from-bases loop that Steal An Egg copied with pets |
+| Fish It! / Anime Dice / +1 Speed Keyboard Escape | Idle / RNG / speed obby | ~80k each | Idle and RNG formats keep climbing |
 
-Trend data (creation.dev): **brainrot** games lead (~1.4M CCU across 29 games), escape/survival ~764k, simulators ~336k (highest earning), anime/fighting ~143k, horror ~78k (+68% week over week), town/city RP +65%, tower defense ~59k, competitive parkour with vote-based maps, management tycoons moving from button-press to strategy. **Hybrids** are winning.
+**Oct 2026 read:** the **"Steal a ___" + pets/hatching** hybrid is the biggest format on Roblox (Steal An Egg, Break and Steal an Egg, Ride A Pet nearby). Pet sims should add a social risk loop (steal/defend) on top of collect → hatch → earn. Horror/survival spikes every October (Roblox's own "The Hollow" Halloween survival event, Oct 2026: https://devforum.roblox.com/t/the-hollow-new-platform-wide-survival-event-for-halloween/4948535).
+
+Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU across 29 games), escape/survival ~764k, simulators ~336k (highest earning), anime/fighting ~143k, horror ~78k (+68% week over week), town/city RP +65%, tower defense ~59k, competitive parkour with vote-based maps, management tycoons moving from button-press to strategy. **Hybrids** are winning.
 
 ## Layout patterns per genre
 - **Simulator / tycoon:** hub lobby (shops, leaderboards, rebirth altar, codes) → ring/line of zones unlocked by currency gates, each zone a new biome + color; collect spots spread so players walk past shops; teleport pads between zones; plot grid for tycoons with clear "build here" glow.
@@ -31,6 +33,17 @@ Trend data (creation.dev): **brainrot** games lead (~1.4M CCU across 29 games), 
 - Big scale: player is ~5 studs tall; doors 8–10 studs, corridors ≥ 8 wide (cameras clip in tight spaces).
 - Terrain for land/water (Terrain Editor: Generate, or Import heightmap from Blender); MeshParts for detailed props (see `roblox-assets`).
 - Ambient motion: swaying trees, moving clouds, waterfalls with particle mist, floating crystals (Motion.Bob), flags.
+- Decor scatter: one clean asset, `ScaleTo` 0.45–0.62 per copy, random yaw + ±5–8° lean, all Anchored, leaves CanCollide off — variety for free. Place on ground with a raycast (`Include={Terrain}`, `IgnoreWater=true`), sink trunks/poles 1–5 studs so nothing floats. Spawns on slopes: raycast 4 corners + center, sit on the highest hit.
+- Free Creator Store models: check for hidden scripts before use (see `roblox-dev` → Security).
+
+## Terrain (islands, hills, water)
+- **Custom terrain materials are live (full launch 2026-10-22):** Workspace → `Expanded Terrain = Enabled`, save, close and reopen the place (Team Create: exit, wait ~15 s). Up to 62 editable materials, terrain has its own 250 MB limit (no longer counts toward place size), ~90% less CPU memory. Water/Air are still read-only, Material Variant physics don't apply yet. https://devforum.roblox.com/t/full-launch-publish-games-with-custom-terrain-materials-and-performance-improvements/4950620
+- Voxels are 4 studs, one material each. Terrain thinner than 16 voxels (64 studs) can vanish in play with streaming + a small radius — build solid, thick ground.
+- Island recipe: height map + one `WriteVoxels` call (coastline R(θ) = base + 3 sines; beach/plateau/hill profile; material by height and slope) beats stacking FillBalls; the same R(θ) can drive shore foam. Quick version: `Clear` → water FillBlock (−28..0) → sand seafloor → shelf → 2–3 overlapping sand FillBalls with centers far below the surface.
+- Keep underwater shelves ≤ −8 (tops ~−10): sand inside the top water layer (−4..0) shows as a dry pit. Let island slopes cross sea level steeply.
+- Landmark hills: broad with flat tops. Narrow peaks render as flat mesas at low terrain LOD (phones, captures) while raycasts still hit the real peak.
+- Cartoon sea: sand (246,205,120), WaterColor (40,200,220), WaterTransparency 0.6 + bright cartoon preset. Terrain water stays visible even at WaterTransparency 1, so a wave mesh must stay above it (Ocean kit in `roblox-templates`).
+- After a big terrain edit, check voxels (raycast grid / `ReadVoxels`) before trusting a screenshot — captures can be stale.
 
 ## Lighting presets (Lighting service) — starting points, then tweak by eye
 Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrectionEffect`, `SunRaysEffect` under Lighting, and a matching `Sky`.
@@ -42,7 +55,7 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 | **Neon night (degen / cyber, red)** | ClockTime 0, Brightness 1, Ambient (20,10,15), OutdoorAmbient (40,20,30), ExposureCompensation 0.3 | Density 0.45, Haze 1.5, Color (60,20,30), Decay (20,5,10) | Intensity 1.2, Size 40, Threshold 0.8 | Saturation 0.2, Contrast 0.2, TintColor (255,225,230) | off |
 | **Horror** | ClockTime 2, Brightness 0.5, Ambient (5,5,8), OutdoorAmbient (15,15,20) | Density 0.6, Haze 3, Color (40,45,55) | Intensity 0.3, Threshold 1.5 | Saturation −0.3, Contrast 0.25, TintColor (210,220,230) | off; use flicker PointLights/SpotLights |
 
-Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
+Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
 
 ## Sources
-EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
+livecounts.nl charts (Oct 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).

@@ -69,7 +69,8 @@ Keep under ~50 particles alive per emitter on mobile, use `LightEmission = 1` fo
 
 ## 5. Check before handing over
 - Triangle count per mesh, texture sizes, CollisionFidelity (**Box** for decor + CanCollide off; Hull for simple props), `RenderFidelity = Performance` for background props, Anchored for static pieces.
-- Test on phone size in Studio's device emulator.
+- Free Creator Store models: list `LuaSourceContainer` descendants after inserting; decor with scripts = backdoor → delete (`roblox-dev` → Security).
+- Test on phone size in Studio's Device Simulator.
 - Save source picture, .blend, GLB/FBX and the Luau scripts with the project.
 
 ## Examples

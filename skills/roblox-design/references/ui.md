@@ -10,6 +10,7 @@
 | HUD side buttons (shop, inventory, pets) | Vertical stack on left edge, each ~**0.06–0.08** screen height with `UIAspectRatioConstraint` 1:1, icon + short label. |
 | Body text | ≥ **14 px** effective; `TextScaled` + `UITextSizeConstraint` MinTextSize **14** (MaxTextSize so it doesn't balloon on PC). Titles 28–48. Use bold, high-contrast fonts (Gotham/Builder Sans/Fredoka One style for fun games). |
 | Corner radius | One value everywhere: **8–16 px** (`UICorner`). |
+| Shadows | `UIShadow` (live 2026) instead of a fake dark frame. Beta (2026-10, can't publish yet): `Mode = Text` text shadows, `Inset` recessed look, `ShowBehindParent = false` knockout for see-through panels, child `UIGradient` for colored glow. Keep < 100 on screen. https://devforum.roblox.com/t/studio-beta-upgraded-uishadow-capabilities/4934553 |
 | Panel padding | **12–24 px** (`UIPadding`), list gap **8 px** (`UIListLayout.Padding = UDim.new(0, 8)`). |
 | Example panel | 60% width × 70% height (Scale) + `UISizeConstraint` min 320×400 px, max ~900×700 for ultrawide. |
 | Grid slots | 96×96 px cells, 8 px padding; `UIAspectRatioConstraint` 1 on every slot. |
@@ -54,4 +55,4 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Fade groups with one `CanvasGroup.GroupTransparency` tween.
 - Pool ~20 frames for scrolling lists; size `CanvasSize` from item count (`AutomaticCanvasSize`).
 - Update labels on change or every 0.1 s, never every frame. HUD cost: a couple of ms/frame on the lowest device.
-- Test: smallest portrait phone, tablet landscape, 21:9 ultrawide, console.
+- Test: smallest portrait phone, tablet landscape, 21:9 ultrawide, console — with Studio's Device Simulator toolbar (out of beta Oct 2026: mouse-wheel device switching, network simulator for lag). https://devforum.roblox.com/t/weekly-recap-october-12-18-2026/4938638

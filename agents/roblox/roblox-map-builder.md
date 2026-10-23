@@ -13,6 +13,7 @@ Skills: `roblox-design/references/maps.md` (layouts, lighting presets) + `perfor
 3. Assemble (Blender via connector, or a Luau build script), scatter with random rotation/scale, snap to ground.
 4. Lighting preset from `maps.md` + ambient motion (scripted, client-side).
 5. Performance: StreamingEnabled, Box collisions on decor, anchored, shadows off on decorative lights.
+- Terrain rules (custom materials, thickness, island recipe, sea-level shelves, LOD-safe hills) and decor scatter: `maps.md` → Terrain / Build style. Check every free Creator Store model for hidden scripts.
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).

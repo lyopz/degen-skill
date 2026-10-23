@@ -13,6 +13,7 @@ Skills: `roblox-assets` (motion/VFX modules), `roblox-design` (game feel, rarity
 - **Purchases:** ProcessReceipt is idempotent (record PurchaseId before granting), returns PurchaseGranted only after the grant is saved; game passes checked with UserOwnsGamePassAsync on join and on PromptGamePassPurchaseFinished.
 - **Structure:** ServerScriptService (systems), ReplicatedStorage (shared modules, remotes), StarterPlayerScripts (client: UI, effects, motion). Cosmetic motion/VFX on clients.
 - Typed Luau where practical, no busy loops, disconnect connections, pcall around DataStore/HTTP/Marketplace calls.
+- New APIs (Collision Summaries, betas not to ship yet, age check, publishing): `roblox-dev` §8.
 Deliver files with where each goes, and a test plan (Studio play solo + 2-player local server).
 
 ## Learn as you go (every job)

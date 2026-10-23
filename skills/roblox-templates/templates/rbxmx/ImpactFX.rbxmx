@@ -1,0 +1,157 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
+<Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">ImpactFX</string><ProtectedString name="Source"><![CDATA[-- ImpactFX.lua — physics impact feedback: thud sound + dust puff + optional callback, scaled by how hard things hit.
+-- version: 1
+-- use: local ImpactFX = require(game.ReplicatedStorage.ImpactFX)
+--      local unbind = ImpactFX.Bind(crate, { sound = "rbxassetid://<thud id>", color = Color3.fromRGB(235, 225, 210) })
+--      ImpactFX.BindTagged("ImpactFX", { sound = "rbxassetid://<id>" })  -- every part tagged "ImpactFX", now and later
+--      options: sound, volume (0.6), color (dust), size (1), minSpeed (8), maxSpeed (60), cooldown (0.12 s per part),
+--               dust (true), onImpact(info) where info = {part, other, point, normal, speed, strength 0..1, force}
+-- where: summaries only exist on the part's NETWORK OWNER (not replicated). Server-owned loose props → require it in
+--      a server Script (effects replicate). The player's own character/vehicle/tool → a LocalScript on that client.
+--      Damage from onImpact: server-side only, on server-owned parts; never trust impacts reported by a client.
+-- note: parts with CanCollide = false give no summaries. Cost grows with bound parts, so bind props that matter.
+--      Falls back to Touched (rougher speed, no contact point) if BindToCollisionSummaries isn't available.
+-- source: own code on Roblox's Collision Summaries API (BasePart:BindToCollisionSummaries, Oct 2026,
+--      https://create.roblox.com/docs/workspace/collisions).
+-- changelog: v1 2026-10-23 first version
+
+local CollectionService = game:GetService("CollectionService")
+local Debris = game:GetService("Debris")
+
+local ImpactFX = {}
+
+local DUST = "rbxasset://textures/particles/smoke_main.dds"
+local DEFAULTS = {
+	volume = 0.6, color = Color3.fromRGB(235, 225, 210), size = 1,
+	minSpeed = 8, maxSpeed = 60, cooldown = 0.12, dust = true,
+}
+local MAX_FX_PER_SECOND = 15 -- global cap so a pile of falling crates can't flood a phone
+local budget, budgetTime = MAX_FX_PER_SECOND, os.clock()
+
+local function takeBudget(): boolean
+	local now = os.clock()
+	budget = math.min(MAX_FX_PER_SECOND, budget + (now - budgetTime) * MAX_FX_PER_SECOND)
+	budgetTime = now
+	if budget < 1 then return false end
+	budget -= 1
+	return true
+end
+
+local function playFX(point: Vector3, outward: Vector3, strength: number, opts)
+	local att = Instance.new("Attachment")
+	att.Parent = workspace.Terrain -- parent BEFORE setting world coords, or they become local offsets
+	att.WorldCFrame = CFrame.lookAt(point, point + outward)
+
+	if opts.dust then
+		local s = opts.size * (0.6 + strength)
+		local e = Instance.new("ParticleEmitter")
+		e.Enabled = false
+		e.Texture = DUST
+		e.LightEmission = 0 -- smoke/dust: no additive glow
+		e.Color = ColorSequence.new(opts.color)
+		e.Lifetime = NumberRange.new(0.35, 0.65)
+		e.Speed = NumberRange.new(3 + 6 * strength, 6 + 10 * strength)
+		e.EmissionDirection = Enum.NormalId.Front -- along `outward`
+		e.SpreadAngle = Vector2.new(75, 75)
+		e.Drag = 5
+		e.Rotation = NumberRange.new(0, 360)
+		e.RotSpeed = NumberRange.new(-60, 60)
+		e.Size = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 0.5 * s),
+			NumberSequenceKeypoint.new(1, 1.6 * s),
+		})
+		e.Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 0.35),
+			NumberSequenceKeypoint.new(1, 1),
+		})
+		e.Parent = att
+		e:Emit(math.floor(4 + 10 * strength))
+	end
+
+	if opts.sound then
+		local snd = Instance.new("Sound")
+		snd.SoundId = opts.sound
+		snd.Volume = opts.volume * (0.3 + 0.7 * strength)
+		-- heavier hit = lower pitch, plus ±5% random so repeats don't sound copy-pasted
+		snd.PlaybackSpeed = (1.1 - 0.2 * strength) * (0.95 + math.random() * 0.1)
+		snd.RollOffMaxDistance = 90
+		snd.Parent = att
+		snd:Play()
+	end
+
+	Debris:AddItem(att, 3)
+end
+
+-- Binds one part. Returns a function that unbinds it.
+function ImpactFX.Bind(part: BasePart, options: { [string]: any }?): () -> ()
+	local opts = setmetatable(table.clone(options or {}), { __index = DEFAULTS })
+	local last = 0
+
+	local function handle(other: BasePart, point: Vector3, normal: Vector3, speed: number)
+		if speed < opts.minSpeed then return end
+		local now = os.clock()
+		if now - last < opts.cooldown then return end
+		last = now
+		local strength = math.clamp((speed - opts.minSpeed) / math.max(opts.maxSpeed - opts.minSpeed, 1), 0, 1)
+		-- Normal points away from `part` into `other`; dust sprays back out of the surface that was hit.
+		if takeBudget() then playFX(point, -normal, strength, opts) end
+		if opts.onImpact then
+			task.spawn(opts.onImpact, {
+				part = part, other = other, point = point, normal = normal,
+				speed = speed, strength = strength, force = speed * part.AssemblyMass,
+			})
+		end
+	end
+
+	local ok, conn = pcall(function()
+		return (part :: any):BindToCollisionSummaries(function(summaries)
+			-- one callback per frame with every contact; keep only the hardest hit
+			local best, bestSpeed = nil, 0
+			for _, s in summaries do
+				local sp = math.abs(s.RelativeVelocity:Dot(s.Normal))
+				if sp > bestSpeed then best, bestSpeed = s, sp end
+			end
+			if best then handle(best.Part1, best.Point, best.Normal, bestSpeed) end
+		end)
+	end)
+
+	if not ok then -- fallback: Touched (no contact data, so approximate)
+		conn = part.Touched:Connect(function(other)
+			local rel = part.AssemblyLinearVelocity - other.AssemblyLinearVelocity
+			local dir = (other.Position - part.Position)
+			local normal = if dir.Magnitude > 0 then dir.Unit else Vector3.new(0, -1, 0)
+			handle(other, part.Position + normal * (part.Size.Magnitude * 0.25), normal, rel.Magnitude)
+		end)
+	end
+
+	local destroying
+	local function unbind()
+		if conn then conn:Disconnect(); conn = nil end
+		if destroying then destroying:Disconnect(); destroying = nil end
+	end
+	destroying = part.Destroying:Connect(unbind)
+	return unbind
+end
+
+-- Binds every BasePart with `tag` (now and when added later); unbinds when the tag is removed.
+function ImpactFX.BindTagged(tag: string, options: { [string]: any }?): () -> ()
+	local bound: { [Instance]: () -> () } = {}
+	local function add(inst: Instance)
+		if inst:IsA("BasePart") and not bound[inst] then bound[inst] = ImpactFX.Bind(inst, options) end
+	end
+	local function remove(inst: Instance)
+		if bound[inst] then bound[inst](); bound[inst] = nil end
+	end
+	for _, inst in CollectionService:GetTagged(tag) do add(inst) end
+	local a = CollectionService:GetInstanceAddedSignal(tag):Connect(add)
+	local r = CollectionService:GetInstanceRemovedSignal(tag):Connect(remove)
+	return function()
+		a:Disconnect(); r:Disconnect()
+		for inst, unbind in bound do unbind() end
+		table.clear(bound)
+	end
+end
+
+return ImpactFX
+]]></ProtectedString></Properties></Item>
+</roblox>

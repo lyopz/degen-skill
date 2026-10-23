@@ -26,6 +26,12 @@
 - Beams for lasers/lightning between Attachments; Trails on swords/dashes/projectiles.
 - Use flipbook textures (`FlipbookLayout`) for rich fire/explosions; free flipbook packs exist (e.g. particlefx.studio/roblox).
 - Toggle post-processing (Bloom/ColorCorrection) briefly for ultimates or boss phases.
+- Emitter tuning (from projects): `Drag` also damps `Acceleration` (Drag 2–4 → motes never rise; use Drag 0 + Speed ~1.5, or Drag 1.5 + Acceleration 7–9). Flat ground rings: `Orientation = VelocityPerpendicular`, Speed 0.01, EmissionDirection Top, **ZOffset 0** (negative sinks into the floor); `forcefield_vortex_main.dds` + RotSpeed = free rune ring. `Squash` > 0 taller, < 0 flatter (−3..3). Auras around a body need radial speed to clear the mesh (emit at the feet, EmissionDirection Right + SpreadAngle (0,180) = horizontal ring).
+- Attachments: parent first, then set `WorldPosition`/`WorldCFrame` (before parenting, world values become local offsets).
+- Checking VFX: Edit-mode screenshots never show particles. Test in Play with a Scriptable camera bound on RenderStep and `settings().Rendering.QualityLevel = Level21` (Automatic throttles low-rate emitters), wait 2–3 s, capture, stop quickly.
+
+## Physics impacts (new 2026-10)
+`BasePart:BindToCollisionSummaries(cb)` gives per-frame contacts with `Point`, `Normal`, `RelativeVelocity`, `Area` — impact speed = `|RelativeVelocity:Dot(Normal)|`. Use it for thuds, dust, cracks and fall/crash damage scaled by speed. Only fires on the part's network owner and isn't replicated. Template: `roblox-templates/templates/ImpactFX.lua`. Docs: https://create.roblox.com/docs/workspace/collisions
 
 ## Ambient life (cheap, always on)
 Swaying trees/grass (scripted rotation), drifting clouds, birds circling, water texture offset scroll, floating pickups bobbing, NPC idle animations, flickering torches (PointLight brightness noise), ambient particles (fireflies, dust, snow) per zone.

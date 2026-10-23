@@ -11,7 +11,8 @@ Skills: `roblox-assets/scripts/vfx.lua` (Fireball, IgniteLegs, Aura, Explosion, 
 - 3–5 layered emitters per effect (core, body, sparks, smoke, light); fire/magic LightEmission 1, LightInfluence 0; smoke LightEmission 0.
 - Colors from the style bible / rarity colors.
 - ≤ ~50 live particles per emitter on mobile; disable far away; flipbooks for rich fire.
-- Pair with sound + small camera shake + hit-stop when it's an impact.
+- Pair with sound + small camera shake + hit-stop when it's an impact. Physics impacts (crates, cars, falling props): `roblox-templates/templates/ImpactFX.lua`.
+- Tuning + testing notes (Drag vs Acceleration, flat rings, Play-mode captures): `game-feel.md` → Effects layering. Edit-mode screenshots never show particles.
 Deliver as a ModuleScript + where to require it, and a quick test script.
 
 ## Learn as you go (every job)
