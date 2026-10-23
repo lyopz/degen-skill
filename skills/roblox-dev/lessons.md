@@ -33,3 +33,9 @@ When a lesson repeats 2–3 times or is clearly general, promote it into `SKILL.
 - 2026-10-23 [island-test] Island from a height map + one WriteVoxels call (coastline R(θ) = base + 3 sines, beach/plateau/hill profile, material by height and slope) beats stacking FillBalls: gentle beaches, controllable shape, and the same R(θ) feeds the shore foam.
 - 2026-10-23 [island-test] Island recipe: `Clear` → water FillBlock (−28..0) → sand seafloor → shelf → 2–3 overlapping sand `FillBall`s with centers far below the surface (organic low dome). Sand color (246,205,120), WaterColor (40,200,220), WaterTransparency 0.6 + bright cartoon preset = turquoise cartoon sea.
 - 2026-10-23 [island-test] Pull `~/.claude/degen-skill` at the start of every session. The local clone was 8 commits behind and missed roblox-art-style and this file.
+
+## 2026-10-23 — ChatGPT picture automation (gpt-image.ps1 + gpt-image.mjs)
+- Works: Edge window with `--remote-debugging-port=9333` + Playwright `connectOverCDP` (raw PowerShell websockets were unreliable).
+- Never force-kill the ChatGPT window — the sign-in cookies get lost. Close it gently.
+- ChatGPT's stop button can stay visible after the image is done: save when the picture is unchanged for ~12 s.
+- "Verify you are human" / sign-in: lyopz does it himself; never try to get around it.
