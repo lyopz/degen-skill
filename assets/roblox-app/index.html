@@ -228,6 +228,7 @@ body.awake .orb-cap{color:var(--text)}
 .sheet-in,.drawer,.toast{text-align:left}
 .home{justify-content:flex-start;padding-top:max(84px,9vh)}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
 #orb{width:270px;height:270px}.orb-wrap{margin-top:4px}.orb-cap{margin-top:-10px}
+.gpt-p{white-space:pre-wrap;font:13px/1.6 Inter,system-ui;color:#e4e4e7;background:#0b0b0e;border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:260px;overflow:auto;user-select:text}
 </style>
 </head>
 <body>
@@ -380,7 +381,7 @@ function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementB
  if(team){const on=PLAN.filter(w=>w.on),wv=[...new Set(on.map(w=>w.wave))].sort((a,b)=>a-b);
   L.push('Run as the LEAD with this split (same wave = run in parallel; start a wave only when the one before it is done):\n'+wv.map((v,i)=>'  '+(v===9?'Last':v===0?'First':'Wave '+i)+': '+on.filter(w=>w.wave===v).map(w=>w.agent+' → '+w.job).join(' | ')).join('\n')+'\nGive each agent the game, bible path, spec, its share of the credit budget, and what NOT to touch. If the split looks wrong once you see the place, adjust it and tell me in one line.');}
  else L.push(`Use: ${AG[t].join('; ')}.`);
- L.push(`Credits: max ${c} Higgsfield credits${c?'':' (use free routes only: Blender, Roblox parts/terrain/VFX, scripts, free Creator Store assets that match the style)'}. Preflight cost before any generation.`);
+ L.push(`Credits: max ${c} Higgsfield credits${c?'':' (use free routes only: pictures via the ChatGPT handoff (gpt-image.ps1), Blender, free image-to-3D, Roblox parts/terrain/VFX, scripts, free Creator Store assets that match the style)'}. Preflight cost before any generation.`);
  L.push(`Follow roblox-design/references/first-try.md:\n  1) Write the spec (what/where, style, reference, numbers, 3–6 "done means" checks, credits) and show it to me in 5 lines.\n  2) Build ONE piece, screenshot it in Studio, compare to the reference + bible, fix, then scale up.\n  3) Before saying done: player-view + wide screenshots, phone check for UI, no Output errors, budgets OK, tick every "done means".`);
  L.push(`Finish: short report (what, where in the place, credits spent), add lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo.`);
  document.getElementById('b-out').textContent=L.join('\n\n')}
@@ -499,6 +500,11 @@ const zoom=src=>{const z=$('zoom');z.querySelector('img').src=src;z.classList.ad
 function drawAppr(force){const ids=INBOX.map(x=>x.id).join();if(!force&&ids===drawn)return;drawn=ids;const el=$('appr-list');
  if(!INBOX.length){el.innerHTML='<div class="empty">Nothing waiting on you. When Claude needs an approval or a pick, it shows up here with a sound.</div>';return}
  el.innerHTML='';INBOX.forEach(it=>{const c=document.createElement('div');c.className='ap';sel[it.id]=sel[it.id]||{};
+  if(it.kind==='chatgpt'){c.innerHTML=`<div class="ap-from">${esc(it.from||'lead')}<span>${esc(it.at||'')} · ChatGPT picture · ${esc(it.name||'')}</span></div><div class="ap-q">Make this in ChatGPT, then save the picture to Downloads — Claude grabs it automatically.</div><pre class="gpt-p"></pre><div class="ap-act"><button class="btn cp">Copy prompt</button><button class="btn ghost og">Open ChatGPT</button><button class="btn ghost sk">Skip</button></div><div class="hint" style="margin-top:8px">Waiting for a new image in Downloads…</div>`;
+   c.querySelector('.gpt-p').textContent=it.prompt||'';
+   const cp=c.querySelector('.cp');cp.onclick=()=>{const t=it.prompt||'',ok=()=>{cp.textContent='Copied ✓';setTimeout(()=>cp.textContent='Copy prompt',1600)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');ok()}catch(_){}x.remove()})};
+   c.querySelector('.og').onclick=()=>{cp.click();window.open('https://chatgpt.com/','_blank')};
+   c.querySelector('.sk').onclick=()=>answer(it.id,'skip',c);el.appendChild(c);return}
   c.innerHTML=`<div class="ap-from">${esc(it.from||'lead')}<span>${esc(it.at||'')} · ${it.kind==='approval'?'approval':'question'}</span></div>`+
    ((it.images||[]).length?`<div class="ap-imgs">${it.images.map(p=>`<img src="${img(p)}" data-z alt="">`).join('')}</div>`:'')+
    (it.questions||[]).map((q,qi)=>`<div class="ap-q">${esc(q.q)}</div><div class="opts" data-q="${qi}">${(q.options||[]).map((o,oi)=>`<button class="opt" data-o="${oi}">${esc(o.l)}${o.d?`<small>${esc(o.d)}</small>`:''}</button>`).join('')}</div>`).join('')+
