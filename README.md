@@ -2,7 +2,7 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/skills-123-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="123 skills">
-<img src="https://img.shields.io/badge/agents-75-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="75 agents">
+<img src="https://img.shields.io/badge/agents-83-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="83 agents">
 <img src="https://img.shields.io/badge/commands-159-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="159 commands">
 <img src="https://img.shields.io/badge/works%20with-Claude%20Code-e11d2e?style=for-the-badge&labelColor=0b0b0d" alt="Works with Claude Code">
 </p>
