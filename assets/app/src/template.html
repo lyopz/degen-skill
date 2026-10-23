@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Degen Skills</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 <script>window.IMG={HERO:"__HERO__",CARDS:"__CARDS__",SWARM:"__SWARM__"};for(const k in IMG)document.documentElement.style.setProperty("--img-"+k.toLowerCase(),`url(${IMG[k]})`);</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -358,9 +359,9 @@ const s3=document.getElementById('s3d'),sp=document.getElementById('spot'),vw=do
 s3.addEventListener('pointermove',e=>{const r=s3.getBoundingClientRect();sp.style.left=(e.clientX-r.left)+'px';sp.style.top=(e.clientY-r.top)+'px'});
 const fb=()=>{vw.innerHTML='<div class="fb"><video class="hv" muted loop playsinline autoplay></video></div>';setV()};
 function loadModel(){
- const go=()=>import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js').then(async THREE=>{
-  const {GLTFLoader}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/loaders/GLTFLoader.js');
-  const {OrbitControls}=await import('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js');
+ const go=()=>import('three').then(async THREE=>{
+  const {GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js');
+  const {OrbitControls}=await import('three/addons/controls/OrbitControls.js');
   const b=atob(window.CHICKEN),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
   const r=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});r.setPixelRatio(Math.min(devicePixelRatio,1.5));r.outputColorSpace=THREE.SRGBColorSpace;
   const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,50);cam.position.set(0,.2,4.2);
@@ -376,7 +377,7 @@ function loadModel(){
   new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)loop()}).observe(s3);
   let raf=0;function loop(){if(raf)return;raf=requestAnimationFrame(t=>{raf=0;if(!vis||document.hidden)return;pivot.rotation.x+=(my*.35-pivot.rotation.x)*.08;m.rotation.y+=(mx*.9-m.rotation.y)*.08;ctl.update();r.render(sc,cam);loop()})}
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)loop()});loop();
- }).catch(()=>fb());
+ }).catch(e=>{console.error('3D load failed',e);fb()});
  if(window.CHICKEN)go();else{const s=document.createElement('script');s.src='chicken.js';s.onload=go;s.onerror=fb;document.head.appendChild(s)}
 }
 new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();loadModel()}},{rootMargin:'300px'}).observe(s3);
