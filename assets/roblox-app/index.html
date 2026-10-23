@@ -82,6 +82,25 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 .act-body{max-height:190px;overflow:auto;padding:8px 14px;font:12.5px/1.7 "JetBrains Mono",monospace}
 .act-l{color:#d4d4d8;white-space:pre-wrap}.act-l.mute{color:var(--muted)}.act-l.done{color:#4ade80}.act-l.agent{color:#facc15}.act-l.hf{color:#e879f9}.act-l.err{color:var(--red2)}
 .act-l.new{animation:fadein .4s}@keyframes fadein{from{opacity:0;transform:translateY(4px)}}
+/* side drawer — Spotlight (21st.dev ibelick/spotlight) ported to vanilla */
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(380px,92vw);z-index:40;background:#0a0a0d;border-left:1px solid var(--line);box-shadow:-30px 0 60px rgba(0,0,0,.55);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .42s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.drawer.open{transform:none}
+.drawer .act-hd{display:flex;align-items:center;gap:10px;padding:18px 18px 14px;border-bottom:1px solid var(--line);position:relative;z-index:1}
+.drawer .act-hd b{font-size:15px}.drawer .act-hd span{color:var(--muted);font-size:12px;margin-left:auto}
+.x{font:inherit;background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;width:30px;height:30px;cursor:pointer}.x:hover{color:var(--text);border-color:var(--red)}
+.drawer .act-body{flex:1;max-height:none;padding:12px 18px;position:relative;z-index:1}
+.auto{flex-direction:row!important;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line);position:relative;z-index:1}.auto input{accent-color:#e11d2e}
+.spot{pointer-events:none;position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,94,.16),transparent 65%);filter:blur(20px);transform:translate(-50%,-50%);opacity:0;transition:opacity .25s}
+.drawer:hover .spot{opacity:1}
+.drawer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;z-index:39;font:600 13px "Space Grotesk",system-ui;color:var(--text);background:var(--panel);border:1px solid var(--line);border-right:0;border-radius:0 12px 12px 0;padding:14px 9px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s,right .42s cubic-bezier(.2,.8,.2,1)}
+.drawer-tab:hover{background:var(--panel2);border-color:rgba(225,29,46,.5)}
+.drawer-tab .dot{margin:0}
+body.drawer-open .drawer-tab{right:min(380px,92vw)}
+/* GlowCard (21st.dev spotlight-card) — red border glow that follows the mouse */
+.card,.ws,.ri{position:relative;--x:-200px;--y:-200px}
+.card::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:radial-gradient(220px circle at var(--x) var(--y),var(--red2),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .25s;pointer-events:none}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(300px circle at var(--x) var(--y),rgba(225,29,46,.12),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
+.card:hover::after,.card:hover::before{opacity:1}
 </style>
 </head>
 <body>
@@ -96,7 +115,6 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 <div class="hero"><div><h2>What are we <em>building?</em></h2>
 <p class="sub">Describe it, hit Start. A Roblox Lead window opens, connects to Studio and runs your team — with the style bible, budgets and the spec → build one → check flow baked in.</p></div>
 <div class="row" style="margin:0"><button class="btn ghost" id="open-lead">Open Roblox Lead</button></div></div>
-<div class="act" id="act"><div class="act-hd"><b><i class="dot" id="act-dot"></i>Team activity</b><span id="act-when">idle</span></div><div class="act-body" id="act-body"><div class="act-l mute">Nothing running yet. Start a task and you'll see what the team is doing here.</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="form">
 <label>Game (style bible)<select id="b-game"></select></label>
@@ -159,6 +177,13 @@ details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out
 </section>
 
 </main>
+<button class="drawer-tab" id="drawer-tab" aria-controls="drawer" aria-expanded="false"><i class="dot" id="act-dot"></i><span>Activity</span></button>
+<aside class="drawer" id="drawer" aria-label="Team activity">
+<div class="spot" id="drawer-spot"></div>
+<div class="act-hd"><b>Team activity</b><span id="act-when">idle</span><button class="x" id="drawer-x" aria-label="Close">✕</button></div>
+<div class="act-body" id="act-body"><div class="act-l mute">Nothing running yet. Start a task and you'll see what the team is doing here.</div></div>
+<label class="auto"><input type="checkbox" id="auto-open" checked> Pop open when the team starts working</label>
+</aside>
 <script>
 const R=window.RBX||{skills:[],agents:[],templates:[],bibles:[],studies:[],refs:{},built:'—'};
 const md=t=>{if(!t)return'<div class="empty">Nothing here yet.</div>';try{return window.marked?marked.parse(t):'<pre>'+t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>'}catch(e){return'<pre>'+t+'</pre>'}};
@@ -252,11 +277,20 @@ const IDEAS=[['asset','A pet that follows the player, in this game\'s style'],['
 const chips=document.getElementById('chips');IDEAS.forEach(([t,d])=>{const b=document.createElement('button');b.textContent=d;b.onclick=()=>{document.getElementById('b-type').value=t;document.getElementById('b-desc').value=d;build();document.getElementById('b-desc').focus()};chips.appendChild(b)});
 document.getElementById('b-clear').onclick=()=>{document.getElementById('b-desc').value='';document.getElementById('b-ref').value='';build()};
 
+// drawer
+const drawer=document.getElementById('drawer'),tab=document.getElementById('drawer-tab'),auto=document.getElementById('auto-open');
+function setDrawer(o){drawer.classList.toggle('open',o);document.body.classList.toggle('drawer-open',o);tab.setAttribute('aria-expanded',o);try{localStorage.setItem('rbx-drawer',o?'1':'0')}catch(e){}}
+tab.onclick=()=>setDrawer(!drawer.classList.contains('open'));document.getElementById('drawer-x').onclick=()=>setDrawer(false);
+addEventListener('keydown',e=>{if(e.key==='Escape')setDrawer(false)});
+try{auto.checked=localStorage.getItem('rbx-auto')!=='0';if(localStorage.getItem('rbx-drawer')==='1')setDrawer(true)}catch(e){}
+auto.onchange=()=>{try{localStorage.setItem('rbx-auto',auto.checked?'1':'0')}catch(e){}};
+drawer.addEventListener('pointermove',e=>{const r=drawer.getBoundingClientRect(),s=document.getElementById('drawer-spot');s.style.left=(e.clientX-r.left)+'px';s.style.top=(e.clientY-r.top)+'px'});
+document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--x',(e.clientX-r.left)+'px');c.style.setProperty('--y',(e.clientY-r.top)+'px')});
 // live team activity (activity-data.js is rewritten by the hook on every action)
-(()=>{let seen=0;const body=document.getElementById('act-body'),dot=document.getElementById('act-dot'),when=document.getElementById('act-when');
+(()=>{let seen=0,seenOnce=false;const body=document.getElementById('act-body'),dot=document.getElementById('act-dot'),when=document.getElementById('act-when');
  function render(){const A=window.ACT||[];if(!A.length)return;if(A.length===seen&&A[A.length-1]===body.dataset.last)return;
   body.innerHTML='';A.forEach((l,i)=>{const d=document.createElement('div');d.className='act-l'+(/Done/.test(l)?' done':/Started|finished/.test(l)?' agent':/Higgsfield/.test(l)?' hf':/error/i.test(l)?' err':'')+(i>=seen?' new':'');d.textContent=l;body.appendChild(d)});
-  seen=A.length;body.dataset.last=A[A.length-1];body.scrollTop=body.scrollHeight;const last=A[A.length-1]||'';const live=!/Done - waiting/.test(last);dot.classList.toggle('live',live);when.textContent=live?'working…':'idle'}
+  seen=A.length;body.dataset.last=A[A.length-1];body.scrollTop=body.scrollHeight;const last=A[A.length-1]||'';const live=!/Done - waiting/.test(last);dot.classList.toggle('live',live);when.textContent=live?'working…':'idle';if(live&&auto.checked&&!drawer.classList.contains('open')&&seenOnce)setDrawer(true);seenOnce=true}
  function poll(){const s=document.createElement('script');s.src='activity-data.js?t='+Date.now();s.onload=()=>{render();s.remove()};s.onerror=()=>s.remove();document.head.appendChild(s)}
  poll();setInterval(poll,2000)})();
 </script>
