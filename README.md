@@ -180,7 +180,7 @@ Helpers for [OmniRoute](https://github.com/diegosouzapw/OmniRoute), an app that 
 | Folder | What's in it |
 |:--|:--|
 | [`skills/`](skills) | All 123 skills, one folder each |
-| [`agents/`](agents) | 75 specialist agents |
+| [`agents/`](agents) | 83 specialist agents (incl. an 8-agent Roblox team) |
 | [`commands/`](commands) | 159 slash commands |
 | [`reviews/`](reviews) | Notes on every skill source, change log, licenses |
 | [`assets/`](assets) | The images on this page, and the [desktop app](assets/app) |

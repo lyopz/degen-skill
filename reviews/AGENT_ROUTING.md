@@ -17,6 +17,22 @@ Agents in `~/.claude/agents` come from this repo. lyopz has authorized using the
 | CI/CD pipelines | `cicd-engineer` |
 | Spec → pseudocode → architecture → refine | `specification`, `pseudocode`, `architecture`, `refinement` (SPARC, when he asks for it) |
 
+## Roblox team (`agents/roblox/`)
+For Roblox games, the main session is the lead: it plans, sets the credit budget, hands each piece to the right specialist (in parallel when independent), then runs `roblox-reviewer` before calling it done. Each agent reads the game's style bible first.
+
+| Roblox task | Agent |
+|---|---|
+| New game look, style bible, concept pictures, "does this fit?" | `roblox-art-director` |
+| Models: props, pets, creatures, buildings (Blender or Higgsfield → Roblox-ready) | `roblox-modeler` |
+| Rigs, walk/fly/idle/attack loops, scripted motion | `roblox-animator` |
+| Effects: fireball, flaming legs, auras, hits, explosions | `roblox-vfx-artist` |
+| Maps, lobbies, zones, obbies, terrain, lighting | `roblox-map-builder` |
+| HUD, menus, shop, inventory, button feel | `roblox-ui-designer` |
+| Game systems: data saving, remotes/anti-exploit, currencies, eggs, purchases | `roblox-scripter` |
+| Review / "make it 10,000x cooler" / ready to publish? | `roblox-reviewer` |
+
+Typical order for a new asset: art-director (concept) → modeler → animator / vfx-artist → reviewer. Pass each agent the game name, the bible path, the approved concept, and its credit budget.
+
 Rules:
 - Run independent agents in parallel (one message, several Agent calls). Give each the full context it needs; they start cold.
 - Agents report back; the main session checks the result before telling lyopz it's done.
