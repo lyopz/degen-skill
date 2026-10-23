@@ -1,6 +1,7 @@
 # PreToolUse hook for AskUserQuestion: when the Degen Roblox app is open, the question pops up in the app
 # (Approvals bubble + sound). lyopz picks there; the answer goes back to Claude. App closed -> normal terminal question.
 $ErrorActionPreference = 'SilentlyContinue'
+[Console]::InputEncoding = [Text.Encoding]::UTF8; [Console]::OutputEncoding = [Text.Encoding]::UTF8
 $e = [Console]::In.ReadToEnd() | ConvertFrom-Json
 $D = Join-Path $env:USERPROFILE 'RobloxGames\.degen'
 $alive = Join-Path $D 'server.alive'

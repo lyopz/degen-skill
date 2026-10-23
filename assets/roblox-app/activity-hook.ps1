@@ -1,6 +1,7 @@
 # Claude Code hook: turns each action into one plain-English line, tagged with WHO is doing it.
 # Writes ~/RobloxGames/.degen/activity.json (read by the app) and ~/RobloxGames/activity.log.
 $ErrorActionPreference = 'SilentlyContinue'
+[Console]::InputEncoding = [Text.Encoding]::UTF8; [Console]::OutputEncoding = [Text.Encoding]::UTF8
 $e = [Console]::In.ReadToEnd() | ConvertFrom-Json
 $RG = Join-Path $env:USERPROFILE 'RobloxGames'; $D = Join-Path $RG '.degen'; New-Item -ItemType Directory -Force -Path $D | Out-Null
 $log = Join-Path $RG 'activity.log'; $jf = Join-Path $D 'activity.json'
