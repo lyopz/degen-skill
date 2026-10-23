@@ -1,5 +1,6 @@
 {
   "mcpServers": {
-    "Roblox_Studio": { "command": "cmd.exe", "args": ["/c", "%LOCALAPPDATA%\\Roblox\\mcp.bat"] }
+    "Roblox_Studio": { "command": "cmd.exe", "args": ["/c", "%LOCALAPPDATA%\\Roblox\\mcp.bat"] },
+    "higgsfield": { "type": "http", "url": "https://mcp.higgsfield.ai/mcp" }
   }
 }
