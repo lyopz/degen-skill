@@ -1,5 +1,7 @@
 # Degen Roblox app — design notes (for building THIS app, not for Roblox games)
 
+Layout (2026-10-23 redesign): shadcn/21st-style app shell — left sidebar nav with icons + stats, sticky top bar (breadcrumb, Open Roblox Lead, Activity), AI prompt box (textarea + chip selects + mic + send), two-column panels (split plan / recent tasks), Inter + JetBrains Mono. Voice: Web Speech API mic in the prompt box + floating red speak bubble (Ctrl+Space), live transcript bubble. 21st.dev catalog search was down during the redesign — when it's back, swap in matching 21st components (AI input, sidebar, drawer) via the 21st_dev tools.
+
 Skills used to design this app (from the degen-skill library):
 - `21st-dev` — components ported to vanilla JS/CSS here:
   - **GlowCard** (`components/spotlight-card.md`): red border glow following the mouse on every `.card`.

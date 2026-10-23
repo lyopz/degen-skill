@@ -5,198 +5,198 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Degen Roblox</title>
 <link rel="icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="roblox-data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <style>
-:root{--bg:#07070a;--panel:#111116;--panel2:#16161c;--line:#26262e;--red:#e11d2e;--red2:#ff4d5e;--text:#f5f5f7;--muted:#a1a1aa}
+:root{--bg:#09090b;--bg2:#0c0c0f;--panel:#111114;--panel2:#16161a;--line:#232329;--line2:#2e2e36;--red:#e11d2e;--red2:#ff4d5e;--redbg:rgba(225,29,46,.1);--text:#fafafa;--muted:#a1a1aa;--dim:#71717a;--r:12px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.5}
-.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
-header{border-bottom:1px solid var(--line);background:radial-gradient(800px 200px at 20% 0%,rgba(225,29,46,.18),transparent)}
-header .wrap{display:flex;align-items:center;gap:16px;padding:22px 20px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.1em;font-size:20px}
-.logo i{width:26px;height:26px;background:var(--red);border-radius:6px;transform:rotate(15deg);box-shadow:0 0 18px var(--red);position:relative}
-.logo i::after{content:"";position:absolute;inset:9px;background:var(--bg);border-radius:2px}
-.stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
-.stat b{color:var(--red2);margin-right:4px}
-nav{position:sticky;top:0;z-index:5;background:rgba(7,7,10,.95);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:4px;overflow-x:auto}
-nav button{font:inherit;font-size:14px;color:var(--muted);background:none;border:0;padding:14px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
-nav button.on{color:var(--text);border-color:var(--red)}
-main{padding:28px 0 80px}
-section{display:none}section.on{display:block}
-h2{font-size:28px;letter-spacing:-.01em}h2 em{font-style:normal;color:var(--red)}
-.sub{color:var(--muted);margin:6px 0 22px;max-width:760px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;transition:border-color .2s,transform .2s}
-.card:hover{border-color:rgba(225,29,46,.6);transform:translateY(-2px)}
-.card h3{font-family:"JetBrains Mono",monospace;font-size:15px;margin-bottom:6px;word-break:break-word}
-.card p{color:var(--muted);font-size:14px}
-.card pre{white-space:pre-wrap;font:12px/1.5 "JetBrains Mono",monospace;color:#fca5a5;margin-top:8px}
-.k{font:11px "JetBrains Mono",monospace;letter-spacing:.15em;color:var(--red2);text-transform:uppercase;margin-bottom:6px}
-.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
-label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
-input,select,textarea{font:inherit;font-size:14px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--red)}
-textarea{min-height:90px;resize:vertical}
-.full{grid-column:1/-1}
-.out{margin-top:16px;background:#000;border:1px solid var(--line);border-radius:14px;padding:16px;position:relative}
-.out pre{white-space:pre-wrap;font:13px/1.6 "JetBrains Mono",monospace;color:#fecaca}
-.btn{font:inherit;font-weight:600;font-size:14px;color:#fff;background:var(--red);border:0;border-radius:999px;padding:10px 18px;cursor:pointer;box-shadow:0 0 20px rgba(225,29,46,.35);transition:transform .1s}
-.btn:active{transform:scale(.95)}.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--muted)}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.tabs button{font:inherit;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
-.tabs button.on{color:var(--text);border-color:var(--red);background:rgba(225,29,46,.12)}
-.md{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;overflow-x:auto}
-.md h1,.md h2,.md h3{margin:18px 0 8px}.md h1:first-child,.md h2:first-child{margin-top:0}
-.md p,.md li{color:#d4d4d8;font-size:14.5px}.md ul,.md ol{padding-left:20px;margin:6px 0}
-.md code{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:#fca5a5;background:#000;padding:1px 5px;border-radius:4px}
-.md pre{background:#000;padding:12px;border-radius:10px;overflow-x:auto;margin:8px 0}.md pre code{background:none;padding:0}
-.md table{border-collapse:collapse;margin:10px 0;font-size:13px;width:100%}.md th,.md td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.md th{background:var(--panel2)}
-.md a{color:var(--red2)}
-.empty{color:var(--muted);font-size:14px;padding:18px;border:1px dashed var(--line);border-radius:12px}
-.tip{color:var(--muted);font-size:13px;margin-top:10px}
-.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-.btn.big{font-size:16px;padding:13px 26px}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:-8px 0 18px}
-.chips button{font:inherit;font-size:13px;color:#fecaca;background:rgba(225,29,46,.1);border:1px solid rgba(225,29,46,.35);border-radius:999px;padding:6px 12px;cursor:pointer}
-.chips button:hover{background:rgba(225,29,46,.2)}
-details.out summary{cursor:pointer;color:var(--muted);font-size:13px}details.out[open] summary{margin-bottom:10px}
-.rh{margin:28px 0 10px;font-size:16px}
-.recent{display:flex;flex-direction:column;gap:8px}
-.ri{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px}
-.ri span{color:var(--muted);font-size:12px;white-space:nowrap}.ri button{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer}
-.plan{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
-.plan-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}.plan h3{font-size:16px}
-.wave{margin-top:10px}.wave-t{font:11px "JetBrains Mono",monospace;letter-spacing:.15em;color:var(--red2);text-transform:uppercase;margin-bottom:6px}
-.ws{display:flex;flex-direction:row;gap:10px;font-size:14px;color:var(--text);align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:var(--panel2);cursor:pointer}
-.ws input{margin-top:3px;accent-color:#e11d2e}.ws b{font-family:"JetBrains Mono",monospace;font-size:13px}.ws span{color:var(--muted);font-size:13px;display:block}
-.ws.off{opacity:.45}
-.act{background:#000;border:1px solid var(--line);border-radius:14px;margin:0 0 18px;overflow:hidden}
-.act-hd{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px}.act-hd span{color:var(--muted);font-size:12px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#52525b;margin-right:8px;vertical-align:middle}.dot.live{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.2s infinite}
-@keyframes pulse{50%{opacity:.35}}
-.act-body{max-height:190px;overflow:auto;padding:8px 14px;font:12.5px/1.7 "JetBrains Mono",monospace}
-.act-l{color:#d4d4d8;white-space:pre-wrap}.act-l.mute{color:var(--muted)}.act-l.done{color:#4ade80}.act-l.agent{color:#facc15}.act-l.hf{color:#e879f9}.act-l.err{color:var(--red2)}
-.act-l.new{animation:fadein .4s}@keyframes fadein{from{opacity:0;transform:translateY(4px)}}
-/* side drawer — Spotlight (21st.dev ibelick/spotlight) ported to vanilla */
-.drawer{position:fixed;top:0;right:0;height:100vh;width:min(380px,92vw);z-index:40;background:#0a0a0d;border-left:1px solid var(--line);box-shadow:-30px 0 60px rgba(0,0,0,.55);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .42s cubic-bezier(.2,.8,.2,1);overflow:hidden}
-.drawer.open{transform:none}
-.drawer .act-hd{display:flex;align-items:center;gap:10px;padding:18px 18px 14px;border-bottom:1px solid var(--line);position:relative;z-index:1}
-.drawer .act-hd b{font-size:15px}.drawer .act-hd span{color:var(--muted);font-size:12px;margin-left:auto}
-.x{font:inherit;background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;width:30px;height:30px;cursor:pointer}.x:hover{color:var(--text);border-color:var(--red)}
-.drawer .act-body{flex:1;max-height:none;padding:12px 18px;position:relative;z-index:1}
-.auto{flex-direction:row!important;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line);position:relative;z-index:1}.auto input{accent-color:#e11d2e}
-.spot{pointer-events:none;position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,94,.16),transparent 65%);filter:blur(20px);transform:translate(-50%,-50%);opacity:0;transition:opacity .25s}
-.drawer:hover .spot{opacity:1}
-.drawer-tab{position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;z-index:39;font:600 13px "Space Grotesk",system-ui;color:var(--text);background:var(--panel);border:1px solid var(--line);border-right:0;border-radius:0 12px 12px 0;padding:14px 9px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s,right .42s cubic-bezier(.2,.8,.2,1)}
-.drawer-tab:hover{background:var(--panel2);border-color:rgba(225,29,46,.5)}
-.drawer-tab .dot{margin:0}
-body.drawer-open .drawer-tab{right:min(380px,92vw)}
-/* GlowCard (21st.dev spotlight-card) — red border glow that follows the mouse */
-.card,.ws,.ri{position:relative;--x:-200px;--y:-200px}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:grid;grid-template-columns:240px 1fr;overflow:hidden}
+/* sidebar */
+.side{background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 12px;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;font-weight:700;letter-spacing:.06em;font-size:14px}
+.brand i{width:22px;height:22px;background:var(--red);border-radius:5px;transform:rotate(15deg);box-shadow:0 0 16px rgba(225,29,46,.6);position:relative;flex:none}.brand i::after{content:"";position:absolute;inset:7px;background:var(--bg2);border-radius:2px}
+.brand small{display:block;font-weight:500;letter-spacing:0;color:var(--dim);font-size:11px}
+.navlbl{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:8px 10px 6px}
+#nav{display:flex;flex-direction:column;gap:2px}
+#nav button{display:flex;align-items:center;gap:10px;font:500 13.5px Inter,system-ui;color:var(--muted);background:none;border:0;border-radius:8px;padding:8px 10px;cursor:pointer;text-align:left;transition:background .15s,color .15s}
+#nav button svg{width:16px;height:16px;flex:none}
+#nav button:hover{background:var(--panel);color:var(--text)}
+#nav button.on{background:var(--panel2);color:var(--text);box-shadow:inset 2px 0 0 var(--red)}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+#stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#stats div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}#stats b{display:block;font-size:16px}#stats span{font-size:11px;color:var(--dim)}
+#built{font-size:11px;color:var(--dim);padding:10px 4px 0}
+/* main */
+.mainwrap{height:100vh;overflow:auto;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;height:56px;padding:0 28px;border-bottom:1px solid var(--line);background:rgba(9,9,11,.92);backdrop-filter:blur(8px)}
+.crumbs{font-size:13px;color:var(--dim)}.crumbs b{color:var(--text);font-weight:600}
+.topbar .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--panel)}
+main{padding:28px;max-width:1180px;width:100%}
+section{display:none;animation:in .25s ease}section.on{display:block}@keyframes in{from{opacity:0;transform:translateY(4px)}}
+h2{font-size:22px;font-weight:600;letter-spacing:-.01em}h2 em{font-style:normal;color:var(--red2)}
+.sub{color:var(--muted);margin:4px 0 20px;max-width:720px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 13.5px Inter,system-ui;color:#fff;background:var(--red);border:1px solid var(--red);border-radius:9px;padding:9px 16px;cursor:pointer;transition:transform .08s,background .15s,box-shadow .2s;box-shadow:0 0 0 0 rgba(225,29,46,0)}
+.btn:hover{background:#ef2a3b;box-shadow:0 0 24px rgba(225,29,46,.35)}.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--panel);border-color:var(--line);color:var(--text)}.btn.ghost:hover{background:var(--panel2);box-shadow:none;border-color:var(--line2)}
+.btn svg{width:15px;height:15px}
+/* prompt box (21st-style AI input) */
+.prompt{background:var(--panel);border:1px solid var(--line);border-radius:16px;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
+.prompt:focus-within{border-color:rgba(225,29,46,.55);box-shadow:0 0 0 4px rgba(225,29,46,.08)}
+.prompt textarea{display:block;width:100%;min-height:110px;resize:vertical;background:none;border:0;outline:none;color:var(--text);font:15px/1.6 Inter,system-ui;padding:18px 20px 8px}
+.prompt textarea::placeholder{color:var(--dim)}
+.pbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.chipsel{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:0 4px 0 10px;font-size:12px;color:var(--dim)}
+.chipsel select,.chipsel input{background:none;border:0;outline:none;color:var(--text);font:500 12.5px Inter,system-ui;padding:7px 6px;max-width:190px}
+.chipsel input{width:64px}.chipsel select option{background:#111}
+.pbar .sp{flex:1}
+.mic{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:all .2s;position:relative}
+.mic svg{width:17px;height:17px}.mic:hover{border-color:var(--red)}
+.mic.na{opacity:.4}
+body.listening .mic{background:var(--red);border-color:var(--red);box-shadow:0 0 0 6px rgba(225,29,46,.18),0 0 30px rgba(225,29,46,.5);animation:breathe 1.2s infinite}
+@keyframes breathe{50%{box-shadow:0 0 0 12px rgba(225,29,46,.08),0 0 30px rgba(225,29,46,.4)}}
+.send{width:38px;height:38px;border-radius:10px;padding:0;justify-content:center}
+.ref{display:flex;align-items:center;gap:8px;padding:0 20px 10px;color:var(--dim);font-size:12px}.ref input{flex:1;background:none;border:0;border-bottom:1px dashed var(--line);outline:none;color:var(--muted);font:13px Inter;padding:4px 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.chips button{font:500 12.5px Inter,system-ui;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;transition:all .15s}
+.chips button:hover{color:var(--text);border-color:rgba(225,29,46,.5);background:var(--redbg)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-top:18px;align-items:start}
+@media(max-width:1100px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel h3{font-size:14px;font-weight:600}.panel .hint{color:var(--dim);font-size:12px;margin-top:2px}
+.phd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{font:500 12px Inter;color:var(--muted);background:none;border:0;border-radius:6px;padding:6px 10px;cursor:pointer}.seg button.on{background:var(--panel2);color:var(--text);box-shadow:0 1px 0 rgba(255,255,255,.04),0 0 0 1px var(--line2)}
+.wave{margin-top:12px}.wave-t{font:600 10.5px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--red2);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}.wave-t::after{content:"";flex:1;height:1px;background:var(--line)}
+.ws{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:9px;margin-bottom:6px;background:var(--bg2);cursor:pointer;transition:border-color .15s}
+.ws:hover{border-color:var(--line2)}.ws input{margin-top:3px;accent-color:#e11d2e}.ws b{font:600 12.5px "JetBrains Mono",monospace}.ws span{color:var(--muted);font-size:12.5px;display:block}.ws.off{opacity:.45}
+#plan-sum{color:var(--dim);font-size:12px;margin-top:10px}
+details.out{margin-top:12px}details.out summary{cursor:pointer;color:var(--dim);font-size:12.5px;list-style:none}details.out summary::before{content:"▸ "}details.out[open] summary::before{content:"▾ "}
+details.out pre{margin-top:10px;white-space:pre-wrap;font:12.5px/1.6 "JetBrains Mono",monospace;color:#fecaca;background:#050506;border:1px solid var(--line);border-radius:10px;padding:14px;max-height:340px;overflow:auto}
+.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.recent{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.ri{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px}
+.ri div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ri span{color:var(--dim);font-size:11.5px;white-space:nowrap}.ri button{font:500 12px Inter;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:4px 10px;cursor:pointer}.ri button:hover{border-color:var(--red)}
+.tip{color:var(--dim);font-size:12px;margin-top:10px}
+kbd{font:11px "JetBrains Mono";background:var(--panel2);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--muted)}
+/* grids/cards (GlowCard from 21st-dev) */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;--x:-200px;--y:-200px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-2px)}
 .card::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:radial-gradient(220px circle at var(--x) var(--y),var(--red2),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .25s;pointer-events:none}
-.card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(300px circle at var(--x) var(--y),rgba(225,29,46,.12),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(300px circle at var(--x) var(--y),rgba(225,29,46,.09),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
 .card:hover::after,.card:hover::before{opacity:1}
+.card-top{margin-bottom:10px}.badge{font:600 10px "JetBrains Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--red2);background:var(--redbg);border:1px solid rgba(225,29,46,.25);border-radius:6px;padding:3px 7px}
+.card h3{font-size:14.5px;font-weight:600;margin-bottom:4px;word-break:break-word}.card p{color:var(--muted);font-size:13px}
+.card pre{white-space:pre-wrap;font:11.5px/1.5 "JetBrains Mono",monospace;color:#fca5a5;margin-top:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{font:500 12.5px Inter;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}.tabs button.on{color:var(--text);border-color:rgba(225,29,46,.5);background:var(--redbg)}
+.md{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:24px 28px;overflow-x:auto}
+.md h1,.md h2,.md h3{margin:20px 0 8px;font-weight:600}.md h1{font-size:20px}.md h2{font-size:17px}.md h3{font-size:15px}.md h1:first-child,.md h2:first-child{margin-top:0}
+.md p,.md li{color:#d4d4d8;font-size:14px}.md ul,.md ol{padding-left:20px;margin:6px 0}
+.md code{font-family:"JetBrains Mono",monospace;font-size:12px;color:#fca5a5;background:#050506;border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+.md pre{background:#050506;border:1px solid var(--line);padding:12px;border-radius:10px;overflow-x:auto;margin:8px 0}.md pre code{background:none;border:0;padding:0}
+.md table{border-collapse:collapse;margin:10px 0;font-size:13px;width:100%}.md th,.md td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}.md th{background:var(--panel2);font-weight:600}
+.md a{color:var(--red2)}
+.empty{color:var(--dim);font-size:13px;padding:16px;border:1px dashed var(--line2);border-radius:10px}
+/* activity drawer (Spotlight from 21st-dev) */
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(380px,92vw);z-index:40;background:#0b0b0e;border-left:1px solid var(--line);box-shadow:-30px 0 60px rgba(0,0,0,.55);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .42s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.drawer.open{transform:none}
+.drawer .act-hd{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);position:relative;z-index:1}.drawer .act-hd b{font-size:14px;font-weight:600}.drawer .act-hd span{color:var(--dim);font-size:12px;margin-left:auto}
+.x{font:inherit;background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:8px;width:28px;height:28px;cursor:pointer}.x:hover{color:var(--text);border-color:var(--red)}
+.act-body{flex:1;overflow:auto;padding:12px 18px;font:12.5px/1.75 "JetBrains Mono",monospace;position:relative;z-index:1}
+.act-l{color:#d4d4d8;white-space:pre-wrap}.act-l.mute{color:var(--dim);font-family:Inter}.act-l.done{color:#4ade80}.act-l.agent{color:#facc15}.act-l.hf{color:#e879f9}.act-l.err{color:var(--red2)}
+.act-l.new{animation:fadein .4s}@keyframes fadein{from{opacity:0;transform:translateY(4px)}}
+.auto{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);position:relative;z-index:1}.auto input{accent-color:#e11d2e}
+.spot{pointer-events:none;position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,94,.14),transparent 65%);filter:blur(20px);transform:translate(-50%,-50%);opacity:0;transition:opacity .25s}.drawer:hover .spot{opacity:1}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#52525b}.dot.live{background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.2s infinite}@keyframes pulse{50%{opacity:.35}}
+/* speak bubble */
+.voice{position:fixed;right:24px;bottom:24px;z-index:35;width:56px;height:56px;border-radius:50%;border:1px solid rgba(225,29,46,.5);background:radial-gradient(circle at 30% 30%,#ff5a69,#c3121f);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 30px rgba(225,29,46,.35);transition:transform .15s,right .42s cubic-bezier(.2,.8,.2,1)}
+.voice:hover{transform:scale(1.06)}.voice svg{width:22px;height:22px}.voice.na{filter:grayscale(1);opacity:.5}
+body.drawer-open .voice{right:calc(min(380px,92vw) + 24px)}
+body.listening .voice{animation:breathe 1.2s infinite}
+.voice-live{position:fixed;right:92px;bottom:34px;z-index:35;max-width:340px;background:var(--panel);border:1px solid var(--line2);border-radius:14px 14px 4px 14px;padding:9px 14px;font-size:13px;color:var(--text);box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none}
+body.listening .voice-live,.voice-live:not(:empty){opacity:1;transform:none}
+body.drawer-open .voice-live{right:calc(min(380px,92vw) + 92px)}
+@media(max-width:820px){body{grid-template-columns:1fr}.side{display:none}}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-<div class="logo"><i></i>DEGEN ROBLOX</div>
-<div class="stats" id="stats"></div>
-</div></header>
-<nav><div class="wrap" id="nav"></div></nav>
-<main class="wrap">
+<aside class="side">
+<div class="brand"><i></i><div>DEGEN ROBLOX<small>Studio command center</small></div></div>
+<div class="navlbl">Workspace</div>
+<nav id="nav"></nav>
+<div class="side-foot"><div id="stats"></div><div id="built"></div></div>
+</aside>
+<div class="mainwrap">
+<header class="topbar"><div class="crumbs">Degen Roblox / <b id="crumb">Start</b></div><div class="sp"></div>
+<button class="btn ghost" id="open-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>Open Roblox Lead</button>
+<button class="pill" id="drawer-tab" aria-controls="drawer" aria-expanded="false" style="cursor:pointer"><i class="dot" id="act-dot"></i><span>Activity</span></button></header>
+<main>
 
 <section id="brief" class="on">
-<div class="hero"><div><h2>What are we <em>building?</em></h2>
-<p class="sub">Describe it, hit Start. A Roblox Lead window opens, connects to Studio and runs your team — with the style bible, budgets and the spec → build one → check flow baked in.</p></div>
-<div class="row" style="margin:0"><button class="btn ghost" id="open-lead">Open Roblox Lead</button></div></div>
+<h2>What are we <em>building?</em></h2>
+<p class="sub">Type or talk. Start opens a Roblox Lead that connects to Studio and runs your team with your style bible, budgets and the first-try checks.</p>
+<div class="prompt">
+<textarea id="b-desc" placeholder="Describe it… e.g. a pigeon cube pet with flapping wings that follows the player"></textarea>
+<div class="ref"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input id="b-ref" placeholder="Reference (optional): a game study, picture or link"></div>
+<div class="pbar">
+<label class="chipsel">Game<select id="b-game"></select></label>
+<label class="chipsel">Type<select id="b-type">
+<option value="asset">Asset</option><option value="map">Map / zone</option><option value="ui">UI / HUD</option>
+<option value="vfx">Effect</option><option value="anim">Animation</option><option value="system">System / script</option><option value="cooler">10,000x cooler</option></select></label>
+<label class="chipsel">Credits<input id="b-cred" type="number" min="0" value="0"></label>
+<label class="chipsel">Mode<select id="b-team"><option value="yes">Team (lead splits)</option><option value="no">Single job</option></select></label>
+<div class="sp"></div>
+<button class="mic" id="mic" title="Talk (Ctrl+Space)" aria-label="Talk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+<button class="btn send" id="b-start" title="Start task" aria-label="Start task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div></div>
 <div class="chips" id="chips"></div>
-<div class="form">
-<label>Game (style bible)<select id="b-game"></select></label>
-<label>What are we making<select id="b-type">
-<option value="asset">Asset (pet, prop, item, creature)</option><option value="map">Map / zone / lobby</option><option value="ui">UI / HUD / shop</option>
-<option value="vfx">Effect (fireball, aura, hit…)</option><option value="anim">Animation / motion</option><option value="system">Game system / script</option><option value="cooler">Make it 10,000x cooler</option></select></label>
-<label>Credit budget (Higgsfield)<input id="b-cred" type="number" min="0" value="0"></label>
-<label>Run as team in parallel?<select id="b-team"><option value="yes">Yes — lead splits it across agents</option><option value="no">No — one job</option></select></label>
-<label class="full">Describe it (what, where, the vibe)<textarea id="b-desc" placeholder="e.g. a pigeon pet, cube style, with flapping wings, follows the player"></textarea></label>
-<label class="full">Reference (optional: game study, picture, anchor, link)<input id="b-ref" placeholder="e.g. like the pets in Pet Simulator 99, or studies/grow-a-garden"></label>
+<div class="cols">
+<div class="panel" id="plan-box">
+<div class="phd"><div><h3>Recommended split</h3><div class="hint">Same wave runs at the same time. Untick what you don't need.</div></div><div class="seg" id="plan-mode"></div></div>
+<div id="plan"></div><div id="plan-sum"></div>
+<details class="out"><summary>Full brief</summary><pre id="b-out"></pre></details>
+<div class="actions"><button class="btn ghost" id="b-copy">Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
 </div>
-<div class="plan" id="plan-box">
-<div class="plan-hd"><div><h3>Recommended split</h3><p class="tip" style="margin:2px 0 0">Based on what you typed. Untick anything you don't need. Same wave = runs at the same time.</p></div>
-<div class="tabs" id="plan-mode" style="margin:0"></div></div>
-<div id="plan"></div>
-<p class="tip" id="plan-sum"></p>
+<div class="panel"><h3>Recent tasks</h3><div class="hint">Run any of them again in one click.</div><div id="recent" class="recent"></div>
+<p class="tip">Talk with the mic or the red bubble (<kbd>Ctrl</kbd> + <kbd>Space</kbd>). First Start: tick <b>Always allow</b> for "Degen Roblox". Keep Studio open with the MCP switch on.</p></div>
 </div>
-<details class="out"><summary>Show the full brief</summary><pre id="b-out"></pre></details>
-<div class="row"><button class="btn big" id="b-start">▶ Start task</button><button class="btn ghost" id="b-copy">⧉ Copy brief</button><button class="btn ghost" id="b-clear">Clear</button></div>
-<p class="tip">First time: your browser asks to open "Degen Roblox" — tick <b>Always allow</b>. Studio must be open with the MCP switch on.</p>
-<h3 class="rh">Recent tasks</h3><div id="recent" class="recent"></div>
 </section>
 
-<section id="ref">
-<h2>Quick <em>reference</em></h2>
-<p class="sub">Always-current copies of the Roblox playbook — they update when the app opens.</p>
-<div class="tabs" id="ref-tabs"></div>
-<div class="md" id="ref-body"></div>
-</section>
+<section id="ref"><h2>Play<em>book</em></h2><p class="sub">Always-current Roblox rules and research. Updates when the app opens.</p><div class="tabs" id="ref-tabs"></div><div class="md" id="ref-body"></div></section>
+<section id="team"><h2>Roblox <em>team</em></h2><p class="sub">Your agents. The lead hands each piece to the right one, in parallel waves.</p><div class="grid" id="team-grid"></div></section>
+<section id="skills"><h2>Roblox <em>skills</em></h2><p class="sub">What the team reads for Roblox work.</p><div class="grid" id="skills-grid"></div></section>
+<section id="templates"><h2>Studio <em>templates</em></h2><p class="sub">In Studio: Plugins → Degen Templates → Templates. Click to insert. Improved versions you like get saved back.</p><div class="grid" id="tpl-grid"></div></section>
+<section id="games"><h2>Games &amp; <em>studies</em></h2><p class="sub">Style bibles (one per game) and game breakdowns used as examples.</p><div class="tabs" id="game-tabs"></div><div class="md" id="game-body"></div></section>
+<section id="lessons"><h2>Lessons <em>learned</em></h2><p class="sub">What broke and what worked. Every agent reads this first.</p><div class="md" id="lessons-body"></div></section>
 
-<section id="team">
-<h2>Roblox <em>team</em></h2>
-<p class="sub">Your agents. Say "use the Roblox team in parallel" and the lead hands each piece to the right one.</p>
-<div class="grid" id="team-grid"></div>
-</section>
-
-<section id="skills">
-<h2>Roblox <em>skills</em></h2>
-<p class="sub">What Claude reads for Roblox work.</p>
-<div class="grid" id="skills-grid"></div>
-</section>
-
-<section id="templates">
-<h2>Studio <em>templates</em></h2>
-<p class="sub">In Roblox Studio: Plugins tab → Degen Templates → Templates. Click one to insert it.</p>
-<div class="grid" id="tpl-grid"></div>
-</section>
-
-<section id="games">
-<h2>Games &amp; <em>studies</em></h2>
-<p class="sub">Style bibles (one per game) and game breakdowns used as examples.</p>
-<div class="tabs" id="game-tabs"></div>
-<div class="md" id="game-body"></div>
-</section>
-
-<section id="lessons">
-<h2>Lessons <em>learned</em></h2>
-<p class="sub">What broke and what worked in past projects. Every agent reads this before starting.</p>
-<div class="md" id="lessons-body"></div>
-</section>
-
-</main>
-<button class="drawer-tab" id="drawer-tab" aria-controls="drawer" aria-expanded="false"><i class="dot" id="act-dot"></i><span>Activity</span></button>
+</main></div>
 <aside class="drawer" id="drawer" aria-label="Team activity">
 <div class="spot" id="drawer-spot"></div>
 <div class="act-hd"><b>Team activity</b><span id="act-when">idle</span><button class="x" id="drawer-x" aria-label="Close">✕</button></div>
 <div class="act-body" id="act-body"><div class="act-l mute">Nothing running yet. Start a task and you'll see what the team is doing here.</div></div>
 <label class="auto"><input type="checkbox" id="auto-open" checked> Pop open when the team starts working</label>
 </aside>
+<button class="voice" id="voice" title="Talk (Ctrl+Space)" aria-label="Talk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+<div class="voice-live" id="voice-live"></div>
 <script>
 const R=window.RBX||{skills:[],agents:[],templates:[],bibles:[],studies:[],refs:{},built:'—'};
 const md=t=>{if(!t)return'<div class="empty">Nothing here yet.</div>';try{return window.marked?marked.parse(t):'<pre>'+t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>'}catch(e){return'<pre>'+t+'</pre>'}};
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const short=d=>{d=(d||'').replace(/\s+/g,' ');const i=d.search(/ Use (it )?(when|for|whenever) /i);return i>40?d.slice(0,i):d};
-document.getElementById('stats').innerHTML=[[R.agents.length,'agents'],[R.skills.length,'skills'],[R.templates.length,'templates'],[R.bibles.length,'games']].map(([n,l])=>`<span class="stat"><b>${n}</b>${l}</span>`).join('')+`<span class="stat">updated ${esc(R.built)}</span>`;
+document.getElementById('stats').innerHTML=[[R.agents.length,'Agents'],[R.skills.length,'Skills'],[R.templates.length,'Templates'],[R.bibles.length,'Games']].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join('');document.getElementById('built').textContent='Synced '+R.built;
 // nav
-const secs=[['brief','▶ Start'],['ref','Quick reference'],['team','Team'],['skills','Skills'],['templates','Templates'],['games','Games'],['lessons','Lessons']];
+const ICON={"brief": "<path d=\"M5 3l14 9-14 9V3z\"/>", "ref": "<path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/>", "team": "<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/>", "skills": "<path d=\"M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z\"/>", "templates": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/>", "games": "<rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"3\"/><path d=\"M6 12h4M8 10v4M15 11h.01M18 13h.01\"/>", "lessons": "<path d=\"M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z\"/>"};
+const secs=[['brief','Start'],['ref','Playbook'],['team','Team'],['skills','Skills'],['templates','Templates'],['games','Games'],['lessons','Lessons']];
 const nav=document.getElementById('nav');
-secs.forEach(([id,l],i)=>{const b=document.createElement('button');b.textContent=l;if(!i)b.className='on';b.onclick=()=>{nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));try{localStorage.setItem('rbx-tab',id)}catch(e){}};nav.appendChild(b)});
+secs.forEach(([id,l],i)=>{const b=document.createElement('button');b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[id]}</svg><span>${l}</span>`;if(!i)b.className='on';b.onclick=()=>{nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));document.getElementById('crumb').textContent=l;try{localStorage.setItem('rbx-tab',id)}catch(e){}};nav.appendChild(b)});
 try{const t=localStorage.getItem('rbx-tab');if(t){[...nav.children][secs.findIndex(s=>s[0]===t)]?.click()}}catch(e){}
 // cards
-const cards=(el,items,kind)=>{el.innerHTML=items.length?items.map(x=>`<div class="card"><div class="k">${kind}</div><h3>${esc(x.n)}</h3>${x.d?`<p>${esc(short(x.d))}</p>`:''}${x.h?`<pre>${esc(x.h)}</pre>`:''}</div>`).join(''):'<div class="empty">Nothing here yet.</div>'};
+const cards=(el,items,kind)=>{el.innerHTML=items.length?items.map(x=>`<div class="card"><div class="card-top"><span class="badge">${kind}</span></div><h3>${esc(x.n.replace(/^roblox-/,''))}</h3>${x.d?`<p>${esc(short(x.d))}</p>`:''}${x.h?`<pre>${esc(x.h)}</pre>`:''}</div>`).join(''):'<div class="empty">Nothing here yet.</div>'};
 cards(document.getElementById('team-grid'),R.agents,'agent');
 cards(document.getElementById('skills-grid'),R.skills,'skill');
 cards(document.getElementById('tpl-grid'),R.templates,'template');
@@ -265,7 +265,7 @@ function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementB
  L.push(`Finish: short report (what, where in the place, credits spent), add lessons to roblox-dev/lessons.md, save reusable code to roblox-templates (run make_rbxmx.py), commit and push the degen-skill repo.`);
  document.getElementById('b-out').textContent=L.join('\n\n')}
 ['b-game','b-type','b-cred','b-team','b-desc','b-ref'].forEach(id=>document.getElementById(id).addEventListener('input',()=>build()));build();
-document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='⧉ Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};
+document.getElementById('b-copy').onclick=e=>{const t=document.getElementById('b-out').textContent,b=e.currentTarget,ok=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy brief',1500)};(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(_){}ta.remove()})};
 const b64u=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const go=t=>{location.href='degenroblox://task'+(t?'?b='+b64u(t):'')};
 let recent=[];try{recent=JSON.parse(localStorage.getItem('rbx-recent')||'[]')}catch(e){}
@@ -293,6 +293,17 @@ document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.c
   seen=A.length;body.dataset.last=A[A.length-1];body.scrollTop=body.scrollHeight;const last=A[A.length-1]||'';const live=!/Done - waiting/.test(last);dot.classList.toggle('live',live);when.textContent=live?'working…':'idle';if(live&&auto.checked&&!drawer.classList.contains('open')&&seenOnce)setDrawer(true);seenOnce=true}
  function poll(){const s=document.createElement('script');s.src='activity-data.js?t='+Date.now();s.onload=()=>{render();s.remove()};s.onerror=()=>s.remove();document.head.appendChild(s)}
  poll();setInterval(poll,2000)})();
+
+// ---- voice: speak bubble (Web Speech API; Edge/Chrome) ----
+(()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const bubble=document.getElementById('voice'),mic=document.getElementById('mic'),live=document.getElementById('voice-live'),ta=document.getElementById('b-desc');
+ if(!SR){[mic,bubble].forEach(b=>{b.title='Voice needs Microsoft Edge or Chrome';b.classList.add('na')});return}
+ let rec=null,on=false,base='';
+ function start(){if(on)return stop();rec=new SR();rec.lang=navigator.language||'en-US';rec.interimResults=true;rec.continuous=true;base=ta.value?ta.value.replace(/\s*$/,' '):'';
+  rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript}if(fin){base+=fin.trim()+' '}ta.value=(base+tmp).trimStart();live.textContent=tmp||fin||'Listening…';build()};
+  rec.onerror=e=>{live.textContent=e.error==='not-allowed'?'Allow the microphone to talk':'Mic error: '+e.error;setTimeout(stop,1500)};rec.onend=()=>{if(on)stop()};
+  try{rec.start();on=true;document.body.classList.add('listening');live.textContent='Listening… talk now';document.querySelector('[data-sec="brief"]');const s=document.querySelector('#nav button');if(!document.getElementById('brief').classList.contains('on'))s.click()}catch(e){}}
+ function stop(){on=false;try{rec&&rec.stop()}catch(e){}document.body.classList.remove('listening');setTimeout(()=>{if(!on)live.textContent=''},800)}
+ mic.onclick=start;bubble.onclick=start;addEventListener('keydown',e=>{if(e.ctrlKey&&e.code==='Space'){e.preventDefault();start()}})})();
 </script>
 </body>
 </html>
