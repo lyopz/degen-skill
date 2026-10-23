@@ -48,6 +48,9 @@ Always end prompts with the framing from `3d-assets`: `single full-body [thing],
 - **Effects** follow the palette too (fire color, aura color) and the same particle style.
 - Check new assets **next to existing ones** in one scene, not alone.
 
+## Pets & eggs
+For pet/egg games, also read `roblox-design/references/pets-and-eggs.md` and record in the bible: egg style (floating / grounded / machine), base egg mesh, pet style (one of its 6), pet size by tier, variant looks.
+
 ## Example
 `examples/pigeon-cube-pet.md` — real pigeon → flying cube pet with wings, built for 0 credits in Blender (with the Higgsfield alternative).
 

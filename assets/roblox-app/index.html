@@ -204,7 +204,7 @@ cards(document.getElementById('tpl-grid'),R.templates,'template');
 function tabs(tabsEl,bodyEl,list){tabsEl.innerHTML='';if(!list.length){bodyEl.innerHTML='<div class="empty">Nothing here yet.</div>';return}
  list.forEach(([l,t],i)=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>{tabsEl.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));bodyEl.innerHTML=md(t)};tabsEl.appendChild(b);if(!i)b.click()})}
 const F=R.refs||{};
-tabs(document.getElementById('ref-tabs'),document.getElementById('ref-body'),[['First try ✓',F.checklist],['Maps & lighting',F.maps],['UI & buttons',F.ui],['Game feel',F.feel],['Performance',F.perf],['Art style',F.style],['Prompts',F.prompts]].filter(x=>x[1]));
+tabs(document.getElementById('ref-tabs'),document.getElementById('ref-body'),[['First try ✓',F.checklist],['Maps & lighting',F.maps],['UI & buttons',F.ui],['Game feel',F.feel],['Pets & eggs',F.pets],['Performance',F.perf],['Art style',F.style],['Prompts',F.prompts]].filter(x=>x[1]));
 tabs(document.getElementById('game-tabs'),document.getElementById('game-body'),[...R.bibles.map(b=>['🎨 '+b.n,b.t]),...R.studies.map(s=>['🔍 '+s.n,s.t])]);
 document.getElementById('lessons-body').innerHTML=md(F.lessons);
 // brief builder

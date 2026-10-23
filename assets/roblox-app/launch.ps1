@@ -45,6 +45,7 @@ $refs = [ordered]@{
   maps = Read-Text (Join-Path $sk 'roblox-design\references\maps.md')
   ui = Read-Text (Join-Path $sk 'roblox-design\references\ui.md')
   feel = Read-Text (Join-Path $sk 'roblox-design\references\game-feel.md')
+  pets = Read-Text (Join-Path $sk 'roblox-design\references\pets-and-eggs.md')
   perf = Read-Text (Join-Path $sk 'roblox-design\references\performance.md')
   style = Read-Text (Join-Path $sk 'roblox-art-style\SKILL.md')
   lessons = Read-Text (Join-Path $sk 'roblox-dev\lessons.md')
