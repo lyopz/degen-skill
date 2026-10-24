@@ -9,6 +9,7 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 [pet-sim] Rich per-item fields (abilities, shiny, color, fusion) tripled the full client sync (215 KB→ sent every second with generators). Pack instances (codec: only fields the client can't derive from config) and round-trip test unpack = original. Next step is delta sync.
 - 2026-10-23 [pet-sim] Migration tests with injected old-format profiles must only touch the in-memory store; with real DataStores active (Studio API access on) test on a copy — an injected profile would overwrite the developer's real save. Store rolled values as 0–1 quality so rebalancing ranges rescales owned items.
 ## Security & remotes
+- 2026-10-23 [pet-sim] Item machines (fusion, crafting): rules in a pure shared module so client preview and server check run the same code; preview returns a one-use token bound to (player, inputs, choice, tier, 120 s); commit re-validates live data, mutates in one non-yielding block, caches the result per token (repeat = same result, no second consume), saves ~6 s later. Template candidate "ConfirmTokenMachine".
 ## Purchases
 ## Performance
 ## UI
@@ -31,6 +32,8 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 [pet-sim] A whole Model (the hub island) got moved ~11 studs in Studio while building (likely a stray editor drag/select) and covered the plaza; screenshots showed an empty floor. Lock finished map parts (`Locked=true`) and sanity-check a few anchor positions before trusting a capture.
 - 2026-10-23 [pet-sim] `screen_capture` draws BillboardGuis a few studs off to the side of their adornee at wide FOV; judge label placement from a close shot, not the spawn capture.
 ## Workflow (what made building faster)
+- 2026-10-23 [pet-sim] Several agents editing one Studio place: never full-sync scripts — sync an allow-list of your own files and compare Studio line counts with your pre-edit copies before writing.
+- 2026-10-23 Bash heredocs holding Python with triple-quoted strings sometimes fail ("unexpected EOF") in this tool — write the script to a scratch file and run it.
 - 2026-10-23 [pet-sim] Big map builds: one `.lua` per building + shared `lib.lua`, served by `python -m http.server`, run in Studio via loadstring (lib prepended). Each chunk clears + rebuilds itself → fixes are one rerun and the work survives a Studio drop.
 - 2026-10-23 [pet-sim] City boundaries: visible walls 16–30 studs (taller than nearby buildings reads as a fence) + invisible walls (CanQuery off) to Y 1000 + a server bounds check that returns anyone outside to spawn. Brightness 3: light floor tints read white — use ~(80,100,200); lime glow blows out — use ~(45,180,40); gold glow reads lemon.
 - 2026-10-23 [pet-sim] Building parts to the bible's size caps made the pet much tamer than the approved concept (small horns/wings). The approved picture beats the caps: measure part sizes from the concept relative to the body and raise the caps if needed.
