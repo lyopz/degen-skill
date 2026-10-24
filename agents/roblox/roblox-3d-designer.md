@@ -30,3 +30,5 @@ Several assets: finish the first one fully (including the rating) before startin
 - Save tokens: shots only at checkpoints, pass paths not contents, and use one `execute_code` per step.
 - Before you start: read `roblox-dev/lessons.md`. After: add 1–3 lessons and report them.
 - Finish with a short report (what, where, files, credits, rating, lessons) followed by the HANDOFF block.
+
+- **Locked base body:** if the game has a locked pet base body in its style bible, every pet uses it at the same size and shape. Never change body size or shape unless lyopz says so; species differ by color, markings and parts only. (lyopz 2026-10-24)

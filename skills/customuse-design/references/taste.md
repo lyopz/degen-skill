@@ -4,6 +4,7 @@ Read before every design (Customuse, ChatGPT, Blender). Updated after every rati
 Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 
 ## Rules (hard, always / never)
+- Same pet body every time: use the game's locked base body (same size and shape for all pets) unless lyopz says otherwise. (2026-10-24, lyopz)
 - Low poly for Roblox is a hard rule (2026-10-24, lyopz): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building ≤ 5k; stylized low poly over detail.
 - Elemental design = animated (rule): anything with fire, galaxy, lightning, matrix code or another element in its design gets subtle animation (flicker, swirl, crackle, scroll, orbit) for cool visuals - never a static element. (2026-10-24, lyopz)
 - Build it exactly how lyopz describes it; his words beat any preset. (2026-10-22, roblox-art-style)

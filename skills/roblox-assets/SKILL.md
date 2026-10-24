@@ -84,3 +84,5 @@ Full guide and pet/reward effects: `roblox-vfx` skill + `roblox-templates/templa
 - Meshy — AI model to Roblox Studio workflow: https://www.meshy.ai/tutorials/3d-model-for-roblox-workflow
 - Kitsblox — Roblox VFX: https://kitsblox.com/blog/how-to-add-visual-effects-roblox
 - Roblox docs — basic visual effects: https://create.roblox.com/docs/tutorials/curriculums/core/building/create-basic-visual-effects
+
+- **Locked base body:** if the game has a locked pet base body in its style bible, every pet uses it at the same size and shape. Never change body size or shape unless lyopz says so; species differ by color, markings and parts only. (lyopz 2026-10-24)
