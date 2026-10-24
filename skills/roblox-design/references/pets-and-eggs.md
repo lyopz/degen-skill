@@ -32,6 +32,7 @@ How the genre's eggs and pets are designed, so ours feel right on the first try.
 - Total ≤ ~3 s per hatch, **skip/fast mode** after the first few, **auto-hatch** and **multi-hatch** (x3, x8 via game pass) show several eggs side by side in fixed slots *(DevForum framework: slots for up to 3)*.
 - Effects: `PetFX.HatchInFront` (shake → flash → rarity burst, legendary+ bloom + pillar), `PetFX.RarityAura`, `PetFX.Reward` (how-to in `roblox-vfx`).
 - Use templates: `VFX` (sparkles/explosion/shake), `ButtonFeel` (buttons), `RemoteGuard` (hatch remote), `PurchaseHandler` (luck/multi-hatch passes).
+- **Auto/multi-hatch screen** (seen in Tap Simulator REBORN, lyopz liked): world blurred + dimmed; N designed hatch eggs (themed shells, e.g. lava rock with glowing cracks, horns, wings) in fixed slots shake → flash → pets pop in place with **name + "1 in N"**; auto-deleted get a red X before the name, "Shiny" prefix in its own color. Side panel **This Session** (inventory x/max, eggs opened, hatch speed /min, pets kept, auto-deleted, rarest odds) + Best Hatches + Last Hatches; bottom luck bar ("+300% Secret Luck"); big round **Stop** button; toast on stop.
 
 ## 4. Odds & rarity
 - Tiers: **Common, Uncommon, Rare, Epic, Legendary, Mythical, Secret** with colors grey, green, blue, purple, gold, red, rainbow/holo — same everywhere *(creation.dev)*.
@@ -66,6 +67,10 @@ Pick ONE pet style per game (style bible) — mixing breaks the look.
 - **Index with silhouettes** (seen in Tap Simulator REBORN): tabs per variant (Normal/Golden/Diamond/Rainbow), one row per egg with hatch counts, unfound/secret pets as black ??? silhouettes, row complete → claim coins + gems. Egg prompt shows secrets as silhouettes with "1 in 500,000".
 - **Pets menu** (seen in Tap Simulator REBORN): equipped row on top, rest in a grid; each card shows its multiplier and stack count (×37); Equip Best / Unequip All, mass delete, lock, storage count with a + button.
 - **Mastery tracks** (seen in Tap Simulator REBORN): one level track per activity (hatching, secret hatching, tapping, goldens, enchanting), XP from doing it, rewards at set levels (+hatch speed, luck, a cosmetic ring at Lv 100), all listed with locks.
+- **Egg odds card** (seen in Tap Simulator REBORN): pill row (price, variant picker Normal ▾, Auto toggle), rarity-colored tiles with % or "1 in N", secrets on a second row as dark silhouettes with huge odds. Pedestal on dark rock with neon cracks radiating out.
+- **Pet detail card** (same game, lyopz liked 6x): tilted collectible card beside the inventory: variant border (rainbow gradient + glow) + corner ribbon, stars, tag pills (rarity · event/shiny · weight), stats (power ×, gems +%), **pet level bar**, 2 **enchant slots** (empty / locked), Equip + Delete. Grid tiles: diagonal variant ribbon, ×multiplier, stack ×N, green ↑ when better than an equipped pet. Equip = light sweep across the card.
+- **Equip Best by goal** (same game, liked 3x): small toggles (luck / clicks / gems) choose what Equip Best maximizes; tooltip explains it; the button shows the gain ("+150%").
+- **Welcome Back earnings** (same game): equipped pets drawn asleep, "Your pets kept tapping for 8h 29m", big number, one Claim button with coin burst.
 
 
 ## 7. Upgrading pets (evolve · fuse · merge · enchant)

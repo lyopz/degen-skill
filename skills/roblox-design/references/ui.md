@@ -50,6 +50,8 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Right or top-right: quests/objective tracker, timers for events.
 - Modals center with a dim backdrop and a big X (≥ 44 px) top-right.
 - **Clicker variant** (seen in Tap Simulator REBORN, lyopz liked): giant square tap button bottom-center with the per-tap amount above it, pets button (count badge) left and auto-tap toggle right; counters stacked bottom-left with a +/s rate; Shop/Trade as big labeled buttons on the left; icon column on the right opening side panels; boosts row + event banner with countdown top-center.
+- **Tier shop** (seen in Tap Simulator REBORN, lyopz liked): stepped upgrades as a grid of tall cards, each a different color with its own themed icon and "+N" label, green check when owned; a big detail panel on the right (icon, name, cost, Buy/Owned). Shop title also floats over the in-world machine.
+- **Event sign-up**: in-world board (art, date, "Starts in" countdown) with a ProximityPrompt "Sign Up" that opens the native Experience Events Notify Me sheet; small toasts top-left for live world events.
 
 ## Performance
 - Disable the whole `ScreenGui` instead of toggling many `.Visible`.

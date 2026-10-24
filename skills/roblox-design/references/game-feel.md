@@ -20,6 +20,7 @@
 - Eggs/gacha: shake 3 times with increasing intensity, crack, light burst, reveal with rarity color — the wait builds excitement (keep ≤ 3 s, add skip for repeats).
 
 - Clicker feel (seen in Tap Simulator REBORN): `+amount` popups float up from every tap, crits burst coins, rare hatches get a giant floating multiplier sign; live boss events announced by a top banner with a countdown, then a shared health %.
+- World events as cheap juice (same game): "Balloon Party" (coin/gem balloons float up, pop for loot) and "Blood Moon" (sky tint red + luck boost for secrets), each announced by a small toast with an icon.
 
 ## Effects layering
 - 3–5 emitters per effect: core glow, main body, sparks, smoke, light.
