@@ -6,6 +6,8 @@ When a lesson repeats 2–3 times or is clearly general, promote it into `SKILL.
 Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.md`; VFX tuning/testing → `game-feel.md`; Creator Store backdoors + Studio MCP/EditableMesh gotchas → `roblox-dev/SKILL.md`; ChatGPT automation → `roblox-art-style/references/chatgpt-prompts.md`; smooth models → `roblox-modeler`.
 
 ## Data & saving
+- 2026-10-23 [pet-sim] Trading needs globally unique item ids: per-player ids ("x"..NextId) collide across players → upgrade an item to a GUID the first time it's offered and repoint team/loadout/equip refs.
+- 2026-10-23 [pet-sim] Two-player DataStore trade without a central store: prepare record (PendingTrades: gives + exact copies of gets) saved to both → commit both in memory in one non-yielding block → save both; on load, read the partner's record (GetAsync, no lock) and roll forward or undo with the same apply function. Guarantee = no dupe/loss for one server crash; NOT for a failed leave-save + rejoin elsewhere before the partner saves. Test by dropping in-memory profiles unsaved. Gate trading to Studio until a real 2-client + published crash test pass.
 - 2026-10-23 [pet-sim] Rich per-item fields (abilities, shiny, color, fusion) tripled the full client sync (215 KB→ sent every second with generators). Pack instances (codec: only fields the client can't derive from config) and round-trip test unpack = original. Next step is delta sync.
 - 2026-10-23 [pet-sim] Migration tests with injected old-format profiles must only touch the in-memory store; with real DataStores active (Studio API access on) test on a copy — an injected profile would overwrite the developer's real save. Store rolled values as 0–1 quality so rebalancing ranges rescales owned items.
 ## Security & remotes
@@ -35,6 +37,7 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 [pet-sim] A whole Model (the hub island) got moved ~11 studs in Studio while building (likely a stray editor drag/select) and covered the plaza; screenshots showed an empty floor. Lock finished map parts (`Locked=true`) and sanity-check a few anchor positions before trusting a capture.
 - 2026-10-23 [pet-sim] `screen_capture` draws BillboardGuis a few studs off to the side of their adornee at wide FOV; judge label placement from a close shot, not the spawn capture.
 ## Workflow (what made building faster)
+- 2026-10-23 [pet-sim] Many agents sharing one Studio: Play was busy 20+ min and Edit calls failed. Use a lock file in the project (`_studio_play.lock`: "<role> <unix-time>"): check it before Play, hold ≤ 3 min, stop Play, delete it. Lead brokers the slot.
 - 2026-10-23 [pet-sim] Several agents editing one Studio place: never full-sync scripts — sync an allow-list of your own files and compare Studio line counts with your pre-edit copies before writing.
 - 2026-10-23 Bash heredocs holding Python with triple-quoted strings sometimes fail ("unexpected EOF") in this tool — write the script to a scratch file and run it.
 - 2026-10-23 [pet-sim] Big map builds: one `.lua` per building + shared `lib.lua`, served by `python -m http.server`, run in Studio via loadstring (lib prepended). Each chunk clears + rebuilds itself → fixes are one rerun and the work survives a Studio drop.
