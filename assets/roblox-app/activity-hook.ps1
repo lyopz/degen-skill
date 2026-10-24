@@ -11,6 +11,34 @@ $st = if (Test-Path $jf) { [IO.File]::ReadAllText($jf) | ConvertFrom-Json } else
 $lines = [Collections.ArrayList]@(); if ($st.lines) { $st.lines | ForEach-Object { [void]$lines.Add($_) } }
 $active = [ordered]@{}; if ($st.active) { $st.active.PSObject.Properties | ForEach-Object { $active[$_.Name] = $_.Value } }
 $status = if ($st.status) { $st.status } else { 'idle' }
+# "Continue last task": remember which Claude Code session last worked on which project (local only, .degen/sessions.json)
+$sid = [string]$e.session_id
+if ($sid -match '^[\w\-]+$') {
+  $sf = Join-Path $D 'sessions.json'
+  $ss = if (Test-Path $sf) { [IO.File]::ReadAllText($sf) | ConvertFrom-Json } else { $null }
+  $byS = [ordered]@{}; if ($ss.s) { $ss.s.PSObject.Properties | ForEach-Object { $byS[$_.Name] = $_.Value } }
+  $byP = [ordered]@{}; if ($ss.p) { $ss.p.PSObject.Properties | ForEach-Object { $byP[$_.Name] = $_.Value } }
+  $txt = if ($ev -eq 'UserPromptSubmit') { [string]$e.prompt } elseif ($i) { [string]$i.file_path + ' ' + [string]$i.path + ' ' + [string]$i.command } else { '' }
+  $proj = $null
+  foreach ($m in [regex]::Matches($txt, 'RobloxGames[\\/]+([\w\-\.]+)')) {
+    $n = $m.Groups[1].Value
+    if ($n -notlike '.*' -and $n -notlike '_*' -and $n -ne 'imports' -and (Test-Path (Join-Path $RG $n) -PathType Container)) { $proj = (Get-Item (Join-Path $RG $n)).Name; break }
+  }
+  $cur = $byS[$sid]; $changed = $false
+  if (-not $cur) { $cur = [pscustomobject]@{ p = ''; task = '' }; $byS[$sid] = $cur; $changed = $true }
+  if ($ev -eq 'UserPromptSubmit' -and $e.prompt) {
+    $tk = [string]$e.prompt -replace '(?s)^Do this task now \(full brief below[^\n]*\n+', ''
+    $tk = $(if ($tk -match '(?m)^Task:\s*(.+)$') { $Matches[1] } else { ($tk.Trim() -split "`n")[0] }).Trim()
+    if ($tk.Length -gt 140) { $tk = $tk.Substring(0, 140) + '...' }
+    $cur.task = $tk; $changed = $true
+  }
+  if ($proj -and $cur.p -ne $proj) { $cur.p = $proj; $changed = $true }
+  if ($cur.p -and ($changed -or $ev -eq 'Stop')) { $byP[$cur.p] = [ordered]@{ id = $sid; at = (Get-Date -Format 'yyyy-MM-dd HH:mm'); task = $cur.task }; $changed = $true }
+  if ($changed) {
+    while ($byS.Count -gt 40) { $byS.RemoveAt(0) }
+    [IO.File]::WriteAllText($sf, ([ordered]@{ s = $byS; p = $byP } | ConvertTo-Json -Depth 5 -Compress), (New-Object Text.UTF8Encoding $false))
+  }
+}
 $msg = $null; $kind = ''
 switch ($ev) {
   'Stop'             { $msg = 'Done - waiting for you'; $kind = 'done'; $active = [ordered]@{}; $status = 'idle'; $who = 'lead' }

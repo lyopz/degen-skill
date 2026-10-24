@@ -1,5 +1,5 @@
 # Opens a Roblox Lead window (Claude Code) with a task file. Used by the app server, the degenroblox:// link and launch.ps1.
-param([string]$TaskFile)
+param([string]$TaskFile, [string]$Resume)   # -Resume <session id>: reopen that Lead conversation ("Continue last task")
 $app = $PSScriptRoot
 $games = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory -Force -Path (Join-Path $games '.degen') | Out-Null
 $ps = 'powershell -NoProfile -ExecutionPolicy Bypass -File '
@@ -14,4 +14,6 @@ $sf = Join-Path $app 'roblox-hooks.json'
 if (-not $TaskFile -or -not (Test-Path $TaskFile)) {
   $TaskFile = Join-Path $env:TEMP 'degen-roblox-task-open.md'; [IO.File]::WriteAllText($TaskFile, '/roblox', (New-Object Text.UTF8Encoding $false))
 }
-Start-Process powershell.exe -ArgumentList @('-NoExit', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $app 'lead-run.ps1'), $TaskFile, $sf)
+$args2 = @('-NoExit', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"' + (Join-Path $app 'lead-run.ps1') + '"'), ('"' + $TaskFile + '"'), ('"' + $sf + '"'))
+if ($Resume -match '^[\w\-]+$') { $args2 += @('-Resume', $Resume) }
+Start-Process powershell.exe -ArgumentList $args2

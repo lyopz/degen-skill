@@ -2,6 +2,8 @@
 #  - GET  /api/state          activity feed, who is working, pending approvals/questions, projects
 #  - POST /api/answer         {id, answer}  -> answers a question / approval the Lead is waiting on
 #  - POST /api/task           {brief}       -> opens a Roblox Lead window with that task
+#  - POST /api/resume         {project}     -> "Continue last task": reopens that project's last Lead conversation
+#                                              (session ids saved by activity-hook.ps1 in .degen/sessions.json), else starts from its HANDOFF.md
 #  - GET  /f?p=<path>         images/files from ~/RobloxGames or the repo's styles/ folder only
 #  - GET  /api/styles         saved styles ("Save for later" tab), from <repo>/styles/<name>/
 #  - GET  /api/style-draft?project=<name>  that project's bible + rated prompts + pictures, to pre-fill a save
@@ -35,7 +37,9 @@ function SendJson($ctx, $obj) { Send $ctx 200 'application/json; charset=utf-8' 
 function ReadBody($ctx) { $sr = New-Object IO.StreamReader($ctx.Request.InputStream, [Text.Encoding]::UTF8); $t = $sr.ReadToEnd(); $sr.Close(); if ($t) { $t | ConvertFrom-Json } }
 function Under($path, $root) { try { $f = [IO.Path]::GetFullPath($path); $r = [IO.Path]::GetFullPath($root).TrimEnd('\') + '\'; return $f.StartsWith($r, [StringComparison]::OrdinalIgnoreCase) } catch { return $false } }
 
+function Get-LastTasks { $f = Join-Path $D 'sessions.json'; if (Test-Path $f) { ([IO.File]::ReadAllText($f) | ConvertFrom-Json).p } }
 function Get-Projects {
+  $last = Get-LastTasks
   foreach ($d in Get-ChildItem $RG -Directory | Where-Object { $_.Name -notlike '.*' -and $_.Name -ne 'imports' } | Sort-Object LastWriteTime -Descending) {
     $files = @(Get-ChildItem $d.FullName -Recurse -File | Where-Object { $_.FullName -notmatch '\\(checks|tex)\\' })
     $imgs  = @($files | Where-Object { $_.Extension -in '.png','.jpg','.jpeg','.webp' } | Sort-Object LastWriteTime -Descending | Select-Object -First 40 | ForEach-Object { $_.FullName })
@@ -43,7 +47,8 @@ function Get-Projects {
     $docs  = @($files | Where-Object { $_.Extension -eq '.md' } | ForEach-Object { $_.FullName.Substring($d.FullName.Length + 1) })
     $ho = Join-Path $d.FullName 'HANDOFF.md'; $cu = Join-Path $d.FullName 'chatgpt-url.txt'
     [ordered]@{ n = $d.Name; path = $d.FullName; updated = $d.LastWriteTime.ToString('yyyy-MM-dd HH:mm'); images = $imgs; models = $models; docs = $docs
-                chatgpt = $(if (Test-Path $cu) { (Get-Content $cu -TotalCount 1) } else { '' }); handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' }) }
+                chatgpt = $(if (Test-Path $cu) { (Get-Content $cu -TotalCount 1) } else { '' }); handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' })
+                last = $(if ($last -and $last.($d.Name)) { $l = $last.($d.Name); [ordered]@{ at = $l.at; task = $l.task } } else { $null }) }
   }
 }
 # Saved styles (lyopz names them in the app's "Save for later" tab). The ONLY game-derived content that goes to the repo,
@@ -181,6 +186,16 @@ while ($http.IsListening) {
       [IO.File]::WriteAllText($f, $(if ($b.brief) { [string]$b.brief } else { '/roblox' }), $utf8)
       Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $app 'lead-start.ps1'), $f)
       SendJson $ctx @{ ok = $true } }
+    elseif ($path -eq '/api/resume' -and $ctx.Request.HttpMethod -eq 'POST') {
+      $b = ReadBody $ctx; $proj = ([string]$b.project -replace '[^\w\-\. ]', '') -replace '^\.+', ''; $pdir = Join-Path $RG $proj
+      if ($proj -and (Test-Path $pdir -PathType Container) -and (Under $pdir $RG)) {
+        $l = (Get-LastTasks).$proj; $sid = if ($l -and ([string]$l.id -match '^[\w\-]+$')) { [string]$l.id } else { '' }
+        $brief = $(if ($l.task) { "Task: $($l.task)`n" } else { "Task: carry on with the next step in HANDOFF.md`n" }) + "Project folder: ~/RobloxGames/$proj - read its HANDOFF.md and art-style.md first; save new assets there.`nThis is this project's last task: carry on from where it stopped (HANDOFF.md says what is done). If it is already finished, do HANDOFF.md 'Next'."
+        $f = Join-Path $env:TEMP ('degen-roblox-task-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.md'); [IO.File]::WriteAllText($f, $brief, $utf8)
+        $al = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"' + (Join-Path $app 'lead-start.ps1') + '"'), ('"' + $f + '"')); if ($sid) { $al += @('-Resume', $sid) }
+        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList $al
+        SendJson $ctx @{ ok = $true; resumed = [bool]$sid }
+      } else { SendJson $ctx @{ ok = $false } } }
     elseif ($path -eq '/f') {
       $p = [Uri]::UnescapeDataString(($u.Query -replace '^\?p=', ''))
       if (((Under $p $RG) -or (Under $p $ST)) -and (Test-Path $p -PathType Leaf)) { $ext = [IO.Path]::GetExtension($p).ToLower(); Send $ctx 200 ($(if ($MIME[$ext]) { $MIME[$ext] } else { 'application/octet-stream' })) ([IO.File]::ReadAllBytes($p)) }

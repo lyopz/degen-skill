@@ -1,6 +1,6 @@
 # Runs inside the Roblox Lead window. Passes the lead rules + task to Claude Code safely
 # (Windows PowerShell 5.1 breaks arguments that contain double quotes, so they are escaped here).
-param([string]$TaskFile, [string]$Settings)
+param([string]$TaskFile, [string]$Settings, [string]$Resume)
 $app = $PSScriptRoot
 Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
 $env:DEGEN_APP = $app
@@ -21,5 +21,10 @@ if (Test-Path $cu) {
     $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
     [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
   }
+}
+# "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
+if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
+  & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules
+  return
 }
 & claude --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules $prompt
