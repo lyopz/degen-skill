@@ -67,3 +67,5 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 gpt-image as a one-at-a-time queue with an MD5 check against the whole project (stop on duplicate) made 47 pictures, 0 duplicates, 26-54 s each. Same STYLE + FRAME text on every prompt gives a matching set without -Ref.
 - 2026-10-23 powershell -File can't take arrays (-Names a,b,c arrives as one string): pass a comma string and split inside.
 - 2026-10-23 ChatGPT adds painted rust/grunge to scrap or metal subjects even when told "clean": add "smooth clean painted surfaces (no rust, grunge or scratch textures)". "Show the pair as one object, spread from an empty middle gap" gives symmetric ear/wing pairs.
+- 2026-10-23 Device simulator: named presets like "Galaxy A06" can stop being accepted by SetDeviceAsync; use CreateDeviceAsync({Name, Width=800, Height=360, PixelDensity=96}) and set the returned id (works from the Client datamodel in Play).
+- 2026-10-23 Never name a child "Name" (frame.Name returns the property); use "Label".
