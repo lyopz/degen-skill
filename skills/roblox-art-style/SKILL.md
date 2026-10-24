@@ -16,7 +16,7 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 2. **Look up the real subject** (only what's needed): `image_search` / WebSearch "<subject> reference" → note 4–6 **identity traits** that make it read as that thing. Pigeon: plump grey-blue body, small round head, iridescent green-purple neck band, orange eye, short dark beak with white cere, pink feet, two dark wing bars.
 3. **Translate** the traits through the bible's **shape language** and **transform rules** (e.g. cube pets: body = rounded cube, head merged into the cube, features as flat painted shapes, wings = flat rounded paddles, feet = 2 tiny nubs). Keep the identity traits, drop everything else. Write the translation as 3–5 bullets and show lyopz if he's around.
 4. **Pick the cheapest pristine route** (pictures: lyopz's ChatGPT via `references/chatgpt-prompts.md` is free and high quality — default when credits are 0) (from `roblox-assets`):
-   - Simple stylized shapes (cube pets, blocky items, crates, coins) → **build in Blender**, 0 credits, exact match to the bible's palette.
+   - Simple stylized shapes (cube pets, blocky items, crates, coins) → **Studio parts or Customuse + Unity polish** (Blender fallback), 0 credits, exact match to the bible's palette.
    - Organic or detailed (stylized dog, tree, statue, vehicle) → **Higgsfield picture** with the bible's **prompt template + suffix**, and pass 1–2 **approved anchor images** from the bible as reference media so it copies the look → approve → `image_to_3d` (~30).
    - Variants (golden, rainbow, shiny, dark) → **recolor/material swap**, never a new generation.
 5. **Shape check** (`roblox-asset-shapes`): silhouette, primary/secondary/tertiary shapes, bevels — never "a circle on a circle".

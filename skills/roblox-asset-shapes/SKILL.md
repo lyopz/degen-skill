@@ -10,20 +10,20 @@ description: How to give Roblox assets real shape definition so they never look 
 **Rule:** a model is done when its **silhouette alone** says what it is, and it matches the approved concept picture side by side. Plain spheres/cubes stacked = not done.
 
 ## 0. Smooth + light (lyopz rule)
-Never ship a faceted, lumpy, decimated image-to-3D mesh (jagged facets, lumpy surface, lost eyes). Build clean in Blender: few faces + Shade Smooth + Weighted Normal, crisp separate eyes, colors from the picture, small budget (pet 1.5–3k tris). Image-to-3D output = reference only. Details: `references/blender-part-by-part.md`.
+Never ship a faceted, lumpy, decimated image-to-3D mesh (jagged facets, lumpy surface, lost eyes). Clean it: Customuse retopology + Unity polish first; else rebuild in Blender: few faces + Shade Smooth + Weighted Normal, crisp separate eyes, colors from the picture, small budget (pet 1.5–3k tris). Image-to-3D output = reference only. Details: `references/blender-part-by-part.md`.
 
 ## 1. Pick the build route
 | Looks like | Route | Why |
 |---|---|---|
-| Boxy/simple (crate, coin, cube body, pedestal) | Studio parts **with bevels** (or Blender) | 0 credits, exact colors |
-| Curvy/organic (egg with trims, bush, tree, rock, creature, pet design parts) | **Blender** (Blender connector on lyopz's PC) → MeshPart | Studio parts can't do smooth curves without looking stacked |
-| Very detailed / matches a concept picture exactly | **Blender part by part** from the picture; image→3D only as a blockout to trace (never shipped as-is) | smooth, light, matches the picture |
+| Boxy/simple (crate, coin, cube body, pedestal) | Studio parts **with bevels** (or Unity ProBuilder) | 0 credits, exact colors |
+| Curvy/organic (egg with trims, bush, tree, rock, creature, pet design parts) | **ChatGPT picture → Customuse/Higgsfield → Unity polish** (`roblox-3d-pipeline`); Blender only if that fails → MeshPart | Studio parts can't do smooth curves without looking stacked |
+| Very detailed / matches a concept picture exactly | **Customuse/Higgsfield → Unity polish** first; **Blender part by part** from the picture only as a fallback; image→3D only as a blockout to trace (never shipped as-is) | smooth, light, matches the picture |
 | Many copies | 1–3 variants, random rotation/scale ±15% | variety without cost |
 
 **Image → 3D options:** Higgsfield `generate_3d` (credits) · **free:** Tripo, Meshy (free monthly credits, commercial use on free tier per their pages — check), **Hunyuan3D-2** and **TRELLIS 2** (open source, run free on lyopz's PC if the GPU has ~8 GB+ VRAM, unlimited). Always: approved picture first → 3D → Blender cleanup (decimate, fix normals, merge parts, vertex colors / 1 texture) → under budget → import.
 **Pictures:** Higgsfield, or lyopz can make them in ChatGPT and drop them in (no ChatGPT connector here) — same prompt template from `3d-assets/prompts.md`.
 
-## 1b. Blender part by part (default for anything from a picture)
+## 1b. Blender part by part (fallback when Customuse/Higgsfield + Unity can't match the picture)
 Follow `references/blender-part-by-part.md`: parts list from the picture (8–25 parts for a pet, each with size relative to the body, position, shape, color), the right technique per part (curves for manes/tails, inset plates for shells, bent cones for horns/tentacles, shrinkwrapped carved runes…), layered and overlapping, then `scripts/compare_to_siblings.py` → side-by-side with the picture + size/shape check against the project's other models. Fix the 3 biggest differences, repeat.
 
 ## 2. Shape language (every asset)

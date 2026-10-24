@@ -6,6 +6,7 @@ description: Makes Roblox game assets that import cleanly into Roblox Studio and
 <!-- from: lyopz (own workflow). Research sources listed at the bottom. -->
 
 # Roblox Assets
+- **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
 
 Two kinds of 3D work in this library:
 - **Web 3D** (`3d-assets`): looks only; one GLB on a web page.
@@ -21,7 +22,7 @@ Decide per piece, top to bottom. Stop at the first route that can do it well.
 | Need | Best route | Credits |
 |---|---|---|
 | Fire, fireball, smoke, sparks, magic, aura, lightning, trails, explosions, "legs on fire" | **Roblox VFX** (ParticleEmitter, Beam, Trail, Light, Attachments) — not a 3D model | 0 |
-| Simple shapes: crates, walls, platforms, coins, orbs, buttons, low-poly rocks | **Roblox parts / Blender** (connector on his PC) | 0 |
+| Simple shapes: crates, walls, platforms, coins, orbs, buttons, low-poly rocks | **Roblox parts / Unity ProBuilder** (Blender fallback) | 0 |
 | Spinning, bobbing, flying, opening doors, conveyor, projectiles | **Scripted motion** (TweenService / CFrame in a script) | 0 |
 | Detailed unique prop, creature, pet, weapon, statue | **Higgsfield**: picture (few) → `image_to_3d` textured (30) | ~35 |
 | That model needs to walk / attack / idle | **Blender rig + animation** (free) — or Higgsfield `3d_rigging` only for human-shaped bodies | 0 (or rig cost) |
@@ -32,7 +33,7 @@ Always tell lyopz the credit estimate before spending, and generate the cheap pi
 ## 2. Make the model (when one is needed)
 Follow `3d-assets` steps 2–4 (picture → `image_to_3d` → `shrink_glb.py --size 1024`), with Roblox prompt words: `low-poly stylized game asset, chunky readable shapes, bright saturated colors, clean silhouette`. For anything that will be rigged: **T-pose / legs straight and apart, arms out, mouth closed**, plain background, three-quarter view.
 
-## 3. Make it Roblox-ready (Blender, via the Blender connector)
+## 3. Make it Roblox-ready (Unity first via `roblox-3d-pipeline`; Blender connector as fallback)
 Limits and budgets (2026):
 - **20,000 triangles max per mesh**; rigid accessories 4,000. Budgets: tiny prop 50–500, normal prop 1k–10k (repeated props ~3–4k), big environment piece 10–18k, hero asset 10–20k.
 - **Textures 1024×1024 max** in practice; 256 for small (~5 stud) props, 512 for medium (~10 stud).

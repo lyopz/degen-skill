@@ -6,6 +6,7 @@ description: Full picture-to-Roblox 3D pipeline for premium game assets. Goes Ch
 <!-- from: lyopz (2026-10-24): "use Unity to polish better, Blender struggles with designing; Higgsfield and/or Customuse; import to Roblox, then pass to whoever is next; grow as I add 3D repos". -->
 
 # Roblox 3D pipeline (picture → 3D → Unity polish → Studio → next agent)
+- **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
 
 Run by the **roblox-3d-designer** agent (`agents/roblox/roblox-3d-designer.md`). Other agents can read it too.
 

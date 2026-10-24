@@ -38,14 +38,14 @@ Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks o
    - Commit + push `~/.claude/degen-skill` with the other end-of-task commits (taste.md only; the bible and feedback logs stay local).
 
 ## Also for ChatGPT pictures and Blender models
-The taste file is for **every** design, not only Customuse. Any agent showing lyopz a design can use `design-feedback.ps1 -Tool chatgpt` (or `blender`) so the log covers all of it.
+The taste file is for **every** design, not only Customuse. Any agent showing lyopz a design can use `design-feedback.ps1 -Tool chatgpt` (or `unity` / `blender`) so the log covers all of it.
 
 ## Picture → low-poly 3D (the default model route)
 1. ChatGPT makes the picture (`gpt-image.ps1`, one asset, white background).
 2. Customuse turns it into a **low-poly, textured** model: image-to-3D, pets ~1.5–3k tris, props ≤ 5k, export **.glb**.
    - MCP tools loaded → use them (upload the picture, image-to-3D, low poly, texture, export).
    - Not loaded → `powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project <project> -Name <thing> -Image "<picture>" -From <agent>`: the picture is copied to the clipboard, Customuse opens, a card in the app shows the steps, and the exported .glb is picked up from Downloads into `~/RobloxGames/<project>/customuse/`.
-3. Import the .glb into Studio (scale to the bible's studs, origin at base). Blender only for small fixes.
+3. Import the .glb into Studio (scale to the bible's studs, origin at base). Polish in Unity (`roblox-3d-pipeline`); Blender only if Unity can't.
 4. Rate it (`design-feedback.ps1`) and learn (step 7 above).
 
 ## Also good in Customuse

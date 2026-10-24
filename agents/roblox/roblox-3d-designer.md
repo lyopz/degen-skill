@@ -19,6 +19,7 @@ Follow `roblox-3d-pipeline/SKILL.md` stages 1–6 for each asset you get:
 Several assets: finish the first one fully (including the rating) before starting the rest, then reuse its region rules and prompt wording for the rest of the set.
 
 ## Always
+- **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
 - Execute, don't ask. The only pop-ups are the Import 3D click and the design rating.
 - His words beat the preset. Every "Never" in taste.md is a hard rule. Glows are subtle. Elemental = animated (hand that to the vfx-artist).
 - Game content stays local: `~/RobloxGames/<project>/models/<asset>/` (picture, raw glb, shots, export, notes.md). Never open another project's folder without lyopz's OK. Unity's `Assets/Degen/<asset>` is a workbench, so delete an asset's folder there once it's exported if the project gets big.

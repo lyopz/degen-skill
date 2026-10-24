@@ -6,6 +6,7 @@ description: Turns any idea into 3D assets or a whole 3D scene (single props or 
 <!-- from: lyopz (own workflow, first used for the robot chicken in the Degen Skills app) -->
 
 # 3D Assets
+- **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
 
 ## Two kinds of 3D — pick first
 | | **Web 3D** (this skill) | **Roblox 3D** (`roblox-assets`) |
@@ -15,9 +16,9 @@ description: Turns any idea into 3D assets or a whole 3D scene (single props or 
 | Motion | three.js spin/tilt, optional baked animation | Blender rig + Animation Editor, scripted motion, ParticleEmitter/Beam/Trail effects |
 | Polish rules | `three-best-practices` | `roblox-design` (meta, UI sizes, game feel, "10,000x cooler") |
 
-**Credits rule (both):** use the cheapest route that still looks pristine — Roblox VFX / Blender / scripted motion cost 0; Higgsfield only for detailed unique models (~35 per model, picture first so the look is approved before the 3D step). Many copies = 1–3 variants duplicated.
+**Credits rule (both):** use the cheapest route that still looks pristine — Roblox VFX / Unity / scripted motion cost 0; Higgsfield only for detailed unique models (~35 per model, picture first so the look is approved before the 3D step). Many copies = 1–3 variants duplicated.
 
-A general process for any 3D request: **idea → break it into assets → picture of each → 3D model of each (Higgsfield or Blender) → assemble the scene in Blender → shrink/export → use it.** (First used to make a robot chicken, but it works for anything.)
+A general process for any 3D request: **idea → break it into assets → picture of each → 3D model of each (Customuse/Higgsfield) → polish + assemble in Unity (Blender fallback) → shrink/export → use it.** (First used to make a robot chicken, but it works for anything.)
 
 ## 0. Break the request down
 - **One object** ("a sword", "a robot chicken") → steps 2–4, one model.
@@ -51,7 +52,7 @@ whole object fully visible, centered, plain neutral grey background, soft even l
 ## 4. Shrink it
 `python shrink_glb.py in.glb out.glb --size 1024` (in this folder). Textures are usually most of the size (the chicken: 5 MB → 2.3 MB). Roblox's max texture size is 1024, so always use 1024 for Roblox.
 
-## 5. Assemble a scene in Blender (Blender connector on his PC)
+## 5. Assemble a scene (Roblox: Unity first via `roblox-3d-pipeline`/`unity-mcp`; fallback: Blender connector on his PC)
 Use the `mcp__remote-devices__Blender__*` tools (`execute_blender_code`, screenshots, `render_viewport_to_path`):
 1. Build the base: e.g. island = subdivided plane + noise displacement, sand/grass material by height, ocean plane with a blue/transparent material.
 2. Import each GLB: `bpy.ops.import_scene.gltf(filepath=...)` (stage/copy the GLBs into a folder Blender can reach on his PC).
