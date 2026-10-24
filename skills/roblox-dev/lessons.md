@@ -64,3 +64,6 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 Store meshes come textured and MeshPart.Color doesn't tint the texture: to restyle, remove TextureID and recolour the whole mesh; window insets/ledges still read as cartoon "clay" buildings at one part each.
 - 2026-10-23 Check store pack mesh names before using: PolygonCity_* (or other Synty names) = reupload of a paid pack, doubtful licence -> skip.
 - 2026-10-23 Two background python -m http.server jobs on one port fail silently (404); give each agent its own port.
+- 2026-10-23 gpt-image as a one-at-a-time queue with an MD5 check against the whole project (stop on duplicate) made 47 pictures, 0 duplicates, 26-54 s each. Same STYLE + FRAME text on every prompt gives a matching set without -Ref.
+- 2026-10-23 powershell -File can't take arrays (-Names a,b,c arrives as one string): pass a comma string and split inside.
+- 2026-10-23 ChatGPT adds painted rust/grunge to scrap or metal subjects even when told "clean": add "smooth clean painted surfaces (no rust, grunge or scratch textures)". "Show the pair as one object, spread from an empty middle gap" gives symmetric ear/wing pairs.
