@@ -10,7 +10,7 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 - Build it exactly how lyopz describes it; his words beat any preset. (2026-10-22, roblox-art-style)
 - Smooth, light, clean shapes; never a lumpy decimated mesh. (2026-10-23, models)
 - One asset per picture, white background. (2026-10-23, pictures)
-- Pet mouths = the sketchy grin (hard rule): every pet gets a wide hand-drawn grin with chunky uneven white teeth and black ink crosshatch shading; rarer pets get a bigger, more dramatic version (wider, fangs, wraps round the body, ink drips). Never a plain rounded open mouth with a coloured outline (that's slop). Tiers + prompt words: `roblox-art-style/references/pet-mouths.md`, reference `pet-mouths/liked-grin.jpg`. (2026-10-24, lyopz)
+- Pet mouths = the sketchy grin (hard rule): every pet gets a wide hand-drawn grin with chunky uneven white teeth and black ink crosshatch shading; it wraps around 3 sides (front, left, right); rarer pets get a more dramatic version or style (21 styles by rarity from his mouth sheet: fangs, crystal, void, demon, cyber, ooze...). Never a plain rounded open mouth with a coloured outline (that's slop). Tiers + prompt words: `roblox-art-style/references/pet-mouths.md`, reference `pet-mouths/liked-grin.jpg`. (2026-10-24, lyopz)
 - Glossy bold game UI (2x liked): white cards with thick colored borders, chunky outlined titles, rarity/variant-colored tiles, big green primary + red delete buttons. Never thin flat "web" UI. (2026-10-24, play session x2)
 
 - Glows are subtle: far less bright than default — small emissive accents, low bloom, never blown-out neon sheets. (2026-10-23, game review)
