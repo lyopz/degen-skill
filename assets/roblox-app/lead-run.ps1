@@ -45,9 +45,15 @@ if ($extra.Count) {
 # Unity set up -> open the polish project minimized so unityMCP connects by itself (it pops up while designing)
 if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfile -File (Join-Path $app 'unity-open.ps1') | Out-Null }
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
-if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
-  & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
-} else {
-  & claude --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
+try {
+  if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
+    & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
+  } else {
+    & claude --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
+  }
+} finally {
+  # Claude can leave the window in mouse-tracking mode, so mouse moves print junk like [555;104;13M. Turn it all off.
+  $e = [char]27
+  [Console]::Write("$e[?1000l$e[?1002l$e[?1003l$e[?1006l$e[?1015l$e[?2004l$e[?25h")
 }
 Remove-Item $leadFile -Force -ErrorAction SilentlyContinue
