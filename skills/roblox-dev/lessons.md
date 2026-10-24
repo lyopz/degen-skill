@@ -18,8 +18,11 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 [pet-sim] Under the Studio Device Simulator, MCP `user_mouse_input` clicks don't reach GUI buttons → test menus via keyboard shortcuts or by toggling Visible; device simulator setters work from the Client datamodel in Play.
 - 2026-10-23 [pet-sim] Global UIScale over Scale-sized UI: size the root at 1/scale (centered) so children still fill the screen; clamp the low end so 64 design-px buttons stay ≥ 44 px. ButtonFeel.Apply sets a "Feel" attribute — apply to the live root, never a Templates folder (clones would skip feel).
 ## Animation & VFX
+- 2026-10-23 [pet-sim] Brightness 3: Reflectance ≥ 0.1 washes colors toward the sky (gold → peach) — keep ≤ 0.05, sell "polished" with color + a gleam/light; Foil crinkle reads as noise at pet scale. Neon #39FF7A renders cyan under Bloom → use #14B832. Big Neon sheets blow out → dark SmoothPlastic + scrolling glowing Texture (Texture Color3 > 1 = fake glow).
+- 2026-10-23 [pet-sim] Seamless overlay textures: generate procedurally (System.Drawing, draw each primitive at ±size offsets) instead of ChatGPT. Particles and lights don't render in ViewportFrames — previews must read through color/gloss. Animate overlays only near the camera + on screen (tag-driven animator with distance/viewport culling).
 - 2026-10-23 [pet-sim] Blender Standard view transform: strong emission on light vertex colors clips to pink/white. Use a dark base + deep violet emission; in Studio make glow pieces separate meshes set to Neon.
 ## Studio / tooling (MCP, import, plugins)
+- 2026-10-23 [pet-sim] PowerShell gotchas for Luau files: variables are case-insensitive ($s overwrites $S); `Set-Content -Encoding utf8` adds a BOM that Luau loadstring rejects; PS 5.1 Get-Content reads BOM-less UTF-8 as ANSI → use [IO.File] with UTF8Encoding($false). Parallel agents: one http.server port each.
 - 2026-10-23 [pet-sim] `require` of a client controller from MCP execute_luau gives a fresh module copy with empty state — to inspect client data, listen to the sync remote yourself.
 - 2026-10-23 [pet-sim] Syncing scripts into Studio: serve the scripts folder with `python -m http.server --bind 127.0.0.1`, GetAsync with HttpEnabled on only during the fetch, normalize `
 
