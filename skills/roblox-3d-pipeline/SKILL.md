@@ -21,7 +21,7 @@ Run by the **roblox-3d-designer** agent (`agents/roblox/roblox-3d-designer.md`).
 ## Stages
 Each stage writes into `~/RobloxGames/<project>/models/<asset>/` (local only, never the repo).
 
-**1. Picture (always ChatGPT).** Write the 8-part prompt (`roblox-art-style/references/chatgpt-prompts.md`). Pets get the "Premium polished pets" block plus matching taste Likes. Run `gpt-image.ps1`. For a change to an existing asset, use `-Ref <current picture>` ("edit this exact picture, only change X"). No approval step.
+**1. Picture (always ChatGPT).** Write the 8-part prompt (`roblox-art-style/references/chatgpt-prompts.md`). Pets get the "Premium polished pets" block, the sketchy grin for their rarity (`roblox-art-style/references/pet-mouths.md`), plus matching taste Likes. Run `gpt-image.ps1`. For a change to an existing asset, use `-Ref <current picture>` ("edit this exact picture, only change X"). No approval step.
 
 **2. 3D model.** Pick it from the registry ("3D generators"):
 - Default: **Customuse** image-to-3D, low poly, textured (pets 1.5–3k tris, props ≤ 5k). Use `mcp__customuse__*` (customuse_upload_media → customuse_generate on an image-to-3D node from customuse_list_node_types → poll customuse_get_workflow → read meshUrl). Not loaded → `customuse-3d.ps1`.
@@ -60,6 +60,7 @@ Full list in `references/quality-gates.md`.
 - **Low poly (hard):** `Budget` says PASS (pet 1.5–3k, max 4k; prop 300–2k; accessory ≤ 1.5k; building ≤ 5k). Export refuses over budget. Textures ≤ 1024, pivot at base, size in studs per the bible.
 - Material contrast reads: body matte, armor/trim shinier, glow subtle. No blown-out neon.
 - Smooth surfaces. No lumps, holes or stretched texture.
+- Pets: grin crisp and matches the rarity tier; otherwise a mouth decal (`pet-mouths.md` → "On the 3D model").
 - Studio screenshot looks as good as the Unity shot. If it doesn't, check the SurfaceAppearance maps.
 
 ## Gotchas from projects (promoted 2026-10-24)

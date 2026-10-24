@@ -10,6 +10,7 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 - Build it exactly how lyopz describes it; his words beat any preset. (2026-10-22, roblox-art-style)
 - Smooth, light, clean shapes; never a lumpy decimated mesh. (2026-10-23, models)
 - One asset per picture, white background. (2026-10-23, pictures)
+- Pet mouths = the sketchy grin (hard rule): every pet gets a wide hand-drawn grin with chunky uneven white teeth and black ink crosshatch shading; rarer pets get a bigger, more dramatic version (wider, fangs, wraps round the body, ink drips). Never a plain rounded open mouth with a coloured outline (that's slop). Tiers + prompt words: `roblox-art-style/references/pet-mouths.md`, reference `pet-mouths/liked-grin.jpg`. (2026-10-24, lyopz)
 - Glossy bold game UI (2x liked): white cards with thick colored borders, chunky outlined titles, rarity/variant-colored tiles, big green primary + red delete buttons. Never thin flat "web" UI. (2026-10-24, play session x2)
 
 - Glows are subtle: far less bright than default — small emissive accents, low bloom, never blown-out neon sheets. (2026-10-23, game review)
@@ -38,4 +39,5 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 - Portals keep one base look (rounded arch + animated swirl) but each gets unique depth: loose/protruding bricks, chipped eroded edges, a crumbling corner, rubble, as if worn or tampered with over time; dressed with props from its island (e.g. falling-code pillars for a digital world). (2026-10-24, lyopz)
 
 ## Dislikes
-- Cartoonish pets: round blobs, huge googly eyes, big smiles, pastel candy colors, flat plastic look. (2026-10-23, pets)
+- Cartoonish pets: round blobs, huge googly eyes, cute cartoon smiles, pastel candy colors, flat plastic look. (2026-10-23, pets; the wide sketchy ink grin is the exception, see Rules)
+- Plain rounded open mouths: smooth capsule/oval hole with a smooth orange/gold outline, clean vector shapes, no ink. "Slop." (2026-10-24, lyopz)

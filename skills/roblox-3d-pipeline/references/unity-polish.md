@@ -43,6 +43,7 @@ Premium pet (the default, matching the "Premium polished pets" block):
 ```json
 {"rules":[
  {"label":"gold","hueMin":35,"hueMax":58,"satMin":0.45,"valMin":0.5,"metal":1,"smooth":0.78,"glow":0},
+ {"label":"teeth","hueMin":0,"hueMax":360,"satMin":0,"satMax":0.12,"valMin":0.85,"metal":0,"smooth":0.3,"glow":0},
  {"label":"silver","hueMin":0,"hueMax":360,"satMin":0,"satMax":0.15,"valMin":0.75,"valMax":0.95,"metal":1,"smooth":0.7,"glow":0},
  {"label":"crystal","hueMin":165,"hueMax":215,"satMin":0.45,"valMin":0.55,"metal":0,"smooth":0.92,"glow":0.45},
  {"label":"eyes","hueMin":0,"hueMax":360,"satMin":0.5,"valMin":0.92,"metal":0,"smooth":0.95,"glow":0.35}
@@ -50,6 +51,7 @@ Premium pet (the default, matching the "Premium polished pets" block):
 ```
 - Change the crystal hue to the pet's glow colour: fire ≈ 15–40, toxic ≈ 85–140, ice ≈ 180–210, void ≈ 260–300.
 - Armor plates that should be glossy but not metal: add `{"label":"armor","hueMin":<armor hue>,...,"metal":0,"smooth":0.65,"glow":0}` before the default.
+- `teeth` keeps the pet's white grin matte (otherwise silver turns it into metal). Ink stays in the default (matte). If the grin is blurry in the shots, follow `roblox-art-style/references/pet-mouths.md` → "On the 3D model" (separate mouth decal).
 - Silver catches white highlights too. Drop it when the pet has white fur or a white body.
 - Elemental cracks on dark rock (liked 2x): `{"label":"cracks","hueMin":10,"hueMax":45,"satMin":0.6,"valMin":0.7,"metal":0,"smooth":0.5,"glow":0.55}` with `defaultSmooth` 0.15 (matte rock).
 

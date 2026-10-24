@@ -17,6 +17,7 @@ Copy to `~/RobloxGames/<project>/art-style.md` (local only, never commit). Every
 ## Color
 - Palette (hex): <#.... main, #.... secondary, #.... accent, #.... dark, #.... light, ...>
 - Rarity colors: Common #9ca3af · Uncommon #22c55e · Rare #3b82f6 · Epic #a855f7 · Legendary #f59e0b · Mythical #ef4444 · Secret rainbow/holo
+- Mouths: sketchy grin per rarity (`pet-mouths.md`); note this game's mouth decal ids / picture per tier here once made
 - Never use: <neon green, pure black ...>
 
 ## Surface

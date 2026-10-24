@@ -40,6 +40,7 @@ Follow `references/blender-part-by-part.md`: parts list from the picture (8–25
 
 ## 3. Recipes
 **Egg (showcase):** egg mesh (not a sphere: wider bottom, height ≈ 1.25× width) · 2–3 trim bands that wrap and slightly stick out (bevelled, gold) · 3–6 gems set into the bands (faceted, emissive core) · crown/crystal top for higher tiers · rune/pattern decal on the shell · pedestal = bevelled stone cylinder with chipped rim + glowing ring inset. Motion: bob + slow spin + light.
+**Pet face:** small sharp gem eyes + the sketchy grin (wide, chunky uneven white teeth, black ink crosshatch), bigger and wilder for rarer pets. Tiers and how to put it on the mesh (texture, or Decal / curved mouth plate): `roblox-art-style/references/pet-mouths.md`. Never a smooth round open mouth with a coloured rim.
 **Bush:** 5–9 **leaf clumps** (each a lumpy, faceted blob or layered leaf cards), different sizes, overlapping, flattened bottom sitting into the ground, a few clumps poking out of the outline; 2 shades + top highlight; optional berries/flowers (tertiary). Never one sphere or 3 equal spheres.
 **Tree:** trunk tapers and bends, root flare at the base, 2–3 branches; canopy = 3–7 clumps (same as bush) offset upward and outward; darker under-canopy. Palm: segmented trunk with rings, fronds as curved bevelled blades with a notch, coconuts as tertiary.
 **Rock:** faceted chunk (decimate a subdivided cube + random displace), flat-ish bottom, 1 big face + chipped edges, cluster of 3 sizes, moss/snow cap on top faces.

@@ -55,7 +55,7 @@ Always end prompts with the framing from `3d-assets`: `single full-body [thing],
 - Check new assets **next to existing ones** in one scene, not alone.
 
 ## Pets & eggs
-For pet/egg games, also read `roblox-design/references/pets-and-eggs.md` and record in the bible: egg style (floating / grounded / machine), base egg mesh, pet style (one of its 6), pet size by tier, variant looks.
+For pet/egg games, also read `roblox-design/references/pets-and-eggs.md` and record in the bible: egg style (floating / grounded / machine), base egg mesh, pet style (one of its 6), pet size by tier, variant looks. Every pet face uses the sketchy grin by rarity tier: `references/pet-mouths.md` (lyopz's hard rule).
 
 ## Example
 `examples/pigeon-cube-pet.md` — real pigeon → flying cube pet with wings, built for 0 credits in Blender (with the Higgsfield alternative).
