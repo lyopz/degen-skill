@@ -48,7 +48,7 @@ Unity not connected? Skip stage 3, import the Customuse .glb directly, and say "
 lyopz wants to see it designing. Keep each step on screen:
 - **ChatGPT:** `gpt-image.ps1` already brings the Edge window to the front.
 - **Customuse / Higgsfield:** right after starting a generation, open its page so he sees it build: `Start-Process "<canvasUrl>"` (Customuse returns canvasUrl) or the Higgsfield result link.
-- **Unity:** the Lead opens it visible. Run `unity-open.ps1` before stage 3 to bring it to the front. `Import`, `ToUrpLit` and `PaintRegions` frame the model in the Scene view by themselves; call `DegenPolish.Focus(name)` after every `manage_material` tweak too. Do material changes one region at a time, not all in one hidden batch.
+- **Unity:** the Lead opens it minimized. Run `unity-open.ps1 -Show` at the start of stage 3 so it pops up, and `unity-open.ps1 -Hide` after the export to minimize it again (lyopz's choice). `Import`, `ToUrpLit` and `PaintRegions` frame the model in the Scene view by themselves; call `DegenPolish.Focus(name)` after every `manage_material` tweak too. Do material changes one region at a time, not all in one hidden batch.
 - **Studio:** after the import, select the model and point the Studio camera at it (`roblox-import.md` step 6).
 
 ## Quality gates (all must pass before handoff)
