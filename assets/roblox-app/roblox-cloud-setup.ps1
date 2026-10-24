@@ -16,28 +16,29 @@ if (-not $Key.Trim()) {
   $sec = Read-Host 'Paste your Roblox Open Cloud API key (hidden)' -AsSecureString
   $Key = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
 }
-$Key = $Key.Trim()
+$Key = $Key.Trim().Trim('"', "'").Trim()
 if (-not $Key) { 'No key given. Nothing saved.'; exit 1 }
 
-# Try to read the owner from the key itself (best effort; falls back to asking).
-if (-not $UserId -and -not $GroupId) {
-  try {
-    $info = Invoke-RestMethod -Method Post -Uri 'https://apis.roblox.com/api-keys/v1/introspect' -ContentType 'application/json' -Body (@{ apiKey = $Key } | ConvertTo-Json)
-    if ($info.authorizedUserId) { $UserId = [string]$info.authorizedUserId; "Key belongs to user $UserId." }
-  } catch {}
+# Ask Roblox about the key (introspect): owner, enabled, scopes. Best effort.
+$info = $null
+try { $info = Invoke-RestMethod -Method Post -Uri 'https://apis.roblox.com/api-keys/v1/introspect' -ContentType 'application/json' -Body (@{ apiKey = $Key } | ConvertTo-Json) } catch {}
+if ($info) {
+  if ($info.enabled -eq $false -or $info.expired -eq $true) { 'Roblox says this key is turned off or expired. Turn it on (or make a new one) on the Credentials page, then run this again.'; exit 1 }
+  if ($info.authorizedUserId -and -not $UserId -and -not $GroupId) { $UserId = [string]$info.authorizedUserId; "Key belongs to user $UserId." }
+  $sc = @($info.scopes | ForEach-Object { "$($_.name) ($(@($_.operations) -join ','))" }) -join '; '
+  if ($sc) { "Key permissions: $sc" }
+  if ($sc -and $sc -notmatch 'asset') { 'This key has no Assets permission. Edit it on the Credentials page: Access Permissions -> Assets -> Read + Write, Save. Then run this again.'; exit 1 }
 }
 if (-not $UserId -and -not $GroupId) { $UserId = (Read-Host 'Your Roblox user id (number in your profile link roblox.com/users/<id>/profile)').Trim() }
 if ($UserId -and $UserId -notmatch '^\d+$') { 'User id must be a number.'; exit 1 }
 if ($GroupId -and $GroupId -notmatch '^\d+$') { 'Group id must be a number.'; exit 1 }
 
-# Check the key works: a made-up operation id gives 404/400 with a good key, 401/403 with a bad one.
-$ok = $true
+# Quick check. Only 401 means a wrong key; 403/404 on this made-up operation is normal for a good key.
 try { Invoke-RestMethod -Uri 'https://apis.roblox.com/assets/v1/operations/00000000-0000-0000-0000-000000000000' -Headers @{ 'x-api-key' = $Key } | Out-Null }
 catch {
   $code = 0; if ($_.Exception.Response) { $code = [int]$_.Exception.Response.StatusCode }
-  if ($code -eq 401 -or $code -eq 403) { $ok = $false }
+  if ($code -eq 401 -and -not $info) { 'Roblox says the key is wrong (401). Copy it again from the Credentials page (whole key, nothing extra), then run this again. A brand-new key can take a minute to start working.'; exit 1 }
 }
-if (-not $ok) { 'Roblox refused the key (401/403). Check it has Assets Read + Write and IP 0.0.0.0/0, then run this again.'; exit 1 }
 
 $enc = ConvertTo-SecureString $Key -AsPlainText -Force | ConvertFrom-SecureString   # Windows DPAPI: only this user on this PC can read it
 $cfg = [ordered]@{ key = $enc; userId = $UserId; groupId = $GroupId; saved = (Get-Date -Format 'yyyy-MM-dd') }
