@@ -49,6 +49,7 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Bottom-right: main action(s) for mobile. Bottom-center: hotbar (fighting/tools).
 - Right or top-right: quests/objective tracker, timers for events.
 - Modals center with a dim backdrop and a big X (≥ 44 px) top-right.
+- **Clicker variant** (seen in Tap Simulator REBORN, lyopz liked): giant square tap button bottom-center with the per-tap amount above it, pets button (count badge) left and auto-tap toggle right; counters stacked bottom-left with a +/s rate; Shop/Trade as big labeled buttons on the left; icon column on the right opening side panels; boosts row + event banner with countdown top-center.
 
 ## Performance
 - Disable the whole `ScreenGui` instead of toggling many `.Visible`.

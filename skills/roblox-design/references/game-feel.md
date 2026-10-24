@@ -19,6 +19,8 @@
 - Rare drops: beam from the sky on the item, rarity color glow (common grey, rare blue, epic purple, legendary gold, mythic red/rainbow), server announcement.
 - Eggs/gacha: shake 3 times with increasing intensity, crack, light burst, reveal with rarity color — the wait builds excitement (keep ≤ 3 s, add skip for repeats).
 
+- Clicker feel (seen in Tap Simulator REBORN): `+amount` popups float up from every tap, crits burst coins, rare hatches get a giant floating multiplier sign; live boss events announced by a top banner with a countdown, then a shared health %.
+
 ## Effects layering
 - 3–5 emitters per effect: core glow, main body, sparks, smoke, light.
 - Fire/magic/energy: `LightEmission = 1`, `LightInfluence = 0`; smoke: LightEmission 0.

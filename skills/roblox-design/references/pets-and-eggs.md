@@ -61,6 +61,10 @@ Pick ONE pet style per game (style bible) — mixing breaks the look.
 - Index/collection book (rewards for completing an egg's set).
 - Trading (later; server-validated, both sides confirm, logs).
 - Data: pets saved by ID + variant + level, never as models (`roblox-dev`).
+- **Offline hatching** (seen in Tap Simulator REBORN, lyopz liked): the last egg keeps hatching while offline at ¼ speed, capped (e.g. 4 h / 10,000 eggs). Server: `eggs = min(secondsAway × rate × 0.25, cap)`, roll in bulk, apply auto-delete, save. On join: "While you were away" card → count ticks up → **Reveal Results** → grid (kept vs auto-deleted, ×count per pet) → one button; then resume auto-hatch.
+- **Index with silhouettes** (seen in Tap Simulator REBORN): tabs per variant (Normal/Golden/Diamond/Rainbow), one row per egg with hatch counts, unfound/secret pets as black ??? silhouettes, row complete → claim coins + gems. Egg prompt shows secrets as silhouettes with "1 in 500,000".
+- **Pets menu** (seen in Tap Simulator REBORN): equipped row on top, rest in a grid; each card shows its multiplier and stack count (×37); Equip Best / Unequip All, mass delete, lock, storage count with a + button.
+- **Mastery tracks** (seen in Tap Simulator REBORN): one level track per activity (hatching, secret hatching, tapping, goldens, enchanting), XP from doing it, rewards at set levels (+hatch speed, luck, a cosmetic ring at Lv 100), all listed with locks.
 
 
 ## 7. Upgrading pets (evolve · fuse · merge · enchant)

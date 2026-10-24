@@ -28,6 +28,9 @@ lyopz plays a game normally; the Degen Roblox app's **Watch me play** bubble run
 - `f-<sec>.jpg` (1280 px wide), `like-<sec>.jpg`, `dislike-<sec>.jpg`
 - `sheets/sheet-NN.jpg`: 9 shots per picture with the time (and LIKE / DISLIKE) on each
 
+If `sheets/` is missing, make it: `powershell -NoProfile -File "$HOME\.claude\degen-skill\skills\roblox-game-study\scripts\make-sheets.ps1" -Dir "<session folder>"` (System.Drawing, no Python needed).
+F8 marks can be misclicks: if lyopz corrects them ("I liked them all"), treat every marked shot as a like and add no dislike rules.
+
 Steps (save tokens: sheets first, full shots only where it matters):
 1. Read `notes.jsonl` and `session.json`. His words and F7/F8 marks are the most important data.
 2. Look at **every contact sheet** (one pass) to see the whole session: spawn, zones, menus, pets, effects, UI. Write down the times worth a closer look.

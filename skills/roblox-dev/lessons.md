@@ -13,3 +13,4 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 ## Animation & VFX
 ## Studio / tooling (MCP, import, plugins)
 ## Workflow (what made building faster)
+- 2026-10-23 [play-session study] watch-play.ps1 left no `sheets/` and no notes text; built sheets with `roblox-game-study/scripts/make-sheets.ps1`. Like/dislike marks can be misclicks — wait for/accept lyopz's correction before writing dislikes into taste.md.

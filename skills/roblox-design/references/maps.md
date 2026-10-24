@@ -26,6 +26,9 @@ Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU 
 - **Survival / brainrot:** small maps that force interaction, rising threat (tsunami, lava, waves), safe high ground, day/night or wave cycles.
 - **RPG / adventure:** islands or regions as levels, quest givers at entrances, boss arenas visible from afar, fast travel unlocked by discovery.
 - **Roleplay:** town grid, landmark at center, houses players can claim, roads for vehicles, many interactable props.
+- **Portal hub terrace** (seen in Tap Simulator REBORN, lyopz liked): stone arches in rows up a slope near spawn, each portal glowing its island's color and dressed in its theme (pumpkins, mushrooms, autumn trees), labels above; every future island visible from the spawn path. Floating islands reached by bought double jumps + a height counter.
+- **One-color contrast zone** (same game): after bright grass zones, a dark slate island with neon cracks in the floor, crystal flowers, floating rocks and beams; one hue + glow.
+- **In-world social** (same game): crown-framed leaderboard boards (eggs hatched, pet power, rebirths) and a season podium with countdown and top pets on pedestals, on the main path.
 - Everywhere: **spawn facing the best view**, one landmark visible from anywhere (tower, giant tree, volcano), paths lit or neon-edged, invisible walls disguised as cliffs/fences.
 
 ## Build style that reads well on Roblox
