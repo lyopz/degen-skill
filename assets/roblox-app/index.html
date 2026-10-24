@@ -259,6 +259,7 @@ body.awake .orb-cap{color:var(--text)}
  <div class="bub" id="bub-game"><button class="bub-btn"><span>Game: <b id="game-l">New</b></span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="menu" id="game-menu"></div></div>
  <div class="bub" id="bub-proj"><button class="bub-btn" id="proj-btn"><span>Projects</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
  <div class="bub" id="bub-save"><button class="bub-btn" id="save-btn"><span>Save for later</span></button></div>
+ <div class="bub" id="bub-mic"><button class="bub-btn" id="mic-btn" title="Turn the microphone on or off"><span id="mic-l">Mic: On</span></button></div>
  <div class="bub" id="bub-watch"><button class="bub-btn" id="watch-btn"><span id="watch-l">Watch me play</span></button></div>
  <div class="bub" id="bub-appr"><button class="bub-btn" id="appr-btn"><span>Approvals</span><i class="cnt" id="appr-n">0</i></button></div>
 </div>
@@ -599,8 +600,8 @@ const TL=[[0,1,.34],[1.05,1,.4],[2.1,1,.36],[.55,.78,.92],[2.6,.95,.22]];
  cx.globalCompositeOperation='lighter';dot(pts[0]);cx.globalCompositeOperation='source-over';
  const g=cx.createRadialGradient(C,C,0,C,C,R*.56);g.addColorStop(0,'#000');g.addColorStop(.82,'#030001');g.addColorStop(1,`rgba(225,29,46,${.35*al+level*.4})`);cx.fillStyle=g;cx.beginPath();cx.arc(C,C,R*.56,0,6.283);cx.fill();
  cx.globalCompositeOperation='lighter';dot(pts[1]);cx.globalCompositeOperation='source-over';requestAnimationFrame(draw)})();
-let an=null;async function meter(){if(an)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:true});const a=getAC(),src=a.createMediaStreamSource(st);an=a.createAnalyser();an.fftSize=512;src.connect(an);const buf=new Uint8Array(512);
- (function lv(){an.getByteTimeDomainData(buf);let m=0;for(let i=0;i<buf.length;i++)m=Math.max(m,Math.abs(buf[i]-128));target=awake?Math.min(1,m/45):Math.min(.25,m/140);requestAnimationFrame(lv)})()}catch(e){}}
+let an=null,micStream=null;async function meter(){if(an||!window.MIC)return;try{const st=await navigator.mediaDevices.getUserMedia({audio:true});if(!window.MIC){st.getTracks().forEach(t=>t.stop());return}micStream=st;const a=getAC(),src=a.createMediaStreamSource(st);an=a.createAnalyser();an.fftSize=512;src.connect(an);const buf=new Uint8Array(512);
+ (function lv(){if(!an){target=0;return}an.getByteTimeDomainData(buf);let m=0;for(let i=0;i<buf.length;i++)m=Math.max(m,Math.abs(buf[i]-128));target=awake?Math.min(1,m/45):Math.min(.25,m/140);requestAnimationFrame(lv)})()}catch(e){}}
 
 // ---- watch me play (watch-play.ps1: screenshots + F7/F8 marks + what you say; Claude learns from it later) ----
 let WN=null;
@@ -614,7 +615,7 @@ function drawWatch(j,force){if(!j)return;const el=$('watch-body'),now=j.now&&j.n
  const sig=JSON.stringify([now&&[now.shots,now.marks],j.sessions.map(x=>[x.n,x.shots,x.learned])]);if(!force&&sig===wSig)return;
  const keep=$('w-note')?$('w-note').value:'';wSig=sig;
  el.innerHTML=(now?`<div class="sv"><div class="hint" style="margin-bottom:10px"><i class="rec"></i><b>Watching ${esc(now.game)}</b> · ${now.shots} screenshots · ${now.marks} marks</div>
-  <div class="warn">Play normally. Press <b>F7</b> when you like something, <b>F8</b> when you don't. Talk out loud about what you like or hate (the mic picks it up while this app is open), or type it here.</div>
+  <div class="warn">Play normally. Press <b>F7</b> when you like something, <b>F8</b> when you don't. Talk out loud about what you like or hate (if the Mic is on), or type it here.</div>
   <label>Note<textarea id="w-note" style="min-height:60px" placeholder="the pet hatch effect is sick, the shop is too cluttered…"></textarea></label>
   <div class="ap-act"><button class="btn ghost" id="w-add">Add note</button><span style="flex:1"></span><button class="btn" id="w-stop">Stop watching</button></div></div>`
  :`<div class="sv"><div class="hint" style="margin-bottom:10px">Play any Roblox game and Claude saves a screenshot every 5 seconds while Roblox is in front, plus your notes. Then press <b>Learn from it</b> and Claude writes what makes it good, and what you like, into the skills. Screenshots stay on this PC.</div>
@@ -640,7 +641,7 @@ const IDLE='Say “Hey Claude” or tap the ring';
 function setAwake(on){awake=on;document.body.classList.toggle('awake',on);cap.textContent=on?'Listening… say “start task” or pause 10 seconds to send':IDLE;clearTimeout(quiet);if(on){said='';arm();meter()}}
 function arm(){clearTimeout(quiet);quiet=setTimeout(()=>{if(!awake)return;ta.value.trim()?finish():setAwake(false)},10000)}
 function finish(){const t=ta.value.replace(DONE,'').trim();setAwake(false);said='';if(t)window.startTask(t)}
-function startRec(){if(!SR||run||blocked)return;rec=new SR();rec.lang=navigator.language||'en-US';rec.continuous=true;rec.interimResults=true;
+function startRec(){if(!SR||run||blocked||!window.MIC)return;rec=new SR();rec.lang=navigator.language||'en-US';rec.continuous=true;rec.interimResults=true;
  rec.onstart=()=>{run=true;meter()};
  rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript}
   if(!awake){if(WAKE.test(fin+' '+tmp)){setAwake(true);ta.value=''}else{if(fin)window.watchSay&&window.watchSay(fin);return}}
@@ -651,11 +652,19 @@ function startRec(){if(!SR||run||blocked)return;rec=new SR();rec.lang=navigator.
   ta.value=show.replace(DONE,'');ta.dispatchEvent(new Event('input'));cap.textContent=strip(tmp)||'Listening…';arm();
   if(DONE.test(said.trim()))finish()};
  rec.onerror=e=>{if(/not-allowed|service-not-allowed/.test(e.error)){blocked=true;cap.textContent='Tap the ring and allow the microphone to use “Hey Claude”'}};
- rec.onend=()=>{run=false;if(!blocked)setTimeout(startRec,250)};
+ rec.onend=()=>{run=false;if(!blocked&&window.MIC)setTimeout(startRec,250)};
  try{rec.start()}catch(e){}}
-const tapRing=()=>{blocked=false;startRec();if(awake){ta.value.trim()?finish():setAwake(false)}else setAwake(true)};
+const tapRing=()=>{if(!window.MIC){toast('Microphone is off. Click “Mic: Off” at the top to turn it on');return}blocked=false;startRec();if(awake){ta.value.trim()?finish():setAwake(false)}else setAwake(true)};
 $('orb-wrap').onclick=tapRing;addEventListener('keydown',e=>{if(e.ctrlKey&&e.code==='Space'){e.preventDefault();tapRing()}});
-if(!SR){cap.textContent='Voice needs Microsoft Edge or Chrome'}else startRec();
+// ---- mic on/off (remembered). Off = nothing listens: no "Hey Claude", no voice notes, mic released ----
+function setMic(on){window.MIC=on;try{localStorage.setItem('rbx-mic',on?'on':'off')}catch(e){}
+ $('mic-l').textContent='Mic: '+(on?'On':'Off');$('mic-btn').style.opacity=on?'':'.6';
+ if(on){blocked=false;cap.textContent=SR?IDLE:'Voice needs Microsoft Edge or Chrome';startRec()}
+ else{if(rec){rec.onend=null;try{rec.abort()}catch(e){}}rec=null;run=false;setAwake(false);
+  if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}an=null;cap.textContent='Microphone off'}}
+$('mic-btn').onclick=e=>{e.stopPropagation();setMic(!window.MIC);toast(window.MIC?'Microphone on':'Microphone off')};
+let micPref='on';try{micPref=localStorage.getItem('rbx-mic')||'on'}catch(e){}
+setMic(micPref!=='off');
 })();
 </script>
 </body>
