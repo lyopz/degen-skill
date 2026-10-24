@@ -28,5 +28,7 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 - Collectible-card pet details: tilted card, variant-colored glowing border + corner ribbon, stars, tag pills, stat rows, level bar. (2026-10-24, play session)
 - Tiered upgrades shown as a row of colored cards, each with its own themed icon (shoe, spring, tornado, wings...). (2026-10-24, play session)
 
+- Chunky cartoon low-poly models in the big-pet-sim style: thick readable silhouettes, smooth soft shading, flat saturated colors, dark elemental bodies with thin glowing cracks; he asked for whole games built in this style "in detail". (2026-10-24, play session)
+
 ## Dislikes
 - Cartoonish pets: round blobs, huge googly eyes, big smiles, pastel candy colors, flat plastic look. (2026-10-23, pets)
