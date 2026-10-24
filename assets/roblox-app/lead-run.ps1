@@ -5,7 +5,11 @@ $app = $PSScriptRoot
 Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
 $env:DEGEN_APP = $app
 Set-Location (Join-Path $env:USERPROFILE 'RobloxGames')
-$host.UI.RawUI.WindowTitle = 'Roblox Lead'
+$title = 'Roblox Lead ' + (Get-Date -Format 'HH:mm'); $host.UI.RawUI.WindowTitle = $title
+# Register this window so a newer Lead can take over its task (lead-handoff.ps1). activity-hook.ps1 adds chat id, project, busy.
+$LD = Join-Path $env:USERPROFILE 'RobloxGames\.degen\leads'; New-Item -ItemType Directory -Force -Path $LD | Out-Null
+$env:DEGEN_LEAD = [string]$PID; $leadFile = Join-Path $LD "$PID.json"
+[IO.File]::WriteAllText($leadFile, ([ordered]@{ pid = $PID; ticks = (Get-Process -Id $PID).StartTime.Ticks; title = $title; busy = $true; sid = ''; p = ''; task = '' } | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding $false))
 function Q([string]$s) { ($s -replace '(\\*)"', '$1$1\"') }   # escape quotes for native arguments
 $rules = Q ([IO.File]::ReadAllText((Join-Path $app 'lead.md')))
 $task = [IO.File]::ReadAllText($TaskFile).Trim()
@@ -38,6 +42,7 @@ if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfi
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
 if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
   & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules
-  return
+} else {
+  & claude --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules $prompt
 }
-& claude --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules $prompt
+Remove-Item $leadFile -Force -ErrorAction SilentlyContinue

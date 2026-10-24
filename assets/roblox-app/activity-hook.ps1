@@ -39,6 +39,21 @@ if ($sid -match '^[\w\-]+$') {
     [IO.File]::WriteAllText($sf, ([ordered]@{ s = $byS; p = $byP } | ConvertTo-Json -Depth 5 -Compress), (New-Object Text.UTF8Encoding $false))
   }
 }
+# This Lead window's record (lead-run.ps1 makes it): chat id, project, task, busy/idle - a newer Lead uses it to take over
+if ($env:DEGEN_LEAD -match '^\d+$' -and $sid -match '^[\w\-]+$') {
+  $lf = Join-Path $D "leads\$($env:DEGEN_LEAD).json"
+  $lr = if (Test-Path $lf) { [IO.File]::ReadAllText($lf) | ConvertFrom-Json } else { $null }
+  if ($lr) {
+    $busy = switch ($ev) { 'Stop' { $false } 'SubagentStop' { [bool]$lr.busy }
+      'Notification' { -not ([string]$e.message -match 'waiting for your input') } default { $true } }
+    $c = $byS[$sid]
+    $np = if ($c.p) { [string]$c.p } else { [string]$lr.p }; $nt = if ($c.task) { [string]$c.task } else { [string]$lr.task }
+    if ($lr.busy -ne $busy -or $lr.sid -ne $sid -or $lr.p -ne $np -or $lr.task -ne $nt) {
+      $lr.busy = $busy; $lr.sid = $sid; $lr.p = $np; $lr.task = $nt
+      [IO.File]::WriteAllText($lf, ($lr | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding $false))
+    }
+  }
+}
 $msg = $null; $kind = ''
 switch ($ev) {
   'Stop'             { $msg = 'Done - waiting for you'; $kind = 'done'; $active = [ordered]@{}; $status = 'idle'; $who = 'lead' }

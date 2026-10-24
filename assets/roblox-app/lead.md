@@ -65,6 +65,7 @@ Lead duties:
 
 ## Handoff (always)
 - Start: read ~/RobloxGames/<project>/HANDOFF.md if it exists.
+- Task starts with "Taken over from the previous Lead window": an older Lead was closed (or is still closing) and passed you its task. Carry it on first, then the new task. Once it's finished, delete the 'Handoff from previous Lead' section from HANDOFF.md.
 - End of every task (and before a long pause): rewrite HANDOFF.md in the project folder: what's built (where in the place), assets made (file paths), what's approved, what's waiting on lyopz, next steps, credits spent. Short. The app's Projects bubble shows it.
 
 ## Save tokens, keep quality
