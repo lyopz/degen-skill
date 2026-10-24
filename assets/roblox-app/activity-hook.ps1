@@ -20,9 +20,14 @@ if ($sid -match '^[\w\-]+$') {
   $byP = [ordered]@{}; if ($ss.p) { $ss.p.PSObject.Properties | ForEach-Object { $byP[$_.Name] = $_.Value } }
   $txt = if ($ev -eq 'UserPromptSubmit') { [string]$e.prompt } elseif ($i) { [string]$i.file_path + ' ' + [string]$i.path + ' ' + [string]$i.command } else { '' }
   $proj = $null
-  foreach ($m in [regex]::Matches($txt, 'RobloxGames[\\/]+([\w\-\.]+)')) {
+  # a game folder, or a project inside one (<game>/projects/<name>) -> key 'game/projects/name'
+  foreach ($m in [regex]::Matches($txt, 'RobloxGames[\\/]+([\w\-\.]+)(?:[\\/]+projects[\\/]+([\w\-\.]+))?')) {
     $n = $m.Groups[1].Value
-    if ($n -notlike '.*' -and $n -notlike '_*' -and $n -ne 'imports' -and (Test-Path (Join-Path $RG $n) -PathType Container)) { $proj = (Get-Item (Join-Path $RG $n)).Name; break }
+    if ($n -notlike '.*' -and $n -notlike '_*' -and $n -ne 'imports' -and (Test-Path (Join-Path $RG $n) -PathType Container)) {
+      $proj = (Get-Item (Join-Path $RG $n)).Name; $sn = $m.Groups[2].Value
+      if ($sn -and $sn -notlike '.*' -and (Test-Path (Join-Path $RG "$n\projects\$sn") -PathType Container)) { $proj += '/projects/' + (Get-Item (Join-Path $RG "$n\projects\$sn")).Name }
+      break
+    }
   }
   $cur = $byS[$sid]; $changed = $false
   if (-not $cur) { $cur = [pscustomobject]@{ p = ''; task = '' }; $byS[$sid] = $cur; $changed = $true }
@@ -32,7 +37,8 @@ if ($sid -match '^[\w\-]+$') {
     if ($tk.Length -gt 140) { $tk = $tk.Substring(0, 140) + '...' }
     $cur.task = $tk; $changed = $true
   }
-  if ($proj -and $cur.p -ne $proj) { $cur.p = $proj; $changed = $true }
+  # reading the game's own HANDOFF/art-style while working on a project inside it keeps the inside project
+  if ($proj -and $cur.p -ne $proj -and -not ([string]$cur.p).StartsWith("$proj/projects/")) { $cur.p = $proj; $changed = $true }
   if ($cur.p -and ($changed -or $ev -eq 'Stop')) { $byP[$cur.p] = [ordered]@{ id = $sid; at = (Get-Date -Format 'yyyy-MM-dd HH:mm'); task = $cur.task }; $changed = $true }
   if ($changed) {
     while ($byS.Count -gt 40) { $byS.RemoveAt(0) }

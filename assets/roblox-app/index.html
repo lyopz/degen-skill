@@ -176,6 +176,9 @@ html,.mainwrap,.act-body,.menu,.md{scroll-behavior:smooth;overscroll-behavior:co
 /* ---- approvals / projects panels ---- */
 .bub-btn .cnt{display:none;min-width:20px;height:20px;border-radius:999px;background:var(--red);color:#fff;font:700 11px Inter;place-items:center;padding:0 6px;margin-left:2px}
 .bub-btn .cnt.on{display:inline-grid;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+#bub-upd.ready .bub-btn{border-color:var(--red);color:#fff}#bub-upd.busy .bub-btn{opacity:.7;cursor:progress}
+.sub-new{border:1px solid var(--line);background:var(--bg2);border-radius:14px;padding:12px;margin-bottom:12px}.sub-new input,.sub-new textarea{width:100%;margin-top:6px}.sub-new textarea{min-height:60px;resize:vertical}
+.pj.sub{margin-left:18px}
 #bub-appr.ping .bub-btn{border-color:var(--red);box-shadow:0 0 0 0 rgba(225,29,46,.6);animation:ring 1.6s infinite}
 @keyframes ring{70%{box-shadow:0 0 0 12px rgba(225,29,46,0)}100%{box-shadow:0 0 0 0 rgba(225,29,46,0)}}
 @keyframes pop{0%{transform:scale(.3)}100%{transform:scale(1)}}
@@ -262,6 +265,7 @@ body.awake .orb-cap{color:var(--text)}
  <div class="bub" id="bub-save"><button class="bub-btn" id="save-btn"><span>Save for later</span></button></div>
  <div class="bub" id="bub-mic"><button class="bub-btn" id="mic-btn" title="Turn the microphone on or off"><span id="mic-l">Mic: On</span></button></div>
  <div class="bub" id="bub-watch"><button class="bub-btn" id="watch-btn"><span id="watch-l">Watch me play</span></button></div>
+ <div class="bub" id="bub-upd"><button class="bub-btn" id="upd-btn" title="Get the newest version of the app and skills from GitHub"><span id="upd-l">Updates</span></button></div>
  <div class="bub" id="bub-appr"><button class="bub-btn" id="appr-btn"><span>Approvals</span><i class="cnt" id="appr-n">0</i></button></div>
 </div>
 <div class="home">
@@ -384,9 +388,12 @@ function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementB
  const L=[];
  L.push(`Task: ${d}`);
  if(window.IDEA)L.push(`Game idea / genre: ${window.IDEA}${/pet/i.test(window.IDEA)?' (use the pet-sim genre pack: roblox-design/references/pets-and-eggs.md + roblox-game-study/studies/pet-simulator-99.md)':''}.`);
- L.push(g?`Game: "${g}" — follow its style bible (~/RobloxGames/${g}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
+ if(sub)L.push(`Game: "${sub[1]}" — follow its style bible (~/RobloxGames/${sub[1]}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`);
+ else L.push(g?`Game: "${g}" — follow its style bible (~/RobloxGames/${g}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
  if(r)L.push(`Reference: ${r}`);
- if(window.PROJECT)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — read its HANDOFF.md and art-style.md first; save new assets there.`);
+ const sub=(window.PROJECT||'').match(/^([^/]+)\/projects\/(.+)$/);
+ if(sub)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — a project inside the game ${sub[1]} (same Studio place). Read ~/RobloxGames/${sub[1]}/HANDOFF.md and art-style.md first (same style and rules), then this folder's HANDOFF.md; save new assets for it in this folder.`);
+ else if(window.PROJECT)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — read its HANDOFF.md and art-style.md first; save new assets there.`);
  if(window.IMPORT)L.push(`Imported file to study: ${window.IMPORT} — use the roblox-game-strip skill: break it down, then put each finding into the skill it belongs to (make a new reference/area if none fits). If it's a game file, rebuild what I asked for in this place; never copy paid/protected assets.`);
  L.push(`Skills: ${SK[t]}. Read roblox-dev/lessons.md first.`);
  if(team){const on=PLAN.filter(w=>w.on),wv=[...new Set(on.map(w=>w.wave))].sort((a,b)=>a-b);
@@ -532,27 +539,64 @@ function drawAppr(force){const ids=INBOX.map(x=>x.id).join();if(!force&&ids===dr
 async function answer(id,ans,card){try{await fetch('/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,answer:ans})});card.style.opacity=.35;card.style.pointerEvents='none';INBOX=INBOX.filter(x=>x.id!==id);setTimeout(()=>drawAppr(true),350);toast(ans==='__terminal__'?'Answer it in the Lead window':ans==='__decline__'?'Declined':ans==='__dismiss__'?'Deleted':'Sent to Claude')}catch(e){toast('Could not reach the app — reopen it from the shortcut')}}
 
 // ---- projects ----
-let PJ=[];const setProj=n=>{window.PROJECT=n||'';$('proj-btn').querySelector('span').innerHTML=n?'Project: <b>'+esc(n)+'</b>':'Projects';try{localStorage.setItem('rbx-proj',window.PROJECT)}catch(e){}build()};
+let PJ=[];const setProj=n=>{window.PROJECT=n||'';$('proj-btn').querySelector('span').innerHTML=n?'Project: <b>'+esc(n.replace('/projects/',' › '))+'</b>':'Projects';try{localStorage.setItem('rbx-proj',window.PROJECT)}catch(e){}build()};
 try{setProj(localStorage.getItem('rbx-proj')||'')}catch(e){setProj('')}
 $('proj-btn').onclick=async e=>{e.stopPropagation();$('proj-sheet').classList.add('open');$('proj-body').innerHTML='<div class="empty">Loading…</div>';if(API){try{PJ=(await fetch('/api/projects').then(r=>r.json())).projects||[]}catch(e){PJ=[]}}listProj()};
 function listProj(){$('proj-title').textContent='Projects';$('proj-back').style.display='none';const el=$('proj-body');
  if(!API){el.innerHTML='<div class="empty">Open the app from its shortcut to see your projects.</div>';return}
  el.innerHTML=(window.PROJECT?'<div class="ap-act" style="margin:0 0 12px"><button class="btn ghost" id="pj-none">Start fresh (no project)</button></div>':'')+(PJ.length?'':'<div class="empty">No projects yet. Each game gets its own folder in RobloxGames.</div>');
  const nb=$('pj-none');if(nb)nb.onclick=()=>{setProj('');$('proj-sheet').classList.remove('open')};
- PJ.forEach(p=>{const d=document.createElement('div');d.className='pj';d.innerHTML=(p.images[0]?`<img src="${img(p.images[0])}" alt="">`:'<div class="ph"></div>')+`<div><b>${esc(p.n)}</b><span>${p.images.length} pictures · ${p.models.length} models · updated ${esc(p.updated)}${window.PROJECT===p.n?' · current':''}</span>${p.last&&p.last.task?`<span class="last">Last task: ${esc(p.last.task)}</span>`:''}</div><button class="btn ghost rs">Continue last task</button>`;d.onclick=()=>showProj(p);d.querySelector('.rs').onclick=e=>{e.stopPropagation();resumeProj(p)};el.appendChild(d)})}
+ PJ.forEach(p=>{const d=document.createElement('div');d.className='pj';d.innerHTML=(p.images[0]?`<img src="${img(p.images[0])}" alt="">`:'<div class="ph"></div>')+`<div><b>${esc(p.n)}</b><span>${p.images.length} pictures · ${p.models.length} models${(p.subs||[]).length?' · '+p.subs.length+' inside':''} · updated ${esc(p.updated)}${window.PROJECT===p.n?' · current':''}</span>${p.last&&p.last.task?`<span class="last">Last task: ${esc(p.last.task)}</span>`:''}</div><button class="btn ghost rs">Continue last task</button>`;d.onclick=()=>showProj(p);d.querySelector('.rs').onclick=e=>{e.stopPropagation();resumeProj(p)};el.appendChild(d)})}
 // "Continue last task": reopens this project's last Lead chat (or starts from its HANDOFF.md if there isn't one)
-async function resumeProj(p){setProj(p.n);$('proj-sheet').classList.remove('open');let j={};try{j=await fetch('/api/resume',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project:p.n})}).then(r=>r.json())}catch(e){}
+async function resumeProj(p){const k=p.rel||p.n;setProj(k);$('proj-sheet').classList.remove('open');let j={};try{j=await fetch('/api/resume',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project:k})}).then(r=>r.json())}catch(e){}
  if(!j.ok){toast('Could not reach the app server');return}
  $('hint2').textContent=j.resumed?'Reopening the last Lead chat for '+p.n+' — type there to keep going':'No saved chat for '+p.n+' yet — a Lead window is starting from its HANDOFF';if($('auto-open').checked)setDrawer(true)}
-function showProj(p){$('proj-title').textContent=p.n;$('proj-back').style.display='';const el=$('proj-body');
- el.innerHTML=`<div class="ap-act" style="margin:0 0 12px"><button class="btn" id="pj-go">Continue this project</button><button class="btn ghost" id="pj-rs">Continue last task</button></div>${p.last&&p.last.task?`<div class="hint" style="margin:-4px 0 12px">Last task (${esc(p.last.at||'')}): ${esc(p.last.task)}</div>`:''}<div class="more" style="position:static;opacity:1;transform:none;pointer-events:auto;display:block;margin-bottom:12px;box-shadow:none"><label>ChatGPT project link for this game (pictures open here automatically)<div class="mrow" style="margin-top:6px"><input id="pj-gpt" style="flex:1" placeholder="https://chatgpt.com/g/…/project"><button class="btn ghost" id="pj-gpt-save">Save</button></div></label></div>`+(p.handoff?`<div class="md" style="margin-bottom:12px">${md(p.handoff)}</div>`:'')+
+function showProj(p){$('proj-title').textContent=p.n;$('proj-back').style.display='';$('proj-back').onclick=listProj;const el=$('proj-body');
+ el.innerHTML=`<div class="ap-act" style="margin:0 0 12px"><button class="btn" id="pj-go">Continue this project</button><button class="btn ghost" id="pj-rs">Continue last task</button><button class="btn ghost" id="pj-new">+ New project inside</button></div><div class="sub-new" id="pj-newf" style="display:none"><label>Name (e.g. Lava zone, Trading, Boss fight)<input id="pj-nn" placeholder="Name"></label><label style="display:block;margin-top:8px">What should it be?<textarea id="pj-nt" placeholder="Say what to build. It uses this game's style and rules."></textarea></label><div class="ap-act" style="margin-top:8px"><button class="btn" id="pj-ns">Start it</button><button class="btn ghost" id="pj-nx">Cancel</button></div></div><div id="pj-subs"></div>${p.last&&p.last.task?`<div class="hint" style="margin:-4px 0 12px">Last task (${esc(p.last.at||'')}): ${esc(p.last.task)}</div>`:''}<div class="more" style="position:static;opacity:1;transform:none;pointer-events:auto;display:block;margin-bottom:12px;box-shadow:none"><label>ChatGPT project link for this game (pictures open here automatically)<div class="mrow" style="margin-top:6px"><input id="pj-gpt" style="flex:1" placeholder="https://chatgpt.com/g/…/project"><button class="btn ghost" id="pj-gpt-save">Save</button></div></label></div>`+(p.handoff?`<div class="md" style="margin-bottom:12px">${md(p.handoff)}</div>`:'')+
   (p.images.length?`<div class="hint">Pictures</div><div class="pgrid">${p.images.map(i=>`<img src="${img(i)}" data-z alt="">`).join('')}</div>`:'')+
   (p.models.length?`<div class="hint">3D models</div><div class="taglist">${p.models.map(m=>`<span>${esc(m)}</span>`).join('')}</div>`:'')+(p.docs.length?`<div class="hint">Notes</div><div class="taglist">${p.docs.map(m=>`<span>${esc(m)}</span>`).join('')}</div>`:'');
  el.querySelectorAll('[data-z]').forEach(i=>i.onclick=()=>zoom(i.src));
  $('pj-gpt').value=p.chatgpt||'';$('pj-gpt-save').onclick=async()=>{const url=$('pj-gpt').value.trim();let ok=false;try{ok=(await fetch('/api/chatgpt-url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project:p.n,url})}).then(r=>r.json())).ok}catch(e){}if(ok)p.chatgpt=url;toast(ok?'Saved — pictures for '+p.n+' open in that ChatGPT project':'Paste a chatgpt.com link')};
  $('pj-rs').onclick=()=>resumeProj(p);
+ drawSubs(p);$('pj-new').onclick=()=>{const f=$('pj-newf');f.style.display=f.style.display==='none'?'':'none';$('pj-nn').focus()};$('pj-nx').onclick=()=>{$('pj-newf').style.display='none'};
+ $('pj-ns').onclick=()=>newSub(p,$('pj-nn').value.trim(),$('pj-nt').value.trim());
  $('pj-go').onclick=()=>{setProj(p.n);$('proj-sheet').classList.remove('open');$('hint2').textContent='Working on '+p.n+' — say or type what to do next';ta.focus()}}
+// ---- projects inside a game (~/RobloxGames/<game>/projects/<name>): same place + style, own HANDOFF.md ----
+function drawSubs(p){const el=$('pj-subs');const S=p.subs||[];if(!S.length){el.innerHTML='';return}
+ el.innerHTML='<div class="hint">Projects inside '+esc(p.n)+'</div>';
+ S.forEach(s=>{const d=document.createElement('div');d.className='pj sub';d.innerHTML=(s.images[0]?`<img src="${img(s.images[0])}" alt="">`:'<div class="ph"></div>')+`<div><b>${esc(s.n)}</b><span>${s.images.length} pictures · updated ${esc(s.updated)}${window.PROJECT===s.rel?' · current':''}</span>${s.last&&s.last.task?`<span class="last">Last task: ${esc(s.last.task)}</span>`:''}</div><button class="btn ghost rs">Continue last task</button>`;
+  d.onclick=()=>showSub(p,s);d.querySelector('.rs').onclick=e=>{e.stopPropagation();resumeProj(s)};el.appendChild(d)})}
+function showSub(p,s){$('proj-title').textContent=p.n+' › '+s.n;$('proj-back').style.display='';$('proj-back').onclick=()=>showProj(p);const el=$('proj-body');
+ el.innerHTML=`<div class="ap-act" style="margin:0 0 12px"><button class="btn" id="sp-go">Work on this</button><button class="btn ghost" id="sp-rs">Continue last task</button></div>`+(s.handoff?`<div class="md" style="margin-bottom:12px">${md(s.handoff)}</div>`:'')+(s.images.length?`<div class="hint">Pictures</div><div class="pgrid">${s.images.map(i=>`<img src="${img(i)}" data-z alt="">`).join('')}</div>`:'');
+ el.querySelectorAll('[data-z]').forEach(i=>i.onclick=()=>zoom(i.src));
+ $('sp-rs').onclick=()=>resumeProj(s);
+ $('sp-go').onclick=()=>{setProj(s.rel);$('proj-sheet').classList.remove('open');$('hint2').textContent='Working on '+p.n+' › '+s.n+' — say or type what to do next';ta.focus()}}
+async function newSub(p,name,task){if(!name){toast('Give it a name');$('pj-nn').focus();return}
+ let j={};try{j=await fetch('/api/subproject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:p.n,name,task})}).then(r=>r.json())}catch(e){j={msg:'Could not reach the app server'}}
+ if(!j.ok){toast(j.msg||'Could not make it');return}
+ setProj(j.rel);$('proj-sheet').classList.remove('open');
+ if(task)startTask(task);else{$('hint2').textContent='New project '+name+' inside '+p.n+' — say or type what to build';ta.focus()}}
 $('proj-back').onclick=listProj;
+
+// ---- in-app updates: the Updates bubble pulls the newest app + skills from GitHub (update.ps1), no PowerShell needed.
+// Checks every 5 minutes; installs by itself when you aren't typing or in a panel, else the bubble says "Update ready".
+let UPD={state:'none',behind:0},updWant=false;
+const updIdle=()=>!ta.value.trim()&&!document.querySelector('.sheet.open');
+function drawUpd(){const b=$('bub-upd'),l=$('upd-l'),s=UPD.state,busy=s==='checking'||s==='updating';b.classList.toggle('busy',busy);b.classList.toggle('ready',!busy&&UPD.behind>0);
+ l.textContent=s==='updating'?'Updating…':s==='checking'?'Checking…':UPD.behind>0?'Update ready ('+UPD.behind+')':s==='error'?'Update: try again':'Up to date';
+ $('upd-btn').title=UPD.behind>0&&UPD.msg?'New:\n'+UPD.msg:s==='error'?(UPD.msg||''):'Get the newest version of the app and skills from GitHub'}
+async function updGet(){try{UPD=await fetch('/api/update').then(r=>r.json())}catch(e){return null}drawUpd();return UPD}
+async function updPost(check){try{UPD=await fetch('/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(check?{check:true}:{})}).then(r=>r.json())}catch(e){}drawUpd();updWait(check)}
+// follow a running check/update; the server may restart in the middle of an update, so keep trying until it answers again
+async function updWait(check){for(let i=0;i<120;i++){await new Promise(r=>setTimeout(r,1500));const u=await updGet();if(!u||u.state==='checking'||u.state==='updating')continue;
+  if(check){if(u.behind>0&&(updWant||updIdle()))updPost(false);else if(updWant&&u.state!=='error')toast('Already up to date');updWant=false}
+  else if(u.state==='done'){if(u.files>0||u.restarted){toast('Updated. Reloading…');setTimeout(()=>location.reload(),1200)}else toast('Already up to date')}
+  else if(u.state==='error')toast(u.msg||'Update failed');
+  return}}
+$('upd-btn').onclick=e=>{e.stopPropagation();if(!API){toast('Open the app from its shortcut to update');return}if(UPD.state==='checking'||UPD.state==='updating')return;
+ if(UPD.behind>0)updPost(false);else{updWant=true;updPost(true)}};
+if(API){updGet().then(u=>{if(u&&(u.state==='checking'||u.state==='updating'))updWait(u.state==='checking');else updPost(true)});
+ setInterval(()=>{if(UPD.state!=='checking'&&UPD.state!=='updating')updPost(true)},5*60*1000)}
 
 // ---- save for later (named styles -> repo styles/<name>/, so future games can reuse them) ----
 let ST=[];

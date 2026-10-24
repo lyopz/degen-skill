@@ -4,6 +4,9 @@
 #  - POST /api/task           {brief}       -> opens a Roblox Lead window with that task
 #  - POST /api/resume         {project}     -> "Continue last task": reopens that project's last Lead conversation
 #                                              (session ids saved by activity-hook.ps1 in .degen/sessions.json), else starts from its HANDOFF.md
+#  - POST /api/subproject   {game, name, task} -> new project inside a game: ~/RobloxGames/<game>/projects/<name>/ with its own HANDOFF.md
+#  - GET  /api/update       in-app update state (update.ps1 writes .degen/update.json)
+#  - POST /api/update       {check:true} -> looks on GitHub for updates; {} -> pulls them, rebuilds the app data, restarts this server if it changed
 #  - GET  /f?p=<path>         images/files from ~/RobloxGames or the repo's styles/ folder only
 #  - GET  /api/styles         saved styles ("Save for later" tab), from <repo>/styles/<name>/
 #  - GET  /api/style-draft?project=<name>  that project's bible + rated prompts + pictures, to pre-fill a save
@@ -37,6 +40,14 @@ function SendJson($ctx, $obj) { Send $ctx 200 'application/json; charset=utf-8' 
 function ReadBody($ctx) { $sr = New-Object IO.StreamReader($ctx.Request.InputStream, [Text.Encoding]::UTF8); $t = $sr.ReadToEnd(); $sr.Close(); if ($t) { $t | ConvertFrom-Json } }
 function Under($path, $root) { try { $f = [IO.Path]::GetFullPath($path); $r = [IO.Path]::GetFullPath($root).TrimEnd('\') + '\'; return $f.StartsWith($r, [StringComparison]::OrdinalIgnoreCase) } catch { return $false } }
 
+# A project is a game folder (~/RobloxGames/<game>) or a project inside one (<game>/projects/<name>, same place + style bible).
+# Returns its full path, or $null if the name is not a real project folder.
+function ProjDir($rel) {
+  $r = ([string]$rel -replace '\\', '/').Trim('/')
+  if ($r -notmatch '^[\w\-\. ]+(/projects/[\w\-\.]+)?$' -or $r -match '(^|/)\.') { return $null }
+  $p = Join-Path $RG ($r -replace '/', '\')
+  if ((Test-Path $p -PathType Container) -and (Under $p $RG)) { return $p } else { return $null }
+}
 function Get-LastTasks { $f = Join-Path $D 'sessions.json'; if (Test-Path $f) { ([IO.File]::ReadAllText($f) | ConvertFrom-Json).p } }
 function Get-Projects {
   $last = Get-LastTasks
@@ -48,8 +59,38 @@ function Get-Projects {
     $ho = Join-Path $d.FullName 'HANDOFF.md'; $cu = Join-Path $d.FullName 'chatgpt-url.txt'
     [ordered]@{ n = $d.Name; path = $d.FullName; updated = $d.LastWriteTime.ToString('yyyy-MM-dd HH:mm'); images = $imgs; models = $models; docs = $docs
                 chatgpt = $(if (Test-Path $cu) { (Get-Content $cu -TotalCount 1) } else { '' }); handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' })
-                last = $(if ($last -and $last.($d.Name)) { $l = $last.($d.Name); [ordered]@{ at = $l.at; task = $l.task } } else { $null }) }
+                last = $(if ($last -and $last.($d.Name)) { $l = $last.($d.Name); [ordered]@{ at = $l.at; task = $l.task } } else { $null })
+                subs = @(Get-Subs $d $last) }
   }
+}
+function Get-Subs($game, $last) {
+  foreach ($s in @(Get-ChildItem (Join-Path $game.FullName 'projects') -Directory | Sort-Object LastWriteTime -Descending)) {
+    $rel = "$($game.Name)/projects/$($s.Name)"; $ho = Join-Path $s.FullName 'HANDOFF.md'
+    $imgs = @(Get-ChildItem $s.FullName -Recurse -File | Where-Object { $_.Extension -in '.png','.jpg','.jpeg','.webp' } | Sort-Object LastWriteTime -Descending | ForEach-Object { $_.FullName })
+    [ordered]@{ n = $s.Name; rel = $rel; game = $game.Name; path = $s.FullName; updated = $s.LastWriteTime.ToString('yyyy-MM-dd HH:mm'); images = $imgs
+                handoff = $(if (Test-Path $ho) { [IO.File]::ReadAllText($ho) } else { '' })
+                last = $(if ($last -and $last.$rel) { $l = $last.$rel; [ordered]@{ at = $l.at; task = $l.task } } else { $null }) }
+  }
+}
+function New-Sub($b) {
+  $game = ([string]$b.game -replace '[^\w\-\. ]', '') -replace '^\.+', ''; $gdir = ProjDir $game
+  if (-not $game -or -not $gdir) { return @{ ok = $false; msg = 'Pick a game first' } }
+  $name = ((([string]$b.name).Trim() -replace '\s+', '-') -replace '[^\w\-]', '').Trim('-')
+  if (-not $name) { return @{ ok = $false; msg = 'Give it a name' } }
+  $dir = Join-Path $gdir "projects\$name"; $isNew = -not (Test-Path $dir)
+  New-Item -ItemType Directory -Force -Path $dir | Out-Null
+  if ($isNew) {
+    $md = "# $name`n`n_Project inside $game (same Studio place, same style: ../../art-style.md). Started $(Get-Date -Format 'yyyy-MM-dd HH:mm') from the app._`n`n## Goal`n`n$(if ($b.task) { [string]$b.task } else { '(not written yet)' })`n`n## Done`n`n(nothing yet)`n`n## Next`n`n- Start on the goal above`n"
+    [IO.File]::WriteAllText((Join-Path $dir 'HANDOFF.md'), $md, $utf8)
+  }
+  @{ ok = $true; rel = "$((Get-Item $gdir).Name)/projects/$name"; isNew = $isNew }
+}
+function Get-Update {
+  $f = Join-Path $D 'update.json'
+  $u = if (Test-Path $f) { [IO.File]::ReadAllText($f) | ConvertFrom-Json } else { [pscustomobject]@{ state = 'none'; behind = 0 } }
+  # a check or update that died half way: don't look busy forever
+  if ($u.state -in 'checking','updating' -and ((Get-Date) - (Get-Item $f).LastWriteTime).TotalMinutes -gt 3) { $u.state = 'error'; $u | Add-Member -NotePropertyName msg -NotePropertyValue 'Update timed out, try again' -Force }
+  $u
 }
 # Saved styles (lyopz names them in the app's "Save for later" tab). The ONLY game-derived content that goes to the repo,
 # and only what he picked + reviewed in that tab.
@@ -187,15 +228,26 @@ while ($http.IsListening) {
       Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $app 'lead-start.ps1'), $f)
       SendJson $ctx @{ ok = $true } }
     elseif ($path -eq '/api/resume' -and $ctx.Request.HttpMethod -eq 'POST') {
-      $b = ReadBody $ctx; $proj = ([string]$b.project -replace '[^\w\-\. ]', '') -replace '^\.+', ''; $pdir = Join-Path $RG $proj
-      if ($proj -and (Test-Path $pdir -PathType Container) -and (Under $pdir $RG)) {
+      $b = ReadBody $ctx; $proj = ([string]$b.project -replace '\\', '/').Trim('/'); $pdir = ProjDir $proj
+      if ($pdir) {
         $l = (Get-LastTasks).$proj; $sid = if ($l -and ([string]$l.id -match '^[\w\-]+$')) { [string]$l.id } else { '' }
-        $brief = $(if ($l.task) { "Task: $($l.task)`n" } else { "Task: carry on with the next step in HANDOFF.md`n" }) + "Project folder: ~/RobloxGames/$proj - read its HANDOFF.md and art-style.md first; save new assets there.`nThis is this project's last task: carry on from where it stopped (HANDOFF.md says what is done). If it is already finished, do HANDOFF.md 'Next'."
+        $where = if ($proj -match '^([^/]+)/projects/') { "Project folder: ~/RobloxGames/$proj - a project inside the game $($Matches[1]) (same Studio place). Read ~/RobloxGames/$($Matches[1])/HANDOFF.md and art-style.md first, then this folder's HANDOFF.md; save new assets for it in this folder." } else { "Project folder: ~/RobloxGames/$proj - read its HANDOFF.md and art-style.md first; save new assets there." }
+        $brief = $(if ($l.task) { "Task: $($l.task)`n" } else { "Task: carry on with the next step in HANDOFF.md`n" }) + "$where`nThis is this project's last task: carry on from where it stopped (HANDOFF.md says what is done). If it is already finished, do HANDOFF.md 'Next'."
         $f = Join-Path $env:TEMP ('degen-roblox-task-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.md'); [IO.File]::WriteAllText($f, $brief, $utf8)
         $al = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"' + (Join-Path $app 'lead-start.ps1') + '"'), ('"' + $f + '"')); if ($sid) { $al += @('-Resume', $sid) }
         Start-Process powershell.exe -WindowStyle Hidden -ArgumentList $al
         SendJson $ctx @{ ok = $true; resumed = [bool]$sid }
       } else { SendJson $ctx @{ ok = $false } } }
+    elseif ($path -eq '/api/subproject' -and $ctx.Request.HttpMethod -eq 'POST') { $r = New-Sub (ReadBody $ctx); $projAt = [datetime]::MinValue; SendJson $ctx $r }
+    elseif ($path -eq '/api/update' -and $ctx.Request.HttpMethod -eq 'POST') {
+      $b = ReadBody $ctx; $u = Get-Update
+      if ($u.state -notin 'checking','updating') {
+        $al = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', ('"' + (Join-Path $app 'update.ps1') + '"')); if ($b.check) { $al += '-Check' }
+        [IO.File]::WriteAllText((Join-Path $D 'update.json'), (@{ state = $(if ($b.check) { 'checking' } else { 'updating' }); behind = [int]$u.behind; at = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') } | ConvertTo-Json -Compress), $utf8)
+        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList $al
+      }
+      SendJson $ctx (Get-Update) }
+    elseif ($path -eq '/api/update') { SendJson $ctx (Get-Update) }
     elseif ($path -eq '/f') {
       $p = [Uri]::UnescapeDataString(($u.Query -replace '^\?p=', ''))
       if (((Under $p $RG) -or (Under $p $ST)) -and (Test-Path $p -PathType Leaf)) { $ext = [IO.Path]::GetExtension($p).ToLower(); Send $ctx 200 ($(if ($MIME[$ext]) { $MIME[$ext] } else { 'application/octet-stream' })) ([IO.File]::ReadAllBytes($p)) }

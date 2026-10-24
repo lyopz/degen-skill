@@ -1,6 +1,6 @@
 # Start here (new session)
 
-Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.claude\degen-skill`, with junctions for skills, agents and commands. **Everything lives in this repo**: push to GitHub, then lyopz runs `cd $HOME\.claude\degen-skill; git pull --no-edit` (the apps also pull when opened). He likes short, plain answers; PowerShell commands run in normal PowerShell.
+Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.claude\degen-skill`, with junctions for skills, agents and commands. **Everything lives in this repo**: push to GitHub, then the Degen Roblox app picks it up by itself (its **Updates** bubble checks every 5 minutes and installs when idle; click it to update now). Manual fallback: `cd $HOME\.claude\degen-skill; git pull --no-edit`. He likes short, plain answers; PowerShell commands run in normal PowerShell.
 
 ## Roblox setup
 - **Degen Roblox app** (`assets/roblox-app/`):

@@ -32,9 +32,9 @@ foreach ($m in [regex]::Matches($task, 'RobloxGames[\\/]+([\w\-\.]+)')) {
   $n = $m.Groups[1].Value
   if ($n -notlike '.*' -and $n -notlike '_*' -and $n -ne 'imports' -and (Test-Path (Join-Path $RG $n) -PathType Container)) { $proj = (Get-Item (Join-Path $RG $n)).Name; break }
 }
-# Same project, or a Lead that hasn't touched a project yet. No project named in the new task -> every open Lead
+# Same project (a project inside a game counts as that game: same Studio place), or a Lead that hasn't touched a project yet. No project named in the new task -> every open Lead
 # (they would all be driving the same Studio anyway).
-$old = @(Get-ChildItem $LD -Filter '*.json' | ForEach-Object { Get-Lead $_ } | Where-Object { $_ -and (-not $proj -or -not $_.p -or $_.p -eq $proj) })
+$old = @(Get-ChildItem $LD -Filter '*.json' | ForEach-Object { Get-Lead $_ } | Where-Object { $_ -and (-not $proj -or -not $_.p -or (([string]$_.p -split '/')[0] -eq $proj)) })
 if (-not $old.Count) { exit 0 }
 
 $notes = @()
