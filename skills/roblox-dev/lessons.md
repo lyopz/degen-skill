@@ -10,10 +10,16 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 ## Purchases
 ## Performance
 ## UI
+- 2026-10-23 [pet-sim] A Folder of templates inside a ScreenGui still renders its GUI children → hold templates in a `Visible=false` Frame.
+- 2026-10-23 [pet-sim] ButtonFeel's UIScale changes the size UIListLayout sees, so a hovered button pushes its row-mates → leave ~6% spare width in button rows. Short landscape phones (338 px tall with CoreUISafeInsets ≈ 405 design px) need a compact mode: pin side tiles to the top, 2×2 icon grid, panels 97% height.
+- 2026-10-23 [pet-sim] Under the Studio Device Simulator, MCP `user_mouse_input` clicks don't reach GUI buttons → test menus via keyboard shortcuts or by toggling Visible; device simulator setters work from the Client datamodel in Play.
 - 2026-10-23 [pet-sim] Global UIScale over Scale-sized UI: size the root at 1/scale (centered) so children still fill the screen; clamp the low end so 64 design-px buttons stay ≥ 44 px. ButtonFeel.Apply sets a "Feel" attribute — apply to the live root, never a Templates folder (clones would skip feel).
 ## Animation & VFX
 - 2026-10-23 [pet-sim] Blender Standard view transform: strong emission on light vertex colors clips to pink/white. Use a dark base + deep violet emission; in Studio make glow pieces separate meshes set to Neon.
 ## Studio / tooling (MCP, import, plugins)
+- 2026-10-23 [pet-sim] Syncing scripts into Studio: serve the scripts folder with `python -m http.server --bind 127.0.0.1`, GetAsync with HttpEnabled on only during the fetch, normalize `
+` → `
+`, `loadstring` to compile-check before setting `.Source`. Patch scripts that find/replace anchors break on CRLF vs LF — prefer syncing the whole file.
 - 2026-10-23 [pet-sim] An unsaved Studio place can close mid-job (lost hub built only via execute_luau). Save new places to a file/Roblox before building; agents check `list_roblox_studios` before long jobs and keep code on disk + one install script so work survives a Studio drop.
 - 2026-10-23 [pet-sim] Customuse CR1 image-to-3D = 100 credits per run, geometry only (no texture). Free texture: project the source picture onto the mesh from the matching view. Put 2–3 small parts spaced apart in ONE picture to get several meshes per run, then split by loose parts in Blender.
 - 2026-10-23 [pet-sim] Base64 JPEG uploads to Customuse got corrupted (long white runs); a WebP exported from Blender (view transform Standard) uploaded byte-exact — md5-check uploads. Image-to-3D keeps the picture's camera angle: rotate + tilt parts to the mount before placing.
