@@ -1,20 +1,30 @@
 # Unity polish (stage 3)
 
-The Unity project is `~/RobloxGames/.degen/degen-polish` (its path is in `~/RobloxGames/.degen/unity-project.txt`). It's a shared workbench: models are copied into `Assets/Degen/<asset>/` while you polish, and the results are exported to the game's own folder. Never leave game files in another project's export folder.
+The Unity project is `~/RobloxGames/.degen/degen-polish` (its path is in `~/RobloxGames/.degen/unity-project.txt`). It's a shared workbench for every game: models are copied into `Assets/Degen/<project>/<asset>/` while you polish, and the results are exported to the game's own folder. Never leave game files in another project's export folder.
 
 ## Connect
 1. The Lead opens Unity on the polish project by itself at startup (`unity-open.ps1`), and the bridge auto-connects (stdio). If the `mcp__unityMCP__*` tools fail, run `powershell -ExecutionPolicy Bypass -NoProfile -File "$env:DEGEN_APP\unity-open.ps1"` (prints OPEN / STARTED / why not), wait about 60 s, and retry. Still failing → go on without Unity and say so in the report. No pop-up for this.
 2. Read `mcpforunity://editor/state` and wait for `ready_for_tools`.
 3. `execute_code` hidden? `manage_tools(action="activate", group="scripting_ext")`. Over HTTP only `core` is on at the start.
 
+## Your project's spot (do this first, every job)
+lyopz's rule: never build on top of another project. One saved scene (`Assets/Degen/Workbench.unity`) holds every game, each in its own zone.
+1. `DegenPolish.UseProject("<project>")` (the Studio place name, or `<game>/projects/<name>` for a project inside a game). It opens the workbench, gives the project its own zone the first time (zones are 250 m apart, each 200 × 200 m), remembers it as the current project and frames it. It returns the zone, every model already in it (`x`, `z`, size, tris, status, export path) and `loose` objects that sit in no zone.
+2. Read that before building. Same asset name already there → `Import` reuses its cell (re-polish, not a second copy). Something `loose` → leave it alone and mention it in the report.
+3. `Import` puts each model on its own free cell (≥ 4 m gap). It checks both the layout file and what is really in the scene, so it never lands on anything. For things you build by hand (ProBuilder, primitives, `manage_gameobject`, assembled scenes): `DegenPolish.Spot("<name>", <widthStuds>, <depthStuds>)` first, then parent every object under the `<name>_Root` it returns. Never set positions outside your zone.
+4. All other DegenPolish calls only see the current project's zone, so a "dragon" in another game is never touched. `Shots` hides everything else for the pictures, `ExportForRoblox` exports the model at the origin (the file never carries the workbench spot).
+5. Where things are: `~/RobloxGames/.degen/unity-layout.json` (local only, never the repo). `DegenPolish.Where()` lists all zones; `DegenPolish.Remove("<name>")` frees a cell.
+6. `DegenPolish.UseProject` doesn't exist yet? Unity hasn't picked up the new DegenPolish.cs (the Lead copies it at start): `refresh_unity`, wait for `is_compiling == false`, retry.
+
 ## Calling DegenPolish
-Use `execute_code(action="execute", code="return DegenPolish.Report(\"dragon\");")`.
+Use `execute_code(action="execute", code="return DegenPolish.UseProject(\"MyGame\");")`.
 If it says `DegenPolish` doesn't exist (in-memory compile can't see editor scripts), use reflection:
 `return System.AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("DegenPolish")).First(t => t != null).GetMethod("Report").Invoke(null, new object[]{"dragon"});`
 Compile errors in DegenPolish.cs → `read_console(types=["error"])`, fix the file in the project, and copy the fix back to `skills/roblox-3d-pipeline/unity/DegenPolish.cs`.
 
 | Step | Call | Check |
 |---|---|---|
+| Project | `DegenPolish.UseProject("<project>")` | zone + existing spots read |
 | Import | `DegenPolish.Import(@"<models/asset/asset-raw.glb>", "<asset>", <heightStuds>)` | tris ≤ budget, sizeStuds right |
 | Low poly | `DegenPolish.Budget("<asset>", <tris>)` → FAIL → `DegenPolish.Decimate("<asset>", <tris>)` | PASS (hard rule; Export refuses over budget) |
 | Materials | `DegenPolish.ToUrpLit("<asset>")` | converted ≥ 1 |

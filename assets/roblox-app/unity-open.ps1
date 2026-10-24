@@ -16,6 +16,14 @@ if (-not (Test-Path $pf)) { 'NO_PROJECT (run unity-setup.ps1)'; exit 0 }
 $proj = ([IO.File]::ReadAllText($pf)).Trim()
 if (-not (Test-Path (Join-Path $proj 'Assets'))) { "NO_PROJECT ($proj)"; exit 0 }
 
+# Keep the project's DegenPolish.cs in step with the repo (app updates change it; Unity recompiles it by itself)
+$src = Join-Path $PSScriptRoot '..\..\skills\roblox-3d-pipeline\unity\DegenPolish.cs'
+$dst = Join-Path $proj 'Assets\Editor\DegenPolish.cs'
+if ((Test-Path $src) -and ((-not (Test-Path $dst)) -or (Get-FileHash $src).Hash -ne (Get-FileHash $dst).Hash)) {
+  New-Item -ItemType Directory -Force -Path (Split-Path $dst) | Out-Null
+  Copy-Item $src $dst -Force
+}
+
 # Already open? (Unity keeps Temp\UnityLockfile locked while the project is open)
 $lock = Join-Path $proj 'Temp\UnityLockfile'
 if (Test-Path $lock) {

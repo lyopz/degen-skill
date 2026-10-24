@@ -10,19 +10,92 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class DegenPolish
 {
     public const float StudMeters = 0.28f;     // 1 Roblox stud ~ 0.28 m
     const string Root = "Assets/Degen";
 
+    // ---------- 0. Project spots (lyopz 2026-10-24: never build on top of another project) ----------
+    // Everything lives in one saved scene, Assets/Degen/Workbench.unity. Each project (Studio place name, or
+    // game/projects/name) gets its own zone, 250 m apart, and each asset gets its own free cell inside that zone.
+    // Where everything went is kept in ~/RobloxGames/.degen/unity-layout.json (local only, never the repo) and is
+    // checked, together with what is really in the scene, before anything is placed. Call UseProject first, every job.
+    const float ZoneSpacing = 250f, ZoneSize = 200f, CellGap = 4f, Grid = 8f;
+    const int ZonesPerRow = 5;
+    const string Workbench = Root + "/Workbench.unity", PrefKey = "Degen.Project";
+
+    [Serializable] public class SpotInfo { public string name, kind, status, export, updated; public float x, z, w, d, heightStuds; public int tris; }
+    [Serializable] public class Zone { public string project, created; public int slot; public float x, z; public List<SpotInfo> assets = new List<SpotInfo>(); }
+    [Serializable] public class Layout { public string note = "Where DegenPolish put each project and model in the Unity workbench scene. Local only."; public List<Zone> zones = new List<Zone>(); }
+
+    // Opens the workbench, gives the project its own zone (made once, then reused) and makes it the current one.
+    public static string UseProject(string project)
+    {
+        project = (project ?? "").Trim().Replace('\\', '/').Trim('/');
+        if (project == "") return Err("give the project: the Studio place name, or <game>/projects/<name>");
+        OpenWorkbench();
+        var L = Load(); var z = ZoneOf(L, project); Save(L);
+        EditorPrefs.SetString(PrefKey, project);
+        ZoneObject(z);
+        SaveWorkbench();
+        FocusZone(z);
+        return Where(project);
+    }
+
+    // What is where. With a project: its zone and every asset spot. Without: all zones. Also lists "loose" scene
+    // objects that are in no zone (stray builds) so you can see them before placing anything.
+    public static string Where(string project = null)
+    {
+        var L = Load();
+        var zones = string.IsNullOrEmpty(project) ? L.zones : L.zones.Where(z => z.project == project.Trim().Trim('/')).ToList();
+        var loose = SceneManager.GetActiveScene().GetRootGameObjects()
+            .Where(g => !g.name.StartsWith("DegenZone_") && !g.name.StartsWith("Degen") && g.GetComponentsInChildren<Renderer>().Length > 0)
+            .Select(g => Q(g.name));
+        return "{\"current\":" + Q(Current() ?? "") + ",\"layoutFile\":" + Q(LayoutPath()) + ",\"zones\":[" + string.Join(",", zones.Select(z => JsonUtility.ToJson(z))) +
+               "],\"loose\":[" + string.Join(",", loose) + "]}";
+    }
+
+    // An empty <name>_Root on a free cell of the current project's zone, for things built by hand in Unity
+    // (ProBuilder, assembled props, scenes). Parent everything you build under it. Sizes in studs.
+    public static string Spot(string name, float widthStuds, float depthStuds)
+    {
+        string project = Current(); if (project == null) return NoProject();
+        OpenWorkbench();
+        var L = Load(); var z = ZoneOf(L, project);
+        var old = Find(name);
+        var s = PlaceSpot(L, z, name, widthStuds * StudMeters, depthStuds * StudMeters, old);
+        if (s == null) { Save(L); return Err("zone " + project + " is full"); }
+        var root = old ?? new GameObject(name + "_Root");
+        root.transform.SetParent(ZoneObject(z).transform, true);
+        root.transform.position = new Vector3(s.x, 0, s.z);
+        s.kind = s.kind ?? "build"; s.status = s.status ?? "building"; s.updated = Now();
+        Save(L); SaveWorkbench();
+        Selection.activeGameObject = root;
+        return JsonUtility.ToJson(s);
+    }
+
+    // Takes an asset out of the scene and the layout (its cell becomes free again).
+    public static string Remove(string name)
+    {
+        string project = Current(); if (project == null) return NoProject();
+        var root = Find(name); if (root != null) UnityEngine.Object.DestroyImmediate(root);
+        var L = Load(); var z = ZoneOf(L, project); int n = z.assets.RemoveAll(a => a.name == name);
+        Save(L); SaveWorkbench();
+        return "{\"removed\":" + Q(name) + ",\"spots\":" + n + "}";
+    }
+
     // ---------- 1. Import + place ----------
-    // Copies a .glb/.fbx/.obj from disk into Assets/Degen/<name>/, places it at the origin
-    // (pivot at bottom centre), scaled so it is heightStuds tall. Returns Report().
+    // Copies a .glb/.fbx/.obj from disk into Assets/Degen/<project>/<name>/, scales it to heightStuds tall
+    // (pivot at bottom centre) and puts it on its own free cell in the current project's zone. Returns spot + Report().
     public static string Import(string sourcePath, string name, float heightStuds)
     {
+        string project = Current(); if (project == null) return NoProject();
         if (!File.Exists(sourcePath)) return Err("file not found: " + sourcePath);
+        OpenWorkbench();
         string dir = Folder(name);
         string dst = dir + "/" + name + Path.GetExtension(sourcePath).ToLowerInvariant();
         File.Copy(sourcePath, dst, true);
@@ -30,7 +103,7 @@ public static class DegenPolish
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(dst);
         if (prefab == null) return Err("Unity could not import " + dst + " (glb needs com.unity.cloud.gltfast)");
 
-        var old = GameObject.Find(name + "_Root");
+        var old = Find(name);
         if (old != null) UnityEngine.Object.DestroyImmediate(old);
         var root = new GameObject(name + "_Root");
         var model = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
@@ -41,15 +114,24 @@ public static class DegenPolish
         if (b.size.y > 1e-5f && heightStuds > 0)
             model.transform.localScale *= heightStuds * StudMeters / b.size.y;
         b = GetBounds(root);
-        model.transform.position -= new Vector3(b.center.x, b.min.y, b.center.z);   // bottom centre at origin
+        model.transform.position -= new Vector3(b.center.x, b.min.y, b.center.z);   // bottom centre at the root
+        b = GetBounds(root);
+
+        var L = Load(); var z = ZoneOf(L, project);
+        var s = PlaceSpot(L, z, name, b.size.x, b.size.z, root);
+        if (s == null) { UnityEngine.Object.DestroyImmediate(root); Save(L); return Err("zone " + project + " is full"); }
+        root.transform.SetParent(ZoneObject(z).transform, true);
+        root.transform.position = new Vector3(s.x, 0, s.z);
+        s.kind = "model"; s.status = "imported"; s.heightStuds = heightStuds; s.tris = Tris(root); s.updated = Now();
+        Save(L); SaveWorkbench();
         Focus(name);
-        return Report(name);
+        return "{\"spot\":" + JsonUtility.ToJson(s) + ",\"report\":" + Report(name) + "}";
     }
 
     // Frames the model in the Scene view (lit, shaded) so lyopz can watch every step. Called after each change.
     public static string Focus(string name)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
         Selection.activeGameObject = root;
         var sv = SceneView.lastActiveSceneView;
         if (sv == null) sv = EditorWindow.GetWindow<SceneView>();
@@ -73,8 +155,8 @@ public static class DegenPolish
     // PASS/FAIL against the budget. Remembers it, so ExportForRoblox refuses an over-budget model.
     public static string Budget(string name, int maxTris)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
-        budgets[name] = maxTris;
+        var root = Find(name); if (root == null) return NoRoot(name);
+        budgets[BKey(name)] = maxTris;
         int t = Tris(root);
         return "{\"triangles\":" + t + ",\"budget\":" + maxTris + ",\"result\":" + (t <= maxTris ? "\"PASS\"" : "\"FAIL: run Decimate or Customuse retopology\"") + "}";
     }
@@ -83,8 +165,8 @@ public static class DegenPolish
     // Big cuts (more than ~60%) can look lumpy: then prefer Customuse retopology with a face limit and re-import.
     public static string Decimate(string name, int maxTris)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
-        budgets[name] = maxTris;
+        var root = Find(name); if (root == null) return NoRoot(name);
+        budgets[BKey(name)] = maxTris;
         int before = Tris(root);
         if (before <= maxTris) return Budget(name, maxTris);
         var tSimp = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("UnityMeshSimplifier.MeshSimplifier")).FirstOrDefault(t => t != null);
@@ -123,7 +205,7 @@ public static class DegenPolish
     // Triangles, size in studs, materials and textures. Use before and after every change.
     public static string Report(string name)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
         int tris = 0, verts = 0, meshes = 0;
         var mats = new List<string>();
         foreach (var r in root.GetComponentsInChildren<Renderer>())
@@ -146,7 +228,7 @@ public static class DegenPolish
     // so manage_material and PaintRegions work on one set of property names.
     public static string ToUrpLit(string name)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
         var lit = Shader.Find("Universal Render Pipeline/Lit"); if (lit == null) return Err("URP Lit shader missing (make the project from the Universal 3D template)");
         string dir = Folder(name);
         var done = new Dictionary<Material, Material>();
@@ -204,7 +286,7 @@ public static class DegenPolish
     // First matching rule wins. Hue in degrees (0-360), sat/val 0-1 (satMax/valMax optional), glow = emission strength (keep <= 1, ed likes subtle glow).
     public static string PaintRegions(string name, string rulesJson)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
         var cfg = JsonUtility.FromJson<RuleSet>(rulesJson); if (cfg == null || cfg.rules == null) return Err("bad rulesJson");
         string dir = Folder(name);
         var sb = new StringBuilder("{");
@@ -261,9 +343,11 @@ public static class DegenPolish
     // Compare them side by side with the picture before exporting.
     public static string Shots(string name, string outDir, int views, int size)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
         Directory.CreateDirectory(outDir);
         var b = GetBounds(root);
+        var hidden = HideAllBut(root);
+        try {
         var go = new GameObject("DegenShotCam"); var cam = go.AddComponent<Camera>();
         cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = Color.white; cam.fieldOfView = 30;
         var rt = new RenderTexture(size, size, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB) { antiAliasing = 8 };
@@ -284,6 +368,7 @@ public static class DegenPolish
         }
         cam.targetTexture = null; UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(go);
         return "{\"shots\":[" + string.Join(",", paths.Select(Q)) + "]}";
+        } finally { foreach (var g in hidden) if (g) g.SetActive(true); }
     }
 
     // ---------- 5. Export for Roblox ----------
@@ -291,10 +376,21 @@ public static class DegenPolish
     // max 1024 px) + roblox.json (sizes, colours, which map goes where). Studio: File > Import 3D the .glb.
     public static string ExportForRoblox(string name, string outDir, int maxTex)
     {
-        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        var root = Find(name); if (root == null) return NoRoot(name);
+        var at = root.transform.position;
+        root.transform.position = Vector3.zero;   // the file gets the model at the origin, not at its workbench spot
+        string j;
+        try { j = ExportAtOrigin(root, name, outDir, maxTex); }
+        finally { root.transform.position = at; }
+        if (!j.StartsWith("{\"error\"")) Mark(name, "exported", Path.Combine(outDir, name + ".glb"), Tris(root));
+        return j;
+    }
+
+    static string ExportAtOrigin(GameObject root, string name, string outDir, int maxTex)
+    {
         Directory.CreateDirectory(outDir);
         if (maxTex <= 0 || maxTex > 1024) maxTex = 1024;
-        if (budgets.TryGetValue(name, out int cap) && Tris(root) > cap)
+        if (budgets.TryGetValue(BKey(name), out int cap) && Tris(root) > cap)
             return Err("over the low-poly budget (" + Tris(root) + " > " + cap + " tris). Run Decimate(name, " + cap + ") or Customuse retopology first.");
         string glb = Glb(root, Path.Combine(outDir, name + ".glb"), name, out string glbErr);
         string fbx = Path.Combine(outDir, name + ".fbx");
@@ -362,13 +458,144 @@ public static class DegenPolish
     [Serializable] public class Rule { public string label; public float hueMin, hueMax, satMin, satMax, valMin, valMax, metal, smooth, glow; }
     [Serializable] public class RuleSet { public Rule[] rules; public float defaultMetal = 0f, defaultSmooth = 0.25f; }
 
-    static GameObject Find(string name) => GameObject.Find(name + "_Root") ?? GameObject.Find(name);
+    // Only looks inside the current project's zone, so a same-named model in another project is never touched.
+    static GameObject Find(string name)
+    {
+        string p = Current(); if (p == null) return null;
+        OpenWorkbench();
+        var zone = SceneManager.GetActiveScene().GetRootGameObjects().FirstOrDefault(g => g.name == "DegenZone_" + Key(p));
+        if (zone == null) return null;
+        foreach (Transform t in zone.transform) if (t.name == name + "_Root" || t.name == name) return t.gameObject;
+        return null;
+    }
+    static string NoRoot(string name) => Current() == null ? NoProject() : Err("no " + name + "_Root in project " + Current() + " (Import or Spot it first)");
+    static string NoProject() => Err("no project set: call DegenPolish.UseProject(\"<Studio place name>\") first");
+    static string Current() { var p = EditorPrefs.GetString(PrefKey, ""); return p == "" ? null : p; }
+    static string Key(string project) => Safe(project.Replace("/", "__"));
+    static string BKey(string name) => (Current() ?? "") + "|" + name;
+    static string Now() => DateTime.Now.ToString("yyyy-MM-dd HH:mm");
     static string Folder(string name)
     {
         if (!AssetDatabase.IsValidFolder(Root)) AssetDatabase.CreateFolder("Assets", "Degen");
-        string d = Root + "/" + Safe(name);
-        if (!AssetDatabase.IsValidFolder(d)) AssetDatabase.CreateFolder(Root, Safe(name));
+        string pk = Key(Current() ?? "no-project"), pd = Root + "/" + pk;
+        if (!AssetDatabase.IsValidFolder(pd)) AssetDatabase.CreateFolder(Root, pk);
+        string d = pd + "/" + Safe(name);
+        if (!AssetDatabase.IsValidFolder(d)) AssetDatabase.CreateFolder(pd, Safe(name));
         return d;
+    }
+
+    static string LayoutPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "RobloxGames", ".degen", "unity-layout.json");
+    static Layout Load()
+    {
+        try { var p = LayoutPath(); if (File.Exists(p)) return JsonUtility.FromJson<Layout>(File.ReadAllText(p)) ?? new Layout(); }
+        catch (Exception e) { Debug.LogWarning("[Degen] unity-layout.json unreadable, kept as .bad: " + e.Message); try { File.Copy(LayoutPath(), LayoutPath() + ".bad", true); } catch { } }
+        return new Layout();
+    }
+    static void Save(Layout L)
+    {
+        var p = LayoutPath(); Directory.CreateDirectory(Path.GetDirectoryName(p));
+        File.WriteAllText(p + ".tmp", JsonUtility.ToJson(L, true));
+        if (File.Exists(p)) File.Replace(p + ".tmp", p, null); else File.Move(p + ".tmp", p);
+    }
+    static void Mark(string name, string status, string export, int tris)
+    {
+        string p = Current(); if (p == null) return;
+        var L = Load(); var s = ZoneOf(L, p).assets.FirstOrDefault(a => a.name == name); if (s == null) return;
+        s.status = status; if (export != null) s.export = export; s.tris = tris; s.updated = Now(); Save(L);
+    }
+
+    // The project's zone. A new one takes the first free slot whose ground has nothing on it yet.
+    static Zone ZoneOf(Layout L, string project)
+    {
+        var z = L.zones.FirstOrDefault(a => a.project == project);
+        if (z != null) return z;
+        var inScene = SceneManager.GetActiveScene().GetRootGameObjects().FirstOrDefault(g => g.name == "DegenZone_" + Key(project));
+        if (inScene != null)   // the layout file was lost: take the zone back where it already is
+        {
+            z = new Zone { project = project, slot = L.zones.Count == 0 ? 0 : L.zones.Max(a => a.slot) + 1, x = inScene.transform.position.x, z = inScene.transform.position.z, created = Now() };
+            L.zones.Add(z); return z;
+        }
+        var boxes = SceneBoxes(null);
+        for (int slot = 0; ; slot++)
+        {
+            if (L.zones.Any(a => a.slot == slot)) continue;
+            float x = (slot % ZonesPerRow) * ZoneSpacing, zz = (slot / ZonesPerRow) * ZoneSpacing;
+            if (L.zones.Any(a => Mathf.Abs(a.x - x) < ZoneSpacing && Mathf.Abs(a.z - zz) < ZoneSpacing)) continue;
+            if (boxes.Any(bb => Overlap(bb, x + ZoneSize / 2, zz + ZoneSize / 2, ZoneSize, ZoneSize))) continue;
+            z = new Zone { project = project, slot = slot, x = x, z = zz, created = Now() };
+            L.zones.Add(z); return z;
+        }
+    }
+    static GameObject ZoneObject(Zone z)
+    {
+        string n = "DegenZone_" + Key(z.project);
+        var go = SceneManager.GetActiveScene().GetRootGameObjects().FirstOrDefault(g => g.name == n);
+        if (go == null) { go = new GameObject(n); go.transform.position = new Vector3(z.x, 0, z.z); }
+        return go;
+    }
+
+    // A free cell for a footprint (metres) inside the zone: no other spot (any project) and nothing in the scene under it.
+    // Keeps the asset's old cell when it still fits.
+    static SpotInfo PlaceSpot(Layout L, Zone z, string name, float w, float d, GameObject self)
+    {
+        float cw = Mathf.Max(Grid, w + CellGap), cd = Mathf.Max(Grid, d + CellGap);
+        var others = L.zones.SelectMany(a => a.assets).Where(a => !(a.name == name && z.assets.Contains(a))).ToList();
+        var boxes = SceneBoxes(self);
+        bool Free(float px, float pz) => !others.Any(o => Overlap(new Bounds(new Vector3(o.x, 0, o.z), new Vector3(o.w, 1, o.d)), px, pz, cw, cd))
+                                         && !boxes.Any(b => Overlap(b, px, pz, cw, cd));
+        var s = z.assets.FirstOrDefault(a => a.name == name);
+        if (s != null && Free(s.x, s.z)) { s.w = cw; s.d = cd; return s; }
+        for (float gz = 0; gz + cd <= ZoneSize; gz += Grid)
+            for (float gx = 0; gx + cw <= ZoneSize; gx += Grid)
+            {
+                float x = z.x + gx + cw / 2, y = z.z + gz + cd / 2;
+                if (!Free(x, y)) continue;
+                if (s == null) { s = new SpotInfo { name = name }; z.assets.Add(s); }
+                s.x = x; s.z = y; s.w = cw; s.d = cd; return s;
+            }
+        return null;
+    }
+    static List<Bounds> SceneBoxes(GameObject self)
+    {
+        var mine = self ? new HashSet<Renderer>(self.GetComponentsInChildren<Renderer>()) : new HashSet<Renderer>();
+        return UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None).Where(r => r.enabled && !mine.Contains(r)).Select(r => r.bounds).ToList();
+    }
+    static bool Overlap(Bounds b, float x, float z, float w, float d) =>
+        b.max.x > x - w / 2 && b.min.x < x + w / 2 && b.max.z > z - d / 2 && b.min.z < z + d / 2;
+
+    static void OpenWorkbench()
+    {
+        var s = SceneManager.GetActiveScene();
+        if (s.path == Workbench) return;
+        if (!AssetDatabase.IsValidFolder(Root)) AssetDatabase.CreateFolder("Assets", "Degen");
+        if (s.isDirty)   // keep whatever was there before (never throw work away)
+            EditorSceneManager.SaveScene(s, string.IsNullOrEmpty(s.path) ? Root + "/Before-workbench-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".unity" : s.path);
+        if (File.Exists(Workbench)) EditorSceneManager.OpenScene(Workbench, OpenSceneMode.Single);
+        else EditorSceneManager.SaveScene(EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single), Workbench);
+    }
+    static void SaveWorkbench() { var s = SceneManager.GetActiveScene(); if (s.path == Workbench) EditorSceneManager.SaveScene(s); }
+    static void FocusZone(Zone z)
+    {
+        var sv = SceneView.lastActiveSceneView ?? EditorWindow.GetWindow<SceneView>();
+        var go = ZoneObject(z); Selection.activeGameObject = go;
+        var b = GetBounds(go); if (b.size == Vector3.zero) b = new Bounds(new Vector3(z.x + 10, 0, z.z + 10), Vector3.one * 10);
+        sv.LookAt(b.center, Quaternion.Euler(30, 215, 0), Mathf.Max(b.extents.magnitude * 1.6f, 6f)); sv.Repaint();
+    }
+    // Shots only show the model: everything else in the scene is switched off for a moment.
+    static List<GameObject> HideAllBut(GameObject root)
+    {
+        var off = new List<GameObject>();
+        foreach (var g in SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            if (g.GetComponent<Light>() || !g.activeSelf) continue;
+            if (root.transform.IsChildOf(g.transform))
+            {
+                foreach (Transform t in g.transform) if (t.gameObject != root && t.gameObject.activeSelf) { t.gameObject.SetActive(false); off.Add(t.gameObject); }
+                continue;
+            }
+            g.SetActive(false); off.Add(g);
+        }
+        return off;
     }
     static Bounds GetBounds(GameObject root)
     {

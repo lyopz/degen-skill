@@ -7,6 +7,8 @@ description: Orchestrate Unity Editor via MCP (Model Context Protocol) tools and
 
 # Unity-MCP Operator Guide
 
+> **Degen (lyopz, 2026-10-24, hard rule):** the Unity project is shared by every game. Call `DegenPolish.UseProject("<project>")` before any scene work and build only inside that project's `DegenZone_` object (use `DegenPolish.Spot` for hand builds). Details: `roblox-3d-pipeline/references/unity-polish.md` → "Your project's spot".
+
 This skill helps you effectively use the Unity Editor with MCP tools and resources.
 
 ## Template Notice
