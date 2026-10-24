@@ -11,7 +11,7 @@ Copy to `~/RobloxGames/<project>/art-style.md` (local only, never commit). Every
 - Base shapes: <rounded cubes / spheres / faceted / sharp>
 - Proportions: <pets 1:1 head:body cube; NPCs 1:2; weapons oversized 1.3x>
 - Limbs: <flat paddles / stubby cylinders / none>
-- Eyes/faces: <big painted dots with white highlight / decals / none>
+- Eyes: style per rarity from `pet-eyes.md` (recessed sockets, front face, upper half); note this game's picks per tier here
 - Edges: <bevel 0.1 stud / hard / outlined>
 
 ## Color

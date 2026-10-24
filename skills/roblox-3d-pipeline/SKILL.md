@@ -21,7 +21,7 @@ Run by the **roblox-3d-designer** agent (`agents/roblox/roblox-3d-designer.md`).
 ## Stages
 Each stage writes into `~/RobloxGames/<project>/models/<asset>/` (local only, never the repo).
 
-**1. Picture (always ChatGPT).** Write the 8-part prompt (`roblox-art-style/references/chatgpt-prompts.md`). Pets get the "Premium polished pets" block, the sketchy grin for their rarity (`roblox-art-style/references/pet-mouths.md`), plus matching taste Likes. Run `gpt-image.ps1`. For a change to an existing asset, use `-Ref <current picture>` ("edit this exact picture, only change X"). No approval step.
+**1. Picture (always ChatGPT).** Write the 8-part prompt (`roblox-art-style/references/chatgpt-prompts.md`). Pets get the "Premium polished pets" block, the eyes and sketchy grin for their rarity (`roblox-art-style/references/pet-eyes.md`, `pet-mouths.md`), plus matching taste Likes. Run `gpt-image.ps1`. For a change to an existing asset, use `-Ref <current picture>` ("edit this exact picture, only change X"). No approval step.
 
 **2. 3D model.** Pick it from the registry ("3D generators"):
 - Default: **Customuse** image-to-3D, low poly, textured (pets 1.5–3k tris, props ≤ 5k). Use `mcp__customuse__*` (customuse_upload_media → customuse_generate on an image-to-3D node from customuse_list_node_types → poll customuse_get_workflow → read meshUrl). Not loaded → `customuse-3d.ps1`.
