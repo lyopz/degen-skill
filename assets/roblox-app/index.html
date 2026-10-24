@@ -126,7 +126,8 @@ body.drawer-open .voice-live{right:calc(min(380px,92vw) + 92px)}
 /* ---- home (front screen) ---- */
 body.home .side,body.home .topbar{display:none}
 body.home{grid-template-columns:1fr}
-.home-top{position:fixed;top:18px;left:270px;right:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;z-index:20;pointer-events:none}
+.home-top{position:fixed;top:18px;left:256px;right:16px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;z-index:20;pointer-events:none}
+body.home .home-top{gap:8px}body.home .home-top .bub-btn{padding:8px 12px 8px 14px}
 @media(max-width:1100px){.home-top{top:60px;left:16px;right:16px}}
 /* menu open (sidebar + top bar showing): bubbles sit in the page as a normal row, so they never cover the logo or the top bar */
 body:not(.home) .home-top{position:static;justify-content:flex-start;padding:18px 0 4px;pointer-events:auto}
@@ -233,7 +234,7 @@ body.awake #orb{transform:scale(1.1);filter:drop-shadow(0 0 30px rgba(255,60,80,
 .orb-cap{color:var(--muted);font-size:14px;margin-top:-6px;min-height:22px;max-width:640px}
 body.awake .orb-cap{color:var(--text)}
 .sheet-in,.drawer,.toast{text-align:left}
-.home{justify-content:flex-start;padding-top:max(84px,9vh,calc(var(--toph,40px) + 44px))}body:not(.home) .home{padding-top:24px}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
+.home{justify-content:flex-start;padding-top:max(84px,9vh,calc(var(--toph,40px) + 30px))}body:not(.home) .home{padding-top:24px}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
 #orb{width:270px;height:270px}.orb-wrap{margin-top:4px}.orb-cap{margin-top:-10px}
 .pgrid img.pick{opacity:.35;cursor:pointer}.pgrid img.pick.sel{opacity:1;border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,46,.25)}
 .sv label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--dim);margin-bottom:12px}
@@ -388,13 +389,12 @@ function sum(){const on=PLAN.filter(w=>w.on),n=new Set(on.map(w=>w.wave)).size,p
 function replan(){PLAN=applyMode(recommend(document.getElementById('b-type').value,document.getElementById('b-desc').value));drawPlan()}
 const pm=document.getElementById('plan-mode');MODES.forEach(([m,l])=>{const b=document.createElement('button');b.textContent=l;if(m===MODE)b.className='on';b.onclick=()=>{MODE=m;pm.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));replan();build(true)};pm.appendChild(b)});
 function build(keep){if(!keep)replan();const g=gSel.value,t=document.getElementById('b-type').value,c=+document.getElementById('b-cred').value||0,team=document.getElementById('b-team').value==='yes',d=document.getElementById('b-desc').value.trim()||'[describe it]',r=document.getElementById('b-ref').value.trim();
- const L=[];
+ const L=[],sub=(window.PROJECT||'').match(/^([^/]+)\/projects\/(.+)$/);
  L.push(`Task: ${d}`);
  if(window.IDEA)L.push(`Game idea / genre: ${window.IDEA}${/pet/i.test(window.IDEA)?' (use the pet-sim genre pack: roblox-design/references/pets-and-eggs.md + roblox-game-study/studies/pet-simulator-99.md)':''}.`);
  if(sub)L.push(`Game: "${sub[1]}" — follow its style bible (~/RobloxGames/${sub[1]}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`);
  else L.push(g?`Game: "${g}" — follow its style bible (~/RobloxGames/${g}/art-style.md) exactly: palette, shapes, scale, budgets, prompt template, anchors.`:`Game: new — first create its style bible with roblox-art-style (1 concept picture for my approval), then continue.`);
  if(r)L.push(`Reference: ${r}`);
- const sub=(window.PROJECT||'').match(/^([^/]+)\/projects\/(.+)$/);
  if(sub)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — a project inside the game ${sub[1]} (same Studio place). Read ~/RobloxGames/${sub[1]}/HANDOFF.md and art-style.md first (same style and rules), then this folder's HANDOFF.md; save new assets for it in this folder.`);
  else if(window.PROJECT)L.push(`Project folder: ~/RobloxGames/${window.PROJECT} — read its HANDOFF.md and art-style.md first; save new assets there.`);
  if(window.IMPORT)L.push(`Imported file to study: ${window.IMPORT} — use the roblox-game-strip skill: break it down, then put each finding into the skill it belongs to (make a new reference/area if none fits). If it's a game file, rebuild what I asked for in this place; never copy paid/protected assets.`);

@@ -11,3 +11,8 @@ Skills used to design this app (from the degen-skill library):
 - `widget-board` idea: quick idea chips on the Start page.
 
 When changing this app's look, use those skills (and any new 21st.dev components in `skills/21st-dev/components/`). Roblox game work uses the roblox-* skills instead — these design skills are not part of the Roblox team.
+
+Rules (lyopz, 2026-10-24):
+- Every change to this app's UI starts with the `21st-dev` skill (+ the 21st_dev MCP search when it's up): reuse or match a 21st component before hand-rolling one.
+- Never lose the voice ring (particle orb under the prompt box) or the bubble row look. After any edit, open the page and check the browser console: one JS error stops the ring, the home layout and the bubbles from working.
+- Top bubbles: fixed row to the right of the DEGEN logo on the home screen, wraps to a second row on narrow windows; in menu view they sit in the page under the top bar.
