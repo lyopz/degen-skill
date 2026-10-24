@@ -9,7 +9,7 @@ Adapted from `create-game-assets` (gamedev-skills/awesome-gamedev-agent-skills, 
 - Same size and style as the game's other models (`compare_to_siblings.py` when there are siblings).
 
 ## Technical
-- Tris: pets 1.5–3k, props ≤ 5k, never over 20k per mesh (accessories 4k). Textures ≤ 1024.
+- **Low poly (hard, FAIL if over):** pet 1.5–3k (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k. Stylized low poly over detail. Textures ≤ 1024.
 - Pivot at the base centre, size in studs per the bible, no leftover scale/rotation.
 - Export has a .glb (or .fbx) + roblox.json. Studio has a SurfaceAppearance with maps.
 - Collision: Box for decor, Hull for pets. Never use the detailed mesh as collision for big props.

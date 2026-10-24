@@ -6,6 +6,7 @@ description: How to give Roblox assets real shape definition so they never look 
 <!-- from: lyopz (2026-10-23): "everything is just a circle over a circle on Roblox Studio" — fix that. Living document. -->
 
 # Roblox Asset Shapes
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 
 **Rule:** a model is done when its **silhouette alone** says what it is, and it matches the approved concept picture side by side. Plain spheres/cubes stacked = not done.
 

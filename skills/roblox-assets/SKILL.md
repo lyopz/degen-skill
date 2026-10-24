@@ -7,6 +7,7 @@ description: Makes Roblox game assets that import cleanly into Roblox Studio and
 
 # Roblox Assets
 - **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 
 Two kinds of 3D work in this library:
 - **Web 3D** (`3d-assets`): looks only; one GLB on a web page.

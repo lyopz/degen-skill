@@ -7,6 +7,7 @@ description: Full picture-to-Roblox 3D pipeline for premium game assets. Goes Ch
 
 # Roblox 3D pipeline (picture → 3D → Unity polish → Studio → next agent)
 - **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 
 Run by the **roblox-3d-designer** agent (`agents/roblox/roblox-3d-designer.md`). Other agents can read it too.
 
@@ -29,7 +30,7 @@ Each stage writes into `~/RobloxGames/<project>/models/<asset>/` (local only, ne
 - Save the .glb as `models/<asset>/<asset>-raw.glb`.
 
 **3. Unity polish** (`references/unity-polish.md`; tool details in the `unity-mcp` skill). This needs Unity open with the degen-polish project and the MCP server started.
-1. `DegenPolish.Import(raw.glb, name, heightStuds)` puts it at the origin with the pivot at the base and the scale in studs. Then `Report(name)` checks tris and size.
+1. `DegenPolish.Import(raw.glb, name, heightStuds)` puts it at the origin with the pivot at the base and the scale in studs. Then `DegenPolish.Budget(name, <spec tris>)`. FAIL → `DegenPolish.Decimate(name, <spec tris>)` (big cuts look lumpy → Customuse retopology with a face limit instead, then re-import).
 2. `DegenPolish.ToUrpLit(name)` gives one material system to edit.
 3. `DegenPolish.PaintRegions(name, rules)` gives each colour region its own finish. This is the premium look: matte body, glossy armor, metal gold trim, subtle glowing crystals. Rules come from the spec's regions; recipes are in `references/unity-polish.md`.
 4. Fine tune with `manage_material` (base colour, smoothness, emission strength; glows stay subtle).
@@ -54,7 +55,7 @@ lyopz wants to see it designing. Keep each step on screen:
 ## Quality gates (all must pass before handoff)
 Full list in `references/quality-gates.md`.
 - Silhouette and colours match the picture (shots side by side). It's not "a circle on a circle" (`roblox-asset-shapes`).
-- Tris ≤ budget, textures ≤ 1024, pivot at base, size in studs per the bible.
+- **Low poly (hard):** `Budget` says PASS (pet 1.5–3k, max 4k; prop 300–2k; accessory ≤ 1.5k; building ≤ 5k). Export refuses over budget. Textures ≤ 1024, pivot at base, size in studs per the bible.
 - Material contrast reads: body matte, armor/trim shinier, glow subtle. No blown-out neon.
 - Smooth surfaces. No lumps, holes or stretched texture.
 - Studio screenshot looks as good as the Unity shot. If it doesn't, check the SurfaceAppearance maps.

@@ -23,11 +23,12 @@ Deliver files with where each goes, and a test plan (Studio play solo + 2-player
 
 ## Always
 - **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 - Genre packs: for a pet simulator, also read `~/.claude/skills/roblox-design/references/pets-and-eggs.md` and your section of `~/.claude/skills/roblox-game-study/studies/pet-simulator-99.md` ("takeaways per agent").
 - Follow `~/.claude/skills/roblox-design/references/first-try.md`: write the spec first, build one piece and screenshot it, check the "done means" list before reporting done.
 - Read `~/.claude/skills/roblox-art-style/SKILL.md` and the game's style bible (`~/RobloxGames/<project>/art-style.md`, local only, never commit game content; never open another project's folder unless lyopz approved it) before making or changing anything visual. No bible → stop and return "needs a style bible" with a 3-question proposal.
 - Cheapest route that still looks pristine (Roblox built-ins / Unity / scripts = 0 credits (Blender only as a fallback); Higgsfield only for detailed unique models). **Never spend Higgsfield credits beyond the budget the main session gave you.** No budget given → preflight with `get_cost: true` and return the estimate instead of generating.
-- Roblox limits: ≤ 20k triangles per mesh (accessories 4k), textures ≤ 1024, transforms applied, phones first.
+- Roblox limits: low-poly budgets above (20k/mesh is only the ceiling), textures ≤ 1024, transforms applied, phones first.
 - You can't ask lyopz questions. Make the most reasonable choice, write it down, and report it.
 - Finish with a short report: what you made, files/paths, credits spent, anything that needs his approval, and what to add to the style bible.
 

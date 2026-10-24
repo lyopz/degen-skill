@@ -6,6 +6,7 @@ description: Makes Roblox designs with lyopz's Customuse account (concepts, 3D m
 <!-- from: lyopz (2026-10-23). Customuse MCP announced by Customuse ("concept, mesh, textures, all wired"). -->
 
 # Customuse designs + taste memory
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 
 Two jobs: **make the design in Customuse**, and **learn from what lyopz thinks of it**.
 
@@ -42,7 +43,7 @@ The taste file is for **every** design, not only Customuse. Any agent showing ly
 
 ## Picture → low-poly 3D (the default model route)
 1. ChatGPT makes the picture (`gpt-image.ps1`, one asset, white background).
-2. Customuse turns it into a **low-poly, textured** model: image-to-3D, pets ~1.5–3k tris, props ≤ 5k, export **.glb**.
+2. Customuse turns it into a **low-poly, textured** model: image-to-3D, pets ~1.5–3k tris, props 300–2k (low poly hard rule), export **.glb**.
    - MCP tools loaded → use them (upload the picture, image-to-3D, low poly, texture, export).
    - Not loaded → `powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project <project> -Name <thing> -Image "<picture>" -From <agent>`: the picture is copied to the clipboard, Customuse opens, a card in the app shows the steps, and the exported .glb is picked up from Downloads into `~/RobloxGames/<project>/customuse/`.
 3. Import the .glb into Studio (scale to the bible's studs, origin at base). Polish in Unity (`roblox-3d-pipeline`); Blender only if Unity can't.

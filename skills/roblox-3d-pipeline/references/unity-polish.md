@@ -16,6 +16,7 @@ Compile errors in DegenPolish.cs → `read_console(types=["error"])`, fix the fi
 | Step | Call | Check |
 |---|---|---|
 | Import | `DegenPolish.Import(@"<models/asset/asset-raw.glb>", "<asset>", <heightStuds>)` | tris ≤ budget, sizeStuds right |
+| Low poly | `DegenPolish.Budget("<asset>", <tris>)` → FAIL → `DegenPolish.Decimate("<asset>", <tris>)` | PASS (hard rule; Export refuses over budget) |
 | Materials | `DegenPolish.ToUrpLit("<asset>")` | converted ≥ 1 |
 | Regions | `DegenPolish.PaintRegions("<asset>", "<rules json>")` | every rule > 0%; 0% means widen its hue range |
 | Tweak | `manage_material(action="set_material_shader_property", material_path=..., property="_Smoothness", value=0.6)` | |

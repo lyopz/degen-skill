@@ -63,6 +63,62 @@ public static class DegenPolish
         return "{\"focused\":" + Q(name) + "}";
     }
 
+    // ---------- 2b. Low poly (lyopz's hard rule: always low poly for Roblox) ----------
+    // Budgets (whole model, triangles): pet 1500-3000 (max 4000), prop 300-2000, accessory <= 1500, building/big piece <= 5000.
+    static readonly Dictionary<string, int> budgets = new Dictionary<string, int>();
+    static int Tris(GameObject root) => root.GetComponentsInChildren<Renderer>()
+        .Select(r => r is SkinnedMeshRenderer s ? s.sharedMesh : r.GetComponent<MeshFilter>() ? r.GetComponent<MeshFilter>().sharedMesh : null)
+        .Where(m => m != null).Sum(m => m.triangles.Length / 3);
+
+    // PASS/FAIL against the budget. Remembers it, so ExportForRoblox refuses an over-budget model.
+    public static string Budget(string name, int maxTris)
+    {
+        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        budgets[name] = maxTris;
+        int t = Tris(root);
+        return "{\"triangles\":" + t + ",\"budget\":" + maxTris + ",\"result\":" + (t <= maxTris ? "\"PASS\"" : "\"FAIL: run Decimate or Customuse retopology\"") + "}";
+    }
+
+    // Cuts every mesh down so the whole model fits maxTris (UnityMeshSimplifier, MIT; keeps UV seams so textures stay put).
+    // Big cuts (more than ~60%) can look lumpy: then prefer Customuse retopology with a face limit and re-import.
+    public static string Decimate(string name, int maxTris)
+    {
+        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        budgets[name] = maxTris;
+        int before = Tris(root);
+        if (before <= maxTris) return Budget(name, maxTris);
+        var tSimp = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("UnityMeshSimplifier.MeshSimplifier")).FirstOrDefault(t => t != null);
+        if (tSimp == null) return Err("UnityMeshSimplifier missing: run unity-setup.ps1 again (adds com.whinarn.unitymeshsimplifier)");
+        string dir = Folder(name);
+        float quality = Mathf.Clamp01((float)maxTris / before * 0.97f);
+        int i = 0;
+        foreach (var r in root.GetComponentsInChildren<Renderer>())
+        {
+            var mf = r.GetComponent<MeshFilter>(); var sk = r as SkinnedMeshRenderer;
+            var mesh = sk ? sk.sharedMesh : mf ? mf.sharedMesh : null; if (mesh == null) continue;
+            var simp = Activator.CreateInstance(tSimp);
+            var optProp = tSimp.GetProperty("SimplificationOptions");
+            if (optProp != null)
+            {
+                object opt = optProp.GetValue(simp);
+                opt.GetType().GetField("PreserveUVSeamEdges")?.SetValue(opt, true);
+                opt.GetType().GetField("PreserveBorderEdges")?.SetValue(opt, true);
+                optProp.SetValue(simp, opt);
+            }
+            tSimp.GetMethod("Initialize", new[] { typeof(Mesh) }).Invoke(simp, new object[] { mesh });
+            tSimp.GetMethod("SimplifyMesh", new[] { typeof(float) }).Invoke(simp, new object[] { quality });
+            var low = (Mesh)tSimp.GetMethod("ToMesh").Invoke(simp, null);
+            low.name = mesh.name + "_low";
+            low.RecalculateBounds();
+            AssetDatabase.CreateAsset(low, dir + "/" + Safe(name) + "_low" + (i++) + ".asset");
+            if (sk) sk.sharedMesh = low; else mf.sharedMesh = low;
+        }
+        AssetDatabase.SaveAssets();
+        Focus(name);
+        int after = Tris(root);
+        return "{\"before\":" + before + ",\"after\":" + after + ",\"budget\":" + maxTris + ",\"result\":" + (after <= maxTris ? "\"PASS\"" : "\"FAIL\"") + (after < before * 0.4f ? ",\"note\":\"big cut: check Shots for lumps; Customuse retopology may look cleaner\"" : "") + "}";
+    }
+
     // ---------- 2. Check ----------
     // Triangles, size in studs, materials and textures. Use before and after every change.
     public static string Report(string name)
@@ -238,6 +294,8 @@ public static class DegenPolish
         var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
         Directory.CreateDirectory(outDir);
         if (maxTex <= 0 || maxTex > 1024) maxTex = 1024;
+        if (budgets.TryGetValue(name, out int cap) && Tris(root) > cap)
+            return Err("over the low-poly budget (" + Tris(root) + " > " + cap + " tris). Run Decimate(name, " + cap + ") or Customuse retopology first.");
         string glb = Glb(root, Path.Combine(outDir, name + ".glb"), name, out string glbErr);
         string fbx = Path.Combine(outDir, name + ".fbx");
         var exporter = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("UnityEditor.Formats.Fbx.Exporter.ModelExporter")).FirstOrDefault(t => t != null);

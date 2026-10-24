@@ -22,6 +22,7 @@ To see what is really loaded right now, check the tool list: `mcp__customuse__*`
 | Tool | Status | Best at | Notes |
 |---|---|---|---|
 | **MCP for Unity** (CoplayDev/unity-mcp, MIT, ~13k stars) + `DegenPolish.cs` | setup (`unity-setup.ps1`) | Materials, gloss/metal/glow regions, lighting check, shots vs the picture, GLB/FBX + PBR maps | Lead opens Unity by itself (`unity-open.ps1`) and it auto-connects over stdio. Enable `scripting_ext` group if execute_code is hidden |
+| UnityMeshSimplifier (Whinarn, MIT, ~2.1k stars, pinned v3.1.1) + `DegenPolish.Decimate` | setup (`unity-setup.ps1` adds it) | Cutting a model down to the low-poly budget | Big cuts (>60%) can look lumpy: use Customuse retopology instead |
 | Unity ProBuilder (`manage_probuilder`) | setup (package `com.unity.probuilder`) | Simple hard-surface edits (bevel a block, extrude a pad) | Not for organic shapes |
 | Blender (`mcp__remote-devices__Blender__*`) | connected | Small shape fixes only: origin, scale, delete a bad piece, split parts for rigging | lyopz: Blender struggles with designing, so never use it as the main designer |
 

@@ -6,6 +6,7 @@ description: Keeps every asset in a Roblox game in ONE matching art style. Holds
 <!-- from: lyopz (own workflow, researched 2026-10-22). Sources at the bottom. -->
 
 # Roblox Art Style
+- **Low poly for Roblox, always (lyopz, 2026-10-24, hard rule).** Stylized low poly over detail: clean chunky shapes, detail from colour/material, not geometry. Budgets (whole model): pet 1.5–3k tris (max 4k), prop 300–2k, accessory ≤ 1.5k, building/big piece ≤ 5k (Roblox's 20k/mesh is a ceiling, never a target). Ask generators for low poly (Customuse face limit), then `DegenPolish.Budget` → over budget = FAIL → `Decimate` or Customuse retopology before export.
 
 **Rule #0: build it exactly how lyopz describes it.** His words and his reference pictures beat the preset ("simple cube pet" is a starting point, not a limit). When he asks for a change (e.g. "good curves on the edges"), apply it AND write it into the project's bible as a rule so every future asset in that project gets it.
 

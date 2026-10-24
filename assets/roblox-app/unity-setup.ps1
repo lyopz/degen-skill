@@ -30,6 +30,12 @@ if (-not $deps.'com.coplaydev.unity-mcp') {
   [IO.File]::WriteAllText($man, ($json | ConvertTo-Json -Depth 10), $utf8)
   'Added MCP for Unity to the project (Unity downloads it when the project opens; needs Git installed).'
 }
+if (-not $deps.'com.whinarn.unitymeshsimplifier') {
+  # Low-poly cuts (UnityMeshSimplifier, MIT, ~2k stars; pinned tag)
+  $deps | Add-Member -NotePropertyName 'com.whinarn.unitymeshsimplifier' -NotePropertyValue 'https://github.com/Whinarn/UnityMeshSimplifier.git#v3.1.1' -Force
+  [IO.File]::WriteAllText($man, ($json | ConvertTo-Json -Depth 10), $utf8)
+  'Added Unity Mesh Simplifier (low-poly cuts).'
+}
 foreach ($p in 'com.unity.cloud.gltfast', 'com.unity.formats.fbx') { if (-not $deps.$p) { $missing += $p } }
 
 # 3. The polish helpers
