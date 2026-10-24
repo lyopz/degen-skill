@@ -39,6 +39,10 @@ Template (fill the <...>; still one pet, white background):
 - Never force-kill the ChatGPT window (sign-in cookies get lost); close it gently.
 - The stop button can stay visible after the image is done: save once the picture is unchanged for ~12 s.
 - "Verify you are human" / sign-in: lyopz does it himself; never try to get around it.
+- Hash-check every result against the project (stop on a duplicate; < 25 s is suspicious) — once the reference came back as the "result". One-at-a-time queue + same STYLE/FRAME text on every prompt = a matching set without -Ref. Create output dirs in the queue script itself.
+- A -Ref edit keeps camera angle and proportions — put view + proportions in the FIRST prompt. Dark/glowing subjects ignore "white background" → fix with a -Ref edit, flatten any transparent PNG onto white.
+- Metal/scrap subjects: add "smooth clean painted surfaces (no rust, grunge or scratch textures)". Symmetric pairs: "show the pair as one object, spread from an empty middle gap".
+- Neon signs: "flat front view, dark navy board + gunmetal frame with bolts, chunky rounded neon tubes, glow tight around the tubes, max 2 neon colors, text spelled exactly as written, no wall/poles/shadow, white bg" (10/10 first try); cut out with `cutout-white.ps1 -KeepAspect -Size 1024`. Top rarity: "most insane design but still clean and readable; holo rainbow-shift glow only on small accents".
 
 ## Good / bad
 - Bad: "a cool water pet cube". Good: the 8-part description above.

@@ -42,6 +42,7 @@ lyopz's personal skill library. Lives on GitHub at `lyopz/degen-skill` (public),
 ## Session Log
 Newest at top. One short entry per session: date, what changed, anything left unfinished.
 
+- **2026-10-24** — daily Roblox refresh: top-games table (MM2 Halloween surge to ~1.2M, horror spikes, climb-for-eggs), roblox-dev §8 (server-log deep links, TextChatService migration by May 2027, PromptCreatePlatformContentAsync, TTS asset beta, AvatarUnificationMode deprecation Dec 1); promoted ~110 lessons into roblox-dev/ui/vfx/maps/chatgpt-prompts/3d-pipeline/game-study (lessons.md emptied); new template `ConfirmToken`.
 - **2026-10-23** — daily Roblox refresh: top-games table (Steal An Egg #1, steal+hatch hybrids), custom terrain materials launch, UIShadow, Collision Summaries + new `ImpactFX` template, platform updates in roblox-dev §8; promoted all lessons (lessons.md emptied).
 - **2026-10-23** — Added Degen Roblox desktop app (`assets/roblox-app/`): brief builder, reference, team, templates, games, lessons; launcher also opens fast Roblox Claude (`--strict-mcp-config` with only Roblox_Studio, API key hidden). Added `roblox-design/references/first-try.md`; all Roblox agents follow spec → build one → check.
 - **2026-10-23** — Added `roblox-dev` + templates RemoteGuard, PurchaseHandler. Roblox Studio MCP being set up on his PC (Claude desktop config). 126 skills.

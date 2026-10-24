@@ -33,6 +33,7 @@ How the genre's eggs and pets are designed, so ours feel right on the first try.
 - Effects: `PetFX.HatchInFront` (shake → flash → rarity burst, legendary+ bloom + pillar), `PetFX.RarityAura`, `PetFX.Reward` (how-to in `roblox-vfx`).
 - Use templates: `VFX` (sparkles/explosion/shake), `ButtonFeel` (buttons), `RemoteGuard` (hatch remote), `PurchaseHandler` (luck/multi-hatch passes).
 - **Auto/multi-hatch screen** (seen in Tap Simulator REBORN, lyopz liked): world blurred + dimmed; N designed hatch eggs (themed shells, e.g. lava rock with glowing cracks, horns, wings) in fixed slots shake → flash → pets pop in place with **name + "1 in N"**; auto-deleted get a red X before the name, "Shiny" prefix in its own color. Side panel **This Session** (inventory x/max, eggs opened, hatch speed /min, pets kept, auto-deleted, rarest odds) + Best Hatches + Last Hatches; bottom luck bar ("+300% Secret Luck"); big round **Stop** button; toast on stop.
+- Client auto-hatch over a server-validated RemoteFunction: request the next round once the current one is revealed, treat a silent nil as cooldown (retry 0.25 s), stop on an error notify. Undiscovered pets in the index = black silhouettes of the real model (`ui.md` gotchas).
 
 ## 4. Odds & rarity
 - Tiers: **Common, Uncommon, Rare, Epic, Legendary, Mythical, Secret** with colors grey, green, blue, purple, gold, red, rainbow/holo — same everywhere *(creation.dev)*.

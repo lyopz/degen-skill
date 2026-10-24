@@ -1,20 +1,21 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshot, Oct 2026) and why they work
+## Top games right now (live CCU snapshot, Oct 24 2026) and why they work
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Steal An Egg | Steal + hatch sim | ~1.1–1.9M (#1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama |
-| Murder Mystery 2 | Social deduction | ~250–700k (big Oct jump) | Short rounds, hidden roles, knife/gun cosmetics economy |
-| Brookhaven RP | Social roleplay | ~380–450k | Open town, houses, cars, spatial voice; freedom > goals |
-| Adopt Me! | Social trading | ~200k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
-| 99 Nights in the Forest | Co-op survival | ~160–190k | Night cycle pressure, base fire, friends vs monster |
-| RIVALS | FPS | ~175–220k | Tight competitive shooting |
-| Blox Fruits | Adventure RPG | ~165–250k | Islands as zones, bosses, collectible powers, frequent updates |
-| Jujutsu Shenanigans | Anime fighter | ~120–180k | Flashy moves, deep progression |
-| Steal a Brainrot | Meme steal sim | ~110–200k | Steal-from-bases loop that Steal An Egg copied with pets |
-| Fish It! / Anime Dice / +1 Speed Keyboard Escape | Idle / RNG / speed obby | ~80k each | Idle and RNG formats keep climbing |
+| Steal An Egg | Steal + hatch sim | ~1.25–1.6M (#1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama |
+| Murder Mystery 2 | Social deduction | ~1.1–1.2M (Halloween surge, was ~500k) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Brookhaven RP | Social roleplay | ~400–470k | Open town, houses, cars, spatial voice; freedom > goals |
+| Adopt Me! | Social trading | ~190–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
+| Jujutsu Shenanigans | Anime fighter | ~160–245k | Flashy moves, deep progression |
+| 99 Nights in the Forest | Co-op survival | ~215–240k | Night cycle pressure, base fire, friends vs monster |
+| RIVALS | FPS | ~190–215k | Tight competitive shooting |
+| Blox Fruits | Adventure RPG | ~160–190k | Islands as zones, bosses, collectible powers, frequent updates |
+| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~150k / ~130k | Steal-from-bases loop; the egg version keeps cloning upward |
+| DOORS / Flee the Facility / Dandy's World / Evade | Horror survival | ~75–155k each (DOORS +266%, Flee +392% in 24 h) | Halloween spike: short co-op runs vs a monster, chase + hide |
+| Climb For Animals Eggs / Fish It! / Anime Dice / Sell Fries! | Climb-hatch / idle / RNG / sell tycoon | ~60–80k each | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
 
-**Oct 2026 read:** the **"Steal a ___" + pets/hatching** hybrid is the biggest format on Roblox (Steal An Egg, Break and Steal an Egg, Ride A Pet nearby). Pet sims should add a social risk loop (steal/defend) on top of collect → hatch → earn. Horror/survival spikes every October (Roblox's own "The Hollow" Halloween survival event, Oct 2026: https://devforum.roblox.com/t/the-hollow-new-platform-wide-survival-event-for-halloween/4948535).
+**Oct 24 read:** steal/hatch pet hybrids still own #1 and are spreading into climb-for-eggs. October = horror: every survival/horror game is spiking (Roblox's own **The Hollow** event runs Oct 22 – Nov 2, finale Oct 31: https://devforum.roblox.com/t/the-hollow-new-platform-wide-survival-event-for-halloween/4948535). A seasonal map + event in a social game (MM2) can double CCU — plan a Halloween/holiday reskin for every live game. Pet sims should add a social risk loop (steal/defend) on top of collect → hatch → earn.
 
 Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU across 29 games), escape/survival ~764k, simulators ~336k (highest earning), anime/fighting ~143k, horror ~78k (+68% week over week), town/city RP +65%, tower defense ~59k, competitive parkour with vote-based maps, management tycoons moving from button-press to strategy. **Hybrids** are winning.
 
@@ -40,6 +41,7 @@ Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU 
 - Ambient motion: swaying trees, moving clouds, waterfalls with particle mist, floating crystals (Motion.Bob), flags.
 - Decor scatter: one clean asset, `ScaleTo` 0.45–0.62 per copy, random yaw + ±5–8° lean, all Anchored, leaves CanCollide off — variety for free. Place on ground with a raycast (`Include={Terrain}`, `IgnoreWater=true`), sink trunks/poles 1–5 studs so nothing floats. Spawns on slopes: raycast 4 corners + center, sit on the highest hit.
 - Free Creator Store models: check for hidden scripts before use (see `roblox-dev` → Security).
+- **From projects (2026-10-24):** R15 jump height ≈ 1.15 × JP²/(2g), double jump 2×; for jump-gated routes make every gap bigger than the previous tier's double jump and test "drift to rim, then step over". Place jump-gated islands by an offline search (inside walls, gaps ≤ reach, plan-separated: centre distance > R1+R2) before building. Moving stepping clouds: anchored still walk disc, bob only a visual child client-side. Keep tall props out of the spawn→portal ray. City bounds: visible walls 16–30 studs + invisible walls (CanQuery off) to Y 1000 + a server bounds check. Lock/unlock props by one `Unlocked` attribute + per-part Locked/Unlocked color attributes and a tiny client applier. Windows on recolored store buildings: one procedural window Texture on Front/Left/Right, Color3 = accent, small cells ~35% unlit. One-sided thin banners show a bright sheet from behind — give them a dark back.
 
 ## Terrain (islands, hills, water)
 - **Custom terrain materials are live (full launch 2026-10-22):** Workspace → `Expanded Terrain = Enabled`, save, close and reopen the place (Team Create: exit, wait ~15 s). Up to 62 editable materials, terrain has its own 250 MB limit (no longer counts toward place size), ~90% less CPU memory. Water/Air are still read-only, Material Variant physics don't apply yet. https://devforum.roblox.com/t/full-launch-publish-games-with-custom-terrain-materials-and-performance-improvements/4950620
@@ -63,4 +65,4 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
 
 ## Sources
-livecounts.nl charts (Oct 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
+livecounts.nl charts (Oct 24 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).

@@ -53,6 +53,21 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - **Tier shop** (seen in Tap Simulator REBORN, lyopz liked): stepped upgrades as a grid of tall cards, each a different color with its own themed icon and "+N" label, green check when owned; a big detail panel on the right (icon, name, cost, Buy/Owned). Shop title also floats over the in-world machine.
 - **Event sign-up**: in-world board (art, date, "Starts in" countdown) with a ProximityPrompt "Sign Up" that opens the native Experience Events Notify Me sheet; small toasts top-left for live world events.
 
+## Gotchas from projects (promoted 2026-10-24)
+- Never name a GUI child after a property (`Name`, `Size`, `Position`…): `card.Name.Text` reads the property. Use `Label`.
+- Templates inside a ScreenGui: a Folder still renders its GUI children → keep them in a `Visible=false` Frame. Apply ButtonFeel to the live root, never the template holder.
+- Global UIScale over Scale UI: size the root at 1/scale (centered), clamp so 64 design-px buttons stay ≥ 44 px. A card inside a panel inherits the panel's open/close UIScale — size from design height (AbsoluteSize / root scale / panel scale).
+- ButtonFeel's hover UIScale pushes row-mates in a UIListLayout → leave ~6% spare width per row.
+- Short landscape phones (~338 px tall ≈ 405 design px): compact mode — side tiles pinned top, 2×2 icon grid, panels 97% height; a station panel fits as ONE horizontal row (UIGridLayout FillDirection Vertical + FillDirectionMaxCells 1, ScrollingDirection X, AutomaticCanvasSize X).
+- Thumbstick: bottom-left counters collide with `PlayerGui.TouchGui.…ThumbstickStart` — read its AbsolutePosition in the rescale and place the stack right/above it; TouchGui appears late → re-layout on `PlayerGui.ChildAdded`.
+- Toasts inside the HUD frame render under later-sibling menus → parent toasts to the UI root with higher ZIndex.
+- `UIStroke` on TextLabel/TextButton defaults to outlining the TEXT: set `ApplyStrokeMode = Border` for chip/button borders.
+- Glow outline without betas: a slightly larger transparent frame with only a UIStroke; brighten on hover.
+- Currency/icon sets: give each a different SILHOUETTE, not just a color — same emblem reads as the same icon at 44 px.
+- ViewportFrame cards: no particles/beams/lights (decals on transparent parts do render). Undiscovered pets: real model with ImageColor3/Ambient/LightColor black; reveal = black → white flash → light back + Back-bounce UIScale. Fake sparkles with a 2D ImageLabel pool projected from the model's bbox.
+- Settings sliders: round with `floor(v*100+0.5)/100`, not `floor(v/0.01+0.5)*0.01` (float noise breaks equality).
+- In-world labels: SurfaceGui on the Top of a tilted part renders sideways — use a thin plate whose Front faces the player. Picture signs: ImageLabel in a SurfaceGui (LightInfluence 0) + dark backing plate = unlit neon look.
+
 ## Performance
 - Disable the whole `ScreenGui` instead of toggling many `.Visible`.
 - Fade groups with one `CanvasGroup.GroupTransparency` tween.

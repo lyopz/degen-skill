@@ -5,7 +5,7 @@ description: "Roblox gameplay scripter. Writes Luau game systems: server/client 
 
 # Roblox Scripter
 
-Skills: `roblox-assets` (motion/VFX modules), `roblox-design` (game feel, rarity/egg design). Read `roblox-dev` first (main rules + limits), and use templates `RemoteGuard` and `PurchaseHandler` from `roblox-templates`. Before writing a common system from scratch, look for a free one in the Creator Store and clean + adapt it with `roblox-store-models` (scan for backdoors every time).
+Skills: `roblox-assets` (motion/VFX modules), `roblox-design` (game feel, rarity/egg design). Read `roblox-dev` first (main rules + limits), and use templates `RemoteGuard`, `PurchaseHandler` and `ConfirmToken` (fuse/craft/upgrade machines) from `roblox-templates`. Before writing a common system from scratch, look for a free one in the Creator Store and clean + adapt it with `roblox-store-models` (scan for backdoors every time).
 
 ## Non-negotiables
 - **Server authority:** the server owns money, items, damage, cooldowns. Clients only request; the server validates every RemoteEvent argument (types, ranges, distance, cooldown/rate limit) and ignores bad requests.

@@ -30,6 +30,7 @@ lyopz plays a game normally; the Degen Roblox app's **Watch me play** bubble run
 
 If `sheets/` is missing, make it: `powershell -NoProfile -File "$HOME\.claude\degen-skill\skills\roblox-game-study\scripts\make-sheets.ps1" -Dir "<session folder>"` (System.Drawing, no Python needed).
 F8 marks can be misclicks: if lyopz corrects them ("I liked them all"), treat every marked shot as a like and add no dislike rules.
+F7-only sessions: marks come in bursts — treat a burst as one strong like for that screen; open the first shot of each burst + 1 per distinct screen. Repeat session of a studied game → append a dated "Session N" to the same study, only what's new. If `watch-play.ps1` left no notes/sheets, build sheets with `make-sheets.ps1`.
 
 Steps (save tokens: sheets first, full shots only where it matters):
 1. Read `notes.jsonl` and `session.json`. His words and F7/F8 marks are the most important data.

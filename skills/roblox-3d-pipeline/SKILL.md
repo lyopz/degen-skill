@@ -60,5 +60,12 @@ Full list in `references/quality-gates.md`.
 - Smooth surfaces. No lumps, holes or stretched texture.
 - Studio screenshot looks as good as the Unity shot. If it doesn't, check the SurfaceAppearance maps.
 
+## Gotchas from projects (promoted 2026-10-24)
+- Customuse CR1: geometry-only 100 credits, Model & Texture (1K) 70 credits; put 2–3 parts spaced apart in one picture → split by loose parts (merge by distance first). Base64 uploads can corrupt on flat/repeating images → subtle gradient background, md5-check every upload (WebP from Blender uploaded clean).
+- Customuse GLB faces +X: rotate −90° about Z for a −Y front. Image-to-3D keeps the picture's camera angle; pairs from a 3/4 view come out yawed per side — fix each side.
+- Studio MULTIPLIES MeshPart.Color with vertex colors: for palette recolor bake greyscale shading (0.75–1.0), one MeshPart per palette region + `PaletteRole`. Textured store meshes don't tint → remove TextureID and recolor. Skip store packs with Synty-style names (PolygonCity_*): doubtful licence.
+- Parts mounted on a body: keep the faces they sit on flat; bands/crowns follow the rounded top's bevel. If the approved picture has bigger features than the bible caps, the picture wins.
+- Blender Standard view: strong emission on light vertex colors clips pink/white → dark base + deep emission, glow pieces as separate Neon meshes in Studio. Free texture: project the source picture from the matching view. Seamless overlays: generate procedurally (draw each primitive at ±size offsets).
+
 ## Growing this skill (when lyopz adds a 3D repo or tool)
 Follow `references/registry.md` → "Adding a tool". Vet it first (licence, no install scripts that download and run unknown code, no telemetry you can't turn off, stars/activity). Add one row, wire it into the stage it improves, and log what it was better at in "Results" after the first real use. Tools that win stay default; tools that lose move to fallback.
