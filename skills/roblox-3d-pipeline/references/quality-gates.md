@@ -18,6 +18,7 @@ Adapted from `create-game-assets` (gamedev-skills/awesome-gamedev-agent-skills, 
 - Material contrast reads: matte body, glossy armor, metal trim, small subtle glow. Never a blown-out neon sheet.
 - Rich, deep colours, not pastel candy or muddy dark. Eyes stay visible against the body (lesson: same-hue glow disappears).
 - Pets: eyes on the front face only, in real recessed sockets, upper half, not touching the mouth; glowing styles animate (idle + blink at least). `roblox-art-style/references/pet-eyes.md`.
+- Pet accessories: separate model on `BackMount`, face fully visible from the front, top aura floats clear of the body, idle + flap/orbit + attack animations handed off. `roblox-art-style/references/pet-accessories.md`.
 - Pets: the sketchy grin is crisp (teeth separate, black ink lines readable at gameplay size) and matches the pet's rarity tier (`roblox-art-style/references/pet-mouths.md`). Blurry → mouth decal.
 - Elemental designs get animation (handoff to vfx-artist).
 - Looks good on a phone: check one Studio screenshot zoomed out to gameplay size.

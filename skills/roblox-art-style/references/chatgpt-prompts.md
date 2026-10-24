@@ -23,6 +23,7 @@ lyopz wants pets that look polished and premium, **not cartoonish**. What the to
 - **Sleek, confident silhouette** instead of a round blob: a clear head, chest, and pose; one strong shape idea you can read from far away.
 - **Sharp eyes in recessed sockets** (almond, slanted, slit or gem-like with a glint), front face only, upper half, never huge googly eyes. Style + size by rarity: `pet-eyes.md`.
 - **Mouth = the sketchy grin (lyopz 2026-10-24, every pet):** wide hand-drawn grin, chunky uneven white teeth, black ink crosshatch shading; rarer = more dramatic. Never a round open cartoon mouth or a smooth coloured-outline mouth. Tier lines: `pet-mouths.md`.
+- **Back + top accessories** (wings, back pieces, auras): upper-back hub, top aura space, never on the face. `pet-accessories.md`.
 - **Separate materials**: matte soft body + glossy armor/shell + polished metal trim (gold, silver) + glowing crystal or rune parts. Material contrast is what makes it look expensive.
 - **Clean hard edges with small bevels** that catch a thin highlight. Crisp panel lines and trim, not fuzzy or noisy detail.
 - **Limited palette**: 1 main color, 1 dark secondary, 1 metal, 1 glow color. Darker values and richer colors, not pastel candy.

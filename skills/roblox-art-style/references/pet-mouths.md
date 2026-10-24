@@ -11,6 +11,8 @@ Every pet mouth has the same feel: a **wide hand-drawn grin**. Rarer pets get a 
 - **No outline in another colour, no lips, no tongue, no pink.** Mouth is only white teeth + black ink + the body colour.
 - Flat, matte teeth. The body around it stays glossy and premium (`chatgpt-prompts.md` → "Premium polished pets").
 
+Clean variant (from his accessory sheets, 2026-10-24): bold wide white grin with black gaps and no crosshatch. Same grin family; use it with big accessories (`pet-accessories.md`).
+
 ## Slop (never)
 - A plain rounded open mouth: smooth capsule/oval hole, dark inside, with a smooth coloured outline (orange/gold ring). Clean vector shapes with no ink.
 - Cartoon smiles: simple curved line, "U" smile, tongue, pink inside, cute small mouth.
