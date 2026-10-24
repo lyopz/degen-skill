@@ -44,6 +44,13 @@ Unity not connected? Skip stage 3, import the Customuse .glb directly, and say "
 
 **6. Hand off.** End with the handoff block (`references/handoff.md`). The Lead sends it to the next agent: animator (it moves), vfx-artist (aura/trail/elemental animation; taste rule: elemental = animated), scripter (behaviour), map-builder (placing props), ui-designer (icons/cards), then roblox-reviewer.
 
+## Let lyopz watch (every time, lyopz 2026-10-24)
+lyopz wants to see it designing. Keep each step on screen:
+- **ChatGPT:** `gpt-image.ps1` already brings the Edge window to the front.
+- **Customuse / Higgsfield:** right after starting a generation, open its page so he sees it build: `Start-Process "<canvasUrl>"` (Customuse returns canvasUrl) or the Higgsfield result link.
+- **Unity:** the Lead opens it visible. Run `unity-open.ps1` before stage 3 to bring it to the front. `Import`, `ToUrpLit` and `PaintRegions` frame the model in the Scene view by themselves; call `DegenPolish.Focus(name)` after every `manage_material` tweak too. Do material changes one region at a time, not all in one hidden batch.
+- **Studio:** after the import, select the model and point the Studio camera at it (`roblox-import.md` step 6).
+
 ## Quality gates (all must pass before handoff)
 Full list in `references/quality-gates.md`.
 - Silhouette and colours match the picture (shots side by side). It's not "a circle on a circle" (`roblox-asset-shapes`).

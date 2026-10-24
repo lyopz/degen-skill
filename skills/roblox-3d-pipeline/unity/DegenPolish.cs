@@ -42,8 +42,25 @@ public static class DegenPolish
             model.transform.localScale *= heightStuds * StudMeters / b.size.y;
         b = GetBounds(root);
         model.transform.position -= new Vector3(b.center.x, b.min.y, b.center.z);   // bottom centre at origin
-        Selection.activeGameObject = root;
+        Focus(name);
         return Report(name);
+    }
+
+    // Frames the model in the Scene view (lit, shaded) so lyopz can watch every step. Called after each change.
+    public static string Focus(string name)
+    {
+        var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
+        Selection.activeGameObject = root;
+        var sv = SceneView.lastActiveSceneView;
+        if (sv == null) sv = EditorWindow.GetWindow<SceneView>();
+        sv.Show(); sv.Focus();
+        sv.drawGizmos = false;
+        sv.sceneLighting = true;
+        sv.cameraMode = SceneView.GetBuiltinCameraMode(DrawCameraMode.Textured);
+        var b = GetBounds(root);
+        sv.LookAt(b.center, Quaternion.Euler(12, 215, 0), Mathf.Max(b.extents.magnitude * 1.6f, 0.2f));
+        sv.Repaint();
+        return "{\"focused\":" + Q(name) + "}";
     }
 
     // ---------- 2. Check ----------
@@ -119,6 +136,7 @@ public static class DegenPolish
             r.sharedMaterials = list;
         }
         AssetDatabase.SaveAssets();
+        Focus(name);
         return "{\"converted\":" + done.Count + "}";
     }
 
@@ -165,6 +183,7 @@ public static class DegenPolish
             sb.Append(Q(m.name) + ":{" + string.Join(",", cfg.rules.Select((r, k) => Q(r.label) + ":" + F(100f * counts[k] / px.Length) + "")) + "},");
         }
         AssetDatabase.SaveAssets();
+        Focus(name);
         return sb.ToString().TrimEnd(',') + "} (percent of texture per rule; 0% = rule missed, widen its hue)";
     }
 

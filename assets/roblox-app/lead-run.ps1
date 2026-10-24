@@ -26,7 +26,7 @@ if ($extra.Count) {
   $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
   [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
 }
-# Unity set up -> open the polish project in the background so unityMCP connects by itself
+# Unity set up -> open the polish project (visible, lyopz watches it design) so unityMCP connects by itself
 if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfile -File (Join-Path $app 'unity-open.ps1') | Out-Null }
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
 if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {

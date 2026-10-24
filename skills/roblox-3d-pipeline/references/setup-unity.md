@@ -10,7 +10,7 @@
    `powershell -ExecutionPolicy Bypass -NoProfile -File "$HOME\.claude\degen-skill\assets\roblox-app\unity-setup.ps1"`
    It adds MCP for Unity to the project, copies `DegenPolish.cs`, checks uv and saves the Lead config.
 6. **In Unity:** Window → Package Manager → + → **Add package by name**: `com.unity.cloud.gltfast`, then `com.unity.formats.fbx`. (The script lists them if they're missing.)
-7. **Done.** From now on every Lead window opens Unity on this project (minimized) and connects by itself (stdio; `DegenPolish.cs` sets it). No Start Server click.
+7. **Done.** From now on every Lead window opens Unity on this project (visible, so you can watch it design) and connects by itself (stdio; `DegenPolish.cs` sets it). No Start Server click.
 8. **Check:** open a Lead window, wait about a minute for Unity, type `/mcp`, and **unityMCP** should say connected.
 
 Problems:

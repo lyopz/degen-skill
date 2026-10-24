@@ -8,6 +8,6 @@ No MCP tool uploads meshes (lesson 2026-10-23), so a persistent MeshId needs **F
 3. Check each MeshPart for a **SurfaceAppearance** with ColorMap, NormalMap, MetalnessMap and RoughnessMap. The glTF import usually makes it. If it's missing or flat, tell lyopz in the same card next time to also import the PNGs listed in `export/roblox.json`, then set the maps.
 4. Scale to the bible's studs (`model:ScaleTo(...)`) and set the pivot at the base. Name it `<Asset>`, put it in the folder the spec says (e.g. `ReplicatedStorage.Pets`), set Anchored / CanCollide / CollisionFidelity (Box for decor, Hull for pets).
 5. Glow parts: SurfaceAppearance can't light the scene. For the crystal glow, add a small PointLight (Brightness ≤ 1, Range 4–8, crystal colour). Elemental pets: tell the vfx-artist in the handoff (elemental = animated rule).
-6. Take one screenshot in the game's lighting next to the Unity view0. It must look as good as the Unity shot.
+6. So lyopz sees it: `game.Selection:Set({model})` and point `workspace.CurrentCamera.CFrame` at it (`CFrame.lookAt(pivot + Vector3.new(1, 0.6, 1).Unit * size * 2.2, pivot)`). Then take one screenshot in the game's lighting next to the Unity view0. It must look as good as the Unity shot.
 
 Customuse-only route (when Unity is skipped): `customuse_upload_to_roblox` can upload the Customuse mesh straight to lyopz's account. Check with `customuse_validate_roblox_upload` first, then insert by asset id. Otherwise use the same Import 3D card with the raw .glb.
