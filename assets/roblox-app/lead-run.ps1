@@ -20,6 +20,13 @@ if (Test-Path $cu) {
 }
 $un = Join-Path $env:USERPROFILE 'RobloxGames\.degen\unity-mcp.json'
 if (Test-Path $un) { $extra.unityMCP = [IO.File]::ReadAllText($un) | ConvertFrom-Json }
+# Blender: a blender-mcp.json override if saved, else the Claude app's Blender extension (rigging, reshaping, fixes)
+$bl = Join-Path $env:USERPROFILE 'RobloxGames\.degen\blender-mcp.json'
+if (Test-Path $bl) { $extra.Blender = [IO.File]::ReadAllText($bl) | ConvertFrom-Json }
+else {
+  $bx = Get-ChildItem "$env:LOCALAPPDATA\Claude-Data\*\Claude Extensions\ant.dir.gh.blender.blender-mcp\.venv\Scripts\blender-mcp.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+  if ($bx) { $extra.Blender = [ordered]@{ command = $bx; args = @() } }
+}
 if ($extra.Count) {
   $cfg = [IO.File]::ReadAllText($mcp) | ConvertFrom-Json
   foreach ($k in $extra.Keys) { $cfg.mcpServers | Add-Member -NotePropertyName $k -NotePropertyValue $extra[$k] -Force }
