@@ -126,7 +126,10 @@ body.drawer-open .voice-live{right:calc(min(380px,92vw) + 92px)}
 /* ---- home (front screen) ---- */
 body.home .side,body.home .topbar{display:none}
 body.home{grid-template-columns:1fr}
-.home-top{position:fixed;top:18px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:20;pointer-events:none}
+.home-top{position:fixed;top:18px;left:270px;right:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;z-index:20;pointer-events:none}
+@media(max-width:1100px){.home-top{top:60px;left:16px;right:16px}}
+/* menu open (sidebar + top bar showing): bubbles sit in the page as a normal row, so they never cover the logo or the top bar */
+body:not(.home) .home-top{position:static;justify-content:flex-start;padding:18px 0 4px;pointer-events:auto}
 .home-top .bub{pointer-events:auto}
 .home-brand{position:fixed;top:18px;left:24px;z-index:21;display:none;align-items:center;gap:10px;font-weight:700;letter-spacing:.06em;font-size:14px;background:none;border:0;color:var(--text);cursor:pointer}
 body.home .home-brand{display:flex}
@@ -230,7 +233,7 @@ body.awake #orb{transform:scale(1.1);filter:drop-shadow(0 0 30px rgba(255,60,80,
 .orb-cap{color:var(--muted);font-size:14px;margin-top:-6px;min-height:22px;max-width:640px}
 body.awake .orb-cap{color:var(--text)}
 .sheet-in,.drawer,.toast{text-align:left}
-.home{justify-content:flex-start;padding-top:max(84px,9vh)}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
+.home{justify-content:flex-start;padding-top:max(84px,9vh,calc(var(--toph,40px) + 44px))}body:not(.home) .home{padding-top:24px}.home .lead{margin-bottom:26px}.home .chips{margin-top:16px}
 #orb{width:270px;height:270px}.orb-wrap{margin-top:4px}.orb-cap{margin-top:-10px}
 .pgrid img.pick{opacity:.35;cursor:pointer}.pgrid img.pick.sel{opacity:1;border-color:var(--red);box-shadow:0 0 0 3px rgba(225,29,46,.25)}
 .sv label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--dim);margin-bottom:12px}
@@ -467,6 +470,8 @@ document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.c
 // ===== app <-> Lead link (local server), approvals, projects, voice ring =====
 (()=>{
 const $=id=>document.getElementById(id);
+// bubbles wrap to more rows on a narrow window: push the page down by their real height
+{const ht=document.querySelector('.home-top');const fit=()=>document.body.style.setProperty('--toph',(ht.getBoundingClientRect().bottom||40)+'px');new ResizeObserver(fit).observe(ht);addEventListener('resize',fit);fit()}
 const API=location.protocol.startsWith('http');
 const ta=$('b-desc');
 const toast=(t,fn)=>{const el=$('toast');el.textContent=t;el.classList.add('on');el.onclick=()=>{el.classList.remove('on');fn&&fn()};clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),7000)};
