@@ -43,7 +43,7 @@ Exploiters can: fire any RemoteEvent/ProximityPrompt/ClickDetector from anywhere
 - ProximityPrompt: only `Triggered` gets a server distance check; ClickDetector: none — validate yourself.
 - Validate before `FireAllClients` — the server is a gatekeeper, not a relay.
 - Critical physics: anchor parts or manage network ownership.
-- **Free Creator Store models can carry backdoors** (a "low poly palm" hid Scripts under `Humanoid > HumanoidDescription`). After every insert, list `LuaSourceContainer` descendants; decor with scripts → delete the model. MCP `insert_asset` returning `sandboxed:true` = it found scripts. Keyword-stuffed names are usually reuploads; plain names + older IDs are safer.
+- **Free Creator Store models can carry backdoors** (a "low poly palm" hid Scripts under `Humanoid > HumanoidDescription`). After every insert, list `LuaSourceContainer` descendants; decor with scripts → delete the model. MCP `insert_asset` returning `sandboxed:true` = it found scripts. Keyword-stuffed names are usually reuploads; plain names + older IDs are safer. Full insert → scan → clean → restyle flow and scanner: `roblox-store-models`.
 Template: `roblox-templates/templates/RemoteGuard.lua` (validated + rate-limited remotes).
 
 ## 3. Player data (saving)

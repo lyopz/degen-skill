@@ -50,6 +50,11 @@ Lead duties:
 3. Only rebuild from scratch if lyopz says so ("redo", "new design").
 4. Update the style bible anchor + HANDOFF with the new picture/model version.
 
+## Start from Creator Store models (lyopz's rule, 2026-10-24)
+- Before building a system or common prop from scratch (egg hatch, hatch animation, pet follow, buy pads/buttons, ProximityPrompts, doors, shops, leaderstats, codes, tycoon parts, R15 animations): check `roblox-templates` first, then search the Creator Store with `roblox-store-models` (search.luau / store-search.ps1). Pick a free, well-rated one, insert it into `ServerStorage.StoreQuarantine`, run `scan.luau`, delete every backdoor (require(number), loadstring, getfenv, hidden scripts) until it prints CLEAN, then move it in.
+- Always restyle it to lyopz's style: saved style if named → the game's `art-style.md` → `taste.md` → premium pet block for pets/eggs → his words in the brief. Swap visible meshes for our ChatGPT → Customuse models when they don't match. Never ship the store look.
+- No pop-up needed for free store models. Never insert paid ones. Note the store ID + creator in HANDOFF.md.
+
 ## Pets and assets look EXACTLY like lyopz describes
 - His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (`~/RobloxGames/<project>/art-style.md`) as a rule, so every future asset in that project gets it.
 - Check every model against the approved concept picture side by side before showing him. If it reads as "a circle on a circle" or a plain cube, it's not done — see roblox-asset-shapes.

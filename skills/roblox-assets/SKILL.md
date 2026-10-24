@@ -69,7 +69,7 @@ Full guide and pet/reward effects: `roblox-vfx` skill + `roblox-templates/templa
 
 ## 5. Check before handing over
 - Triangle count per mesh, texture sizes, CollisionFidelity (**Box** for decor + CanCollide off; Hull for simple props), `RenderFidelity = Performance` for background props, Anchored for static pieces.
-- Free Creator Store models: list `LuaSourceContainer` descendants after inserting; decor with scripts = backdoor → delete (`roblox-dev` → Security).
+- Free Creator Store models: list `LuaSourceContainer` descendants after inserting; decor with scripts = backdoor → delete (`roblox-dev` → Security). Searching, picking and cleaning store models: `roblox-store-models`.
 - Test on phone size in Studio's Device Simulator.
 - Save source picture, .blend, GLB/FBX and the Luau scripts with the project.
 

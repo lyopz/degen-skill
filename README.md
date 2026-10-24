@@ -31,6 +31,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Use Customuse for this hoodie" / "I don't like the eyes" | `customuse-design` |
 | "Make a Roblox fireball / make my chicken walk in Roblox" | `roblox-assets` |
 | "Make my Roblox game 10,000x cooler" | `roblox-design` |
+| "Use a free store egg system and make it my style" | `roblox-store-models` |
 | "Make the egg hatch sparkle / add a rarity aura in Roblox" | `roblox-vfx` |
 | "Make a pigeon cube pet that fits my game" | `roblox-art-style` |
 | "Save this script to my Roblox Studio" | `roblox-templates` |

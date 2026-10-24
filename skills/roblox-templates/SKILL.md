@@ -13,6 +13,8 @@ description: lyopz's library of reusable Roblox Studio templates (ModuleScripts,
 - Current: `VFX` (fireball, flaming legs, aura, explosion, camera shake), `Motion` (spin, bob, pet follow, waddle, collect pop), `ButtonFeel` (button hover/press/bounce/sounds, panel open/close, deny shake), `PetFX` (pet/reward effects: hatch in front of camera, rarity auras, level up, coin fountain, light pillar, trail, `Play` for plugin-built effects, distance culling; see `roblox-vfx`), `ImpactFX` (physics hits → thud + dust + callback scaled by impact speed; Collision Summaries API, Touched fallback; `BindTagged` for tagged props).
 - Ocean kit (use all three together): `Waves` (shared Gerstner wave math), `OceanMesh` (animated EditableMesh ocean with depth colors, whitecaps, shore foam), `OceanClient` (runs the ocean, floats `FloatOnWaves`-tagged ships, sways `Sway`-tagged trees). Needs EditableMesh enabled in Game Settings > Security; falls back to terrain water.
 
+No template fits? Look in the Creator Store next (`roblox-store-models`): insert, scan, clean, restyle. A cleaned store system lyopz likes can become a template here (keep `source: Creator Store <id> by <creator>` in the header).
+
 ## How templates reach his Roblox Studio
 1. Add/update the `.lua` in `templates/`, keep a header comment with usage.
 2. Run `python skills/roblox-templates/make_rbxmx.py` → rebuilds `templates/rbxmx/*.rbxmx` (one model file per template) and `DegenTemplates.rbxmx` (Studio plugin with all templates inside).
