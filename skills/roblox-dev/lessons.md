@@ -61,3 +61,6 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 - 2026-10-23 Device simulator: SetOrientationAsync errors until SetDeviceAsync picked a mobile device. Short landscape phones (~338 px) need a scrolling column (ScrollingFrame, fixed-offset CanvasSize on phones, scale 1 elsewhere).
 - 2026-10-23 Glow outline without beta features: a transparent frame a bit larger than the button with only a UIStroke draws outside the edge; brighten the stroke on hover.
 - 2026-10-23 With many agents sharing Play: lock file + set up the whole test in one Client execute_luau call (give currency, teleport, fire remotes), then screenshot; a full UI check fits in <3 min.
+- 2026-10-23 Store meshes come textured and MeshPart.Color doesn't tint the texture: to restyle, remove TextureID and recolour the whole mesh; window insets/ledges still read as cartoon "clay" buildings at one part each.
+- 2026-10-23 Check store pack mesh names before using: PolygonCity_* (or other Synty names) = reupload of a paid pack, doubtful licence -> skip.
+- 2026-10-23 Two background python -m http.server jobs on one port fail silently (404); give each agent its own port.
