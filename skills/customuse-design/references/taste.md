@@ -4,6 +4,7 @@ Read before every design (Customuse, ChatGPT, Blender). Updated after every rati
 Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 
 ## Rules (hard, always / never)
+- Elemental design = animated (rule): anything with fire, galaxy, lightning, matrix code or another element in its design gets subtle animation (flicker, swirl, crackle, scroll, orbit) for cool visuals - never a static element. (2026-10-24, lyopz)
 - Build it exactly how lyopz describes it; his words beat any preset. (2026-10-22, roblox-art-style)
 - Smooth, light, clean shapes; never a lumpy decimated mesh. (2026-10-23, models)
 - One asset per picture, white background. (2026-10-23, pictures)
