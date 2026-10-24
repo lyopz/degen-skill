@@ -32,5 +32,7 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 
 - Chunky cartoon low-poly models in the big-pet-sim style: thick readable silhouettes, smooth soft shading, flat saturated colors, dark elemental bodies with thin glowing cracks; he asked for whole games built in this style "in detail". (2026-10-24, play session)
 
+- Neon circuit-line portals: dark arch with thin glowing green circuit lines, glowing spiral swirl in the opening, a gem on top. Wants it rounder (soft bevels, no sharp blocky edges) and the swirl animated (spinning spiral, swirling particles, slow glow pulse). (2026-10-24, portal reference)
+
 ## Dislikes
 - Cartoonish pets: round blobs, huge googly eyes, big smiles, pastel candy colors, flat plastic look. (2026-10-23, pets)
