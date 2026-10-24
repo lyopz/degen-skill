@@ -25,7 +25,7 @@ Read first: `customuse-design/references/taste.md` (portal lines), the game's st
 1. **Picture**: one asset per picture on a white background, with the opening EMPTY (the swirl is done in-game). ChatGPT (`gpt-image.ps1`), or Customuse `gptImage25Flare` if ChatGPT is signed out. Use the prompt below.
 2. **Props**: one picture per prop (pillar, panel, rubble) with the same material words.
 3. **3D**: Customuse `customuseCr1Mesh3d` from the picture, low poly: arch ≤ 5k tris (faceLimit ~4500), props ≤ 2k.
-4. **Studio**: `customuse_upload_to_roblox` + `insert_asset` if Roblox is linked in Customuse; otherwise lyopz does File > Import 3D (`roblox-3d-pipeline/references/roblox-import.md`). Scale the arch so its opening covers the old portal's fill/teleport part. Keep the game's teleport part and scripts, and hide the old blocky arch parts instead of deleting them.
+4. **Studio**: `roblox-upload.ps1` + `insert_asset` (`roblox-3d-pipeline/references/roblox-import.md` Route A); no key yet → `customuse_upload_to_roblox` if Roblox is linked in Customuse, else the Import 3D card. Scale the arch so its opening covers the old portal's fill/teleport part. Keep the game's teleport part and scripts, and hide the old blocky arch parts instead of deleting them.
 5. **Animate** with `roblox-templates/templates/PortalFX.lua` (server/edit time builds the effects, one client LocalScript calls `Animate()`):
    - `Swirl(fill)` + `SwirlParticles(fill)`: the spinning spiral and the spiral-in particles.
    - `CodeRain(part, face)` on screens, and `CodeCurtain(cf, size)` for floating code beams around the portal.

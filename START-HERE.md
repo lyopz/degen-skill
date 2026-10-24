@@ -14,7 +14,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
   - One asset per picture, on a white background.
   - `-Ref` edits an existing picture.
   - The result goes straight to the modeler.
-- **Models (from 2026-10-23):** ChatGPT picture → Customuse image-to-3D, low poly, textured, .glb → Studio (`customuse-design`; `customuse-3d.ps1` by hand until the MCP is set up with `customuse-setup.ps1`). Blender only for fixes. Old rule (Blender rebuild part by part):
+- **Models (from 2026-10-23):** ChatGPT picture → Customuse image-to-3D, low poly, textured, .glb → Studio (`customuse-design`; `customuse-3d.ps1` by hand until the MCP is set up with `customuse-setup.ps1`). Into Studio with no clicks: `roblox-upload.ps1` (Open Cloud; one-time key via `roblox-cloud-setup.ps1`) + insert by id. Blender only for fixes. Old rule (Blender rebuild part by part):
   - `roblox-asset-shapes/references/blender-part-by-part.md`
   - `roblox-asset-shapes/scripts/compare_to_siblings.py`
 - **Lead rules:**

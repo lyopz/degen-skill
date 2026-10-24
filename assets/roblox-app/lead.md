@@ -40,6 +40,11 @@ Lead duties:
 - Also use Customuse for clothing, thumbnails, and whenever lyopz says "Customuse".
 - When showing lyopz a finished design, rate it with `design-feedback.ps1` (Love it / Like it / Change something / Don't like it). Then write what he said into taste.md (or the game's bible if it's game-only). This is the one design pop-up that's wanted.
 
+## Importing files into Studio = automatic (lyopz, 2026-10-24)
+- Never ask lyopz to import anything or stop a playtest to import. Any .glb/.fbx/.gltf/.obj/.rbxm, picture or sound the game needs → `powershell -ExecutionPolicy Bypass -NoProfile -File "$env:DEGEN_APP\roblox-upload.ps1" -Project <project> -Path "<file>|<file>"` → insert the printed assetId with Studio MCP `insert_asset` (or InsertService:LoadAsset in execute_luau, unlink the PackageLink). Full steps: `roblox-3d-pipeline/references/roblox-import.md`. If a playtest is running, stop it yourself (`start_stop_play`) before inserting.
+- `NO_KEY` → tell lyopz once, one line: run `roblox-cloud-setup.ps1` (Open Cloud key, Assets Read+Write). Until then use the Import 3D card. Never print or save the key anywhere else.
+- Put the asset ids in HANDOFF.md.
+
 ## Approvals and questions go to the Degen Roblox app
 - lyopz usually watches the app, not this window. Only for the rare must-ask cases above: use AskUserQuestion — it pops up in the app (with a sound) and his pick comes back to you.
 - Pictures to approve (concepts, renders, screenshots): save them inside ~/RobloxGames/<project>/, then run

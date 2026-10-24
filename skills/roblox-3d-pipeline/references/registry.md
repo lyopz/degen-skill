@@ -29,9 +29,9 @@ To see what is really loaded right now, check the tool list: `mcp__customuse__*`
 ## Into Roblox
 | Tool | Status | Best at | Notes |
 |---|---|---|---|
-| Roblox Studio MCP (`mcp__Roblox_Studio__*`) | connected | Placing, naming, SurfaceAppearance, lighting check, screenshots | No MCP tool uploads meshes |
-| Studio File > Import 3D (lyopz clicks, via an `ask.ps1` card) | connected | Persistent MeshIds from the polished .glb | Merge Meshes OFF unless one MeshPart is wanted |
-| Roblox Open Cloud Assets API | idea | Fully automatic upload (no click) | Needs an Open Cloud API key + user id; not built yet |
+| Roblox Studio MCP (`mcp__Roblox_Studio__*`) | connected | Placing, naming, SurfaceAppearance, lighting check, screenshots, `insert_asset` by id | No MCP tool reads a local mesh file |
+| **Roblox Open Cloud Assets API** (`roblox-upload.ps1`) | setup (`roblox-cloud-setup.ps1`, key with Assets Read+Write) | Default. Uploads .glb/.fbx/.gltf/.rbxm (Model), .obj (via Blender → .glb), pictures (Decal), sounds (Audio), video. Then `insert_asset` / `InsertService:LoadAsset` | 20 MB/file. Audio 10/month unless ID-verified. Ids cached per project in `roblox-assets.json` |
+| Studio File > Import 3D (lyopz clicks, via an `ask.ps1` card) | fallback | No key yet, upload failing, or a rig that lost its bones | Merge Meshes OFF unless one MeshPart is wanted |
 
 ## Knowledge (docs, no scripts)
 | Source | Licence | Used for |

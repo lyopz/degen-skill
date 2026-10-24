@@ -39,7 +39,7 @@ Each stage writes into `~/RobloxGames/<project>/models/<asset>/` (local only, ne
 
 Unity not connected? Skip stage 3, import the Customuse .glb directly, and say "Unity polish skipped (not connected)" in the report.
 
-**4. Roblox Studio** (`references/roblox-import.md`). Import the polished .glb, check the SurfaceAppearance maps, scale to the bible's studs, name it, put it in its folder, and take a screenshot in the game's lighting.
+**4. Roblox Studio** (`references/roblox-import.md`). Upload the polished .glb with `roblox-upload.ps1` and insert it by asset id (no click for lyopz; Import 3D card only if there is no key yet), check the SurfaceAppearance maps, scale to the bible's studs, name it, put it in its folder, and take a screenshot in the game's lighting.
 
 **5. Rate + learn.** Run `design-feedback.ps1 -Tool unity` with the Studio screenshot. Write his words into taste.md (all games) or the bible (this game). Put the region rules that worked into the bible's "Unity recipes" section so the next asset in that game reuses them.
 

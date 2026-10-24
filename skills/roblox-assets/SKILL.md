@@ -49,7 +49,7 @@ Limits and budgets (2026):
 2. Parent mesh → armature with Automatic Weights, fix in Weight Paint (max **4 bone influences per vertex**). Bones frozen at scale 1 / rotation 0.
 3. Animate a loop in Blender (walk = 24–32 frames, contact → passing → contact; add head bob and body sway for creatures). Or animate later in Studio's Animation Editor.
 4. Export GLB/FBX (one animation per file if baking animations).
-5. Studio → **Import 3D** → Rig type **Custom** (creatures/NPCs) or **R15** (humanoids) → Constraint Type **Joint Upgrade (AnimationConstraints)** (2026 default; don't use Motor6D with bones).
+5. Studio: upload with `roblox-upload.ps1` and insert by id (`roblox-3d-pipeline/references/roblox-import.md`, check Bones came through), or **Import 3D** → Rig type **Custom** (creatures/NPCs) or **R15** (humanoids) → Constraint Type **Joint Upgrade (AnimationConstraints)** (2026 default; don't use Motor6D with bones).
 6. Non-humanoid models use an **AnimationController + Animator** inside the model; humanoids use Humanoid + Animator. Publish the animation from the Animation Editor, then play it:
 ```lua
 local animator = model:FindFirstChildWhichIsA("AnimationController"):FindFirstChildOfClass("Animator")

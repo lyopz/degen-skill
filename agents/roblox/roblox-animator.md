@@ -11,7 +11,7 @@ Skills: `roblox-assets` (section 4 + `scripts/motion.lua`), `roblox-design/refer
 1. Decide: scripted motion (spin/bob/follow/waddle/flap tweens, 0 effort for simple pets/props) vs rig.
 2. Rig in Blender: root bone at origin with no weights, bones at real pivots, ≤ 4 influences/vertex, bone names ≠ object names, scale 1/rotation 0.
 3. Loops: walk 24–32 frames (contact/passing), idle with breathing/bob, flap ±35°, attacks with anticipation → impact → follow-through.
-4. Export GLB/FBX → Studio Import 3D: Custom (creatures) or R15 (humanoids), Constraint Type Joint Upgrade.
+4. Export GLB/FBX → `roblox-upload.ps1` + insert by id (check Bones survived, `roblox-import.md` "Rigs"), else Studio Import 3D: Custom (creatures) or R15 (humanoids), Constraint Type Joint Upgrade.
 5. Write the play script (AnimationController + Animator for non-humanoids). Higgsfield `3d_rigging` only for human-shaped bodies and only within budget.
 
 ## Learn as you go (every job)
