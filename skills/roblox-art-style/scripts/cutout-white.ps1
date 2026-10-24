@@ -1,5 +1,6 @@
 # White-background cutout: flood fill from the borders over near-white pixels -> transparent; soft 1px edge; trim + pad to square 512.
-param([string]$In, [string]$Out, [int]$Size = 512, [int]$Thresh = 232)
+# -KeepAspect: keep the trimmed shape's aspect ratio (long side = $Size) instead of a square canvas, e.g. for sign decals.
+param([string]$In, [string]$Out, [int]$Size = 512, [int]$Thresh = 232, [switch]$KeepAspect)
 Add-Type -AssemblyName System.Drawing
 Add-Type -TypeDefinition @"
 using System; using System.Collections.Generic;
@@ -38,11 +39,13 @@ for ($i=0; $i -lt $w*$h; $i++) {
 }
 [Runtime.InteropServices.Marshal]::Copy($bytes, 0, $data.Scan0, $bytes.Length); $bmp.UnlockBits($data)
 $cw = $maxX-$minX+1; $ch = $maxY-$minY+1; $side = [math]::Max($cw,$ch); $pad = [int]($side*0.04)
-$outBmp = New-Object System.Drawing.Bitmap $Size, $Size, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-$g2 = [System.Drawing.Graphics]::FromImage($outBmp); $g2.Clear([System.Drawing.Color]::Transparent)
-$g2.InterpolationMode = 'HighQualityBicubic'; $g2.SmoothingMode = 'HighQuality'; $g2.PixelOffsetMode = 'HighQuality'
 $scale = ($Size - 2*$pad*$Size/$side) / $side
 $dw = $cw*$scale; $dh = $ch*$scale
-$g2.DrawImage($bmp, (New-Object System.Drawing.RectangleF ((($Size-$dw)/2), (($Size-$dh)/2), $dw, $dh)), (New-Object System.Drawing.RectangleF $minX, $minY, $cw, $ch), 'Pixel')
+# -KeepAspect: canvas = trimmed shape + small pad (signs/decals); default: square $Size canvas (icons)
+if ($KeepAspect) { $pp = [int]($Size*0.02); $OW = [int][math]::Ceiling($dw) + 2*$pp; $OH = [int][math]::Ceiling($dh) + 2*$pp } else { $OW = $Size; $OH = $Size }
+$outBmp = New-Object System.Drawing.Bitmap $OW, $OH, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+$g2 = [System.Drawing.Graphics]::FromImage($outBmp); $g2.Clear([System.Drawing.Color]::Transparent)
+$g2.InterpolationMode = 'HighQualityBicubic'; $g2.SmoothingMode = 'HighQuality'; $g2.PixelOffsetMode = 'HighQuality'
+$g2.DrawImage($bmp, (New-Object System.Drawing.RectangleF ((($OW-$dw)/2), (($OH-$dh)/2), $dw, $dh)), (New-Object System.Drawing.RectangleF $minX, $minY, $cw, $ch), 'Pixel')
 $g2.Dispose(); $outBmp.Save($Out, [System.Drawing.Imaging.ImageFormat]::Png); $outBmp.Dispose(); $bmp.Dispose()
 $Out
