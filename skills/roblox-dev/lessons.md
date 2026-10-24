@@ -6,6 +6,8 @@ When a lesson repeats 2–3 times or is clearly general, promote it into `SKILL.
 Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.md`; VFX tuning/testing → `game-feel.md`; Creator Store backdoors + Studio MCP/EditableMesh gotchas → `roblox-dev/SKILL.md`; ChatGPT automation → `roblox-art-style/references/chatgpt-prompts.md`; smooth models → `roblox-modeler`.
 
 ## Data & saving
+- 2026-10-23 [pet-sim] Rich per-item fields (abilities, shiny, color, fusion) tripled the full client sync (215 KB→ sent every second with generators). Pack instances (codec: only fields the client can't derive from config) and round-trip test unpack = original. Next step is delta sync.
+- 2026-10-23 [pet-sim] Migration tests with injected old-format profiles must only touch the in-memory store; with real DataStores active (Studio API access on) test on a copy — an injected profile would overwrite the developer's real save. Store rolled values as 0–1 quality so rebalancing ranges rescales owned items.
 ## Security & remotes
 ## Purchases
 ## Performance
@@ -17,7 +19,9 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 ## Animation & VFX
 - 2026-10-23 [pet-sim] Blender Standard view transform: strong emission on light vertex colors clips to pink/white. Use a dark base + deep violet emission; in Studio make glow pieces separate meshes set to Neon.
 ## Studio / tooling (MCP, import, plugins)
-- 2026-10-23 [pet-sim] Syncing scripts into Studio: serve the scripts folder with `python -m http.server --bind 127.0.0.1`, GetAsync with HttpEnabled on only during the fetch, normalize `
+- 2026-10-23 [pet-sim] `require` of a client controller from MCP execute_luau gives a fresh module copy with empty state — to inspect client data, listen to the sync remote yourself.
+- 2026-10-23 [pet-sim] Syncing scripts into Studio: serve the scripts folder with `python -m http.server --bind 127.0.0.1`, GetAsync with HttpEnabled on only during the fetch, normalize `
+
 ` → `
 `, `loadstring` to compile-check before setting `.Source`. Patch scripts that find/replace anchors break on CRLF vs LF — prefer syncing the whole file.
 - 2026-10-23 [pet-sim] An unsaved Studio place can close mid-job (lost hub built only via execute_luau). Save new places to a file/Roblox before building; agents check `list_roblox_studios` before long jobs and keep code on disk + one install script so work survives a Studio drop.
