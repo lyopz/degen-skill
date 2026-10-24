@@ -35,5 +35,7 @@ Format: `- <rule> (<date>, <design>)`. Newest wins when two lines disagree.
 
 - Neon circuit-line portals: dark arch with thin glowing green circuit lines, glowing spiral swirl in the opening, a gem on top. Wants it rounder (soft bevels, no sharp blocky edges) and the swirl animated (spinning spiral, swirling particles, slow glow pulse). (2026-10-24, portal reference)
 
+- Portals keep one base look (rounded arch + animated swirl) but each gets unique depth: loose/protruding bricks, chipped eroded edges, a crumbling corner, rubble, as if worn or tampered with over time; dressed with props from its island (e.g. falling-code pillars for a digital world). (2026-10-24, lyopz)
+
 ## Dislikes
 - Cartoonish pets: round blobs, huge googly eyes, big smiles, pastel candy colors, flat plastic look. (2026-10-23, pets)

@@ -7,6 +7,7 @@ Every prompt or design style that worked (or didn't), newest at top. The Degen S
   "A single full-body [THING], [style], [materials/colors], three-quarter view, whole object fully visible, centered, plain neutral grey background, soft even lighting, no text" · gpt_image_2_5 1:1.
 
 ## Roblox game prompts
+- **Themed portal (liked 2026-10-24):** rounded weathered low-poly arch, thin neon lines, empty opening, gem on top; full fill-in prompt in `roblox-portals/SKILL.md`.
 Kept locally in each game's `~/RobloxGames/<project>/art-style.md`, never in this repo.
 
 ## Site art (Degen Skills site/app, black + red)
