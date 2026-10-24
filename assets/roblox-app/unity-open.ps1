@@ -1,7 +1,15 @@
-# Opens the Unity polish project (visible, so lyopz can watch it design) or brings it to the front if it's already open.
-# lead-run.ps1 calls it on every Lead start; agents can call it too:
-#   powershell -ExecutionPolicy Bypass -NoProfile -File "$env:DEGEN_APP\unity-open.ps1"
+# Opens the Unity polish project minimized (lead-run.ps1, every Lead start) so the Unity MCP connects.
+# -Show: pop Unity up in front while it designs (roblox-3d-pipeline stage 3). -Hide: minimize it again when done.
+#   powershell -ExecutionPolicy Bypass -NoProfile -File "$env:DEGEN_APP\unity-open.ps1" [-Show | -Hide]
 # Prints OPEN (already running), STARTED, or why it couldn't.
+param([switch]$Show, [switch]$Hide)
+Add-Type -Namespace Degen -Name Win -MemberDefinition '[DllImport("user32.dll")] public static extern bool ShowWindow(System.IntPtr h, int c); [DllImport("user32.dll")] public static extern bool SetForegroundWindow(System.IntPtr h);'
+function Win($cmd) {
+  $u = Get-Process Unity -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
+  if (-not $u) { return }
+  if ($cmd -eq 'show') { [Degen.Win]::ShowWindow($u.MainWindowHandle, 9) | Out-Null; [Degen.Win]::SetForegroundWindow($u.MainWindowHandle) | Out-Null }
+  if ($cmd -eq 'hide') { [Degen.Win]::ShowWindow($u.MainWindowHandle, 6) | Out-Null }
+}
 $D = Join-Path $env:USERPROFILE 'RobloxGames\.degen'
 $pf = Join-Path $D 'unity-project.txt'
 if (-not (Test-Path $pf)) { 'NO_PROJECT (run unity-setup.ps1)'; exit 0 }
@@ -12,8 +20,7 @@ if (-not (Test-Path (Join-Path $proj 'Assets'))) { "NO_PROJECT ($proj)"; exit 0 
 $lock = Join-Path $proj 'Temp\UnityLockfile'
 if (Test-Path $lock) {
   try { $s = [IO.File]::Open($lock, 'Open', 'ReadWrite', 'None'); $s.Close() } catch {
-    $u = Get-Process Unity -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
-    if ($u) { try { (New-Object -ComObject WScript.Shell).AppActivate($u.Id) | Out-Null } catch {} }
+    if ($Show) { Win 'show' } elseif ($Hide) { Win 'hide' }
     'OPEN'; exit 0
   }
 }
@@ -35,5 +42,7 @@ if (-not $exe) {
 }
 if (-not $exe) { 'NO_UNITY (install a Unity editor in Unity Hub)'; exit 0 }
 
-Start-Process -FilePath $exe -ArgumentList @('-projectPath', "`"$proj`"")
+if ($Hide) { 'NOT_OPEN'; exit 0 }
+$style = if ($Show) { 'Normal' } else { 'Minimized' }
+Start-Process -FilePath $exe -ArgumentList @('-projectPath', "`"$proj`"") -WindowStyle $style
 'STARTED'

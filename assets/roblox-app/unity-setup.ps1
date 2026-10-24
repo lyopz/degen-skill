@@ -3,7 +3,7 @@
 #   powershell -ExecutionPolicy Bypass -NoProfile -File "$HOME\.claude\degen-skill\assets\roblox-app\unity-setup.ps1"
 # Options: -Project "<unity project folder>" (default ~/RobloxGames/.degen/degen-polish), -Http (use Unity's own HTTP
 # server on 127.0.0.1:8080 instead; default is stdio: the Lead starts the server itself and Unity's bridge auto-starts),
-# -Remove (disconnect). Every Lead start opens the project, visible (unity-open.ps1), so it connects by itself.
+# -Remove (disconnect). Every Lead start opens the project minimized (unity-open.ps1; it pops up while designing) so it connects by itself.
 # Saves only on this PC (~/RobloxGames/.degen/unity-mcp.json + unity-project.txt), never in the repo.
 param([string]$Project = '', [switch]$Http, [switch]$Remove)
 $D = Join-Path $env:USERPROFILE 'RobloxGames\.degen'; New-Item -ItemType Directory -Force -Path $D | Out-Null
@@ -53,6 +53,6 @@ $srv = if (-not $Http) {
 
 ''
 if ($missing) { 'Still to add in Unity (Window > Package Manager > + > Add package by name): ' + ($missing -join ', ') }
-if (-not $Http) { 'Done. Every Lead window now opens Unity on this project (you can watch it design) and connects to it by itself.' }
+if (-not $Http) { 'Done. Every Lead window now opens Unity minimized on this project (it pops up while designing) and connects to it by itself.' }
 else { 'Done (HTTP). Every Lead window opens Unity on this project; DegenPolish turns on Auto-Start so the server starts with it.' }
 'Check: open a Lead window from the app, type /mcp, and unityMCP should say connected.'
