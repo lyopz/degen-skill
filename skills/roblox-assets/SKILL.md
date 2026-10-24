@@ -65,7 +65,7 @@ Built from `ParticleEmitter` + `Beam` + `Trail` + `PointLight` on **Attachments*
 - `Fireball(origin, direction)` — glowing core, flame, sparks, trail, light, explosion + camera shake on hit.
 - `IgniteLegs(model)` — finds leg bones/parts (names containing Leg/Foot/Shin/Thigh) and attaches flame + ember emitters + light.
 - `Aura(part, color)` — ring of rising particles.
-Keep under ~50 particles alive per emitter on mobile, use `LightEmission = 1` for fire/magic (additive glow), `LightInfluence = 0`, flipbook textures for richer fire, and turn effects off when far from the camera.
+Full guide and pet/reward effects: `roblox-vfx` skill + `roblox-templates/templates/PetFX.lua`. Keep under ~50 particles alive per emitter on mobile, use `LightEmission = 1` for fire/magic (additive glow), `LightInfluence = 0`, flipbook textures for richer fire, and turn effects off when far from the camera.
 
 ## 5. Check before handing over
 - Triangle count per mesh, texture sizes, CollisionFidelity (**Box** for decor + CanCollide off; Hull for simple props), `RenderFidelity = Performance` for background props, Anchored for static pieces.

@@ -599,7 +599,339 @@ function OceanMesh.HideTerrainWater()
 end
 
 return OceanMesh
-]]></ProtectedString></Properties></Item><Item class="Script" referent="T5"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T5"><Properties><string name="Name">PetFX</string><ProtectedString name="Source"><![CDATA[-- PetFX.lua — pet/reward effects for simulators (ModuleScript in ReplicatedStorage, call from the CLIENT).
+-- version: 1
+-- changelog: v1 2026-10-24 first version (hatch, rarity aura, level up, reward fountain, light pillar, trail, Play, culling)
+-- Uses Roblox's built-in particle textures, so it works with no uploads. Swap the TEX ids for your own
+-- (ChatGPT white-on-black textures, see roblox-vfx/references/textures.md) to match the game's style.
+-- Usage (LocalScript):
+--   local PetFX = require(game.ReplicatedStorage.PetFX)
+--   PetFX.HatchInFront(eggModel, "Legendary", function(cf) --[[show the pet at cf]] end)
+--   local stop = PetFX.RarityAura(pet.PrimaryPart, "Mythic")   -- stop() removes it
+--   PetFX.LevelUp(player.Character)
+--   PetFX.Reward(chest:GetPivot().Position, "Coins", 20)
+--   local pillar = PetFX.Pillar(egg:GetPivot().Position, "Legendary", 40)
+--   PetFX.Trail(pet.PrimaryPart, "Epic")
+--   PetFX.Play(workspace.SomeEffect)     -- emits every emitter using EmitCount / EmitDelay attributes
+--   PetFX.Cull(workspace.Pets, 120)      -- turns pet effects off beyond 120 studs from the camera
+-- Everything here is cosmetic: the server decides the pet/reward, then tells the client to play it.
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
+local Lighting = game:GetService("Lighting")
+
+local PetFX = {}
+
+local TEX = {
+	Spark = "rbxasset://textures/particles/sparkles_main.dds",
+	Glow = "rbxasset://textures/particles/forcefield_glow_main.dds",
+	Ring = "rbxasset://textures/particles/forcefield_vortex_main.dds",
+	Shock = "rbxasset://textures/particles/explosion01_shockwave_main.dds",
+	Smoke = "rbxasset://textures/particles/smoke_main.dds",
+}
+PetFX.Textures = TEX -- overwrite entries from your game to restyle every effect
+
+-- Same rarity colors everywhere (roblox-design/references/pets-and-eggs.md). Tier drives how big effects get.
+PetFX.Rarity = {
+	Common = { Color = Color3.fromRGB(190, 190, 200), Tier = 1 },
+	Uncommon = { Color = Color3.fromRGB(80, 220, 100), Tier = 2 },
+	Rare = { Color = Color3.fromRGB(60, 150, 255), Tier = 3 },
+	Epic = { Color = Color3.fromRGB(170, 80, 255), Tier = 4 },
+	Legendary = { Color = Color3.fromRGB(255, 200, 40), Tier = 5 },
+	Mythic = { Color = Color3.fromRGB(255, 50, 90), Tier = 6 },
+	Secret = { Color = Color3.fromRGB(255, 255, 255), Tier = 7, Rainbow = true },
+	Coins = { Color = Color3.fromRGB(255, 205, 50), Tier = 3 },
+	Gems = { Color = Color3.fromRGB(80, 230, 255), Tier = 3 },
+}
+
+local RAINBOW = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)), ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 170, 40)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(255, 255, 60)), ColorSequenceKeypoint.new(0.6, Color3.fromRGB(60, 255, 120)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(60, 160, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 80, 255)),
+})
+
+-- Quality: 1 = full. Low graphics settings / phones get fewer particles automatically.
+local quality = 1
+do
+	local ok, level = pcall(function() return UserSettings():GetService("UserGameSettings").SavedQualityLevel.Value end)
+	if ok and level > 0 and level <= 3 then quality = 0.5 end -- Automatic = 0, 1..10 = manual slider
+	if game:GetService("UserInputService").TouchEnabled then quality = math.min(quality, 0.7) end
+end
+function PetFX.SetQuality(q: number) quality = math.clamp(q, 0.1, 1) end
+local function n(count: number): number return math.max(1, math.floor(count * quality + 0.5)) end
+
+local function info(rarity: string?)
+	return PetFX.Rarity[rarity or "Common"] or PetFX.Rarity.Common
+end
+local function colorOf(rarity: string?): ColorSequence
+	local r = info(rarity)
+	if r.Rainbow then return RAINBOW end
+	return ColorSequence.new(Color3.new(1, 1, 1):Lerp(r.Color, 0.35), r.Color) -- white-hot start, rarity color end
+end
+local function seq(...: number): NumberSequence
+	local a, k = { ... }, {}
+	for i = 1, #a, 2 do table.insert(k, NumberSequenceKeypoint.new(a[i], a[i + 1])) end
+	return NumberSequence.new(k)
+end
+
+local function emitter(parent: Instance, props: { [string]: any }): ParticleEmitter
+	local e = Instance.new("ParticleEmitter")
+	e.LightInfluence = 0
+	e.LightEmission = 1 -- additive glow; set 0 for smoke/dust
+	e.Rate = 0 -- bursts by default, continuous effects set Rate
+	for k, v in props do (e :: any)[k] = v end
+	e.Parent = parent
+	return e
+end
+
+-- Invisible anchored holder part at a position (effects need a part or attachment)
+local function holder(pos: Vector3, life: number?): (BasePart, Attachment)
+	local p = Instance.new("Part")
+	p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+	p.Transparency, p.Size, p.Position = 1, Vector3.one, pos
+	p.Parent = workspace.CurrentCamera or workspace -- under Camera = only this client sees it
+	local att = Instance.new("Attachment"); att.Parent = p
+	if life then Debris:AddItem(p, life) end
+	return p, att
+end
+
+local function light(att: Instance, color: Color3, range: number, brightness: number, fade: number?)
+	local l = Instance.new("PointLight")
+	l.Color, l.Range, l.Brightness, l.Shadows = color, range, brightness, false
+	l.Parent = att
+	if fade then TweenService:Create(l, TweenInfo.new(fade), { Brightness = 0 }):Play() end
+	return l
+end
+
+-- Burst: flash + shockwave ring + sparks + glow motes. The building block of hatches and rewards.
+function PetFX.Burst(pos: Vector3, rarity: string?, scale: number?)
+	local s, r = scale or 1, info(rarity)
+	local t = r.Tier
+	local _, att = holder(pos, 3)
+	local col = colorOf(rarity)
+	emitter(att, { Name = "Flash", Texture = TEX.Glow, Lifetime = NumberRange.new(0.15, 0.2), Speed = NumberRange.new(0),
+		Size = seq(0, 2 * s, 0.3, 6 * s, 1, 7 * s), Transparency = seq(0, 0, 1, 1), Color = col, ZOffset = 2, Brightness = 2 }):Emit(1)
+	emitter(att, { Name = "Shock", Texture = TEX.Shock, Lifetime = NumberRange.new(0.35, 0.45), Speed = NumberRange.new(0.01),
+		Orientation = Enum.ParticleOrientation.VelocityPerpendicular, EmissionDirection = Enum.NormalId.Top,
+		Size = seq(0, 1 * s, 1, (6 + t) * s), Transparency = seq(0, 0.1, 1, 1), Color = col }):Emit(1)
+	emitter(att, { Name = "Sparks", Texture = TEX.Spark, Lifetime = NumberRange.new(0.5, 0.9), Speed = NumberRange.new(14 * s, 28 * s),
+		SpreadAngle = Vector2.new(180, 180), Drag = 5, Acceleration = Vector3.new(0, -12, 0), Squash = seq(0, 1.5, 1, 0),
+		Size = seq(0, 0.5 * s, 1, 0), Color = col }):Emit(n(10 + t * 6))
+	emitter(att, { Name = "Motes", Texture = TEX.Glow, Lifetime = NumberRange.new(0.8, 1.4), Speed = NumberRange.new(3 * s, 7 * s),
+		SpreadAngle = Vector2.new(180, 180), Drag = 2, Acceleration = Vector3.new(0, 3, 0),
+		Size = seq(0, 0.4 * s, 0.5, 0.3 * s, 1, 0), Transparency = seq(0, 0, 0.7, 0.2, 1, 1), Color = col }):Emit(n(4 + t * 2))
+	light(att, r.Color, 14 * s + t * 2, 3 + t * 0.5, 0.6)
+end
+
+-- Rarity aura on a pet: flat ground ring + rising motes + soft light. Rates grow with tier.
+-- Returns a stop() function. Common/Uncommon get nothing (keeps rare pets special and saves FPS).
+function PetFX.RarityAura(part: BasePart, rarity: string, scale: number?): () -> ()
+	local r, s = info(rarity), scale or math.max(part.Size.X, part.Size.Z) / 2
+	if r.Tier < 3 then return function() end end
+	local col = colorOf(rarity)
+	local att = Instance.new("Attachment"); att.Name = "PetFXAura"; att.Parent = part
+	att.Position = Vector3.new(0, -part.Size.Y / 2, 0)
+	emitter(att, { Name = "Ring", Texture = TEX.Ring, Rate = 1.5, Lifetime = NumberRange.new(1.2), Speed = NumberRange.new(0.01),
+		Orientation = Enum.ParticleOrientation.VelocityPerpendicular, EmissionDirection = Enum.NormalId.Top, ZOffset = 0,
+		RotSpeed = NumberRange.new(60), Size = seq(0, 1.8 * s, 1, 2.4 * s), Transparency = seq(0, 1, 0.3, 0.4, 1, 1),
+		Color = col, LockedToPart = true })
+	emitter(att, { Name = "Motes", Texture = TEX.Spark, Rate = n(2 + r.Tier * 1.5), Lifetime = NumberRange.new(0.9, 1.6),
+		Speed = NumberRange.new(1.5), SpreadAngle = Vector2.new(25, 25), Drag = 0, Acceleration = Vector3.new(0, 2, 0),
+		EmissionDirection = Enum.NormalId.Top, Size = seq(0, 0, 0.2, 0.35 * s, 1, 0), Color = col })
+	if r.Tier >= 5 then light(att, r.Color, 8 * s, 1.2) end
+	return function() att:Destroy() end
+end
+
+-- Trail behind a moving pet/player part (Epic+ pets, speed boosts, dashes)
+function PetFX.Trail(part: BasePart, rarity: string?, width: number?): Trail
+	local w = width or part.Size.Y * 0.8
+	local a0 = Instance.new("Attachment"); a0.Position = Vector3.new(0, w / 2, 0); a0.Parent = part
+	local a1 = Instance.new("Attachment"); a1.Position = Vector3.new(0, -w / 2, 0); a1.Parent = part
+	local t = Instance.new("Trail")
+	t.Attachment0, t.Attachment1 = a0, a1
+	t.Lifetime, t.MinLength, t.FaceCamera, t.LightEmission, t.LightInfluence = 0.35, 0.1, true, 1, 0
+	t.Color = colorOf(rarity)
+	t.Transparency = seq(0, 0.2, 1, 1)
+	t.WidthScale = seq(0, 1, 1, 0) -- taper to a point
+	t.Parent = part
+	return t
+end
+
+-- Light pillar: a vertical beam over an egg/drop/landmark. Two beams (core + soft halo) facing the camera.
+function PetFX.Pillar(pos: Vector3, rarity: string?, height: number?): BasePart
+	local h, r = height or 30, info(rarity)
+	local p, bottom = holder(pos)
+	local top = Instance.new("Attachment"); top.Position = Vector3.new(0, h, 0); top.Parent = p
+	local function beam(width: number, transp: number)
+		local b = Instance.new("Beam")
+		b.Attachment0, b.Attachment1 = bottom, top
+		b.FaceCamera, b.LightEmission, b.LightInfluence, b.Segments = true, 1, 0, 1
+		b.Width0, b.Width1 = width, width * 0.6
+		b.Color = colorOf(rarity)
+		b.Transparency = seq(0, transp, 0.7, transp + 0.3 * (1 - transp), 1, 1) -- fades out at the top
+		b.Parent = p
+	end
+	beam(1.2 + r.Tier * 0.2, 0.1)
+	beam(4 + r.Tier * 0.5, 0.75)
+	emitter(bottom, { Name = "Rise", Texture = TEX.Spark, Rate = n(6), Lifetime = NumberRange.new(1.5, 2.5),
+		Speed = NumberRange.new(h / 3, h / 2), SpreadAngle = Vector2.new(3, 3), EmissionDirection = Enum.NormalId.Top,
+		Size = seq(0, 0.4, 1, 0), Color = colorOf(rarity) })
+	return p -- Destroy() it to remove
+end
+
+-- Reward fountain: coins/gems pop up and fall, plus a burst. Use the reward's texture for the coins if you have one.
+function PetFX.Reward(pos: Vector3, kind: string?, count: number?, texture: string?)
+	local k = kind or "Coins"
+	PetFX.Burst(pos, k, 0.7)
+	local _, att = holder(pos, 3)
+	emitter(att, { Name = "Coins", Texture = texture or TEX.Spark, Lifetime = NumberRange.new(1, 1.4),
+		Speed = NumberRange.new(14, 22), SpreadAngle = Vector2.new(30, 30), EmissionDirection = Enum.NormalId.Top,
+		Acceleration = Vector3.new(0, -45, 0), RotSpeed = NumberRange.new(-180, 180), Rotation = NumberRange.new(0, 360),
+		Size = seq(0, 0.9, 1, 0.6), Transparency = seq(0, 0, 0.85, 0, 1, 1), Color = colorOf(k),
+		LightEmission = texture and 0 or 1 }):Emit(n(count or 16))
+end
+
+-- Level up / rebirth: ground shockwave + spiral column of motes + bright flash on the character.
+function PetFX.LevelUp(character: Model, rarity: string?)
+	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not root then return end
+	local key = rarity or "Legendary"
+	local feet = root.Position - Vector3.new(0, 3, 0)
+	PetFX.Burst(feet, key, 1)
+	local att = Instance.new("Attachment"); att.Position = Vector3.new(0, -3, 0); att.Parent = root
+	local col = colorOf(key)
+	local column = emitter(att, { Name = "Column", Texture = TEX.Spark, Rate = n(40), Lifetime = NumberRange.new(0.8, 1.2),
+		Speed = NumberRange.new(6, 9), EmissionDirection = Enum.NormalId.Top, SpreadAngle = Vector2.new(12, 12),
+		RotSpeed = NumberRange.new(200), Size = seq(0, 0.5, 1, 0), Color = col, LockedToPart = true })
+	emitter(att, { Name = "Glow", Texture = TEX.Glow, Lifetime = NumberRange.new(0.6), Speed = NumberRange.new(0.01),
+		EmissionDirection = Enum.NormalId.Top, Size = seq(0, 3, 0.5, 6, 1, 4), Transparency = seq(0, 0.3, 1, 1),
+		Color = col, LockedToPart = true }):Emit(1)
+	local l = light(att, info(key).Color, 16, 4, 1.2)
+	task.delay(0.6, function() column.Enabled = false end)
+	Debris:AddItem(att, 2)
+	return l
+end
+
+-- Screen flash (white by default) for hatches/big rewards. Keep it short; offer a setting to turn it off.
+function PetFX.Flash(color: Color3?, duration: number?)
+	local pg = Players.LocalPlayer and Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return end
+	local gui = Instance.new("ScreenGui"); gui.IgnoreGuiInset, gui.DisplayOrder, gui.ResetOnSpawn = true, 50, false
+	local f = Instance.new("Frame"); f.Size = UDim2.fromScale(1, 1); f.BorderSizePixel = 0
+	f.BackgroundColor3 = color or Color3.new(1, 1, 1); f.BackgroundTransparency = 0.1; f.Parent = gui
+	gui.Parent = pg
+	TweenService:Create(f, TweenInfo.new(duration or 0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ BackgroundTransparency = 1 }):Play()
+	Debris:AddItem(gui, (duration or 0.35) + 0.1)
+end
+
+-- Hatch an egg in front of the camera (no ViewportFrame: particles don't render inside ViewportFrames).
+-- egg: a Model or part to clone. onReveal(cf) is called at the crack with the CFrame to place the pet at.
+-- Returns the total time so the caller can wait. Legendary+ get a longer build-up, light pillar and bloom pulse.
+function PetFX.HatchInFront(egg: PVInstance, rarity: string, onReveal: ((CFrame) -> ())?, distance: number?): number
+	local cam = workspace.CurrentCamera
+	local r = info(rarity)
+	local big = r.Tier >= 5
+	local shakeTime = big and 2.2 or 1.4
+	local dist = distance or 9
+	local clone = egg:Clone() :: PVInstance
+	for _, d in clone:GetDescendants() do
+		if d:IsA("BasePart") then d.Anchored, d.CanCollide, d.CanQuery, d.CanTouch = true, false, false, false end
+		if d:IsA("Script") or d:IsA("LocalScript") then d:Destroy() end
+	end
+	if clone:IsA("BasePart") then clone.Anchored, clone.CanCollide = true, false end
+	clone.Parent = cam
+	local blur = Instance.new("BlurEffect"); blur.Size = 0; blur.Parent = Lighting
+	TweenService:Create(blur, TweenInfo.new(0.4), { Size = 12 }):Play()
+	local t0 = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock() - t0
+		local base = cam.CFrame * CFrame.new(0, 0, -dist) * CFrame.Angles(0, math.pi, 0)
+		local lift = math.min(t / 0.5, 1) -- rise into view
+		local p = math.clamp(t / shakeTime, 0, 1)
+		local amp = math.rad(4 + 22 * p * p) -- each shake stronger
+		local freq = 10 + 25 * p -- and faster
+		local wobble = math.sin(t * freq) * amp * lift
+		clone:PivotTo(base * CFrame.new(0, (1 - lift) * -4, 0) * CFrame.Angles(0, 0, wobble))
+	end)
+	task.delay(shakeTime, function()
+		conn:Disconnect()
+		local cf = cam.CFrame * CFrame.new(0, 0, -dist) * CFrame.Angles(0, math.pi, 0)
+		clone:Destroy()
+		PetFX.Flash(big and r.Color:Lerp(Color3.new(1, 1, 1), 0.6) or nil, big and 0.6 or 0.3)
+		PetFX.Burst(cf.Position, rarity, big and 1.4 or 1)
+		if big then
+			local bloom = Instance.new("BloomEffect"); bloom.Intensity, bloom.Size, bloom.Threshold = 1.5, 40, 0.8
+			bloom.Parent = Lighting
+			TweenService:Create(bloom, TweenInfo.new(1), { Intensity = 0 }):Play()
+			Debris:AddItem(bloom, 1.1)
+			local pillar = PetFX.Pillar(cf.Position - Vector3.new(0, 3, 0), rarity, 12)
+			Debris:AddItem(pillar, 2.5)
+		end
+		if onReveal then task.spawn(onReveal, cf) end
+		TweenService:Create(blur, TweenInfo.new(0.8), { Size = 0 }):Play()
+		Debris:AddItem(blur, 0.9)
+	end)
+	return shakeTime + 1.2
+end
+
+-- Play a prebuilt effect (a Model/Folder/Attachment made in Studio or with a VFX plugin).
+-- Reads the common VFX-plugin attributes on each emitter: EmitCount (default 10), EmitDelay (s), EmitDuration (s, keeps it on).
+function PetFX.Play(effect: Instance)
+	for _, d in effect:GetDescendants() do
+		if d:IsA("ParticleEmitter") then
+			local count = d:GetAttribute("EmitCount") or 10
+			local delay = d:GetAttribute("EmitDelay") or 0
+			local dur = d:GetAttribute("EmitDuration")
+			task.delay(delay, function()
+				if dur then
+					d.Enabled = true
+					task.delay(dur, function() d.Enabled = false end)
+				else
+					d:Emit(n(count))
+				end
+			end)
+		elseif d:IsA("Beam") or d:IsA("Trail") or d:IsA("Light") then
+			local dur = d:GetAttribute("EmitDuration")
+			if dur then
+				task.delay(d:GetAttribute("EmitDelay") or 0, function()
+					d.Enabled = true
+					task.delay(dur, function() d.Enabled = false end)
+				end)
+			end
+		end
+	end
+end
+
+-- Turn emitters/beams/trails/lights under `container` off when far from the camera (checks twice a second).
+-- Remembers each one's own Enabled so effects that were off stay off. Returns a stop() function.
+function PetFX.Cull(container: Instance, maxDistance: number?): () -> ()
+	local maxD = maxDistance or 120
+	local wanted: { [Instance]: boolean } = setmetatable({}, { __mode = "k" }) :: any -- weak: destroyed effects drop out
+	local running = true
+	task.spawn(function()
+		while running do
+			local camPos = workspace.CurrentCamera.CFrame.Position
+			for _, d in container:GetDescendants() do
+				if d:IsA("ParticleEmitter") or d:IsA("Beam") or d:IsA("Trail") or d:IsA("Light") then
+					if wanted[d] == nil then wanted[d] = (d :: any).Enabled end
+					local at = d:FindFirstAncestorWhichIsA("BasePart")
+					local near = at ~= nil and (at.Position - camPos).Magnitude <= maxD
+					local on = near and wanted[d]
+					if (d :: any).Enabled ~= on then (d :: any).Enabled = on end
+				end
+			end
+			task.wait(0.5)
+		end
+	end)
+	return function() running = false end
+end
+
+return PetFX
+]]></ProtectedString></Properties></Item><Item class="Script" referent="T6"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
@@ -653,7 +985,7 @@ for _, p in ipairs(Players:GetPlayers()) do task.spawn(checkPasses, p) end
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T6"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
@@ -757,7 +1089,7 @@ function Guard.Fire(name, ...) folder:WaitForChild(name):FireServer(...) end
 function Guard.Invoke(name, ...) return folder:WaitForChild(name):InvokeServer(...) end
 
 return Guard
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T8"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
@@ -898,7 +1230,7 @@ function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
 end
 
 return VFX
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T8"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T9"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.

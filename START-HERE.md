@@ -33,6 +33,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
   - roblox-shops
   - roblox-playtest
   - roblox-dev (+ lessons.md)
+  - roblox-vfx (particles/VFX, PetFX template, ChatGPT textures on black)
   - 3d-assets
   - customuse-design (Customuse designs + `references/taste.md`, lyopz's likes/dislikes; rate with `design-feedback.ps1`)
 - **Agents:** `agents/roblox/` (8). **Command:** `/roblox`.

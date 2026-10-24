@@ -13,6 +13,7 @@ Read the reference that matches the job:
 - `references/pets-and-eggs.md` — egg stands (floating vs grounded), egg designs per theme, hatching sequence, odds/rarity, pet styles, golden/rainbow/huge variants, pet movement, and upgrading (chance/timed machines, fuse rituals, enchants, a landmark "Forge").
 - `references/maps.md` — genres in meta, map layouts per genre, lighting presets, building style.
 - `references/game-feel.md` — motion, camera, hit feedback, VFX layering, rewards.
+- **`roblox-vfx` skill** — full particle/VFX guide: emitter properties, flipbooks, recipes, hatch/aura/level-up/reward effects, performance, plugins, ChatGPT textures. Template `PetFX`.
 - `references/performance.md` — budgets so it runs on phones (most players).
 - Keeping every asset in one look: `roblox-art-style` (per-project style bible).
 - Assets/effects to build things: `roblox-assets` (models, rigs, VFX scripts). 3D source images: `3d-assets` prompt library.

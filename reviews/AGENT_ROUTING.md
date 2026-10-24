@@ -25,7 +25,7 @@ For Roblox games, the main session is the lead: it plans, sets the credit budget
 | New game look, style bible, concept pictures, "does this fit?" | `roblox-art-director` |
 | Models: props, pets, creatures, buildings (Blender or Higgsfield → Roblox-ready) | `roblox-modeler` |
 | Rigs, walk/fly/idle/attack loops, scripted motion | `roblox-animator` |
-| Effects: fireball, flaming legs, auras, hits, explosions | `roblox-vfx-artist` |
+| Effects: fireball, flaming legs, auras, hits, explosions, egg hatch, rarity auras, rewards | `roblox-vfx-artist` (skill `roblox-vfx`) |
 | Maps, lobbies, zones, obbies, terrain, lighting | `roblox-map-builder` |
 | HUD, menus, shop, inventory, button feel | `roblox-ui-designer` |
 | Game systems: data saving, remotes/anti-exploit, currencies, eggs, purchases | `roblox-scripter` |

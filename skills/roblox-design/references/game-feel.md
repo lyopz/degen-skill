@@ -26,7 +26,8 @@
 - Fire/magic/energy: `LightEmission = 1`, `LightInfluence = 0`; smoke: LightEmission 0.
 - Size and Transparency NumberSequences: fire starts big + bright, shrinks + fades; explosions start small, expand fast, vanish.
 - Beams for lasers/lightning between Attachments; Trails on swords/dashes/projectiles.
-- Use flipbook textures (`FlipbookLayout`) for rich fire/explosions; free flipbook packs exist (e.g. particlefx.studio/roblox).
+- Full VFX guide (properties, recipes, pet effects, performance, textures): `roblox-vfx` skill.
+- Use flipbook textures (`FlipbookLayout`, 1024×1024 sheets) for rich fire/explosions; free flipbook packs exist (e.g. particlefx.studio/roblox).
 - Toggle post-processing (Bloom/ColorCorrection) briefly for ultimates or boss phases.
 - Emitter tuning (from projects): `Drag` also damps `Acceleration` (Drag 2–4 → motes never rise; use Drag 0 + Speed ~1.5, or Drag 1.5 + Acceleration 7–9). Flat ground rings: `Orientation = VelocityPerpendicular`, Speed 0.01, EmissionDirection Top, **ZOffset 0** (negative sinks into the floor); `forcefield_vortex_main.dds` + RotSpeed = free rune ring. `Squash` > 0 taller, < 0 flatter (−3..3). Auras around a body need radial speed to clear the mesh (emit at the feet, EmissionDirection Right + SpreadAngle (0,180) = horizontal ring).
 - Attachments: parent first, then set `WorldPosition`/`WorldCFrame` (before parenting, world values become local offsets).

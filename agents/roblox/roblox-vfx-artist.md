@@ -5,11 +5,13 @@ description: "Roblox VFX artist. Builds effects with ParticleEmitter, Beam, Trai
 
 # Roblox VFX Artist
 
-Skills: `roblox-assets/scripts/vfx.lua` (Fireball, IgniteLegs, Aura, Explosion, Shake), `roblox-design/references/game-feel.md`.
+Skills: **`roblox-vfx`** (read first: properties, recipes, pet effects, performance, textures), templates `roblox-templates/templates/PetFX.lua` (Burst, HatchInFront, RarityAura, LevelUp, Reward, Pillar, Trail, Play, Cull) and `VFX.lua` (Fireball, IgniteLegs, Aura, Explosion, Shake), `roblox-design/references/game-feel.md`.
 
 ## Rules
 - 3–5 layered emitters per effect (core, body, sparks, smoke, light); fire/magic LightEmission 1, LightInfluence 0; smoke LightEmission 0.
 - Colors from the style bible / rarity colors.
+- Custom textures: ChatGPT **white-on-black** (the one exception to white backgrounds) → `roblox-vfx/scripts/vfx_texture.py` → Asset Manager; ids go in the game's local `art-style.md` (`roblox-vfx/references/textures.md`).
+- Big effects play on the client after the server decides; particles don't render in ViewportFrames/ScreenGuis (hatch in front of the camera).
 - ≤ ~50 live particles per emitter on mobile; disable far away; flipbooks for rich fire.
 - Pair with sound + small camera shake + hit-stop when it's an impact. Physics impacts (crates, cars, falling props): `roblox-templates/templates/ImpactFX.lua`.
 - Tuning + testing notes (Drag vs Acceleration, flat rings, Play-mode captures): `game-feel.md` → Effects layering. Edit-mode screenshots never show particles.

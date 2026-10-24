@@ -30,6 +30,7 @@ How the genre's eggs and pets are designed, so ours feel right on the first try.
 5. **Reveal:** pet pops in with Back-out scale, spins once; **rarity banner + color** (name, rarity, chance %); legendary+ gets extra beam, confetti, camera shake and a server announcement.
 6. **Done:** "Equip / Delete / Auto-delete" buttons; pet flies into the inventory icon.
 - Total ≤ ~3 s per hatch, **skip/fast mode** after the first few, **auto-hatch** and **multi-hatch** (x3, x8 via game pass) show several eggs side by side in fixed slots *(DevForum framework: slots for up to 3)*.
+- Effects: `PetFX.HatchInFront` (shake → flash → rarity burst, legendary+ bloom + pillar), `PetFX.RarityAura`, `PetFX.Reward` (how-to in `roblox-vfx`).
 - Use templates: `VFX` (sparkles/explosion/shake), `ButtonFeel` (buttons), `RemoteGuard` (hatch remote), `PurchaseHandler` (luck/multi-hatch passes).
 
 ## 4. Odds & rarity
