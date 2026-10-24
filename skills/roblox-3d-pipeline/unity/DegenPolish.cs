@@ -35,12 +35,12 @@ public static class DegenPolish
         var root = new GameObject(name + "_Root");
         var model = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         model.transform.SetParent(root.transform, false);
-        PrefabUtility.UnpackPrefabInstance(model, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+        if (PrefabUtility.IsPartOfPrefabInstance(model)) PrefabUtility.UnpackPrefabInstance(model, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
 
-        var b = Bounds(root);
+        var b = GetBounds(root);
         if (b.size.y > 1e-5f && heightStuds > 0)
             model.transform.localScale *= heightStuds * StudMeters / b.size.y;
-        b = Bounds(root);
+        b = GetBounds(root);
         model.transform.position -= new Vector3(b.center.x, b.min.y, b.center.z);   // bottom centre at origin
         Selection.activeGameObject = root;
         return Report(name);
@@ -63,7 +63,7 @@ public static class DegenPolish
                 mats.Add(Q(mat.name) + ":{\"shader\":" + Q(mat.shader.name) + ",\"baseTex\":" + (tex ? "\"" + tex.width + "x" + tex.height + "\"" : "null") + "}");
             }
         }
-        var size = Bounds(root).size / StudMeters;
+        var size = GetBounds(root).size / StudMeters;
         return "{\"name\":" + Q(name) + ",\"meshes\":" + meshes + ",\"triangles\":" + tris + ",\"vertices\":" + verts +
                ",\"sizeStuds\":[" + F(size.x) + "," + F(size.y) + "," + F(size.z) + "],\"materials\":{" + string.Join(",", mats.Distinct()) + "}}";
     }
@@ -127,7 +127,7 @@ public static class DegenPolish
     // rulesJson: {"rules":[{"label":"gold","hueMin":35,"hueMax":60,"satMin":0.35,"valMin":0.45,"metal":1,"smooth":0.8,"glow":0},
     //                      {"label":"crystal","hueMin":170,"hueMax":210,"satMin":0.4,"valMin":0.5,"metal":0,"smooth":0.9,"glow":0.6}],
     //             "defaultMetal":0,"defaultSmooth":0.25}
-    // First matching rule wins. Hue in degrees (0-360), sat/val 0-1, glow = emission strength (keep <= 1, ed likes subtle glow).
+    // First matching rule wins. Hue in degrees (0-360), sat/val 0-1 (satMax/valMax optional), glow = emission strength (keep <= 1, ed likes subtle glow).
     public static string PaintRegions(string name, string rulesJson)
     {
         var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
@@ -149,7 +149,7 @@ public static class DegenPolish
                 {
                     var r = cfg.rules[k];
                     bool hueOk = r.hueMin <= r.hueMax ? hu >= r.hueMin && hu <= r.hueMax : hu >= r.hueMin || hu <= r.hueMax;
-                    if (hueOk && s >= r.satMin && v >= r.valMin && v <= (r.valMax > 0 ? r.valMax : 1f)) { metal = r.metal; smooth = r.smooth; glow = r.glow; counts[k]++; break; }
+                    if (hueOk && s >= r.satMin && s <= (r.satMax > 0 ? r.satMax : 1f) && v >= r.valMin && v <= (r.valMax > 0 ? r.valMax : 1f)) { metal = r.metal; smooth = r.smooth; glow = r.glow; counts[k]++; break; }
                 }
                 mg[p] = new Color(metal, 0, 0, smooth);
                 em[p] = new Color(px[p].r * glow, px[p].g * glow, px[p].b * glow, 1);
@@ -188,7 +188,7 @@ public static class DegenPolish
     {
         var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
         Directory.CreateDirectory(outDir);
-        var b = Bounds(root);
+        var b = GetBounds(root);
         var go = new GameObject("DegenShotCam"); var cam = go.AddComponent<Camera>();
         cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = Color.white; cam.fieldOfView = 30;
         var rt = new RenderTexture(size, size, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB) { antiAliasing = 8 };
@@ -212,22 +212,23 @@ public static class DegenPolish
     }
 
     // ---------- 5. Export for Roblox ----------
-    // Writes <outDir>/<name>.fbx + SurfaceAppearance maps (<name>_color/_normal/_metalness/_roughness/_emissive.png,
-    // max 1024 px) + roblox.json (sizes, colours, which map goes where). Studio: File > Import 3D the .fbx.
+    // Writes <outDir>/<name>.glb (main) + <name>.fbx (fallback) + SurfaceAppearance maps (<name>_color/_normal/_metalness/_roughness/_emissive.png,
+    // max 1024 px) + roblox.json (sizes, colours, which map goes where). Studio: File > Import 3D the .glb.
     public static string ExportForRoblox(string name, string outDir, int maxTex)
     {
         var root = Find(name); if (root == null) return Err("no " + name + "_Root in scene");
         Directory.CreateDirectory(outDir);
         if (maxTex <= 0 || maxTex > 1024) maxTex = 1024;
+        string glb = Glb(root, Path.Combine(outDir, name + ".glb"), name, out string glbErr);
         string fbx = Path.Combine(outDir, name + ".fbx");
         var exporter = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("UnityEditor.Formats.Fbx.Exporter.ModelExporter")).FirstOrDefault(t => t != null);
         var export = exporter?.GetMethod("ExportObject", new[] { typeof(string), typeof(UnityEngine.Object) });
-        if (export == null) return Err("FBX Exporter missing: Package Manager > Add package by name > com.unity.formats.fbx");
-        export.Invoke(null, new object[] { fbx, root });
+        if (export != null) export.Invoke(null, new object[] { fbx, root }); else fbx = null;
+        if (glb == null && fbx == null) return Err("no exporter: add com.unity.cloud.gltfast and/or com.unity.formats.fbx (" + glbErr + ")");
 
         var mats = Mats(root).ToList();
-        var json = new StringBuilder("{\"fbx\":" + Q(fbx) + ",\"sizeStuds\":");
-        var sz = Bounds(root).size / StudMeters; json.Append("[" + F(sz.x) + "," + F(sz.y) + "," + F(sz.z) + "],\"materials\":[");
+        var json = new StringBuilder("{\"glb\":" + (glb == null ? "null" : Q(glb)) + ",\"fbx\":" + (fbx == null ? "null" : Q(fbx)) + ",\"sizeStuds\":");
+        var sz = GetBounds(root).size / StudMeters; json.Append("[" + F(sz.x) + "," + F(sz.y) + "," + F(sz.z) + "],\"materials\":[");
         int n = 0;
         foreach (var m in mats)
         {
@@ -253,13 +254,35 @@ public static class DegenPolish
             outs.Add("\"baseColor\":[" + F(c0.r) + "," + F(c0.g) + "," + F(c0.b) + "]");
             json.Append("{\"material\":" + Q(m.name) + "," + string.Join(",", outs) + "},");
         }
-        string j = json.ToString().TrimEnd(',') + "],\"studio\":\"Import 3D the fbx (Merge Meshes off unless one MeshPart is wanted), then add a SurfaceAppearance per MeshPart: ColorMap=color, NormalMap=normal, MetalnessMap=metalness, RoughnessMap=roughness; emissive -> SurfaceAppearance emissive mask if Studio has it, else small Neon parts / PointLight\"}";
+        string j = json.ToString().TrimEnd(',') + "],\"studio\":\"File > Import 3D the glb (textures come along as SurfaceAppearance; fbx is the fallback). Missing or flat maps: add a SurfaceAppearance per MeshPart: ColorMap=color, NormalMap=normal, MetalnessMap=metalness, RoughnessMap=roughness; emissive -> SurfaceAppearance emissive mask if Studio has it, else small Neon parts / PointLight\"}";
         File.WriteAllText(Path.Combine(outDir, "roblox.json"), j);
         return j;
     }
 
+    // glTF binary export through glTFast (keeps URP Lit colour/normal/metal-rough/emission in one file).
+    static string Glb(GameObject root, string path, string name, out string err)
+    {
+        err = null;
+        try
+        {
+            Type T(string n) => AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(n)).FirstOrDefault(t => t != null);
+            Type tExp = T("GLTFast.Export.GameObjectExport"), tSet = T("GLTFast.Export.ExportSettings"), tFmt = T("GLTFast.Export.GltfFormat");
+            if (tExp == null || tSet == null || tFmt == null) { err = "glTFast export not found"; return null; }
+            var settings = Activator.CreateInstance(tSet);
+            tSet.GetProperty("Format").SetValue(settings, Enum.Parse(tFmt, "Binary"));
+            var ctor = tExp.GetConstructors().First(c => c.GetParameters().Length == 5);
+            var exp = ctor.Invoke(new object[] { settings, null, null, null, null });
+            tExp.GetMethod("AddScene", new[] { typeof(GameObject[]), typeof(string) }).Invoke(exp, new object[] { new[] { root }, name });
+            var save = tExp.GetMethod("SaveToFileAndDispose", new[] { typeof(string), typeof(bool), typeof(System.Threading.CancellationToken) });
+            var task = (System.Threading.Tasks.Task<bool>)save.Invoke(exp, new object[] { path, true, System.Threading.CancellationToken.None });
+            if (task.Result) return path;
+            err = "glTFast export returned false (see Console)"; return null;
+        }
+        catch (Exception e) { err = (e.InnerException ?? e).Message; return null; }
+    }
+
     // ---------- helpers ----------
-    [Serializable] public class Rule { public string label; public float hueMin, hueMax, satMin, valMin, valMax, metal, smooth, glow; }
+    [Serializable] public class Rule { public string label; public float hueMin, hueMax, satMin, satMax, valMin, valMax, metal, smooth, glow; }
     [Serializable] public class RuleSet { public Rule[] rules; public float defaultMetal = 0f, defaultSmooth = 0.25f; }
 
     static GameObject Find(string name) => GameObject.Find(name + "_Root") ?? GameObject.Find(name);
@@ -270,7 +293,7 @@ public static class DegenPolish
         if (!AssetDatabase.IsValidFolder(d)) AssetDatabase.CreateFolder(Root, Safe(name));
         return d;
     }
-    static Bounds Bounds(GameObject root)
+    static Bounds GetBounds(GameObject root)
     {
         var rs = root.GetComponentsInChildren<Renderer>();
         if (rs.Length == 0) return new Bounds(root.transform.position, Vector3.zero);

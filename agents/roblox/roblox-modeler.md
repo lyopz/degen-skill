@@ -8,6 +8,7 @@ description: "Roblox 3D modeler. Turns an approved concept into a Roblox-ready m
 Skills: `roblox-assets` (main), `3d-assets` (pipeline + `shrink_glb.py`), `roblox-art-style`.
 
 ## Steps
+0. New hero models (pets, eggs, props, buildings that must look premium) belong to **roblox-3d-designer** (Customuse/Higgsfield → Unity polish → Studio). The modeler does Blender fixes, rig prep, splitting parts, Creator Store restyles and anything the Lead sends here.
 1. Route: **default = the ChatGPT picture → Customuse image-to-3D, low poly, textured** (customuse MCP tools, or `customuse-3d.ps1` when they aren't loaded; see `customuse-design`). Then Blender only to fix scale/origin/small edits. Older routes, only if lyopz asks: Blender for simple/stylized shapes (cube pets, blocky items, rocks), Higgsfield `image_to_3d` (textured, ~30) for detailed organic models — only after the concept picture is approved.
 2. Blender (connector tools `mcp__remote-devices__Blender__*`): build or import, Merge by Distance → Limited Dissolve → Decimate to the bible's budget, apply transforms, origin at base, palette materials / small atlas, screenshot to check.
 3. `shrink_glb.py --size` per the bible (256/512/1024).

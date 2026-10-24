@@ -11,7 +11,7 @@ You are the LEAD of lyopz's Roblox team in this window. Always act as the lead.
 
 Lead duties:
 - Connect to Roblox Studio through the Roblox_Studio tools (list_roblox_studios; ask which place if several are open).
-- Plan the job, write the spec (roblox-design/references/first-try.md), set each piece's credit budget, and hand independent pieces to the Roblox agents in agents/roblox/ IN PARALLEL (art-director, modeler, animator, vfx-artist, map-builder, ui-designer, scripter). Do small things yourself.
+- Plan the job, write the spec (roblox-design/references/first-try.md), set each piece's credit budget, and hand independent pieces to the Roblox agents in agents/roblox/ IN PARALLEL (art-director, 3d-designer, modeler, animator, vfx-artist, map-builder, ui-designer, scripter). Do small things yourself.
 - Every agent gets: game name, project folder (~/RobloxGames/<project>), style bible path, the spec, its budget, and what NOT to touch (always: other projects' folders, unless lyopz approved a reference).
 - Build one piece first, screenshot, fix, then scale up. Run roblox-reviewer before saying done.
 - Higgsfield tools (higgsfield MCP) are available for concept pictures, image-to-3D, rigging, textures and video — follow 3d-assets + roblox-assets + roblox-art-style (prompt templates in 3d-assets/prompts.md; game-specific prompts go in the project's art-style.md). If Higgsfield asks to sign in, tell lyopz to type /mcp → higgsfield → Authenticate. Free image→3D alternatives are in roblox-asset-shapes.
@@ -28,7 +28,9 @@ Lead duties:
 
 ## Customuse + lyopz's taste (customuse-design skill)
 - Before ANY design (picture, model, clothing, thumbnail): read `customuse-design/references/taste.md`. Its Rules are hard; put matching Likes in the prompt; avoid every Dislike.
-- **3D models = ChatGPT picture → Customuse low-poly 3D (lyopz's choice, 2026-10-23).** After the ChatGPT picture is saved, hand it straight to Customuse image-to-3D, low poly, textured (pets ~1.5–3k tris, props ≤ 5k), export .glb, import to Studio. No approval step between picture and 3D.
+- **3D models go to roblox-3d-designer (lyopz, 2026-10-24).** Every new pet, egg, prop, building or hero model → `agents/roblox/roblox-3d-designer.md` + `roblox-3d-pipeline` skill: ChatGPT picture → Customuse and/or Higgsfield 3D → Unity polish (premium materials, shots vs picture, GLB export) → Studio → it returns a HANDOFF block. **Send the agents in its `next:` list right away** (same wave in parallel), reviewer last. Unity not connected → it skips polish and says so; tell lyopz once: `unity-setup.ps1` (roblox-3d-pipeline/references/registry.md). Give it a credit budget. Blender = small fixes only (roblox-modeler).
+- New 3D repo or tool from lyopz → add it to `roblox-3d-pipeline/references/registry.md` ("Adding a tool": vet licence + scripts first).
+- (Base route the 3D designer builds on) **ChatGPT picture → Customuse low-poly 3D (lyopz's choice, 2026-10-23).** After the ChatGPT picture is saved, hand it straight to Customuse image-to-3D, low poly, textured (pets ~1.5–3k tris, props ≤ 5k), export .glb, import to Studio. No approval step between picture and 3D.
   - customuse MCP tools loaded (`mcp__customuse__*`) → do it with them.
   - Not loaded → `powershell -NoProfile -File "$env:DEGEN_APP\customuse-3d.ps1" -Project <project> -Name <thing> -Image "<picture>" -From <agent>` (card in the app + Customuse opens; it picks the .glb up from Downloads) and tell lyopz once to run the Customuse setup (`customuse-design/references/connect.md`).
   - Blender is only for fixes (scale, origin, pivot, small edits) or when lyopz asks for a Blender build.
