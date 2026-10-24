@@ -46,3 +46,7 @@ Template (fill the <...>; still one pet, white background):
 - Say what NOT to add: "no extra limbs, no realistic fur, no background scenery".
 - Eggs: shell shape (wider bottom, 1.25× tall), bands (count, metal, gems), top crown, rune symbol, pedestal (stone, rune ring color), glow.
 - Props (bush, tree, rock): count of clumps/branches, sizes big/medium/small, base sits flat, 2 shades + highlight (`roblox-asset-shapes`).
+
+## UI icons and transparent cut-outs
+- UI icon prompt that worked (consistent set of 11): "A single game UI icon for a futuristic cartoon Roblox pet game … glossy bold 3D game icon, chunky rounded shapes, thick dark navy outline, soft gradients, polished plastic and metal, small glowing cyan and violet neon accents, subtle rim light, gold trim only where noted, premium mobile game icon quality, readable at 48 pixels, one clear silhouette, slight three-quarter tilt" + "Subject: …" + framing "only the icon object, centered, ~80% of frame, no background panel, no button frame, no text, pure white background". Same style text for every icon = matching set without -Ref.
+- Cut out the white background (no PIL needed): `powershell -NoProfile -File skills/roblox-art-style/scripts/cutout-white.ps1 -In <png> -Out <png> -Size 512` (border flood fill over near-white, soft edge, trim + square pad). Enclosed white areas stay (flood starts at the borders). Check on a dark background before uploading.
