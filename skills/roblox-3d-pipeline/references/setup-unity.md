@@ -14,6 +14,8 @@
 8. **Check:** open a Lead window, wait about a minute for Unity, type `/mcp`, and **unityMCP** should say connected.
 
 Problems:
+- "Unity Hub is gone" → it now installs as a Store-style (MSIX) app under `C:\Program Files\WindowsApps`, so `Program Files\Unity Hub` stays empty. Start it from the Start menu (`Get-AppxPackage *UnityHub*` shows it). Editors still go in `Program Files\Unity\Hub\Editor`.
+- No Hub sign-in needed to make the project: `Unity.exe -batchmode -quit -createProject <path> -cloneFromTemplate <editor>\Data\Resources\PackageManager\ProjectTemplates\com.unity.template.urp-blank-*.tgz`.
 - "No 'git' executable" → step 2, then fully close and reopen Unity Hub and Unity.
 - unityMCP not connected → Unity was still loading: type `/mcp` → unityMCP → Reconnect. Still nothing: run `unity-open.ps1` (prints why) and check the Unity Console for `[Degen]` lines.
 - Disconnect: run the setup with `-Remove`.

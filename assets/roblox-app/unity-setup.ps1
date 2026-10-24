@@ -48,6 +48,9 @@ $uvx = (Get-Command uvx -ErrorAction SilentlyContinue).Source
 if (-not $uvx) {
   foreach ($c in "$env:USERPROFILE\.local\bin\uvx.exe", "$env:LOCALAPPDATA\Microsoft\WinGet\Links\uvx.exe") { if (Test-Path $c) { $uvx = $c; break } }
 }
+if (-not $uvx) {   # winget sometimes skips the Links shim; uvx then sits only in its package folder
+  $uvx = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\astral-sh.uv_*\uvx.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+}
 if (-not $uvx) { 'uv is not installed. Run: powershell -ExecutionPolicy Bypass -c "irm https://astral.sh/uv/install.ps1 | iex"  then run this again.'; exit 1 }
 
 # 5. Lead config
