@@ -11,9 +11,14 @@ $LD = Join-Path $env:USERPROFILE 'RobloxGames\.degen\leads'; New-Item -ItemType 
 $env:DEGEN_LEAD = [string]$PID; $leadFile = Join-Path $LD "$PID.json"
 [IO.File]::WriteAllText($leadFile, ([ordered]@{ pid = $PID; ticks = (Get-Process -Id $PID).StartTime.Ticks; title = $title; busy = $true; sid = ''; p = ''; task = '' } | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding $false))
 function Q([string]$s) { ($s -replace '(\\*)"', '$1$1\"') }   # escape quotes for native arguments
-$rules = Q ([IO.File]::ReadAllText((Join-Path $app 'lead.md')))
+# Windows caps a command line at 32,767 characters, so the rules go in as a file and a long task as a pointer to its file
+$rulesFile = Join-Path $app 'lead.md'
+$rulesArg = if ((& claude --help 2>$null | Out-String) -match 'append-system-prompt-file') { @('--append-system-prompt-file', $rulesFile) }
+            else { @('--append-system-prompt', (Q ([IO.File]::ReadAllText($rulesFile)))) }   # older Claude Code
 $task = [IO.File]::ReadAllText($TaskFile).Trim()
-$prompt = if ($task -eq '/roblox' -or -not $task) { '/roblox' } else { Q ("Do this task now (full brief below; also saved at $TaskFile):`n`n" + $task) }
+$prompt = if ($task -eq '/roblox' -or -not $task) { '/roblox' }
+          elseif ($task.Length -gt 6000) { Q "Do this task now. The full brief is long, so read all of it first: $TaskFile" }
+          else { Q ("Do this task now (full brief below; also saved at $TaskFile):`n`n" + $task) }
 # Add Customuse / Unity if lyopz set them up (customuse-setup.ps1 / unity-setup.ps1 save them outside the repo)
 $mcp = Join-Path $app 'roblox-mcp.json'
 $extra = [ordered]@{}
@@ -41,8 +46,8 @@ if ($extra.Count) {
 if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfile -File (Join-Path $app 'unity-open.ps1') | Out-Null }
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
 if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
-  & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules
+  & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
 } else {
-  & claude --strict-mcp-config --mcp-config $mcp --settings $Settings --append-system-prompt $rules $prompt
+  & claude --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
 }
 Remove-Item $leadFile -Force -ErrorAction SilentlyContinue
