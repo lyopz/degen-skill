@@ -10,17 +10,21 @@ function Q([string]$s) { ($s -replace '(\\*)"', '$1$1\"') }   # escape quotes fo
 $rules = Q ([IO.File]::ReadAllText((Join-Path $app 'lead.md')))
 $task = [IO.File]::ReadAllText($TaskFile).Trim()
 $prompt = if ($task -eq '/roblox' -or -not $task) { '/roblox' } else { Q ("Do this task now (full brief below; also saved at $TaskFile):`n`n" + $task) }
-# Add Customuse if lyopz set it up (customuse-setup.ps1 saves the address outside the repo)
+# Add Customuse / Unity if lyopz set them up (customuse-setup.ps1 / unity-setup.ps1 save them outside the repo)
 $mcp = Join-Path $app 'roblox-mcp.json'
+$extra = [ordered]@{}
 $cu = Join-Path $env:USERPROFILE 'RobloxGames\.degen\customuse-mcp.json'
 if (Test-Path $cu) {
   $srv = [IO.File]::ReadAllText($cu) | ConvertFrom-Json
-  if ($srv.url -match '^https://') {
-    $cfg = [IO.File]::ReadAllText($mcp) | ConvertFrom-Json
-    $cfg.mcpServers | Add-Member -NotePropertyName customuse -NotePropertyValue $srv -Force
-    $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
-    [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
-  }
+  if ($srv.url -match '^https://') { $extra.customuse = $srv }
+}
+$un = Join-Path $env:USERPROFILE 'RobloxGames\.degen\unity-mcp.json'
+if (Test-Path $un) { $extra.unityMCP = [IO.File]::ReadAllText($un) | ConvertFrom-Json }
+if ($extra.Count) {
+  $cfg = [IO.File]::ReadAllText($mcp) | ConvertFrom-Json
+  foreach ($k in $extra.Keys) { $cfg.mcpServers | Add-Member -NotePropertyName $k -NotePropertyValue $extra[$k] -Force }
+  $mcp = Join-Path $env:USERPROFILE 'RobloxGames\.degen\lead-mcp.json'
+  [IO.File]::WriteAllText($mcp, ($cfg | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding $false))
 }
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
 if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
