@@ -33,7 +33,12 @@ while (Date.now() - t0 < 15 * 60000) {
   const s = await page.evaluate(b => {
     const before = new Set(b);
     const busy = !!document.querySelector('[data-testid="stop-button"]');
-    const imgs = [...document.images].filter(i => { const s = i.currentSrc || i.src; return s && !before.has(s) && i.complete && i.naturalWidth >= 400 && i.naturalHeight >= 400 && !/avatar|profile|favicon/i.test(s); });
+    // an attached -Ref picture re-renders in our own message under a new URL ("User attachment"), so never take it;
+    // prefer pictures ChatGPT marks as generated
+    let imgs = [...document.images].filter(i => { const s = i.currentSrc || i.src; return s && !before.has(s) && !s.startsWith('data:') && i.complete && i.naturalWidth >= 400 && i.naturalHeight >= 400 && !/avatar|profile|favicon/i.test(s)
+      && !/user attachment/i.test(i.alt || '') && !i.closest('[data-message-author-role="user"]'); });
+    const gen = imgs.filter(i => i.closest('[data-testid*="generated-image"]') || /^generated image/i.test(i.alt || ''));
+    if (gen.length) imgs = gen;
     imgs.sort((x, y) => y.naturalWidth * y.naturalHeight - x.naturalWidth * x.naturalHeight);
     const im = imgs[0];
     return { busy, n: imgs.length, src: im ? (im.currentSrc || im.src) : '' };
