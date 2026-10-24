@@ -12,6 +12,7 @@ Promoted 2026-10-23: terrain/island/scatter → `roblox-design/references/maps.m
 ## UI
 - 2026-10-23 [pet-sim] Global UIScale over Scale-sized UI: size the root at 1/scale (centered) so children still fill the screen; clamp the low end so 64 design-px buttons stay ≥ 44 px. ButtonFeel.Apply sets a "Feel" attribute — apply to the live root, never a Templates folder (clones would skip feel).
 ## Animation & VFX
+- 2026-10-23 [pet-sim] Blender Standard view transform: strong emission on light vertex colors clips to pink/white. Use a dark base + deep violet emission; in Studio make glow pieces separate meshes set to Neon.
 ## Studio / tooling (MCP, import, plugins)
 - 2026-10-23 [pet-sim] An unsaved Studio place can close mid-job (lost hub built only via execute_luau). Save new places to a file/Roblox before building; agents check `list_roblox_studios` before long jobs and keep code on disk + one install script so work survives a Studio drop.
 - 2026-10-23 [pet-sim] Customuse CR1 image-to-3D = 100 credits per run, geometry only (no texture). Free texture: project the source picture onto the mesh from the matching view. Put 2–3 small parts spaced apart in ONE picture to get several meshes per run, then split by loose parts in Blender.
