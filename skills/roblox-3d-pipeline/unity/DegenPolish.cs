@@ -365,4 +365,28 @@ public static class DegenPolish
     static string F(float f) => f.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
     static string Err(string m) => "{\"error\":" + Q(m) + "}";
 }
+// Makes MCP for Unity connect by itself whenever this project opens (lyopz: "connect whenever, like everything else").
+// Matches the transport unity-setup.ps1 wrote (stdio by default; stdio bridges auto-start) and turns on Auto-Start for HTTP.
+[InitializeOnLoad]
+public static class DegenMcpAutoConnect
+{
+    static DegenMcpAutoConnect()
+    {
+        try
+        {
+            string cfg = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "RobloxGames", ".degen", "unity-mcp.json");
+            bool http = File.Exists(cfg) && File.ReadAllText(cfg).Contains("\"url\"");
+            EditorPrefs.SetBool("MCPForUnity.AutoStartOnLoad", true);
+            if (EditorPrefs.GetBool("MCPForUnity.UseHttpTransport", true) == http) return;
+            var cache = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("MCPForUnity.Editor.Services.EditorConfigurationCache")).FirstOrDefault(t => t != null);
+            var inst = cache?.GetProperty("Instance")?.GetValue(null);
+            var set = cache?.GetMethod("SetUseHttpTransport");
+            if (inst != null && set != null) set.Invoke(inst, new object[] { http });
+            else EditorPrefs.SetBool("MCPForUnity.UseHttpTransport", http);
+            Debug.Log("[Degen] MCP for Unity transport set to " + (http ? "HTTP" : "stdio") + ". If it doesn't connect, reopen the project once.");
+        }
+        catch (Exception e) { Debug.LogWarning("[Degen] auto-connect setup failed: " + e.Message); }
+    }
+}
 #endif
+

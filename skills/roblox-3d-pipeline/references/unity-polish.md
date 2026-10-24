@@ -3,9 +3,9 @@
 The Unity project is `~/RobloxGames/.degen/degen-polish` (its path is in `~/RobloxGames/.degen/unity-project.txt`). It's a shared workbench: models are copied into `Assets/Degen/<asset>/` while you polish, and the results are exported to the game's own folder. Never leave game files in another project's export folder.
 
 ## Connect
-1. Check that the `mcp__unityMCP__*` tools are in your list. They're missing → Unity is closed or the server isn't started. Ask lyopz once with `ask.ps1 -Q "Open Unity (degen-polish) and click Window > MCP for Unity > Start Server" -O "Done|Skip Unity"`. If he skips, go on without Unity.
+1. The Lead opens Unity on the polish project by itself at startup (`unity-open.ps1`), and the bridge auto-connects (stdio). If the `mcp__unityMCP__*` tools fail, run `powershell -ExecutionPolicy Bypass -NoProfile -File "$env:DEGEN_APP\unity-open.ps1"` (prints OPEN / STARTED / why not), wait about 60 s, and retry. Still failing → go on without Unity and say so in the report. No pop-up for this.
 2. Read `mcpforunity://editor/state` and wait for `ready_for_tools`.
-3. `manage_tools(action="activate", group="scripting_ext")` turns on `execute_code`. Over HTTP only `core` is on at the start.
+3. `execute_code` hidden? `manage_tools(action="activate", group="scripting_ext")`. Over HTTP only `core` is on at the start.
 
 ## Calling DegenPolish
 Use `execute_code(action="execute", code="return DegenPolish.Report(\"dragon\");")`.

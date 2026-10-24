@@ -1,10 +1,11 @@
 # One-time setup: connect Unity (MCP for Unity, CoplayDev/unity-mcp) to the Lead window.
 # Usage (normal PowerShell, after making the Unity project in Unity Hub):
 #   powershell -ExecutionPolicy Bypass -NoProfile -File "$HOME\.claude\degen-skill\assets\roblox-app\unity-setup.ps1"
-# Options: -Project "<unity project folder>" (default ~/RobloxGames/.degen/degen-polish), -Stdio (Lead starts the server
-# itself through uvx instead of Unity's "Start Server"), -Remove (disconnect).
+# Options: -Project "<unity project folder>" (default ~/RobloxGames/.degen/degen-polish), -Http (use Unity's own HTTP
+# server on 127.0.0.1:8080 instead; default is stdio: the Lead starts the server itself and Unity's bridge auto-starts),
+# -Remove (disconnect). Every Lead start opens the project minimized (unity-open.ps1) so it connects by itself.
 # Saves only on this PC (~/RobloxGames/.degen/unity-mcp.json + unity-project.txt), never in the repo.
-param([string]$Project = '', [switch]$Stdio, [switch]$Remove)
+param([string]$Project = '', [switch]$Http, [switch]$Remove)
 $D = Join-Path $env:USERPROFILE 'RobloxGames\.degen'; New-Item -ItemType Directory -Force -Path $D | Out-Null
 $cfgFile = Join-Path $D 'unity-mcp.json'
 if ($Remove) { Remove-Item $cfgFile, (Join-Path $D 'unity-project.txt') -Force -ErrorAction SilentlyContinue; 'Unity MCP removed.'; exit 0 }
@@ -45,13 +46,13 @@ if (-not $uvx) { 'uv is not installed. Run: powershell -ExecutionPolicy Bypass -
 
 # 5. Lead config
 [Environment]::SetEnvironmentVariable('UNITY_MCP_DISABLE_TELEMETRY', 'true', 'User')
-$srv = if ($Stdio) {
+$srv = if (-not $Http) {
   [ordered]@{ command = $uvx; args = @('--from', 'mcpforunityserver', 'mcp-for-unity', '--transport', 'stdio'); env = [ordered]@{ UNITY_MCP_DISABLE_TELEMETRY = 'true' } }
 } else { [ordered]@{ type = 'http'; url = 'http://127.0.0.1:8080/mcp' } }
 [IO.File]::WriteAllText($cfgFile, ($srv | ConvertTo-Json -Depth 5), $utf8)
 
 ''
 if ($missing) { 'Still to add in Unity (Window > Package Manager > + > Add package by name): ' + ($missing -join ', ') }
-if ($Stdio) { 'Done. Keep Unity open with the project; the next Lead window starts the Unity MCP itself.' }
-else { 'Done. Keep Unity open and click Window > MCP for Unity > Start Server; the next Lead window connects to it.' }
+if (-not $Http) { 'Done. Every Lead window now opens Unity (minimized) on this project and connects to it by itself.' }
+else { 'Done (HTTP). Every Lead window opens Unity on this project; DegenPolish turns on Auto-Start so the server starts with it.' }
 'Check: open a Lead window from the app, type /mcp, and unityMCP should say connected.'

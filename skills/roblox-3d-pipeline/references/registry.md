@@ -21,7 +21,7 @@ To see what is really loaded right now, check the tool list: `mcp__customuse__*`
 ## Polish
 | Tool | Status | Best at | Notes |
 |---|---|---|---|
-| **MCP for Unity** (CoplayDev/unity-mcp, MIT, ~13k stars) + `DegenPolish.cs` | setup (`unity-setup.ps1`) | Materials, gloss/metal/glow regions, lighting check, shots vs the picture, GLB/FBX + PBR maps | Unity must be open with Start Server clicked. Over HTTP only the `core` tool group is on: `manage_tools(action="activate", group="scripting_ext")` for execute_code |
+| **MCP for Unity** (CoplayDev/unity-mcp, MIT, ~13k stars) + `DegenPolish.cs` | setup (`unity-setup.ps1`) | Materials, gloss/metal/glow regions, lighting check, shots vs the picture, GLB/FBX + PBR maps | Lead opens Unity by itself (`unity-open.ps1`) and it auto-connects over stdio. Enable `scripting_ext` group if execute_code is hidden |
 | Unity ProBuilder (`manage_probuilder`) | setup (package `com.unity.probuilder`) | Simple hard-surface edits (bevel a block, extrude a pad) | Not for organic shapes |
 | Blender (`mcp__remote-devices__Blender__*`) | connected | Small shape fixes only: origin, scale, delete a bad piece, split parts for rigging | lyopz: Blender struggles with designing, so never use it as the main designer |
 
