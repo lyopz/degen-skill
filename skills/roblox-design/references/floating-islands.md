@@ -10,6 +10,19 @@
 - One theme, everything matching: buildings, rock, plants, lamps, banners, platforms (industrial scrapyard, futuristic city, winter fortress, lush forest...). One main colour + glowing accents in the theme colour.
 - Rich environment details: trees/plants/snow pines, lanterns and lamp posts, banners with the theme icon, crates, pipes or gears, crystals, birds. No empty floor.
 
+## Trees, bushes, plants (themed foliage, sheet `floating-islands/foliage-sheet.jpg`)
+Every island gets its own trees, bushes and plants, built from its theme's materials. Mix and match shapes, sizes, colours and styles so no two islands share foliage. Keep the stylized low-poly look: chunky canopies, thick curvy trunks, soft bevels, a glow accent in the theme colour.
+| Theme | Trees | Bushes | Plants |
+|---|---|---|---|
+| Scrap / industrial | rusty riveted metal-plate canopies on twisted trunks, glowing seams | scrap piles, crates and gears with sprouts | pipe "cactus" with glowing lamps |
+| Cyber / tech | white disc-canopy trees with blue light rings | cube planters with glowing panels | crystal plants in tech pots |
+| Frost / ice | snow-loaded pines | snowy bushes with ice crystals | ice crystal clusters |
+| Nature / forest | big round leafy trees, vines, glowing lanterns, palms | flowering bushes | ferns, tropical leaves |
+| Inferno / lava | dark rock trees with lava veins and dripping lava, red flame-leaf trees | charred rock bushes with glowing cracks | magma crystals, flames |
+| Void / dark | twisted purple trees with floating canopy chunks | dark crystal bushes | floating rocks with purple crystals |
+| Quantum / cosmic | white-gold trees with faceted glowing gem fruit | gold-trimmed orbs and gyroscopes | gem crystals in gold mounts |
+New themes: same recipe (theme materials + one glow accent). Mix in autumn, palm, willow and mushroom trees for variety. Scatter in clusters of 3 sizes, never evenly spaced.
+
 ## Layout (top-down)
 - Round plaza. The **Hatchery is the landmark at the back centre**: the biggest building, with the island's egg on show in a glowing archway and wide stairs leading up.
 - **Shop** (gold, coin sign) on the left, **Crates** (purple, crate sign) on the right, **Upgrades** (blue, arrow sign) at the front right. More stations go around the ring.
