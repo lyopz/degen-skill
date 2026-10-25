@@ -13,7 +13,7 @@ Write a short spec and keep it in the game folder (`spec-<thing>.md`):
 
 ## Gate 2 — Build small, then look
 - Build ONE piece first (one tree, one button, one zone corner), **screenshot it** (Studio MCP `screen_capture`), compare to the reference and spec, fix, *then* duplicate/scale up.
-- Use presets and templates instead of inventing values: lighting presets (`maps.md`), UI sizes + ButtonFeel (`ui.md`), VFX layers (`vfx.lua`), rarity colors (`roblox-art-style`).
+- Use presets and templates instead of inventing values: lighting presets (`maps.md`), UI sizes + ButtonFeel (`ui.md`), VFX layers (`roblox-templates/templates/VFX.lua`), rarity colors (`roblox-art-style`).
 - Keep everything grouped and named (`Model` per thing, clear names) so fixes are one edit.
 
 ## Gate 3 — Check before saying done

@@ -56,6 +56,36 @@ Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU 
 - Cartoon sea: sand (246,205,120), WaterColor (40,200,220), WaterTransparency 0.6 + bright cartoon preset. Terrain water stays visible even at WaterTransparency 1, so a wave mesh must stay above it (Ocean kit in `roblox-templates`).
 - After a big terrain edit, check voxels (raycast grid / `ReadVoxels`) before trusting a screenshot — captures can be stale.
 
+## Free assets & new looks (research 2026-10-25)
+**CC0 / free-to-use asset sources** (import via `roblox-3d-pipeline`, recolour to the bible palette, keep the source in the project notes):
+| Source | What | Fit | Licence |
+|---|---|---|---|
+| [KayKit Forest Nature](https://kaylousberg.itch.io/kaykit-forest) / [KayKit Platformer](https://kaylousberg.itch.io/kaykit-platformer) | 100+ trees/bushes/rocks · 120 platforms, ramps, hoops, stars, flags on ONE gradient atlas (shrinks to 128 px) | bright chunky low poly — best match | CC0 (free tiers) |
+| [Kenney Nature Kit](https://opengameart.org/content/nature-kit) / [Platformer Kit](https://kenney-assets.itch.io/platformer-kit) | 330+ nature pieces · 140+ platformer pieces | clean low poly | CC0 |
+| [Quaternius Stylized Nature MegaKit](https://quaternius.com/packs/stylizednaturemegakit.html) | 40 trees, 35 plants, 27 rocks, swappable leaves | stylized textured | CC0 (free Standard part only) |
+| [Inno's Stylized Asset Pack](https://create.roblox.com/store/asset/18817890736/Innos-Stylized-Asset-Pack) | Roblox-native foliage, trees ×6 colours, rocks, fences, lanterns, bridges | stylized | free incl. commercial, no redistribution — script-scan first |
+| [Screaming Brain skies](https://screamingbrainstudios.itch.io/cloudy-skyboxes-pack) · [Planet Surface skies](https://screamingbrainstudios.itch.io/planet-surface-skyboxes) · [space tiles](https://opengameart.org/content/seamless-space-backgrounds) | 25 cloudy day/sunset/night cubemaps · 64 themed planet skies (lava, ice, ocean…) · nebula tiles | per-realm skies | CC0 (split the cross into 6 Sky faces) |
+| ambientCG / Poly Haven | PBR textures | realistic → base for grime/detail layers | CC0 |
+| [Poly Pizza](https://poly.pizza) | low-poly library | mixed | per model CC0 or CC-BY — check each, credit CC-BY |
+Skip (no clear licence): FreeStylized anime skies, Nebula Skybox Collection, orcaenvironments rocks/trees.
+
+**New engine looks to use:**
+- **Emissive masks** on SurfaceAppearance: glowing trims, crystal veins, lava inside ONE mesh instead of extra Neon parts (Creatures of Sonaria: SA + emission "raised visuals considerably"). https://devforum.roblox.com/t/creator-roadmap-2026-spring-update/4625473 · https://about.roblox.com/newsroom/2026/07/roblox-studio-fidelity-creator-interviews-twin-atlas-fluorlite-maximillian-ecos
+- **ColorGradingEffect** + `TonemapperPreset`: Default = vivid/high contrast; Retro = pre-2019 look (cap lights at Brightness 1). https://create.roblox.com/docs/environment/post-processing-effects
+- **Material Generator** (Window > 3D): prompt "cartoon / hand-drawn, simple, pattern, flat, grayscale" → tint per zone; Organic toggle hides tiling. https://create.roblox.com/docs/studio/material-generator · per-zone terrain looks: keep MaterialVariants in ReplicatedStorage and swap into MaterialService behind a teleport/loading screen (textures blank for a moment). https://devforum.roblox.com/t/infinite-custom-terrain-materials/3667533
+- **Coming (RDC26):** late 2026 min draw distance 200 → 500 studs (far islands stay visible from spawn), rounded primitives, cone/capsule/disc parts; mid 2027 terrain scattering, path splines, projected terrain decals. https://devforum.roblox.com/t/rdc26-what-we-announced/4865880
+- **Style split (fall 2026):** realistic vs playful handmade (arts-and-crafts worlds, anime city hubs); each biome gets its own lighting + weather + ambient audio. https://about.roblox.com/newsroom/2026/09/roblox-fall-games-preview
+
+**Recipes:**
+- **Wind:** `workspace.GlobalWind` (base (5,0,2), gusts (25,0,10)) moves grass + dynamic clouds; particles follow only with `WindAffectsDrag` + Drag > 0. Tree leaves: **WindShake** (MIT, tag parts; WindSpeed 20, WindPower 0.5). https://create.roblox.com/docs/environment/global-wind · https://github.com/boatbomber/WindShake
+- **Atmosphere ranges:** Density 0–0.35, Offset 0–1, Haze 1–2.8, Glare 0–1 (Glare needs Haze, Decay needs both). High Offset = crisp horizon silhouettes; low Offset melts into the sky but can show the skybox through floating islands. https://create.roblox.com/docs/environment/atmosphere
+- **Shorelines:** old places → Terrain Editor > Upgrade Shorelines (back up first, can't undo). https://devforum.roblox.com/t/shorelines-full-release/2952103
+- **Part-built props** (Nilo): tree = trunk + 3–5 spheres (1 big, 2 mid, 1–2 small) tilted a few degrees, clusters of 3–5; rock = 3–4 overlapping angled blocks; bush = 3–4 flattened spheres; crates < 500 tris, signs < 300; 1–2 shadow-casting hero lights per scene. https://nilo.io/articles/easy-roblox-environmental-props
+- **Dress the edges** (Fluorlite): fence posts, rocks and ornaments snapped along roads/paths; Redupe plugin for stepped scale/rotate copies. Big terrain maps: carve from the bottom (Sonaria cut cells ~99M → 25M).
+- **World transitions** (PS99): each new world has a themed gate (rocket, black hole) and a biome ladder (forest → autumn → crystal caves → beach/reef → desert → snow → volcano). https://bloxodes.com/wiki/pet-simulator-99/areas
+
+**Zone ideas:** galaxy hub (space sky + emissive constellation floor + far islands in view) · planet portals that swap Sky + grade + MaterialVariants together · rocket / black-hole gates between worlds · windy cherry-blossom isle (GlobalWind petals + WindShake canopies) · Retro "classic studs" nostalgia zone (Retro tonemapper) · crystal caverns under an island (emissive veins, dark grade inside, bright outside) · lagoon with upgraded shorelines, reef below the water and an Atlantis island · parkour sky garden from KayKit/Kenney platformer pieces recoloured per tier · hub-wide timed event overlay (grade + sky + particle storm) · arts-and-crafts island (paper/cardboard generated materials) · snow + hot-springs isle (steam on wind, warm lanterns) · conveyor showcase plaza carrying eggs/pets along the main path.
+
 ## Lighting presets (Lighting service) — starting points, then tweak by eye
 Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrectionEffect`, `SunRaysEffect` under Lighting, and a matching `Sky`.
 
@@ -64,6 +94,7 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 | **Bright cartoon (sim/obby)** | ClockTime 14, Brightness 3, EnvironmentDiffuseScale 1, EnvironmentSpecularScale 1, Ambient (70,70,80), OutdoorAmbient (120,120,130), ShadowSoftness 0.2 | Density 0.3, Offset 0.25, Haze 1, Glare 0.3, Color (199,220,255), Decay (106,112,125) | Intensity 0.6, Size 24, Threshold 1.2 | Saturation 0.15, Contrast 0.1, Brightness 0.02 | Intensity 0.05, Spread 0.6 |
 | **Golden hour (RP/adventure)** | ClockTime 17.6, Brightness 2.5, Ambient (90,70,60), ExposureCompensation 0.2 | Density 0.35, Haze 2, Glare 1, Color (255,200,160) | Intensity 0.8, Size 30, Threshold 1 | Saturation 0.1, Contrast 0.15, TintColor (255,240,225) | Intensity 0.15, Spread 0.8 |
 | **Neon night (degen / cyber, red)** | ClockTime 0, Brightness 1, Ambient (20,10,15), OutdoorAmbient (40,20,30), ExposureCompensation 0.3 | Density 0.45, Haze 1.5, Color (60,20,30), Decay (20,5,10) | Intensity 1.2, Size 40, Threshold 0.8 | Saturation 0.2, Contrast 0.2, TintColor (255,225,230) | off |
+| **Void / dark realm** (picoo 2026) | ClockTime 19.5, ColorShift_Top (120,80,160), ColorShift_Bottom (60,40,100), ShadowSoftness 0.5, Env scales 0.5 | Density 0.35–0.7 (docs max 0.35), Haze 1.5, Offset 0.2, Glare 0.2, Color (80,80,90), Decay (100,80,120) | Intensity 0.5, Size 24, Threshold 0.95 | Brightness −0.3, Contrast 0.2, Saturation −0.4, TintColor (180,160,200) | off (no DoF on phones) |
 | **Horror** | ClockTime 2, Brightness 0.5, Ambient (5,5,8), OutdoorAmbient (15,15,20) | Density 0.6, Haze 3, Color (40,45,55) | Intensity 0.3, Threshold 1.5 | Saturation −0.3, Contrast 0.25, TintColor (210,220,230) | off; use flicker PointLights/SpotLights |
 
 Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.

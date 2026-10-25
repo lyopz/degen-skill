@@ -4,7 +4,7 @@
 - Sprint FOV kick: tween `Camera.FieldOfView` 70 → 80 over 0.2 s when sprinting, back on stop.
 - Dash: short burst `AssemblyLinearVelocity` or `LinearVelocity` for 0.15 s + trail + whoosh + FOV kick.
 - Landing from height: small camera dip + dust particles at feet.
-- Camera shake: small (0.2–0.5°) and short (0.15–0.3 s); scale with impact size; offer a setting to turn it off. (`roblox-assets/scripts/vfx.lua` → `VFX.Shake`)
+- Camera shake: small (0.2–0.5°) and short (0.15–0.3 s); scale with impact size; offer a setting to turn it off. (`roblox-templates/templates/VFX.lua` → `VFX.Shake`)
 - Never fight the player's camera for long; cutscenes ≤ 3 s and skippable.
 
 ## Combat hits

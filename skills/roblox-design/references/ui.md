@@ -37,7 +37,7 @@ Layout tools: `UIListLayout`, `UIGridLayout`, `UIPadding`, `UIAspectRatioConstra
 | Not allowed (no money) | shake left-right 3× 6 px + red flash + error buzz | 0.25 s |
 | Purchase / reward | button pops 1.15, sparkle burst, coins fly from button to currency counter, counter counts up | 0.4–0.8 s |
 
-Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` child, not `Size` (keeps layout stable). Script: `../scripts/ButtonFeel.lua`.
+Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` child, not `Size` (keeps layout stable). Script: `roblox-templates/templates/ButtonFeel.lua`.
 
 ## Sound
 - Distinct sounds: hover tick, click, open, close, error, purchase/reward, level-up. Keep UI sounds short (< 0.3 s) and quiet (Volume ~0.3–0.5); randomize pitch ±5% on repeated sounds; raise pitch on streaks/combos.

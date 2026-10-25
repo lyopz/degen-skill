@@ -77,6 +77,9 @@ Server decides (pet, rarity, reward) → fires a RemoteEvent → **client plays*
 - **Level up / rebirth / evolve:** ground shockwave + spiral column + flash on the character, big floating text, sound sting. `PetFX.LevelUp(character)`.
 - **Rewards:** coins/gems burst out of the source and fly to the HUD counter (3D fountain with `PetFX.Reward`, then ImageLabels tweened along a curve to the counter, counter bumps); bigger reward = more coins, not longer animation.
 - **Other players' pets:** cheaper or no auras, and a "hide others' effects" setting.
+- **Pet combat hits (research 2026-10-25):** heavy-feeling hits = hit-stop + a matching sound + camera shake ([action-game study](https://arxiv.org/pdf/2208.06155)). Shake direction follows the move: vertical for slams/knockdowns, horizontal for side slashes/spins. Telegraph: show the danger arc/ring early with a few smeared frames and leave it up — the swing then feels snappier ([source](https://babel.speldesign.uu.se/?p=843961)). Pair each move with its VFX via `PetMoves` cues (table in `roblox-art-style/references/pet-movement.md`).
+- **Impact frame (finisher/KO/crit):** for ~0.1 s add a ColorCorrectionEffect (Saturation −1, Contrast way up for white/black), turn the hit parts Neon in one tint and hide their decals, then restore. Highlight isn't used because of mobile support. (Idea from the ImpactFrame DevForum module, no licence stated — write your own: https://devforum.roblox.com/t/open-source-impactframe-module/2963136)
+- **Mesh slashes:** an animated crescent mesh (Blender) with a painted texture is easy to rotate to the swing angle; particles stay lighter for fire-type effects (https://devforum.roblox.com/t/how-to-make-animated-slashes-20/1880010). Scrolling textures on meshes: a Texture covers one face, so a box needs six (loop `Enum.NormalId`) and you move `OffsetStudsU/V` each frame (https://devforum.roblox.com/t/make-a-texture-move-on-a-mesh/944731).
 
 ## 6. Gotchas
 - **Particles don't render inside ViewportFrames or ScreenGuis.** Hatches: put the egg in front of the camera. UI sparkles: tween ImageLabels or use a 2D emitter module (DevForum: Spark2D plugin, UIEmitter, "2D ParticleEmitter").
@@ -102,6 +105,9 @@ Server decides (pet, rarity, reward) → fires a RemoteEvent → **client plays*
 - **Effect Designer Suite** (free, open source DevForum plugin): emit count/delay/duration, scale effects, bezier/tween animation of attachments/beams/trails, ~5,800 preset flipbooks and textures, Oklab color sequences, curve editor.
 - **VFX Editor**, **Sine VFX** (DevForum plugins): all-in-one emitter editing/previewing. **Emit()** plugin (Creator Store): burst-preview in Studio.
 - **Emit attributes convention** used by VFX plugins: `EmitCount`, `EmitDelay`, `EmitDuration` on each emitter. Build the effect in Studio, then play it in code with `PetFX.Play(effect)`.
+- **RbxCameraShaker** (Sleitnick, **MIT**): presets Bump/Explosion/Earthquake/Vibration, `ShakeOnce`/`ShakeSustain` — directional shake per move scaled by damage. https://github.com/Sleitnick/RbxCameraShaker
+- **spr** (fraktality, **MIT**): spring any property (CFrame, Color3, numbers) for bouncy recoveries. https://github.com/fraktality/spr
+- Paid / no licence stated (look, don't copy): VFX Forge (zilibobi, mesh VFX, Bézier, lightning, rocks, emit module) https://zilibobi.itch.io/vfx-forge · BuiltByBit "1000 Scripted Ability VFX", "BeamPack".
 - Free flipbooks: particlefx.studio/roblox. Paid packs: BuiltByBit and similar (check license + scripts).
 - Textures in our pipeline: ChatGPT white-on-black → `scripts/vfx_texture.py` → Asset Manager (`references/textures.md`).
 

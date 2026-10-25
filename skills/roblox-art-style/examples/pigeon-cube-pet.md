@@ -24,7 +24,7 @@ Through the Blender connector:
 6. Export GLB → Studio Import 3D (Custom rig, or No Rig + separate wing parts).
 
 **Motion (no credits):**
-- Float + follow: `roblox-assets/scripts/motion.lua` → `Motion.Follow(pet, player, Vector3.new(3, 2, 2))`.
+- Float + follow: `roblox-templates/templates/Motion.lua` → `Motion.Follow(pet, player, Vector3.new(3, 2, 2))`.
 - Wing flap (separate wing parts welded with Motor6D or bones): tween wing rotation ±35° every 0.15 s while moving, slower glide when idle.
 - Optional trail/aura for rare tiers: `VFX.Aura(pet.PrimaryPart, rarityColor)`.
 

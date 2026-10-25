@@ -61,10 +61,10 @@ local track = animator:LoadAnimation(walk); track.Looped = true; track:Play()
 - Roblox Adaptive Animation (GA April 2026) lets one animation drive different rig types via HumanoidRigDescription.
 
 ### B. Scripted motion (no rig needed)
-Pets that follow, bobbing pickups, spinning coins, flying birds, swinging doors, projectiles: `scripts/motion.lua` (spin, bob, follow, launch projectile).
+Pets that follow, bobbing pickups, spinning coins, flying birds, swinging doors, projectiles: `roblox-templates/templates/Motion.lua` (spin, bob, follow, launch projectile).
 
 ### C. Effects (VFX) — fireball, legs on fire, auras
-Built from `ParticleEmitter` + `Beam` + `Trail` + `PointLight` on **Attachments**. Layer **3–5 emitters** per effect (core glow, outer flame, sparks, smoke, light) — one emitter looks flat. Ready-made: `scripts/vfx.lua`:
+Built from `ParticleEmitter` + `Beam` + `Trail` + `PointLight` on **Attachments**. Layer **3–5 emitters** per effect (core glow, outer flame, sparks, smoke, light) — one emitter looks flat. Ready-made: `roblox-templates/templates/VFX.lua`:
 - `Fireball(origin, direction)` — glowing core, flame, sparks, trail, light, explosion + camera shake on hit.
 - `IgniteLegs(model)` — finds leg bones/parts (names containing Leg/Foot/Shin/Thigh) and attaches flame + ember emitters + light.
 - `Aura(part, color)` — ring of rising particles.
@@ -73,6 +73,7 @@ Full guide and pet/reward effects: `roblox-vfx` skill + `roblox-templates/templa
 ## 5. Check before handing over
 - Triangle count per mesh, texture sizes, CollisionFidelity (**Box** for decor + CanCollide off; Hull for simple props), `RenderFidelity = Performance` for background props, Anchored for static pieces.
 - Free Creator Store models: list `LuaSourceContainer` descendants after inserting; decor with scripts = backdoor → delete (`roblox-dev` → Security). Searching, picking and cleaning store models: `roblox-store-models`.
+- CC0 kits outside Roblox (KayKit, Kenney, Quaternius, Screaming Brain skies) for map dressing: table in `roblox-design/references/maps.md` → "Free assets & new looks". Import via `roblox-3d-pipeline`, recolour to the bible.
 - Test on phone size in Studio's Device Simulator.
 - Save source picture, .blend, GLB/FBX and the Luau scripts with the project.
 

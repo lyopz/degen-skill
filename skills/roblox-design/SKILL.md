@@ -37,7 +37,7 @@ When asked, go through every line, apply what fits, then tell lyopz what changed
 5. **Rewards pop:** numbers count up, items fly into the inventory icon, screen-edge flash, coin pickups scale-pop + sound pitch rising with streaks, confetti/sparkle bursts on level-up.
 6. **Motion everywhere (cheap):** spinning/bobbing pickups, swaying trees (scripted), moving clouds/skybox, conveyor/water texture scroll, idle animations on NPCs/pets.
 7. **Hits feel heavy:** 2–3 frame hit-stop, small camera shake, flash the target white/red, knockback, layered VFX (3–5 emitters), impact sound + slight pitch randomization.
-8. **VFX layer pass:** trails on fast movement, auras on rare things, fire/magic with LightEmission 1, explosions with light flash (`roblox-assets/scripts/vfx.lua`).
+8. **VFX layer pass:** trails on fast movement, auras on rare things, fire/magic with LightEmission 1, explosions with light flash (`roblox-templates/templates/VFX.lua`).
 9. **Sound pass:** UI clicks, footsteps per material, ambient loop per zone, reward stingers, music that changes per area/boss.
 10. **UI polish:** one consistent corner radius (8–16 px), UIStroke 2–3 px on buttons, gradient fills, drop shadow, icons at 2× resolution, tween panels in (0.25–0.35 s, Quint/Back Out) instead of popping.
 11. **Juice for progress:** progress bars that ease and glow, rebirth/upgrade screens with big before→after numbers.

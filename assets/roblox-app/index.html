@@ -348,7 +348,7 @@ document.getElementById('lessons-body').innerHTML=md(F.lessons);
 const gSel=document.getElementById('b-game');
 gSel.innerHTML='<option value="">New game (make a style bible first)</option>'+R.bibles.map(b=>`<option>${esc(b.n)}</option>`).join('');
 const AG={asset:['roblox-art-director (concept + translation)','roblox-modeler','roblox-animator / roblox-vfx-artist if it moves or glows'],map:['roblox-map-builder','roblox-modeler for detailed props'],ui:['roblox-ui-designer','roblox-scripter for any server logic'],vfx:['roblox-vfx-artist'],anim:['roblox-animator'],system:['roblox-scripter'],cooler:['roblox-reviewer (10,000x cooler checklist)','then the agents it names']};
-const SK={asset:'roblox-art-style, roblox-assets, 3d-assets',map:'roblox-design (maps.md), roblox-art-style, 3d-assets',ui:'roblox-design (ui.md + ButtonFeel), roblox-art-style',vfx:'roblox-assets (vfx.lua), roblox-design (game-feel.md)',anim:'roblox-assets (motion), roblox-design (game-feel.md)',system:'roblox-dev (RemoteGuard, PurchaseHandler, lessons)',cooler:'roblox-design (10,000x cooler checklist), roblox-art-style'};
+const SK={asset:'roblox-art-style, roblox-assets, 3d-assets',map:'roblox-design (maps.md), roblox-art-style, 3d-assets',ui:'roblox-design (ui.md + ButtonFeel), roblox-art-style',vfx:'roblox-templates (VFX.lua), roblox-design (game-feel.md)',anim:'roblox-assets (motion), roblox-design (game-feel.md)',system:'roblox-dev (RemoteGuard, PurchaseHandler, lessons)',cooler:'roblox-design (10,000x cooler checklist), roblox-art-style'};
 
 // ---- task splitter: recommends parallel workstreams in waves ----
 const KW=(d,re)=>re.test(d);

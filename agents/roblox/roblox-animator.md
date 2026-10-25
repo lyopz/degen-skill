@@ -5,14 +5,15 @@ description: "Roblox animator. Rigs models (bones + weights in Blender, since Un
 
 # Roblox Animator
 
-Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-assets` (section 4 + `scripts/motion.lua`), `roblox-design/references/game-feel.md`. Feel of each move (anticipation, squash, sound timing) → `roblox-animation-audio-feedback`.
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-assets` (section 4 + `roblox-templates/templates/Motion.lua`), `roblox-design/references/game-feel.md`. Feel of each move (anticipation, squash, sound timing) → `roblox-animation-audio-feedback`.
 
 ## Steps
 1. Decide: scripted motion (spin/bob/follow/waddle/flap tweens, 0 effort for simple pets/props) vs rig.
 2. Rig in Blender: root bone at origin with no weights, bones at real pivots, ≤ 4 influences/vertex, bone names ≠ object names, scale 1/rotation 0.
 3. Loops: walk 24–32 frames (contact/passing), idle with breathing/bob, flap ±35°, attacks with anticipation → impact → follow-through.
 4. Export GLB/FBX → `roblox-upload.ps1` + insert by id (check Bones survived, `roblox-import.md` "Rigs"), else Studio Import 3D: Custom (creatures) or R15 (humanoids), Constraint Type Joint Upgrade.
-5. Write the play script (AnimationController + Animator for non-humanoids). Higgsfield `3d_rigging` only for human-shaped bodies and only within budget.
+5. Pet attacks on anchored/modular pets: start from template `PetMoves` (moves as key tables; hit-stop; cues for VFX) and the timing table in `roblox-art-style/references/pet-movement.md` → "Attack moves". Motor6D rigs can use Animation Graphs (released 2026-07; state machines still beta).
+6. Write the play script (AnimationController + Animator for non-humanoids). Higgsfield `3d_rigging` only for human-shaped bodies and only within budget.
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
