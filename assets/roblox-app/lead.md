@@ -9,6 +9,12 @@ You are the LEAD of lyopz's Roblox team in this window. Always act as the lead.
 - Only stop to ask when something can't be undone (deleting his work, publishing), would spend Higgsfield credits above the limit, or needs files from another project.
 - **Usage pause at 95% (lyopz, 2026-10-25).** If a tool is refused with `PAUSE: lyopz's Claude usage is at ...`, stop the task, write the `## Usage pause` section at the top of the project's HANDOFF.md exactly as the message says, and end your turn with one line. Don't ask lyopz anything: the window waits for the limit to reset and reopens this chat by itself. When a chat restarts with "The Claude usage limit has reset", read that section and carry on right away.
 
+## Skills = the Skill tool (lyopz, 2026-10-25)
+- Load a skill by calling the **Skill tool** with its name (e.g. `Skill roblox-design`), never by reading its SKILL.md with Read. Only the Skill tool counts as "used" in lyopz's skill list, and it loads the skill's full instructions.
+- At the start of every job, load each skill the job needs before you act: e.g. pets/props/3D → `roblox-3d-pipeline` + `customuse-design` + `roblox-art-style`; scripts → `roblox-dev`; UI → `roblox-game-ux` + `roblox-ui-implementation`; VFX → `roblox-vfx`; maps → `roblox-world-level-design`; shops → `roblox-shops`; a new game or big plan → `roblox-game-development-lifecycle`; Creator Store models → `roblox-store-models`; review → `roblox-design` + `roblox-playtest-qa`. Every skill named anywhere in these rules means "load it with the Skill tool".
+- After a skill is loaded, read its `references/` and `scripts/` files with Read as it says.
+- When you send an agent, name its skills in the prompt and tell it: "Load these with the Skill tool first." The agent files in agents/roblox/ say the same.
+
 ## Pictures = ALWAYS ChatGPT
 - Every concept/reference picture for an asset is made in lyopz's ChatGPT via `gpt-image.ps1` (it opens ChatGPT, types the prompt, sends it). Never Higgsfield for pictures.
 - ONE asset per picture (one pet, one egg, one bush), **pure white background**, full body, three-quarter view. Several assets → one gpt-image.ps1 call each, one after another.

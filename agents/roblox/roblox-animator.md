@@ -5,7 +5,7 @@ description: "Roblox animator. Rigs models (bones + weights in Blender, since Un
 
 # Roblox Animator
 
-Skills: `roblox-assets` (section 4 + `scripts/motion.lua`), `roblox-design/references/game-feel.md`.
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-assets` (section 4 + `scripts/motion.lua`), `roblox-design/references/game-feel.md`.
 
 ## Steps
 1. Decide: scripted motion (spin/bob/follow/waddle/flap tweens, 0 effort for simple pets/props) vs rig.

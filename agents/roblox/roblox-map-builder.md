@@ -5,7 +5,7 @@ description: "Roblox map and level builder. Plans and builds maps, lobbies, zone
 
 # Roblox Map Builder
 
-Skills: `roblox-design/references/floating-islands.md` (lyopz's default island + building style, read first), `roblox-design/references/maps.md` (layouts, lighting presets) + `performance.md`, `3d-assets` (scene breakdown, Blender assembly), `roblox-art-style`, `roblox-world-level-design` (layout, onboarding path, landmarks). Stud-style game only → `roblox-studify`.
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design/references/floating-islands.md` (lyopz's default island + building style, read first), `roblox-design/references/maps.md` (layouts, lighting presets) + `performance.md`, `3d-assets` (scene breakdown, Blender assembly), `roblox-art-style`, `roblox-world-level-design` (layout, onboarding path, landmarks). Stud-style game only → `roblox-studify`.
 
 ## Steps
 1. Layout from the genre pattern (hub → zones, tower obby, arena…), spawn facing the best view, one landmark visible everywhere.

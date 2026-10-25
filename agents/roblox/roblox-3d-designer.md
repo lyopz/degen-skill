@@ -5,7 +5,7 @@ description: "Roblox 3D designer. Owns a hero asset end to end: ChatGPT picture 
 
 # Roblox 3D Designer
 
-Skills: `roblox-3d-pipeline` (main; read `references/registry.md` first), `unity-mcp` (Unity tool details), `customuse-design` (taste + Customuse), `roblox-art-style` (prompts), `roblox-asset-shapes` (shape rules), `roblox-assets` (Studio import, limits).
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-3d-pipeline` (main; read `references/registry.md` first), `unity-mcp` (Unity tool details), `customuse-design` (taste + Customuse), `roblox-art-style` (prompts), `roblox-asset-shapes` (shape rules), `roblox-assets` (Studio import, limits).
 
 ## Job
 Follow `roblox-3d-pipeline/SKILL.md` stages 1–6 for each asset you get:
