@@ -19,6 +19,8 @@
 
 Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU across 29 games), escape/survival ~764k, simulators ~336k (highest earning), anime/fighting ~143k, horror ~78k (+68% week over week), town/city RP +65%, tower defense ~59k, competitive parkour with vote-based maps, management tycoons moving from button-press to strategy. **Hybrids** are winning.
 
+**House style (lyopz, 2026-10-25):** islands and buildings follow `floating-islands.md` unless lyopz asks otherwise.
+
 ## Layout patterns per genre
 - **Simulator / tycoon:** hub lobby (shops, leaderboards, rebirth altar, codes) → ring/line of zones unlocked by currency gates, each zone a new biome + color; collect spots spread so players walk past shops; teleport pads between zones; plot grid for tycoons with clear "build here" glow.
 - **Obby / parkour:** single vertical tower or linear course, checkpoints every 5–10 jumps, difficulty ramps with rest platforms, color-coded hazards (red = kill, blue = bounce, yellow = moving), stage counter UI, skip-stage product; competitive: procedural or vote-selected courses so memorizing doesn't win.

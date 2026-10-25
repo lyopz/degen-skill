@@ -12,6 +12,7 @@ Read the reference that matches the job:
 - `references/ui.md` — sizes, layout, buttons, click/hover feedback, sounds, mobile/console. **Includes a ready button-feel script.**
 - `references/pets-and-eggs.md` — egg stands (floating vs grounded), egg designs per theme, hatching sequence, odds/rarity, pet styles, golden/rainbow/huge variants, pet movement, and upgrading (chance/timed machines, fuse rituals, enchants, a landmark "Forge").
 - `references/maps.md` — genres in meta, map layouts per genre, lighting presets, building style.
+- `references/floating-islands.md` — **lyopz's default island + building style** (floating sky islands, waterfalls, hatchery-centred hub, parkour up with double jumps).
 - `references/game-feel.md` — motion, camera, hit feedback, VFX layering, rewards.
 - **`roblox-vfx` skill** — full particle/VFX guide: emitter properties, flipbooks, recipes, hatch/aura/level-up/reward effects, performance, plugins, ChatGPT textures. Template `PetFX`.
 - `references/performance.md` — budgets so it runs on phones (most players).
