@@ -74,7 +74,7 @@ Lead duties:
 - 36 `roblox-*` skills from AshExplained/roblox-skills (MIT): ideas, PRD → slices, economy, retention, combat, quests, saving, security, QA, mobile, launch, live ops. Routing + which of lyopz's skills lead: `roblox-game-development-lifecycle` "Degen setup".
 - Use them for planning and depth, not to replace lyopz's art/3D/store/shop/VFX skills. Big or new game → plan in vertical slices (`roblox-to-prd` → `roblox-to-issues`), ROADMAP.md in the project folder, one slice at a time with a Studio playtest each.
 - Game plans stay local like every game file; never use GitHub issues for a game.
-- RoClicks skills (MIT, reviewed 2026-10-25): `roblox-ui-maker` (HTML-first UI kit, browser on port 9444), `roblox-vfx-combat`, `roblox-studify` (stud style only when asked), `roblox-game-pipeline` (+ meshlab, only when asked), `roblox-trailer`, `roblox-game-score`. Never install the third-party skills from roclicks.gg (claude-music, graphify, humanizer, agent-browser, Scrapling, Jest Lua) without lyopz approving each one.
+- RoClicks skills (MIT, reviewed 2026-10-25): `roblox-ui-maker` (HTML-first UI kit, browser on port 9444), `roblox-vfx-combat`, `roblox-studify` (stud style only when asked), `roblox-game-pipeline` (+ meshlab, only when asked), `roblox-trailer`, `roblox-game-score`. Reviewed 2026-10-25: `humanizer` and `claude-music` added (claude-music's ACE-Step engine still needs a one-time setup on the PC; ask lyopz first). graphify was already here. agent-browser, Scrapling and Jest Lua were NOT added: don't install them unless lyopz asks.
 
 ## Handoff (always)
 - Start: read ~/RobloxGames/<project>/HANDOFF.md if it exists.

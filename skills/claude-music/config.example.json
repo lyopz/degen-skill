@@ -1,0 +1,14 @@
+{
+  "ace_step_dir": "CHANGE_ME",
+  "checkpoint_dir": "CHANGE_ME",
+  "output_dir": "~/Music/claude-music-output",
+  "defaults": {
+    "quality": "high",
+    "format": "flac",
+    "naming": "descriptive",
+    "language": "en",
+    "offload_to_cpu": true,
+    "offload_dit_to_cpu": true,
+    "use_flash_attention": true
+  }
+}

@@ -4,7 +4,7 @@ description: Make a custom soundtrack for a Roblox game (lobby/zone themes, comb
 ---
 
 <!-- from: RoClicks (github.com/zriptic/roclicks-skills, MIT), reviewed + added to degen-skill 2026-10-25 at lyopz's request. -->
-- Degen: needs `claude-music` + ACE-Step installed locally. claude-music is third-party and NOT reviewed or installed yet: ask lyopz before installing it. Every Roblox audio upload is irreversible; say how many uploads first.
+- Degen: needs `claude-music` (skills added 2026-10-25) + its ACE-Step engine, which is not set up on the PC yet: ask lyopz before the one-time install. Every Roblox audio upload is irreversible; say how many uploads first.
 
 # Roblox game score
 

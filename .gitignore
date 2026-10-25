@@ -14,3 +14,6 @@ skills/roblox-art-style/projects/
 *.blend
 *.blend1
 *.fbx
+
+# claude-music local config (ACE-Step path, per PC)
+skills/claude-music/config.json
