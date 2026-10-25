@@ -5,7 +5,7 @@
 A pet = one **base body** + one item per slot. Every game keeps its own item list in `~/RobloxGames/<game>/pet-catalog.md` (local, never in the repo). **Only the items in that file exist in the game.** Don't invent items. The style lists in `pet-mouths.md`, `pet-eyes.md` and `pet-accessories.md` are ideas for upgrades and new designs, used only when lyopz asks for new ones.
 
 ## Slots (choose 1 each)
-Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail · Aura (coming: lyopz is sending aura sheets, so don't make aura items before they arrive).
+Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail · Halo · Aura.
 **No feet slot.** The 4 stubby feet are part of the body.
 
 ## Zones
@@ -13,7 +13,9 @@ Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail �
 |---|---|
 | Front, upper | eyes (recessed sockets, `pet-eyes.md`) |
 | Front, lower | mouth (`pet-mouths.md`); may curve round the front corners |
-| Top | horns and ears (near the top front corners); aura space floats above |
+| Top | horns at the top front; ears near the top corners |
+| Above the top | halo, floating and spinning, never touching the body |
+| Around the pet | aura, centred on the pet's middle, never on the body; keep the centre clear so the pet stays readable |
 | Back, upper | wings + back accessory (hub, `pet-accessories.md`) |
 | Back end, lower centre | tail. Same attach point for every tail. No part of the tail shows on the sides or front except when it swings. |
 | Sides | nothing mounted |
@@ -36,6 +38,15 @@ Rarity colours: Common grey, Uncommon green, Rare blue, Epic purple, Legendary g
 | Tail | idle (hang/drift) · walk (sway) · run (bigger swing) · turn (follow body) · attack (whip/slash/burst) · skill (full effect) |
 
 Each part's script exposes the same calls (`Idle`, `Walk`, `Run`, `Turn`, `Attack`, `Skill`, plus `Happy`/`Angry` on the face), so the pet's controller drives any mix. Pause loops when the pet is far from the camera.
+
+## Auras (5 layers, scales with rarity)
+1 base glow (core light) · 2 main shape (ring / spiral / portal) · 3 particle field (stars, sparks, dust) · 4 energy ribbons (rotating, flowing) · 5 secondary FX (runes, planets, comets, burst). Commons use 1–2 layers, Secrets use all 5. Animations: idle (float + slow rotate) · walk (bob + ring follows) · run (faster swirl + trails) · jump (stretch + particles) · land (impact wave) · attack/skill (expand + spin + flash). It works with every body, wing and accessory. Colour themes of the same aura are fine (fire, ice, toxic, storm, light, dark, galaxy, rainbow). Intensity steps match `pet-upgrades.md`.
+Halos: idle (float + spin) · walk (bob + sway) · jump (stretch + trail) · attack (burst + glow) · pulse.
+
+## Eggs, crates, rarity
+- **An egg gives only the base body.** Every accessory comes from its slot's own crate (Auras, Ears, Eyes, Mouths, Horns, Wings, Tails, Back Accessory, Halos). Each island has one egg with its themed bodies.
+- Crate opening: idle (float + glow) → activate (energy builds) → opens (panels split) → reveal (item floats out) → display (rotate + particles). Each crate is themed after its slot (the mouths crate has a mouth on it, and so on).
+- Rarity sets the look: Common = clean design, simple effects · Uncommon = more detail, subtle effects · Rare = special materials, animated effects · Epic = complex design, stronger effects · Legendary = highly detailed, unique animations, premium materials · Mythic = insane design, full animations · Secret = one-of-a-kind theme, next-level effects. Rough odds: Common 40–50%, Uncommon 20–35%, Rare 5–15%, Epic 1–5%, Legendary 0.1–1%, Mythic 0.01–0.1%, Secret about 1 in 1,000,000.
 
 ## Making changes
 - Upgrading an existing part or body ("make it 10,000x cooler"): `pet-upgrades.md`.
