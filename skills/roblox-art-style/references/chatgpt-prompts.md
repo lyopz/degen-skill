@@ -11,7 +11,7 @@ powershell -NoProfile -File "$env:DEGEN_APP\gpt-image.ps1" -Project <project> -N
 1. **What + purpose:** "A single collectible pet for a Roblox pet simulator game: a Kappa (Japanese water spirit)."
 2. **Body shape & proportions:** exact form from the style bible + lyopz's words ("soft rounded cube body, ~25% bevel, slightly squished, head merged into the body, 1:1:1").
 3. **Identity features (4–6), each with shape, size, position, material, color:** "a teal-blue turtle shell on its back made of hexagon plates with lighter cyan edges; a cream water-dish ring on top of the head, filled with glowing cyan swirling water; a short yellow duck beak at the front; leafy blue hair fringe around the dish; webbed yellow feet, two tiny nubs."
-4. **Face:** pets use the eye line from `pet-eyes.md` (style by rarity, recessed sockets, front face, upper half). Pets always get the sketchy grin from `pet-mouths.md` (base line + rarity tier line).
+4. **Face:** pets use the eye line from `pet-eyes.md` (glowing animated eyes, no outlines, front face, upper half). Pets always get the sketchy grin from `pet-mouths.md` (base line + rarity tier line).
 5. **Surface & markings:** "smooth toy-like soft-touch material, painted soft gradients, glowing cyan rune markings carved into the sides (wave and spiral symbols)."
 6. **Colors (hex from the bible):** main / secondary / glow / accent — max 2 glow colors.
 7. **Style words:** bible's prompt suffix + "stylized 3D game asset, Pixar-like toy render, clean shapes, high detail on the design parts, simple readable silhouette".
@@ -21,7 +21,7 @@ Extra lines when useful: "matching the style of the attached reference" (tell ly
 ## Premium polished pets (default for pets, lyopz 2026-10-23)
 lyopz wants pets that look polished and premium, **not cartoonish**. What the top Roblox pet games do for their best (legendary / huge) pets:
 - **Sleek, confident silhouette** instead of a round blob: a clear head, chest, and pose; one strong shape idea you can read from far away.
-- **Sharp eyes in recessed sockets** (almond, slanted, slit or gem-like with a glint), front face only, upper half, never huge googly eyes. Style + size by rarity: `pet-eyes.md`.
+- **Sharp glowing animated eyes, no outlines** (almond, slanted, slit), front face only, upper half, never huge googly eyes. Style + size by rarity: `pet-eyes.md`.
 - **Mouth = the sketchy grin (lyopz 2026-10-24, every pet):** wide hand-drawn grin, chunky uneven white teeth, black ink crosshatch shading; rarer = more dramatic. Never a round open cartoon mouth or a smooth coloured-outline mouth. Tier lines: `pet-mouths.md`.
 - **Back + top accessories** (wings, back pieces, auras): upper-back hub, top aura space, never on the face. `pet-accessories.md`.
 - **Separate materials**: matte soft body + glossy armor/shell + polished metal trim (gold, silver) + glowing crystal or rune parts. Material contrast is what makes it look expensive.

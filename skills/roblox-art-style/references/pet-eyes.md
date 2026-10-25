@@ -8,7 +8,8 @@ Reference: `pet-eyes/eye-ideas.jpg` (27 styles, fit example, animations). Two st
 
 ## Rules (every pet)
 - **Front face only.** Left, right and back faces have no eyes.
-- **Recessed 3D sockets**, not flat painted dots: a shallow socket cut into the body with a thin rim, a glossy eyeball inside, the iris/glow on top. Depth is what makes them read as premium.
+- **Animated glowing eyes only (lyopz, 2026-10-25, overrides older lines here):** the eyes are a glowing animated overlay on the plain body, just the eye shape + its effect. **No outlines or rims around the eyes, no flat 2D sticker eyes, no static eyes.** Every eye always has movement, glow or effects (idle glow + blink at least) and comes in colour variations. Reference: `pet-eyes/eye-animation-sheet.jpg`.
+- Effect types to build from: blink, pulse, glow, colour shift, particles, distort, swirl, sparks (plus each style's own: embers, frost mist, drips, runes, lightning, bubbles...).
 - **Size: upper half of the front face.** Each eye about 15–22% of the face width, set in from the edges, so the lower half stays free for any mouth (mouths wrap 3 sides, `pet-mouths.md`). Eyes never touch or overlap the grin.
 - Sharp and confident shapes (slanted, almond, slit, gem). No huge round googly eyes (taste.md). "Classic Gloss" is the only round one, and it's Common.
 - Glow stays subtle (emission ≤ 0.6) and a different hue from the body (same-hue glow disappears, quality gates).
@@ -44,12 +45,12 @@ New styles: mix mechanical, magical, realistic, creepy, cute; vary shape, colour
 | Colour shift, expanding pupil, energy flow, particle glow, dripping ooze, cracked lens, floating shards, glitch, multi-layer iris, orbiting rings | per style | layered ImageLabels, ParticleEmitters, Beams; handoff to vfx-artist (`roblox-vfx`) |
 
 ## Prompt words (part 4 "Face" of the 8-part prompt, before the mouth line)
-"Eyes: <style look from the table>, only on the front face, set in shallow recessed sockets with a thin rim, glossy eyeballs with depth, placed in the upper half of the face, each about one fifth of the face width, leaving the lower half clear for the mouth; sharp confident shape, subtle <colour> glow, not googly, not flat painted dots."
+"Eyes: <style look from the table>, only on the front face, glowing animated eyes with no outline or rim, <style effect, e.g. fire flow + embers>, placed in the upper half of the face, each about one fifth of the face width, leaving the lower half clear for the mouth; sharp confident shape, subtle <colour> glow, not googly, not flat sticker eyes, no outline."
 
 Eye-only picture for a separate eye part (crate accessory or crisp texture): "a pair of <style> pet eyes, front view, flat, on a plain #00FF00 green background", then `scripts/chroma-key.py`.
 
 ## On the 3D model
-1. Picture → Customuse as usual; the sockets come from the picture. In Unity, the `eyes` rule in `PaintRegions` gives them gloss + glow.
-2. Crisp, separate and animated (needed for anything above Common, and for crate eyes): build an **Eyes** model welded to the body's front face: socket rim MeshPart (body colour, glossy) + eyeball MeshPart (smooth 0.95) + iris disc with a SurfaceGui (LightInfluence 0) holding the iris picture(s). One eye rig per base body; styles swap the iris pictures and small extra meshes (flames, wings, shards).
+1. Eyes are never baked into the body model (they must animate). Bodies keep a smooth, clear upper front.
+2. Build an **Eyes** model welded to the body's front face: a thin eye plate per eye (just off the surface) with a SurfaceGui (LightInfluence 0, Brightness > 1) holding layered eye pictures (base shape, inner glow, pupil), plus ParticleEmitters/Beams for the style's effect. No rim or outline part. Styles and colour variants swap the pictures, colours and effects.
 3. Animation script lives in the Eyes model (the animator or vfx-artist writes it, using the table above). Keep it cheap: one Heartbeat loop per pet, pause when far from the camera.
 4. Keep the game's eye picks per tier in the bible ("Eyes" section, local).

@@ -11,7 +11,7 @@ Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail �
 ## Zones
 | Zone | Holds |
 |---|---|
-| Front, upper | eyes (recessed sockets, `pet-eyes.md`) |
+| Front, upper | eyes: glowing animated overlay, no outlines (`pet-eyes.md`) |
 | Front, lower | mouth (`pet-mouths.md`); may curve round the front corners |
 | Top | horns at the top front; ears near the top corners |
 | Above the top | halo, floating and spinning, never touching the body |
