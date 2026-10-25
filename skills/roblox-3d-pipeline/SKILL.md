@@ -61,6 +61,7 @@ Full list in `references/quality-gates.md`.
 - Material contrast reads: body matte, armor/trim shinier, glow subtle. No blown-out neon.
 - Smooth surfaces. No lumps, holes or stretched texture.
 - Pets: grin crisp and matches the rarity tier; otherwise a mouth decal (`pet-mouths.md` → "On the 3D model").
+- Avatar items (bodies, heads, layered clothing, rigid accessories): run Studio's UGC Validation Visualization (Avatar tab, 2026-10-22) — errors red / warnings yellow on the mesh, plus new body Asset Quality checks. https://devforum.roblox.com/t/improving-validation-checks-for-ugc-avatar-bodies-visualization-tool-and-asset-quality/4950522
 - Studio screenshot looks as good as the Unity shot. If it doesn't, check the SurfaceAppearance maps.
 
 ## Gotchas from projects (promoted 2026-10-24)
@@ -68,6 +69,9 @@ Full list in `references/quality-gates.md`.
 - Customuse GLB faces +X: rotate −90° about Z for a −Y front. Image-to-3D keeps the picture's camera angle; pairs from a 3/4 view come out yawed per side — fix each side.
 - Studio MULTIPLIES MeshPart.Color with vertex colors: for palette recolor bake greyscale shading (0.75–1.0), one MeshPart per palette region + `PaletteRole`. Textured store meshes don't tint → remove TextureID and recolor. Skip store packs with Synty-style names (PolygonCity_*): doubtful licence.
 - Parts mounted on a body: keep the faces they sit on flat; bands/crowns follow the rounded top's bevel. If the approved picture has bigger features than the bible caps, the picture wins.
+- **(promoted 2026-10-25)** Open Cloud GLB + InsertService works but Studio turns glTF 180° about Y → rebuild with `CFrame.Angles(0, math.pi, 0) * part.CFrame` and assert pieces land on their layout centres. Studio reads glTF vertex colours as raw sRGB → write the sRGB value into the linear field. Unity `DegenPolish.Import` moves the pivot to bottom-centre → for socket kits ship the Blender GLB (Unity for look shots + Budget only). bmesh: call `bm.normal_update()` after moving verts before any inward-flip test; count per-face normals vs outward on every closed mesh.
+- Clean metal without baked textures: 5 shared solid 64 px PNGs (white, black, grey roughness 0.22/0.32/0.45) → SurfaceAppearance ColorMap white tinted by `SA.Color`, Metalness/Roughness from the solids. SA maps can't be swapped live (editing ColorMap didn't re-render) → clone a prepared SA. Tri budget: spend on silhouettes — hidden-side bevels 3 levels, 6-sided feet, 5–8 sided bolts.
+- Socket contracts: keep the invisible anchor part + slot Attachments as the contract; a new body/look layer clones that anchor (+ standard feet) and only builds the shell; store rest offsets as CFrame attributes so clients can re-pivot. Extend a contract only where the old resolver refused (gate on a kit-version field) so old assets resolve byte-identically. Asset families (crates, pads, signs): one shared base script `exec`'d by each variant + one table-driven installer (id, tint, tris).
 - Blender Standard view: strong emission on light vertex colors clips pink/white → dark base + deep emission, glow pieces as separate Neon meshes in Studio. Free texture: project the source picture from the matching view. Seamless overlays: generate procedurally (draw each primitive at ±size offsets).
 
 ## Growing this skill (when lyopz adds a 3D repo or tool)

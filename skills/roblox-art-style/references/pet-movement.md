@@ -32,3 +32,10 @@ Pets float around the player with natural bobbing and a smooth wobble. It works 
 - If the game already has float code (for example a FloatMotion module), extend it instead of starting over.
 
 New states or styles (sit, sleep, celebrate, attack swoop...) are fine; keep the same smooth, bouncy feel.
+
+## Rig gotchas (promoted from projects, 2026-10-25)
+- Anchored rigs (everything anchored + PivotTo): joints do nothing → move accessory groups with `workspace:BulkMoveTo(parts, cfs)` as `body.CFrame * pivotXform * restRel`, `pivotXform = rest * R * rest:Inverse()` (hinge drift ~0). Unanchored: `Motor6D.Transform = R` in Play, `C0 = C0rest * R` in Edit; set the piece to `body*C0*C1:Inverse()` before parenting the motor.
+- Spring lag for short parts: drive = lever × (−accel) × gain / max(leverLen, 1); gain ~0.45 gives ears ~12°, wings ~15° on a hard stop (gain 1 pins them at the clamp). Add a camera-distance LOD, but turn it off in Edit tests (far Edit camera = looks frozen).
+- Spinners: integrate the angle (`ang += dt * rate(speed)`), never `t * rate` (speed changes snap); ~140°/s idle, ~2× moving. Give them their own Motor6D (not `AnimPivot_*`, which the float system overwrites) driven from a small client script in the asset.
+- Floating ornaments that follow without welds: anchored, store a body-space CFrame attribute per part, rewrite with BulkMoveTo each frame. Floating display props: one client `PivotTo(home * bob * spin)` per frame is safe beside the prop's own idle script if that script re-reads `GetPivot()` every frame; on pause, `PivotTo(home)` once.
+- Hinged reveals on scaled assets: store `origin = newPivot:ToObjectSpace(assetPivot)` + scale0, map hinge points with `origin:PointToWorldSpace(p) * (GetScale()/scale0)`; read pieces by name every reveal.

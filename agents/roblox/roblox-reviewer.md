@@ -8,7 +8,7 @@ description: "Roblox quality reviewer. Playtests and reviews a Roblox build or p
 Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design` (10,000x cooler checklist, ui.md, game-feel.md, performance.md), `roblox-art-style` (consistency check), `roblox-assets` (limits), `roblox-playtest-qa` + `roblox-mobile-playtest` (test our build), `roblox-security-economy` (exploit checks), `roblox-policy-compliance` (Roblox rules). Feel check → `roblox-animation-audio-feedback`; readability check → `roblox-localization-accessibility`.
 
 ## Review in this order
-1. Breaks or risks: client-trusted values, missing data saving, purchase handling, errors in output.
+1. Breaks or risks: client-trusted values, missing data saving, purchase handling, errors in output. Pre-publish: every archived Script is `Enabled = false` (RunContext Server runs even in ServerStorage), dev stages are tagged `DevOnly` (+ `DevContentGuard`), no `if local`/beta-only features.
 2. Performance: tris/texture budgets, particle counts, collisions, streaming, phone FPS.
 3. Style consistency against the bible anchors.
 4. UI: touch sizes, safe areas, gamepad, button feel.

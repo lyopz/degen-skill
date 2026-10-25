@@ -66,6 +66,9 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Currency/icon sets: give each a different SILHOUETTE, not just a color — same emblem reads as the same icon at 44 px.
 - ViewportFrame cards: no particles/beams/lights (decals on transparent parts do render). Undiscovered pets: real model with ImageColor3/Ambient/LightColor black; reveal = black → white flash → light back + Back-bounce UIScale. Fake sparkles with a 2D ImageLabel pool projected from the model's bbox.
 - Settings sliders: round with `floor(v*100+0.5)/100`, not `floor(v/0.01+0.5)*0.01` (float noise breaks equality).
+- **(2026-10-25)** Hold-to-confirm button: start on `MouseButton1Down` (+ ButtonA while `GuiService.SelectedObject == button`), cancel on Up / MouseLeave / SelectionLost / global InputEnded, tween a Fill frame for HOLD_TIME, confirm only if the same hold token is still active; mark it Silent for ButtonFeel.
+- **(2026-10-25)** Short landscape phone (799×339): 2-column panels need a compact mode (hide description lines, fold small labels into the title) or the main button falls off; check portrait numerically (button inside viewport, ≥ 44 px) — the zoomed emulator only shows the top. New menus in a big legacy UI: build them as CanvasGroups inside the existing Menus root BEFORE it registers panels, so they inherit backdrop, one-at-a-time, B=back, gamepad selection and ButtonFeel.
+- Two SurfaceGuis on the same face of one part fight for draw order (blank sign) → put text on its own transparent plate 0.05 in front.
 - In-world labels: SurfaceGui on the Top of a tilted part renders sideways — use a thin plate whose Front faces the player. Picture signs: ImageLabel in a SurfaceGui (LightInfluence 0) + dark backing plate = unlit neon look.
 
 ## Performance

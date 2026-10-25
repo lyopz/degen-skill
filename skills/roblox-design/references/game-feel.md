@@ -42,6 +42,8 @@ Swaying trees/grass (scripted rotation), drifting clouds, birds circling, water 
 
 ## Sound design
 Every action gets a sound; layer a low "thump" under big hits; ambient loops per zone; music changes at boss/zone; footsteps by material. Keep UI sounds quiet and short.
+- **Peaceful/"magical" reveals (2026-10-25, projects):** gentle float + sway instead of shake, star motes orbiting on moving Attachments (Rate ~28), soft chime arpeggio (one ping at pitch 1/1.12/1.26/1.5/1.68), pieces drift off with drag and almost no gravity, then bloom + thin ring + sparkles. Rarity tells stay honest (more motes/late colour shift only for the real result). Track live Sounds and fade them on close instead of a fixed Destroy.
+- Free Roblox-licensed reveal layers (APM / Pro Sound Effects): Silver Dreams 1841180330 (pad), Magical Meetup 9048764286, Glass Tinks 2 9114619050, Boink Pop 9113537815, Rising Together 9043511769 (epic), Happy Orchestral 9040233685 + Bell Rings 5 9113421788 (legendary), Quest for the Truth 9043512845 (mythic), A Place To Dream 1847240504 (secret).
 
 ## Sources
 Kitsblox VFX https://kitsblox.com/blog/how-to-add-visual-effects-roblox · Roblox docs VFX tutorials https://create.roblox.com/docs/tutorials/curriculums/core/building/create-basic-visual-effects · ParticleFX flipbooks https://particlefx.studio/roblox · Standard game-feel practice (hit-stop, anticipation, juice) applied to Roblox APIs.

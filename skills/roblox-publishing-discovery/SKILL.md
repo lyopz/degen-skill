@@ -20,6 +20,11 @@ Review:
 - Update notes: make fresh content visible.
 - Age and platform expectations.
 
+## Platform changes (dated, with source)
+- **2026-10-22 test — new Home layout on PC/console/tablet:** game details open in a narrow right-side pane instead of full screen (ranking and ads unchanged). Check that the icon, the first thumbnail and the first description lines still read in that narrow pane. https://devforum.roblox.com/t/test-new-home-layout-with-more-built-in-utility/4950387
+- **2026-10-23:** a Sponsored ad and a Recommended For You tile for the same game can both show on Home (spaced apart), so read ad vs organic numbers with that in mind; created games now show on the creator's main web profile page. https://devforum.roblox.com/t/weekly-recap-october-19%E2%80%9323-2026/4953263
+- Homepage recommendations need a custom 16:9 thumbnail (see `roblox-dev` §8).
+
 ## Positioning
 
 - State the player fantasy plainly.
