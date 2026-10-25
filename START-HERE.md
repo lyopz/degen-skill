@@ -36,6 +36,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
   - roblox-store-models (start from free Creator Store models: search, scan for backdoors, restyle)
   - roblox-vfx (particles/VFX, PetFX template, ChatGPT textures on black)
   - 3d-assets
+  - Roblox lifecycle pack (36 skills from AshExplained/roblox-skills, MIT, added 2026-10-25): start at roblox-game-development-lifecycle; its "Degen setup" section says which of lyopz's skills lead
   - customuse-design (Customuse designs + `references/taste.md`, lyopz's likes/dislikes; rate with `design-feedback.ps1`)
 - **Agents:** `agents/roblox/` (8). **Command:** `/roblox`.
 

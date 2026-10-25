@@ -79,3 +79,6 @@ Rules:
 - Store meshes/animations owned by others can be used in our game when they're free/public, but uploaded **animations** only play if the creator allows it (Roblox animation permissions) — if it won't play, rebuild the animation from its timing or use ours.
 - Never insert paid items, never buy anything, never paste the store model's scripts into `roblox-templates` without scanning and cleaning.
 - Game-specific picks and edits stay in the project folder, not the repo.
+
+## See also
+- `roblox-creator-store-security-audit`: wider audit checklist (capabilities, plugins, HttpService prompts) for risky store assets.

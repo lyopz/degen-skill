@@ -22,3 +22,6 @@ description: Walks through Roblox games with lyopz (or alone, when he approves a
 
 ## With lyopz
 He plays, we watch and comment: ask what to look at, call out patterns ("their shop opens from the left stack, 4 tabs, featured card on top"). Or we drive and he watches.
+
+## See also
+- This skill is for OTHER people's games. To test our own game use `roblox-playtest-qa` and `roblox-mobile-playtest`.

@@ -120,3 +120,6 @@ Template: `roblox-templates/templates/PurchaseHandler.server.lua`.
 - DevForum — Datastore best practices: https://devforum.roblox.com/t/datastore-best-practices/2845439/14
 - DevForum weekly recaps (Oct 5–9, Oct 12–18 2026): https://devforum.roblox.com/t/weekly-recap-october-5-october-9-2026/4924062 · https://devforum.roblox.com/t/weekly-recap-october-12-18-2026/4938638
 - Roblox docs — collisions / collision summaries: https://create.roblox.com/docs/workspace/collisions
+
+## See also
+- Deeper guides: `roblox-luau-architecture`, `roblox-datastore-persistence`, `roblox-security-economy`, `roblox-debugging-bugfix`, `roblox-performance-optimization`. Lessons still go to `lessons.md` here.

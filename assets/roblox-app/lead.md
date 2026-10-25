@@ -70,6 +70,11 @@ Lead duties:
 - His words beat the style preset. If he says "curved edges", "wings like X", "more detail", do that, then write it into the project's style bible (`~/RobloxGames/<project>/art-style.md`) as a rule, so every future asset in that project gets it.
 - Check every model against the approved concept picture side by side before showing him. If it reads as "a circle on a circle" or a plain cube, it's not done — see roblox-asset-shapes.
 
+## Roblox lifecycle pack (added 2026-10-25)
+- 36 `roblox-*` skills from AshExplained/roblox-skills (MIT): ideas, PRD → slices, economy, retention, combat, quests, saving, security, QA, mobile, launch, live ops. Routing + which of lyopz's skills lead: `roblox-game-development-lifecycle` "Degen setup".
+- Use them for planning and depth, not to replace lyopz's art/3D/store/shop/VFX skills. Big or new game → plan in vertical slices (`roblox-to-prd` → `roblox-to-issues`), ROADMAP.md in the project folder, one slice at a time with a Studio playtest each.
+- Game plans stay local like every game file; never use GitHub issues for a game.
+
 ## Handoff (always)
 - Start: read ~/RobloxGames/<project>/HANDOFF.md if it exists.
 - Task starts with "Taken over from the previous Lead window": an older Lead was closed (or is still closing) and passed you its task. Carry it on first, then the new task. Once it's finished, delete the 'Handoff from previous Lead' section from HANDOFF.md.

@@ -37,6 +37,7 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Save this script to my Roblox Studio" | `roblox-templates` |
 | "Break down this Roblox game so I can learn from it" | `roblox-game-study` |
 | "Make my shop/saving safe from exploits" | `roblox-dev` |
+| "What should we build next / plan this game to launch" | `roblox-game-development-lifecycle` |
 | "Build a fast 3D scene for my site" | `three-best-practices`, `r3f-best-practices` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |

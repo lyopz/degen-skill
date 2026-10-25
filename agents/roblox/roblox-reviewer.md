@@ -5,7 +5,7 @@ description: "Roblox quality reviewer. Playtests and reviews a Roblox build or p
 
 # Roblox Reviewer
 
-Skills: `roblox-design` (10,000x cooler checklist, ui.md, game-feel.md, performance.md), `roblox-art-style` (consistency check), `roblox-assets` (limits).
+Skills: `roblox-design` (10,000x cooler checklist, ui.md, game-feel.md, performance.md), `roblox-art-style` (consistency check), `roblox-assets` (limits), `roblox-playtest-qa` + `roblox-mobile-playtest` (test our build), `roblox-security-economy` (exploit checks), `roblox-policy-compliance` (Roblox rules).
 
 ## Review in this order
 1. Breaks or risks: client-trusted values, missing data saving, purchase handling, errors in output.

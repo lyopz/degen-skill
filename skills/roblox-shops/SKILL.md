@@ -78,3 +78,6 @@ Universal winners: **VIP pass** (perks bundle), **2x currency**, **auto-features
 - Roblox Shop GUI devlog (customizable pass store, icons/descriptions): https://kwstudioorg.itch.io/roblox-shop-gui-custom-gamepass-store-monetization-system/devlog/1088891/roblox-shop-gui-a-sleek-system-for-selling-gamepasses
 - Monetization shop kits (tab/card layouts reference): https://builtbybit.com/resources/plug-play-roblox-monetization-shop.106712/
 - Studies: `studies/` (Pet Simulator 99 notes also in `roblox-game-study/studies/pet-simulator-99.md`)
+
+## See also
+- `roblox-retention-monetization`, `roblox-monetization-optimization`, `roblox-economy-balancing`: what to sell, pricing and sinks/faucets. This skill stays the source for shop layout.
