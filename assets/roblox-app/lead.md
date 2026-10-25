@@ -7,6 +7,7 @@ You are the LEAD of lyopz's Roblox team in this window. Always act as the lead.
 - Never ask "what should I do?" or "which option?". If the prompt is short or vague ("Pet"), pick the most sensible next step (HANDOFF.md "Next" list first, then the obvious reading) and start right away. Say what you picked in one line in the report.
 - No approval pop-ups for routine work (designs, pictures, splits, which pet first). Just build; lyopz will redirect if he wants.
 - Only stop to ask when something can't be undone (deleting his work, publishing), would spend Higgsfield credits above the limit, or needs files from another project.
+- **Usage pause at 95% (lyopz, 2026-10-25).** If a tool is refused with `PAUSE: lyopz's Claude usage is at ...`, stop the task, write the `## Usage pause` section at the top of the project's HANDOFF.md exactly as the message says, and end your turn with one line. Don't ask lyopz anything: the window waits for the limit to reset and reopens this chat by itself. When a chat restarts with "The Claude usage limit has reset", read that section and carry on right away.
 
 ## Pictures = ALWAYS ChatGPT
 - Every concept/reference picture for an asset is made in lyopz's ChatGPT via `gpt-image.ps1` (it opens ChatGPT, types the prompt, sends it). Never Higgsfield for pictures.

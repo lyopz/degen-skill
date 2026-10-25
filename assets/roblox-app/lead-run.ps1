@@ -44,16 +44,48 @@ if ($extra.Count) {
 }
 # Unity set up -> open the polish project minimized so unityMCP connects by itself (it pops up while designing)
 if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfile -File (Join-Path $app 'unity-open.ps1') | Out-Null }
-# "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
+# "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file.
+# Usage pause (usage-hook.ps1): at 95% plan usage Claude writes a handoff and is closed; this window waits for the reset and reopens the same chat.
+$PZ = Join-Path $env:USERPROFILE "RobloxGames\.degen\pause\$PID.json"; $US = Join-Path $env:USERPROFILE "RobloxGames\.degen\usage\$PID.json"
+Remove-Item $PZ, $US -Force -ErrorAction SilentlyContinue
+$goOn = ''
 try {
-  if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
-    & claude --model claude-opus-5-5 --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
-  } else {
-    & claude --model claude-opus-5-5 --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
+  while ($true) {
+    $have = $Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count
+    try {
+      if ($have) {
+        $more = if ($goOn) { @(Q $goOn) } else { @() }
+        & claude --model claude-opus-5-5 --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg @more
+      } elseif ($goOn) {
+        & claude --model claude-opus-5-5 --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg (Q "$goOn The original brief is saved at $TaskFile")
+      } else {
+        & claude --model claude-opus-5-5 --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
+      }
+    } finally {
+      # Claude can leave the window in mouse-tracking mode, so mouse moves print junk like [555;104;13M. Turn it all off.
+      $e = [char]27
+      [Console]::Write("$e[?1000l$e[?1002l$e[?1003l$e[?1006l$e[?1015l$e[?2004l$e[?25h")
+    }
+    $pz = if (Test-Path $PZ) { [IO.File]::ReadAllText($PZ) | ConvertFrom-Json } else { $null }
+    if (-not $pz -or $pz.stage -ne 'wait') { break }   # closed normally (or by lyopz before the handoff was done)
+    $until = [DateTimeOffset]::FromUnixTimeSeconds([long]$pz.until + 90).LocalDateTime
+    Write-Host ''
+    Write-Host "Paused: Claude $($pz.why)." -ForegroundColor Yellow
+    Write-Host "This window carries on by itself at $($until.ToString('ddd HH:mm')). Close it to cancel." -ForegroundColor Yellow
+    while ((Get-Date) -lt $until) {
+      $left = $until - (Get-Date)
+      Write-Host -NoNewline ("`r  Resuming in {0:00}:{1:00}:{2:00}   " -f [math]::Floor($left.TotalHours), $left.Minutes, $left.Seconds)
+      Start-Sleep -Seconds 15
+    }
+    Write-Host ''
+    Remove-Item $PZ, $US -Force -ErrorAction SilentlyContinue
+    if ([string]$pz.sid -match '^[\w\-]+$') { $Resume = [string]$pz.sid }
+    $goOn = if ($pz.hard -and -not $pz.handed) {
+      'The Claude usage limit stopped you in the middle of a step and has now reset. Check how far you got (HANDOFF.md, the files, the place), write a short Usage pause note at the top of HANDOFF.md, then carry the task on.'
+    } else {
+      "The Claude usage limit has reset. Read the 'Usage pause' section at the top of HANDOFF.md, then carry the task on from the next steps."
+    }
   }
 } finally {
-  # Claude can leave the window in mouse-tracking mode, so mouse moves print junk like [555;104;13M. Turn it all off.
-  $e = [char]27
-  [Console]::Write("$e[?1000l$e[?1002l$e[?1003l$e[?1006l$e[?1015l$e[?2004l$e[?25h")
+  Remove-Item $leadFile, $PZ, $US -Force -ErrorAction SilentlyContinue
 }
-Remove-Item $leadFile -Force -ErrorAction SilentlyContinue

@@ -12,9 +12,12 @@ $games = Join-Path $env:USERPROFILE 'RobloxGames'; New-Item -ItemType Directory 
 $ps = 'powershell -NoProfile -ExecutionPolicy Bypass -File '
 $act = @{ type = 'command'; command = $ps + '"' + (Join-Path $app 'activity-hook.ps1') + '"' }
 $ask = @{ type = 'command'; command = $ps + '"' + (Join-Path $app 'ask-hook.ps1') + '"'; timeout = 3600 }
-$settings = @{ hooks = @{
-  PreToolUse       = @(@{ matcher = '*'; hooks = @($act) }, @{ matcher = 'AskUserQuestion'; hooks = @($ask) })
-  SubagentStop     = @(@{ hooks = @($act) }); Stop = @(@{ hooks = @($act) })
+# usage-line.ps1 (status line) + usage-hook.ps1: at 95% plan usage the Lead writes a handoff, pauses until the limit resets, then carries on
+$use = @{ type = 'command'; command = $ps + '"' + (Join-Path $app 'usage-hook.ps1') + '"' }
+$settings = @{ statusLine = @{ type = 'command'; command = $ps + '"' + (Join-Path $app 'usage-line.ps1') + '"' }
+  hooks = @{
+  PreToolUse       = @(@{ matcher = '*'; hooks = @($act, $use) }, @{ matcher = 'AskUserQuestion'; hooks = @($ask) })
+  SubagentStop     = @(@{ hooks = @($act) }); Stop = @(@{ hooks = @($act, $use) }); StopFailure = @(@{ hooks = @($use) })
   UserPromptSubmit = @(@{ hooks = @($act) }); Notification = @(@{ hooks = @($act) }) } }
 $sf = Join-Path $app 'roblox-hooks.json'
 [IO.File]::WriteAllText($sf, ($settings | ConvertTo-Json -Depth 8), (New-Object Text.UTF8Encoding $false))
