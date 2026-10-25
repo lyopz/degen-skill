@@ -4,12 +4,12 @@
 
 Reference: `pet-eyes/eye-ideas.jpg` (27 styles, fit example, animations). Two styles on that sheet copy a famous anime's eye designs; they are renamed and redesigned below. **Never use those two original names or their designs (red iris with three comma marks; purple concentric ripple rings) in a game.**
 
-> **Game items come from `~/RobloxGames/<game>/pet-catalog.md` only** (`pet-parts.md`). The styles listed here are ideas for upgrades or new designs when lyopz asks, not items in a game.
+> The game's items are listed in `~/RobloxGames/<game>/pet-catalog.md` (`pet-parts.md`). The styles here are part of the style baseline: build new items from them freely, and add each one to the catalog.
 
 ## Rules (every pet)
 - **Front face only.** Left, right and back faces have no eyes.
 - **Animated glowing eyes only (lyopz, 2026-10-25, overrides older lines here):** the eyes are a glowing animated overlay on the plain body, just the eye shape + its effect. **No outlines or rims around the eyes, no flat 2D sticker eyes, no static eyes.** Every eye always has movement, glow or effects (idle glow + blink at least) and comes in colour variations. Reference: `pet-eyes/eye-animation-sheet.jpg`.
-- **New eye styles are welcome** (lyopz, 2026-10-25): invent your own from the sheet's ideas, keeping these rules (glow, no outline, always animated, colour variants). Add each one to the game's `pet-catalog.md`. Eyes are the one slot where inventing is allowed without asking.
+- **New eye styles are welcome** (lyopz, 2026-10-25): invent your own from the sheet's ideas, keeping these rules (glow, no outline, always animated, colour variants). Add each one to the game's `pet-catalog.md`.
 - Effect types to build from: blink, pulse, glow, colour shift, particles, distort, swirl, sparks (plus each style's own: embers, frost mist, drips, runes, lightning, bubbles...).
 - **Size: upper half of the front face.** Each eye about 15–22% of the face width, set in from the edges, so the lower half stays free for any mouth (mouths wrap 3 sides, `pet-mouths.md`). Eyes never touch or overlap the grin.
 - Sharp and confident shapes (slanted, almond, slit, gem). No huge round googly eyes (taste.md). "Classic Gloss" is the only round one, and it's Common.

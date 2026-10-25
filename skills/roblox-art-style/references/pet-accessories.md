@@ -4,7 +4,7 @@
 
 References: `pet-accessories/wings-sheet.jpg`, `pet-accessories/back-pieces-sheet.jpg`, `pet-accessories/attach-zones-sheet.jpg`.
 
-> **Game items come from `~/RobloxGames/<game>/pet-catalog.md` only** (`pet-parts.md`). The styles listed here are ideas for upgrades or new designs when lyopz asks, not items in a game.
+> The game's items are listed in `~/RobloxGames/<game>/pet-catalog.md` (`pet-parts.md`). The styles here are part of the style baseline: build new items from them freely, and add each one to the catalog.
 
 ## Attachment zones (every cube pet)
 | Zone | What goes there |
