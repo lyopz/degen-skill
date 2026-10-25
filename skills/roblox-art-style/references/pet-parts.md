@@ -48,6 +48,9 @@ Halos: idle (float + spin) · walk (bob + sway) · jump (stretch + trail) · att
 - Crate opening: idle (float + glow) → activate (energy builds) → opens (panels split) → reveal (item floats out) → display (rotate + particles). Each crate is themed after its slot (the mouths crate has a mouth on it, and so on).
 - Rarity sets the look: Common = clean design, simple effects · Uncommon = more detail, subtle effects · Rare = special materials, animated effects · Epic = complex design, stronger effects · Legendary = highly detailed, unique animations, premium materials · Mythic = insane design, full animations · Secret = one-of-a-kind theme, next-level effects. Rough odds: Common 40–50%, Uncommon 20–35%, Rare 5–15%, Epic 1–5%, Legendary 0.1–1%, Mythic 0.01–0.1%, Secret about 1 in 1,000,000.
 
+## Following the player
+Slots, follow states and the wobble: `pet-movement.md`.
+
 ## Making changes
 - Upgrading an existing part or body ("make it 10,000x cooler"): `pet-upgrades.md`.
 - Picture prompts: one part per picture, show it mounted on the plain base body (front + side + back views) so the fit reads.
