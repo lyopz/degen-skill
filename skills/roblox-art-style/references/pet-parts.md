@@ -6,7 +6,7 @@ A pet = one **base body** + one item per slot. Every game keeps its own item lis
 
 ## Slots (choose 1 each)
 Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail · Halo · Aura.
-**No feet slot.** The 4 stubby feet are part of the body.
+**No feet slot.** The 4 stubby feet are part of the body and match its core (theme, materials, glow) (lyopz, 2026-10-25).
 
 ## Zones
 | Zone | Holds |
