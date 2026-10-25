@@ -55,6 +55,8 @@ Premium pet (the default, matching the "Premium polished pets" block):
 - Silver catches white highlights too. Drop it when the pet has white fur or a white body.
 - Elemental cracks on dark rock (liked 2x): `{"label":"cracks","hueMin":10,"hueMax":45,"satMin":0.6,"valMin":0.7,"metal":0,"smooth":0.5,"glow":0.55}` with `defaultSmooth` 0.15 (matte rock).
 
+Multi-piece models without textures (Blender builds with one material per piece): PaintRegions has nothing to read; set URP Lit per renderer name in one execute_code (base colour, _Smoothness, _Metallic, emission x0.4-1.4). Gold metal 1 reads brown without a reflection probe: use metal ~0.45, smooth 0.7. Put the model on its own layer and render with cullingMask so other workbench models stay out of the shot.
+
 Props and buildings: `defaultSmooth` 0.2. Metal trim gets the gold or silver rule. Windows get `smooth` 0.9.
 
 Save the rules that worked into the game's bible under "Unity recipes" (local). If a recipe works across games, add it here.

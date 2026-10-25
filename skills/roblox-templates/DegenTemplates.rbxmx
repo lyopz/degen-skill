@@ -314,7 +314,36 @@ function ConfirmToken:_commit(player, token)
 end
 
 return ConfirmToken
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T2"><Properties><string name="Name">ImpactFX</string><ProtectedString name="Source"><![CDATA[-- ImpactFX.lua — physics impact feedback: thud sound + dust puff + optional callback, scaled by how hard things hit.
+]]></ProtectedString></Properties></Item><Item class="Script" referent="T2"><Properties><string name="Name">DevContentGuard</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- DevContentGuard (Script, put in ServerScriptService) — version: 1
+-- Keeps dev-only stages (test labs, preview stands, debug tools) out of live games.
+-- On LIVE servers (not RunService:IsStudio()) it destroys everything tagged "DevOnly" at startup, and anything
+-- tagged later. In Studio (Edit, Play-in-Studio, local servers) nothing is touched, so the stages keep working.
+-- Usage: tag each dev root with CollectionService tag "DevOnly" (Tag Editor, or CollectionService:AddTag(root, "DevOnly")).
+-- Tags are lost when a stage is deleted and rebuilt: re-tag in your build code. Dev-only LocalScripts should
+-- check RunService:IsStudio() first and return before any WaitForChild on dev content.
+local CollectionService = game:GetService("CollectionService")
+local RunService = game:GetService("RunService")
+
+local TAG = "DevOnly"
+
+if RunService:IsStudio() then return end
+
+local removed = {}
+for _, inst in ipairs(CollectionService:GetTagged(TAG)) do
+	if inst.Parent ~= nil then
+		table.insert(removed, inst:GetFullName())
+		pcall(function() inst:Destroy() end)
+	end
+end
+
+CollectionService:GetInstanceAddedSignal(TAG):Connect(function(inst)
+	task.defer(function()
+		if inst.Parent ~= nil then pcall(function() inst:Destroy() end) end
+	end)
+end)
+
+print(("[DevContentGuard] stripped %d dev-only root(s): %s"):format(#removed, table.concat(removed, ", ")))
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T3"><Properties><string name="Name">ImpactFX</string><ProtectedString name="Source"><![CDATA[-- ImpactFX.lua — physics impact feedback: thud sound + dust puff + optional callback, scaled by how hard things hit.
 -- version: 1
 -- use: local ImpactFX = require(game.ReplicatedStorage.ImpactFX)
 --      local unbind = ImpactFX.Bind(crate, { sound = "rbxassetid://<thud id>", color = Color3.fromRGB(235, 225, 210) })
@@ -468,7 +497,7 @@ function ImpactFX.BindTagged(tag: string, options: { [string]: any }?): () -> ()
 end
 
 return ImpactFX
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T3"><Properties><string name="Name">Motion</string><ProtectedString name="Source"><![CDATA[-- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T4"><Properties><string name="Name">Motion</string><ProtectedString name="Source"><![CDATA[-- motion.lua — scripted movement for Roblox models that don't need a rig (ModuleScript).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- local Motion = require(game.ReplicatedStorage.Motion)
@@ -545,7 +574,7 @@ function Motion.Collect(part)
 end
 
 return Motion
-]]></ProtectedString></Properties></Item><Item class="LocalScript" referent="T4"><Properties><string name="Name">OceanClient</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
+]]></ProtectedString></Properties></Item><Item class="LocalScript" referent="T5"><Properties><string name="Name">OceanClient</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- OceanClient: animated Gerstner ocean, things floating on it, and swaying palms.
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Tags: "FloatOnWaves" (Model; optional attributes BobScale, Length, Width; its pivot's
@@ -637,7 +666,7 @@ RunService.Heartbeat:Connect(function()
 		m:PivotTo(hinge * CFrame.Angles(b, 0, a) * hinge:Inverse() * s.rest)
 	end
 end)
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T5"><Properties><string name="Name">OceanMesh</string><ProtectedString name="Source"><![CDATA[-- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T6"><Properties><string name="Name">OceanMesh</string><ProtectedString name="Source"><![CDATA[-- OceanMesh: builds a radial EditableMesh ocean around Waves.Center and animates it.
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Dense rings near the island, wide rings out to the horizon (flat there, hidden by haze).
@@ -782,7 +811,7 @@ function OceanMesh.HideTerrainWater()
 end
 
 return OceanMesh
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T6"><Properties><string name="Name">PetFX</string><ProtectedString name="Source"><![CDATA[-- PetFX.lua — pet/reward effects for simulators (ModuleScript in ReplicatedStorage, call from the CLIENT).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">PetFX</string><ProtectedString name="Source"><![CDATA[-- PetFX.lua — pet/reward effects for simulators (ModuleScript in ReplicatedStorage, call from the CLIENT).
 -- version: 1
 -- changelog: v1 2026-10-24 first version (hatch, rarity aura, level up, reward fountain, light pillar, trail, Play, culling)
 -- Uses Roblox's built-in particle textures, so it works with no uploads. Swap the TEX ids for your own
@@ -1114,7 +1143,7 @@ function PetFX.Cull(container: Instance, maxDistance: number?): () -> ()
 end
 
 return PetFX
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T7"><Properties><string name="Name">PortalFX</string><ProtectedString name="Source"><![CDATA[-- PortalFX.lua — animated themed portals: spinning swirl, swirling particles, falling code rain, glow pulse.
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T8"><Properties><string name="Name">PortalFX</string><ProtectedString name="Source"><![CDATA[-- PortalFX.lua — animated themed portals: spinning swirl, swirling particles, falling code rain, glow pulse.
 -- version: 1
 -- changelog: v1 2026-10-24 first version (Swirl, SwirlParticles, CodeRain, CodeCurtain, GlowPulse, client Animate)
 -- ModuleScript in ReplicatedStorage. Build* functions run anywhere (server or Studio edit, via execute_luau) and only
@@ -1356,7 +1385,7 @@ function PortalFX.Animate()
 end
 
 return PortalFX
-]]></ProtectedString></Properties></Item><Item class="Script" referent="T8"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+]]></ProtectedString></Properties></Item><Item class="Script" referent="T9"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
@@ -1410,7 +1439,7 @@ for _, p in ipairs(Players:GetPlayers()) do task.spawn(checkPasses, p) end
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T9"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T10"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
@@ -1514,7 +1543,7 @@ function Guard.Fire(name, ...) folder:WaitForChild(name):FireServer(...) end
 function Guard.Invoke(name, ...) return folder:WaitForChild(name):InvokeServer(...) end
 
 return Guard
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T10"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T11"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
@@ -1655,7 +1684,7 @@ function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
 end
 
 return VFX
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T11"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T12"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.

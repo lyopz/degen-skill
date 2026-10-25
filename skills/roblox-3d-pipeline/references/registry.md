@@ -50,4 +50,5 @@ Checked and not adopted (2026-10-24): CoderGamester/mcp-unity (~1.9k stars) and 
 5. **Prove it.** On the first real asset, try it next to the current default and log the result below. Better → make it the default.
 
 ## Results (what won, newest first)
-- (none yet: first Unity-polished asset goes here, e.g. "2026-10-xx pet: Unity regions vs raw Customuse → lyopz: Love it")
+- 2026-10-24 build-a-pet Base Body Bitten Circuit (hard-surface body with a modeled cavity, 29 animatable pieces): Blender build + Unity materials vs Customuse CR1 (70 cr, 3.8k tris) vs Higgsfield Tripo P2 (34 cr, 4.1k tris; Meshy 7 lowpoly failed + refunded). Generators copied the picture's surface detail best for few credits, but one fused mesh each (no separate gears/drips/face pieces, body proportions drift). Keep generators for static props; build modular/animated bodies in Blender. Rating: see design log.
+- (next asset goes here)
