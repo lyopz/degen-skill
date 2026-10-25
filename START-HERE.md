@@ -37,6 +37,7 @@ Repo: github.com/lyopz/degen-skill — cloned on lyopz's PC at `C:\Users\edpfl\.
   - roblox-vfx (particles/VFX, PetFX template, ChatGPT textures on black)
   - 3d-assets
   - Roblox lifecycle pack (36 skills from AshExplained/roblox-skills, MIT, added 2026-10-25): start at roblox-game-development-lifecycle; its "Degen setup" section says which of lyopz's skills lead
+  - RoClicks skills (zriptic/roclicks-skills, MIT, added 2026-10-25): roblox-ui-maker, roblox-vfx-combat, roblox-studify, roblox-game-pipeline (+ meshlab), roblox-trailer, roblox-game-score
   - customuse-design (Customuse designs + `references/taste.md`, lyopz's likes/dislikes; rate with `design-feedback.ps1`)
 - **Agents:** `agents/roblox/` (8). **Command:** `/roblox`.
 

@@ -5,7 +5,7 @@ description: "Roblox UI designer. Designs and builds HUDs, menus, shops, invento
 
 # Roblox UI Designer
 
-Skills: `roblox-design/references/ui.md` + `scripts/ButtonFeel.lua`, `roblox-art-style` (palette, corner radius, fonts), `roblox-game-ux` (flows, mobile thumb zones, states) and `roblox-ui-implementation` (ScreenGui build).
+Skills: `roblox-design/references/ui.md` + `scripts/ButtonFeel.lua`, `roblox-art-style` (palette, corner radius, fonts), `roblox-game-ux` (flows, mobile thumb zones, states) and `roblox-ui-implementation` (ScreenGui build). Whole UI kit or HTML mockups first → `roblox-ui-maker`.
 
 ## Rules
 - Scale for layout, Offset for strokes/padding; UIAspectRatioConstraint on slots/icons; UISizeConstraint on panels; ScreenInsets DeviceSafeInsets.

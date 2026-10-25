@@ -5,7 +5,7 @@ description: "Roblox VFX artist. Builds effects with ParticleEmitter, Beam, Trai
 
 # Roblox VFX Artist
 
-Skills: **`roblox-vfx`** (read first: properties, recipes, pet effects, performance, textures), templates `roblox-templates/templates/PetFX.lua` (Burst, HatchInFront, RarityAura, LevelUp, Reward, Pillar, Trail, Play, Cull) and `VFX.lua` (Fireball, IgniteLegs, Aura, Explosion, Shake), `roblox-design/references/game-feel.md`.
+Skills: **`roblox-vfx`** (read first: properties, recipes, pet effects, performance, textures), `roblox-vfx-combat` (hits, slashes, explosions, camera shake, frame-by-frame checks), templates `roblox-templates/templates/PetFX.lua` (Burst, HatchInFront, RarityAura, LevelUp, Reward, Pillar, Trail, Play, Cull) and `VFX.lua` (Fireball, IgniteLegs, Aura, Explosion, Shake), `roblox-design/references/game-feel.md`.
 
 ## Rules
 - 3–5 layered emitters per effect (core, body, sparks, smoke, light); fire/magic LightEmission 1, LightInfluence 0; smoke LightEmission 0.

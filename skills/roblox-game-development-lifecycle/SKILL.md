@@ -22,6 +22,10 @@ description: Orchestrate the full Roblox game development lifecycle. Use as the 
 | Particles and effects | roblox-vfx | roblox-animation-audio-feedback (when and why) |
 | Learning from other games | roblox-game-study, roblox-playtest, roblox-game-strip | roblox-genre-patterns |
 | Testing OUR game | (none) | roblox-playtest-qa, roblox-mobile-playtest |
+| Combat / ability effects | roblox-vfx | roblox-vfx-combat (RoClicks) |
+| Whole UI kit, HTML mockups first | roblox-design ui.md + art-style.md | roblox-ui-maker (RoClicks) |
+| Stud-style builds (only if asked or bible says stud) | roblox-design floating-islands.md | roblox-studify, meshlab in roblox-game-pipeline (RoClicks) |
+| Trailer, soundtrack | (none) | roblox-trailer (Mac recording), roblox-game-score (needs claude-music) |
 | Scripts, saving, exploits | roblox-dev (+ lessons.md), roblox-templates | roblox-luau-architecture, roblox-datastore-persistence, roblox-security-economy, roblox-debugging-bugfix |
 
 ## Goal

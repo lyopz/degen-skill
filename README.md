@@ -38,6 +38,8 @@ This repo is a big bag of them. Once it's installed, you just talk to Claude nor
 | "Break down this Roblox game so I can learn from it" | `roblox-game-study` |
 | "Make my shop/saving safe from exploits" | `roblox-dev` |
 | "What should we build next / plan this game to launch" | `roblox-game-development-lifecycle` |
+| "Mock up the whole UI first, then build it" | `roblox-ui-maker` |
+| "Make a sword slash / explosion effect" | `roblox-vfx-combat` |
 | "Build a fast 3D scene for my site" | `three-best-practices`, `r3f-best-practices` |
 | "Design a logo for my brand" | `design`, `brand` |
 | "Is my code safe from hackers?" | `security-and-hardening` |

@@ -1,6 +1,6 @@
 ---
 name: roblox-portals
-description: Builds themed Roblox portal zones that look premium: a rounded, weathered low-poly arch (picture → Customuse 3D), an animated swirl, matching props around it (e.g. falling-code pillars for a digital/Matrix world), and glow that breathes. Each portal keeps the same base look but gets its own theme and unique damage details. Includes the picture prompt and the PortalFX template. Use for any portal, gate, teleporter or island entrance, "make the portal look like its island", or "add swirl animations".
+description: "Builds themed Roblox portal zones that look premium: a rounded, weathered low-poly arch (picture → Customuse 3D), an animated swirl, matching props around it (e.g. falling-code pillars for a digital/Matrix world), and glow that breathes. Each portal keeps the same base look but gets its own theme and unique damage details. Includes the picture prompt and the PortalFX template. Use for any portal, gate, teleporter or island entrance, \"make the portal look like its island\", or \"add swirl animations\"."
 ---
 
 <!-- from: lyopz (2026-10-24). He liked a dark arch with thin neon circuit lines, a glowing spiral and a gem on top; asked for rounder edges, swirl animations, falling Matrix code around it, the area dressed to match its island, and for every portal: same base look + unique, weathered details. General only: no game names. -->
