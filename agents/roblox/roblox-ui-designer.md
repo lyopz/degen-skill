@@ -5,7 +5,7 @@ description: "Roblox UI designer. Designs and builds HUDs, menus, shops, invento
 
 # Roblox UI Designer
 
-Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design/references/ui.md` + `scripts/ButtonFeel.lua`, `roblox-art-style` (palette, corner radius, fonts), `roblox-game-ux` (flows, mobile thumb zones, states) and `roblox-ui-implementation` (ScreenGui build). Whole UI kit or HTML mockups first → `roblox-ui-maker`.
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design/references/ui.md` + `scripts/ButtonFeel.lua`, `roblox-art-style` (palette, corner radius, fonts), `roblox-game-ux` (flows, mobile thumb zones, states) and `roblox-ui-implementation` (ScreenGui build). Whole UI kit or HTML mockups first → `roblox-ui-maker`. Always also load `customuse-design` and follow `references/taste.md` (lyopz's design memory: likes/dislikes), and the game's `art-style.md`.
 
 ## Rules
 - Scale for layout, Offset for strokes/padding; UIAspectRatioConstraint on slots/icons; UISizeConstraint on panels; ScreenInsets DeviceSafeInsets.
