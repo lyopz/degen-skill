@@ -5,7 +5,7 @@ description: "Roblox quality reviewer. Playtests and reviews a Roblox build or p
 
 # Roblox Reviewer
 
-Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design` (10,000x cooler checklist, ui.md, game-feel.md, performance.md), `roblox-art-style` (consistency check), `roblox-assets` (limits), `roblox-playtest-qa` + `roblox-mobile-playtest` (test our build), `roblox-security-economy` (exploit checks), `roblox-policy-compliance` (Roblox rules).
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-design` (10,000x cooler checklist, ui.md, game-feel.md, performance.md), `roblox-art-style` (consistency check), `roblox-assets` (limits), `roblox-playtest-qa` + `roblox-mobile-playtest` (test our build), `roblox-security-economy` (exploit checks), `roblox-policy-compliance` (Roblox rules). Feel check → `roblox-animation-audio-feedback`; readability check → `roblox-localization-accessibility`.
 
 ## Review in this order
 1. Breaks or risks: client-trusted values, missing data saving, purchase handling, errors in output.

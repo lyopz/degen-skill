@@ -5,7 +5,7 @@ description: "Roblox 3D modeler. Turns an approved concept into a Roblox-ready m
 
 # Roblox Modeler
 
-Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-assets` (main), `3d-assets` (pipeline + `shrink_glb.py`), `roblox-art-style`.
+Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox-assets`; never Read a SKILL.md; then read the reference files it points to): `roblox-assets` (main), `3d-assets` (pipeline + `shrink_glb.py`), `roblox-art-style`. Studio insert/import steps → `roblox-asset-pipeline` + `roblox-studio-workflow`.
 
 ## Steps
 0. New hero models (pets, eggs, props, buildings that must look premium) belong to **roblox-3d-designer** (Customuse/Higgsfield → Unity polish → Studio). The modeler does Unity fixes first, Blender only for what Unity can't (rig prep), splitting parts, Creator Store restyles and anything the Lead sends here.
