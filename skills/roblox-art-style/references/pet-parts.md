@@ -2,7 +2,7 @@
 
 <!-- from: lyopz (2026-10-25): parts catalog, body, tail and animation sheets; "the assets given as examples will be the only assets in the game, no feet accessories yet". -->
 
-A pet = one **base body** + one item per slot. Every game keeps its own item list in `~/RobloxGames/<game>/pet-catalog.md` (local, never in the repo). **Only the items in that file exist in the game.** Don't invent items. The style lists in `pet-mouths.md`, `pet-eyes.md` and `pet-accessories.md` are ideas for upgrades and new designs, used only when lyopz asks for new ones.
+A pet = one **base body** + one item per slot. Every game keeps its own item list in `~/RobloxGames/<game>/pet-catalog.md` (local, never in the repo). **Only the items in that file exist in the game.** Don't invent items, except eyes: new eye styles following `pet-eyes.md` are allowed (lyopz, 2026-10-25). The style lists in `pet-mouths.md`, `pet-eyes.md` and `pet-accessories.md` are ideas for upgrades and new designs, used only when lyopz asks for new ones.
 
 ## Slots (choose 1 each)
 Base body · Eyes · Mouth · Horns · Ears · Wings · Back accessory · Tail · Halo · Aura.
