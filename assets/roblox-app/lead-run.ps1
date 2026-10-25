@@ -47,9 +47,9 @@ if ($extra.Contains('unityMCP')) { & powershell -ExecutionPolicy Bypass -NoProfi
 # "Continue last task": reopen that project's last Lead conversation if Claude Code still has it, else start fresh with the task file
 try {
   if ($Resume -and @(Get-ChildItem (Join-Path $env:USERPROFILE '.claude\projects') -Recurse -Filter "$Resume.jsonl" -ErrorAction SilentlyContinue).Count) {
-    & claude --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
+    & claude --model claude-opus-5-5 --resume $Resume --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg
   } else {
-    & claude --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
+    & claude --model claude-opus-5-5 --strict-mcp-config --mcp-config $mcp --settings $Settings @rulesArg $prompt
   }
 } finally {
   # Claude can leave the window in mouse-tracking mode, so mouse moves print junk like [555;104;13M. Turn it all off.

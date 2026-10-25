@@ -67,7 +67,7 @@ foreach ($l in $old) {
       param($rg, $sid, $mcp, $ask)
       Remove-Item Env:ANTHROPIC_API_KEY -ErrorAction SilentlyContinue; Set-Location $rg
       # prompt goes in on stdin: Windows PowerShell 5.1 mangles native arguments that contain quotes
-      $ask | & claude -p --resume $sid --fork-session --strict-mcp-config --mcp-config $mcp --allowedTools 'Read,Write,Edit' --permission-mode acceptEdits --max-turns 8 2>$null
+      $ask | & claude -p --model claude-opus-5-5 --resume $sid --fork-session --strict-mcp-config --mcp-config $mcp --allowedTools 'Read,Write,Edit' --permission-mode acceptEdits --max-turns 8 2>$null
     }
     if (Wait-Job $job -Timeout 240) { $sum = ((Receive-Job $job) -join "`n").Trim() }
     Remove-Job $job -Force
