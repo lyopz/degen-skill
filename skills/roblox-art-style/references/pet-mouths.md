@@ -2,7 +2,9 @@
 
 <!-- from: lyopz (2026-10-24): "see how this mouth is? and the other is slop. i want all mouths to have the same feel, some rarer than others" + sent the "Mouth Accessory Pack" sheet (pet-mouths/mouth-ideas.jpg) with 21 mouth styles. -->
 
-Every pet mouth has the same feel: a **wide hand-drawn grin**. Rarer pets get a more dramatic version of the same grin. References he sent: `pet-mouths/liked-grin.jpg` (the feel) and `pet-mouths/mouth-ideas.jpg` (21 mouth styles + 3-side wrap). Attach them in ChatGPT, or use as `-Ref`, when the mouth comes out wrong.
+For new mouth designs, keep the same feel: a **wide hand-drawn grin**. Rarer pets get a more dramatic version of the same grin. References he sent: `pet-mouths/liked-grin.jpg` (the feel) and `pet-mouths/mouth-ideas.jpg` (21 mouth styles + 3-side wrap). Attach them in ChatGPT, or use as `-Ref`, when the mouth comes out wrong.
+
+> **Game items come from `~/RobloxGames/<game>/pet-catalog.md` only** (`pet-parts.md`). The styles listed here are ideas for upgrades or new designs when lyopz asks, not items in a game.
 
 ## The look (all rarities)
 - **Wraps around 3 sides (front, left, right)**, following the cube's rounded edges, corners curving up toward the cheeks on the side faces. Sits low, under the eyes. Same body size and shape for every mouth.

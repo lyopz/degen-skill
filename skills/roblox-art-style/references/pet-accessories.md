@@ -4,26 +4,27 @@
 
 References: `pet-accessories/wings-sheet.jpg`, `pet-accessories/back-pieces-sheet.jpg`, `pet-accessories/attach-zones-sheet.jpg`.
 
+> **Game items come from `~/RobloxGames/<game>/pet-catalog.md` only** (`pet-parts.md`). The styles listed here are ideas for upgrades or new designs when lyopz asks, not items in a game.
+
 ## Attachment zones (every cube pet)
 | Zone | What goes there |
 |---|---|
 | Front | eyes (`pet-eyes.md`) + mouth (`pet-mouths.md`). Nothing else. |
 | Sides | mouth wrap only. Wing roots may poke past the side edges, but nothing is mounted on the sides. |
 | Back (upper half) | wings and back pieces, mounted on a **mechanical hub**: a round metal socket with a glowing core in the accessory's colour, gold/gunmetal trim, short pipes or arms out to each wing. |
-| Top | aura space: halos, orbiting rings, floating shards, a floating core. Hovers above the body and never touches it. |
+| Top | horns + ears near the front corners; aura space above (halos, rings, shards, floating core), hovering clear of the body. |
+| Back end, lower centre | tail (`pet-parts.md`). |
 
 - Same base body for every pet. Accessories fit it and never cover the face. From the front the eyes and grin must stay fully visible.
 - Big pieces read from the front: the wings/blades spread wider than the body and above it, so you see them behind the cube.
 - Materials follow the premium block: gunmetal + gold hub, glossy plates, subtle glow (emission ≤ 0.6). The sheets glow brighter than our rule, so glow stays on edges and cores, never as whole neon sheets.
 - Low poly: accessory ≤ 1.5k tris (taste rule). Wings are left + right copies of one mesh.
 
-## Pieces by rarity (from the sheets, + suggested lower tiers)
+## Piece ideas by rarity (from the sheets)
 Rarity colours: Common grey, Uncommon green, Rare blue, Epic purple, Legendary gold, Mythic pink, Secret red.
 
 | Tier | Piece | Look | Aura animations (idle / move / orbit / attack) |
 |---|---|---|---|
-| Common | Fin Antenna (suggested) | small metal fin with a glowing tip on the upper back | tip pulse / sway / none / tip flash |
-| Uncommon | Mini Thrusters (suggested) | two small rocket pods on the hub | soft flame / boost / none / burst |
 | Rare | Celestial Wings | pink-purple feather wings with blue edges, gold hub, halo ring on top | feather flow / flap with light trails / ring orbit / energy burst |
 | Rare | Mech Blade Wings | white-silver mech arms with fanned cyan glass blades, blue core | blade glint / blades fan open-close / none / blade slash |
 | Epic | Void Wings | black smoky feather wings, purple edge glow, black orb on top | smoke flow / void trails / shadow ring orbit / void explosion |

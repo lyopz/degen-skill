@@ -4,6 +4,8 @@
 
 Reference: `pet-eyes/eye-ideas.jpg` (27 styles, fit example, animations). Two styles on that sheet copy a famous anime's eye designs; they are renamed and redesigned below. **Never use those two original names or their designs (red iris with three comma marks; purple concentric ripple rings) in a game.**
 
+> **Game items come from `~/RobloxGames/<game>/pet-catalog.md` only** (`pet-parts.md`). The styles listed here are ideas for upgrades or new designs when lyopz asks, not items in a game.
+
 ## Rules (every pet)
 - **Front face only.** Left, right and back faces have no eyes.
 - **Recessed 3D sockets**, not flat painted dots: a shallow socket cut into the body with a thin rim, a glossy eyeball inside, the iris/glow on top. Depth is what makes them read as premium.
