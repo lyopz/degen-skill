@@ -7,6 +7,8 @@ description: lyopz's Roblox monetization and shop playbook — what players spen
 
 # Roblox Shops & Monetization
 
+**Look of the shop UI (lyopz's default):** `references/shop-ui-style.md`.
+
 **Goal:** players buy because the item is fun and fair, not because they were tricked. Roblox down-ranks and players downvote predatory games, and most players are kids — so pushy = bad for money too.
 
 ## 1. What people actually spend on (by genre)
