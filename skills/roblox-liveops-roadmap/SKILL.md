@@ -31,6 +31,7 @@ Plan updates around:
 
 - New zones, modes, enemies, quests, pets, cosmetics, or upgrades.
 - Limited events and seasonal items.
+- Timed event shape that drives top-game CCU (2026-10-26, see `roblox-design/references/maps.md`): event currency → event-only egg, a repeating "gather now" window (2x drops, train every 30 min), scheduled finale, hub countdown boards. Schedule all of it in one shared table with template `EventClock` (server checks `IsLive` before granting).
 - Balance changes driven by funnel and retention data.
 - Social goals that encourage friends to return together.
 

@@ -1,19 +1,23 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–25 2026) and why they work
+## Top games right now (live CCU snapshots, Oct 24–26 2026) and why they work
+Oct 26 numbers are an early-morning UTC low (rokoala 04:45 UTC); peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Steal An Egg | Steal + hatch sim | ~1.25–1.6M (#1 since Sep, ~1.45M Oct 25) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama |
-| Murder Mystery 2 | Social deduction | ~1.2–1.8M (Halloween surge, was ~500k; rblxdb Oct 25 shows it above Steal An Egg) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
-| Brookhaven RP | Social roleplay | ~400–470k | Open town, houses, cars, spatial voice; freedom > goals |
-| Adopt Me! | Social trading | ~190–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
-| Jujutsu Shenanigans | Anime fighter | ~160–245k | Flashy moves, deep progression |
-| 99 Nights in the Forest | Co-op survival | ~215–240k | Night cycle pressure, base fire, friends vs monster |
-| RIVALS | FPS | ~190–215k | Tight competitive shooting |
-| Blox Fruits | Adventure RPG | ~160–190k | Islands as zones, bosses, collectible powers, frequent updates |
-| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~150k / ~130k | Steal-from-bases loop; the egg version keeps cloning upward |
-| DOORS / Flee the Facility / Dandy's World / Evade | Horror survival | ~75–155k each (DOORS +266%, Flee +392% in 24 h) | Halloween spike: short co-op runs vs a monster, chase + hide |
-| Climb For Animals Eggs / Fish It! / Anime Dice / Sell Fries! | Climb-hatch / idle / RNG / sell tycoon | ~60–80k each | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
+| Steal An Egg | Steal + hatch sim | ~0.9M low / 2M+ peak during the Halloween Dimension (#1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
+| Murder Mystery 2 | Social deduction | ~240k low / 1M+ peak (Halloween 2026 event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Brookhaven RP | Social roleplay | ~230–470k | Open town, houses, cars, spatial voice; freedom > goals |
+| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~220k / ~110k | Steal-from-bases loop; the egg version keeps cloning upward |
+| Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
+| 99 Nights in the Forest | Co-op survival | ~130–240k | Night cycle pressure, base fire, friends vs monster |
+| Blox Fruits / RIVALS / Jujutsu Shenanigans | RPG / FPS / anime fighter | ~90–215k each | Islands + bosses · tight shooting · flashy moves |
+| Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
+| Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
+| Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |
+| DONT SPLASH | New (entered top 20 Oct 26) | ~53k | Watch: new fast riser |
+| Climb For Animals Eggs / Sell Fries! | Climb-hatch / sell tycoon | ~60–80k | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
+
+**Oct 26 read — timed event windows are the CCU engine:** Steal An Egg's Halloween Dimension (Oct 17–24, then Part 2) passed 2M CCU with 16M+ players following the event. Its recipe: a glowing portal next to a spawn shop → 3 themed biomes (Graveyard, Haunted Swamp, Abandoned Manor, 6 pets each) with roaming enemies that drop an event currency (Candy Corn) → trade it at a giant pumpkin for an event-only egg; a Blood Moon window doubles drops; a Phantom Express train arrives every 30 min (on :00 and :30) and is unlocked by a short NPC quest chain. Copy the shape for any live game: event currency → event egg, one repeating "everyone gather now" moment, a scheduled finale, countdown boards in the hub (template `EventClock`). https://bloxodes.com/articles/steal-an-egg-halloween-dimension-explained-new-biomes-pets-and-secrets · https://allthings.how/roblox-events-calendar/
 
 **Oct 24 read:** steal/hatch pet hybrids still own #1 and are spreading into climb-for-eggs. October = horror: every survival/horror game is spiking (Roblox's own **The Hollow** event runs Oct 22 – Nov 2, finale Oct 31: https://devforum.roblox.com/t/the-hollow-new-platform-wide-survival-event-for-halloween/4948535). A seasonal map + event in a social game (MM2) can double CCU — plan a Halloween/holiday reskin for every live game. Halloween updates everywhere (Grow a Garden Ghoul Garden 3 from Oct 25, Jujutsu Shenanigans to Nov 23, Brookhaven from Oct 23) — the [🎃] title tag is standard during events (https://axeetech.com/?p=109532). Pet sims should add a social risk loop (steal/defend) on top of collect → hatch → earn.
 
@@ -33,7 +37,7 @@ Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU 
 - **One-color contrast zone** (same game): after bright grass zones, a dark slate island with neon cracks in the floor, crystal flowers, floating rocks and beams; one hue + glow.
 - **In-world social** (same game): crown-framed leaderboard boards (eggs hatched, pet power, rebirths) and a season podium with countdown and top pets on pedestals, on the main path.
 - **Themed portal arches** (same game, liked 2nd session): each arch built from its island's material (dark crystal rock, graves + pumpkins, mushrooms), swirl in the island color, bold label; dark realms add neon crack lines on the floor that converge on the portal.
-- **Countdown billboards** over landmarks ("NEW UPDATE … 10h 25m") + an in-world event board near spawn; big walkable cartoon clouds high above the hub as a lookout/goal.
+- **Countdown billboards** over landmarks ("NEW UPDATE … 10h 25m") + an in-world event board near spawn (drive both with template `EventClock`, tag the TextLabels `EventCountdown`); big walkable cartoon clouds high above the hub as a lookout/goal.
 - Everywhere: **spawn facing the best view**, one landmark visible from anywhere (tower, giant tree, volcano), paths lit or neon-edged, invisible walls disguised as cliffs/fences.
 
 ## Build style that reads well on Roblox
@@ -100,4 +104,4 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
 
 ## Sources
-rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
+rokoala live counts (Oct 26 2026) https://rokoala.com/roblox-player-count/ · rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
