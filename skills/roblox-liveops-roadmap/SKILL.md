@@ -31,7 +31,7 @@ Plan updates around:
 
 - New zones, modes, enemies, quests, pets, cosmetics, or upgrades.
 - Limited events and seasonal items.
-- Timed event shape that drives top-game CCU (2026-10-26, see `roblox-design/references/maps.md`): event currency → event-only egg, a repeating "gather now" window (2x drops, train every 30 min), scheduled finale, hub countdown boards. Schedule all of it in one shared table with template `EventClock` (server checks `IsLive` before granting).
+- Timed event shape that drives top-game CCU (2026-10-26, see `roblox-design/references/maps.md`): event currency → event-only egg, a repeating "gather now" window (2x drops, train every 30 min), scheduled finale, hub countdown boards. Schedule all of it in one shared table with template `EventClock` (server checks `IsLive` before granting). Multi-stage events (2026-10-27, Roblox's The Hollow): keep earlier stages open for late joiners, pay rewards by effort, show shop prices up front, and keep a claim window after the finale (`EventClock` `grace` + `CanClaim`).
 - Balance changes driven by funnel and retention data.
 - Social goals that encourage friends to return together.
 

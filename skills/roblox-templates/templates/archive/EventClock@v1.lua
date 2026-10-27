@@ -1,0 +1,223 @@
+-- EventClock.lua — one schedule for timed live events (Halloween dimension, Blood Moon, train every 30 min,
+--                  weekend 2x) shared by server + client, with countdown labels and start/end callbacks.
+-- version: 1
+-- use: ModuleScript in ReplicatedStorage. Same events table on server and client (put it in a shared Config module).
+--   local EventClock = require(game.ReplicatedStorage.EventClock)
+--   local clock = EventClock.new({
+--       { id = "Halloween", start = "2026-10-24T15:00:00Z", duration = 9 * 86400 },          -- one-off (UTC ISO or unix)
+--       { id = "BloodMoon", start = "2026-10-24T15:00:00Z", every = 3600, duration = 300 },  -- 5 min each hour
+--       { id = "Train",     start = "2026-10-01T00:00:00Z", every = 1800, duration = 60 },   -- on :00 and :30
+--   })
+--   SERVER (authority): if clock:IsLive("BloodMoon") then drops *= 2 end   -- never trust a client's "it's live"
+--                       clock:OnStart("Train", function() spawnTrain() end) ; clock:OnEnd("Halloween", closePortal)
+--   CLIENT: clock:BindLabel(label, "Halloween", { upcoming = "OPENS IN %s", live = "ENDS IN %s", ended = "EVENT OVER" })
+--           clock:BindTagged()  -- every TextLabel/TextButton tagged "EventCountdown" with attribute EventId = "<id>"
+--                                  (optional attributes Upcoming/Live/Ended = format strings) — works on SurfaceGui/
+--                                  BillboardGui countdown boards over landmarks ("NEW UPDATE IN 10h 25m").
+--   clock:State(id) -> "upcoming" | "live" | "ended", secondsLeft (to start while upcoming, to end while live)
+--   EventClock.Format(s) -> "2d 4h" | "10h 25m" | "04:59"
+-- Time: workspace:GetServerTimeNow() (same UTC clock on server and every client, no remotes needed).
+-- Studio testing: set workspace attribute EventClockOffset (seconds, Studio only) to jump forward/back.
+-- Notes: callbacks fire on a 0.25 s poll, also for windows already live when the clock starts (OnStart runs once
+--        right away). Repeating windows: start + k*every, each lasts `duration` (< every). Optional `stop` ends repeats.
+--        Format strings are plain text — run them through your localization if the game is translated.
+-- changelog: v1 2026-10-26 first version (daily refresh: timed event windows drive the top games' CCU)
+
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+
+local EventClock = {}
+EventClock.__index = EventClock
+
+local POLL = 0.25
+local TAG = "EventCountdown"
+local DEFAULT_FORMATS = { upcoming = "STARTS IN %s", live = "ENDS IN %s", ended = "ENDED" }
+
+local function toUnix(t)
+	if type(t) == "number" then
+		return t
+	elseif type(t) == "string" then
+		local ok, dt = pcall(DateTime.fromIsoDate, t)
+		if ok and dt then
+			return dt.UnixTimestamp
+		end
+	end
+	error("EventClock: bad time " .. tostring(t) .. " (use unix seconds or ISO 'YYYY-MM-DDTHH:MM:SSZ')")
+end
+
+function EventClock.Now()
+	local now = workspace:GetServerTimeNow()
+	if RunService:IsStudio() then
+		now += tonumber(workspace:GetAttribute("EventClockOffset")) or 0
+	end
+	return now
+end
+
+function EventClock.Format(seconds)
+	seconds = math.max(0, math.floor(seconds))
+	local d = seconds // 86400
+	local h = (seconds % 86400) // 3600
+	local m = (seconds % 3600) // 60
+	local s = seconds % 60
+	if d > 0 then
+		return string.format("%dd %dh", d, h)
+	elseif h > 0 then
+		return string.format("%dh %02dm", h, m)
+	end
+	return string.format("%02d:%02d", m, s)
+end
+
+function EventClock.new(events)
+	local self = setmetatable({ _events = {}, _start = {}, _end = {}, _wasLive = {}, _conn = nil }, EventClock)
+	for _, e in ipairs(events) do
+		assert(type(e.id) == "string", "EventClock: every event needs an id")
+		assert(type(e.duration) == "number" and e.duration > 0, "EventClock: " .. e.id .. " needs duration > 0")
+		local ev = { id = e.id, start = toUnix(e.start), duration = e.duration, every = e.every,
+			stop = e.stop and toUnix(e.stop) or nil }
+		if ev.every then
+			assert(ev.every > ev.duration, "EventClock: " .. e.id .. " every must be > duration")
+		end
+		self._events[e.id] = ev
+	end
+	return self
+end
+
+-- returns state, secondsLeft, windowStart, windowEnd
+function EventClock:State(id, now)
+	local ev = self._events[id]
+	assert(ev, "EventClock: unknown event " .. tostring(id))
+	now = now or EventClock.Now()
+	if now < ev.start then
+		return "upcoming", ev.start - now, ev.start, ev.start + ev.duration
+	end
+	if not ev.every then
+		local finish = ev.start + ev.duration
+		if now < finish then
+			return "live", finish - now, ev.start, finish
+		end
+		return "ended", 0, ev.start, finish
+	end
+	local k = (now - ev.start) // ev.every
+	local wStart = ev.start + k * ev.every
+	if ev.stop and wStart >= ev.stop then
+		return "ended", 0, wStart, wStart
+	end
+	local wEnd = wStart + ev.duration
+	if now < wEnd then
+		return "live", wEnd - now, wStart, wEnd
+	end
+	local nextStart = wStart + ev.every
+	if ev.stop and nextStart >= ev.stop then
+		return "ended", 0, wStart, wEnd
+	end
+	return "upcoming", nextStart - now, nextStart, nextStart + ev.duration
+end
+
+function EventClock:IsLive(id)
+	return (self:State(id)) == "live"
+end
+
+function EventClock:_ensureLoop()
+	if self._conn then
+		return
+	end
+	local acc = POLL
+	self._conn = RunService.Heartbeat:Connect(function(dt)
+		acc += dt
+		if acc < POLL then
+			return
+		end
+		acc = 0
+		local now = EventClock.Now()
+		for id in pairs(self._events) do
+			local live = (self:State(id, now)) == "live"
+			if live ~= (self._wasLive[id] or false) then
+				self._wasLive[id] = live
+				for _, fn in ipairs((live and self._start or self._end)[id] or {}) do
+					task.spawn(fn, id)
+				end
+			end
+		end
+	end)
+end
+
+local function add(list, id, fn)
+	list[id] = list[id] or {}
+	table.insert(list[id], fn)
+end
+
+function EventClock:OnStart(id, fn)
+	assert(self._events[id], "EventClock: unknown event " .. tostring(id))
+	add(self._start, id, fn)
+	if self._wasLive[id] then
+		task.spawn(fn, id) -- already live: run now so late listeners catch up
+	end
+	self:_ensureLoop()
+end
+
+function EventClock:OnEnd(id, fn)
+	assert(self._events[id], "EventClock: unknown event " .. tostring(id))
+	add(self._end, id, fn)
+	self:_ensureLoop()
+end
+
+-- Updates the label's Text once a second (only when it changes). Returns a disconnect function.
+function EventClock:BindLabel(label, id, formats)
+	formats = formats or {}
+	local last
+	local alive = true
+	task.spawn(function()
+		while alive and label.Parent do
+			local state, left = self:State(id)
+			local fmt = formats[state] or DEFAULT_FORMATS[state]
+			local text = string.find(fmt, "%%s") and string.format(fmt, EventClock.Format(left)) or fmt
+			if text ~= last then
+				label.Text = text
+				last = text
+			end
+			task.wait(left < 3600 and 1 or 15)
+		end
+	end)
+	return function()
+		alive = false
+	end
+end
+
+function EventClock:BindTagged(tag)
+	tag = tag or TAG
+	local unbind = {}
+	local function bind(label)
+		if not (label:IsA("TextLabel") or label:IsA("TextButton")) then
+			return
+		end
+		local id = label:GetAttribute("EventId")
+		if not (id and self._events[id]) then
+			warn("EventClock: " .. label:GetFullName() .. " has no valid EventId attribute")
+			return
+		end
+		unbind[label] = self:BindLabel(label, id, {
+			upcoming = label:GetAttribute("Upcoming"),
+			live = label:GetAttribute("Live"),
+			ended = label:GetAttribute("Ended"),
+		})
+	end
+	for _, l in ipairs(CollectionService:GetTagged(tag)) do
+		bind(l)
+	end
+	CollectionService:GetInstanceAddedSignal(tag):Connect(bind) -- streaming: boards arrive later
+	CollectionService:GetInstanceRemovedSignal(tag):Connect(function(l)
+		if unbind[l] then
+			unbind[l]()
+			unbind[l] = nil
+		end
+	end)
+end
+
+function EventClock:Destroy()
+	if self._conn then
+		self._conn:Disconnect()
+		self._conn = nil
+	end
+end
+
+return EventClock

@@ -1,21 +1,26 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–26 2026) and why they work
-Oct 26 numbers are an early-morning UTC low (rokoala 04:45 UTC); peaks run 2–3× higher.
+## Top games right now (live CCU snapshots, Oct 24–27 2026) and why they work
+Oct 27: rokoala 00:25 UTC / livecounts 09:35 UTC; lows, peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Steal An Egg | Steal + hatch sim | ~0.9M low / 2M+ peak during the Halloween Dimension (#1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
-| Murder Mystery 2 | Social deduction | ~240k low / 1M+ peak (Halloween 2026 event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Steal An Egg | Steal + hatch sim | ~0.7–1.1M (Oct 27, cooling after 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
+| Murder Mystery 2 | Social deduction | ~250–300k low (+11% day, Oct 27) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
 | Brookhaven RP | Social roleplay | ~230–470k | Open town, houses, cars, spatial voice; freedom > goals |
-| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~220k / ~110k | Steal-from-bases loop; the egg version keeps cloning upward |
+| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~190–220k (−37% day, Oct 27) / ~75–125k | Steal-from-bases loop; the egg version keeps cloning upward |
 | Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
 | 99 Nights in the Forest | Co-op survival | ~130–240k | Night cycle pressure, base fire, friends vs monster |
 | Blox Fruits / RIVALS / Jujutsu Shenanigans | RPG / FPS / anime fighter | ~90–215k each | Islands + bosses · tight shooting · flashy moves |
 | Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
 | Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
 | Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |
-| DONT SPLASH | New (entered top 20 Oct 26) | ~53k | Watch: new fast riser |
+| DONT SPLASH | New (top 20 since Oct 26) | ~53–83k (#12 on rokoala Oct 27) | Watch: new fast riser |
+| The Hollow (Roblox) | Platform event hub | ~38–52k, **209k 24h peak** (Oct 27) | Nightly drops spike CCU — see Oct 27 read |
+| Illegal Soccer / Huss Valley | Gadget soccer / chase rounds | ~47k / ~46k (Oct 27, both new to top 25) | Sport + chaos gadgets (2 slots: grapple, jetpack, oil); "RUN!!" 30-player chase rounds — short simple rounds keep climbing |
+| Risers Oct 27 (livecounts 24h) | Horror / sim / TD | The Mimic +253% (~19k), Throw Food For Animals +64% (~27k), Home Alone: Anomalies +57%, Cameraman TD +22% (~36k), Steal A Pet And Ride It +22% | Horror + anomaly spikes into Halloween; "throw/feed animals" and steal-a-pet clones are the next sim wave |
 | Climb For Animals Eggs / Sell Fries! | Climb-hatch / sell tycoon | ~60–80k | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
+
+**Oct 27 read — platform event structure (Roblox's The Hollow, Oct 22 – Nov 2, finale Oct 31):** one hub (a survival maze that adds a floor each night; old floors stay open so late joiners can catch up, each floor = guaranteed item) + 44 partner games in tiers (9 nightly "haunts", 9 roaming, 26 side-quest games paying 20 tickets + badge) → tickets buy hats in the hub shop; rewards claimable until Nov 2 (grace window after the finale). Its nightly drops hit a 209k peak. Players complained about uneven quest effort for the same 20 tickets and drops gated on special roles/admin timing. Copy for multi-zone events: keep earlier stages open, pay by effort, show prices up front, publish times in one time zone, add a claim window (template `EventClock` v2 `grace` + `CanClaim`). https://timesaver.gg/blog/roblox-the-hollow-event-games · https://livecounts.nl/roblox-charts/
 
 **Oct 26 read — timed event windows are the CCU engine:** Steal An Egg's Halloween Dimension (Oct 17–24, then Part 2) passed 2M CCU with 16M+ players following the event. Its recipe: a glowing portal next to a spawn shop → 3 themed biomes (Graveyard, Haunted Swamp, Abandoned Manor, 6 pets each) with roaming enemies that drop an event currency (Candy Corn) → trade it at a giant pumpkin for an event-only egg; a Blood Moon window doubles drops; a Phantom Express train arrives every 30 min (on :00 and :30) and is unlocked by a short NPC quest chain. Copy the shape for any live game: event currency → event egg, one repeating "everyone gather now" moment, a scheduled finale, countdown boards in the hub (template `EventClock`). https://bloxodes.com/articles/steal-an-egg-halloween-dimension-explained-new-biomes-pets-and-secrets · https://allthings.how/roblox-events-calendar/
 
@@ -104,4 +109,4 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
 
 ## Sources
-rokoala live counts (Oct 26 2026) https://rokoala.com/roblox-player-count/ · rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
+rokoala live counts (Oct 26–27 2026) https://rokoala.com/roblox-player-count/ · rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 + 27 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).

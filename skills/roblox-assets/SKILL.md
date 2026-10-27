@@ -35,6 +35,8 @@ Always tell lyopz the credit estimate before spending, and generate the cheap pi
 ## 2. Make the model (when one is needed)
 Follow `3d-assets` steps 2–4 (picture → `image_to_3d` → `shrink_glb.py --size 1024`), with Roblox prompt words: `low-poly stylized game asset, chunky readable shapes, bright saturated colors, clean silhouette`. For anything that will be rigged: **T-pose / legs straight and apart, arms out, mouth closed**, plain background, three-quarter view.
 
+- **Texture Generator (Studio, 2026-10-27):** select a MeshPart or one unified multi-mesh Model → Model tab → Texture (or Assistant `/generate_texture`, or Studio MCP). **Fast** = 1K colour-only in ~30 s (prototypes, background props); **Quality** (beta, Oct 16) = 4K PBR via a SurfaceAppearance per MeshPart in ~2 min. Try prompts in Fast, rerun the winner in Quality; describe materials, colours and condition per part, never lighting/geometry/glass (no alpha, normal maps ignored for now). Free (0 credits) — try it before Higgsfield retexturing; recolour to the bible after. Tiled floors/walls → Material Generator instead. Some Toolbox meshes refuse retexturing ("not authorized"). https://create.roblox.com/docs/studio/texture-generator · https://devforum.roblox.com/t/beta-introducing-quality-mode-for-texture-generation/4938282
+
 ## 3. Make it Roblox-ready (Unity first via `roblox-3d-pipeline`; Blender connector as fallback)
 Limits and budgets (2026):
 - **20,000 triangles max per mesh**; rigid accessories 4,000. Budgets: tiny prop 50–500, normal prop 1k–10k (repeated props ~3–4k), big environment piece 10–18k, hero asset 10–20k.
