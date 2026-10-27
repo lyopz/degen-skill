@@ -17,8 +17,22 @@ await sleep(1500);
 
 if (refImage && fs.existsSync(refImage)) {
   // attach the current picture so ChatGPT edits it instead of starting over
-  const input = page.locator('input[type="file"]').first();
-  try { await input.setInputFiles(refImage); log('  attached the current picture'); await sleep(4000); } catch (e) { log('  could not attach the picture: ' + e.message); }
+  // ChatGPT has several file inputs; the first is not always the image one. Try image inputs first, then the rest,
+  // and only count it as attached when a preview thumbnail shows up in the composer.
+  const thumbs = () => page.evaluate(() => document.querySelectorAll('form img, [data-testid*="attachment"] img, img[src^="blob:"]').length);
+  const n0 = await thumbs();
+  const inputs = await page.locator('input[type="file"]').all();
+  const ranked = [];
+  for (const el of inputs) { const acc = (await el.getAttribute('accept')) || ''; ranked.push([/image/.test(acc) ? 0 : (acc ? 2 : 1), el]); }
+  ranked.sort((a, b) => a[0] - b[0]);
+  let ok = false;
+  for (const [, el] of ranked) {
+    try { await el.setInputFiles(refImage); } catch { continue; }
+    for (let i = 0; i < 10 && !ok; i++) { await sleep(1000); if ((await thumbs()) > n0) ok = true; }
+    if (ok) break;
+  }
+  log(ok ? '  attached the current picture (preview seen)' : '  WARNING: picture attach not confirmed (' + inputs.length + ' file inputs)');
+  await sleep(2500);
 }
 await box.click();
 await page.keyboard.insertText(prompt);
