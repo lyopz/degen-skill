@@ -2014,19 +2014,33 @@ MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passI
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T13"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
--- version: 1
+-- version: 2
 -- changelog: v1 2026-10-23 first version
+-- changelog: v2 2026-10-28 optional trailing args, refusal codes ({ Ok = false, Code }), exactly-once nonces for item machines
+--            (promoted from project lessons). v1 behaviour is unchanged unless you use the new options.
 -- Rules from Roblox's client-server boundary docs: never trust the client; check types, finite numbers, sizes,
 -- instance location, distance; rate-limit per player.
+--
 -- local Guard = require(game.ReplicatedStorage.RemoteGuard)
 -- Guard.On("BuyItem", { "string" }, { rate = 4, per = 1 }, function(player, itemId)
 --     -- server decides price/ownership here
 -- end)
 -- Guard.OnInvoke("GetShop", {}, { rate = 2, per = 1 }, function(player) return Shop.List end)
+--
+-- v2 options:
+--   Optional trailing args:  Guard.On("Open", { "string", { optional = "integer" } }, ...)  -- nil passes, wrong type / NaN / extra args refuse
+--   Refusal codes:           opts.codes = true  -> OnInvoke returns { Ok = false, Code = "bad_args"|"rate"|"dead"|"busy"|"error" } on refusal
+--                            (your handler should return { Ok = true, ... } / { Ok = false, Code = "storage" } itself)
+--   Exactly-once (nonce):    opts.nonce = true  -> client calls Guard.InvokeOnce(name, ...) which appends a GUID; the server
+--                            reserves it as pending BEFORE the handler runs (handlers may yield), caches the result (last 32 per
+--                            player) and a repeat returns the cached result without running the handler again.
+--                            opts.onRepeat(player, result) — optional, e.g. re-fire the visual event for a retried call.
+--   Test: invoke twice with the same nonce -> one charge, same result.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 
 local Guard = {}
 local folder = ReplicatedStorage:FindFirstChild("Remotes")
@@ -2035,14 +2049,22 @@ if not folder and RunService:IsServer() then
 end
 
 local MAX_STRING = 200
+local MAX_NONCE = 64
+local NONCE_CACHE = 32
 local buckets = {} -- [player][name] = { tokens, last }
+local nonces = {}  -- [player][name] = { map = { [nonce] = entry }, order = { nonce, ... } }
 
 local function finite(n) return typeof(n) == "number" and n == n and math.abs(n) ~= math.huge end
 local function finiteVec(v) return finite(v.X) and finite(v.Y) and finite(v.Z) end
 
--- Type spec per argument: "string" | "number" | "integer" | "boolean" | "Vector3" | "Instance" | { class = "BasePart", under = workspace.Shops }
+-- Type spec per argument: "string" | "number" | "integer" | "boolean" | "Vector3" | "Instance"
+--   | { class = "BasePart", under = workspace.Shops } | { optional = <any spec above> } (trailing args only)
 local function check(arg, spec)
 	if type(spec) == "table" then
+		if spec.optional ~= nil then
+			if arg == nil then return true end
+			return check(arg, spec.optional)
+		end
 		if typeof(arg) ~= "Instance" or not arg:IsA(spec.class or "Instance") then return false end
 		if spec.under and not arg:IsDescendantOf(spec.under) then return false end
 		return true
@@ -2056,6 +2078,14 @@ local function check(arg, spec)
 	return false
 end
 
+local function requiredCount(specs)
+	local req = 0
+	for i, spec in ipairs(specs) do
+		if not (type(spec) == "table" and spec.optional ~= nil) then req = i end
+	end
+	return req
+end
+
 local function allowed(player, name, rate, per)
 	local pb = buckets[player]; if not pb then pb = {}; buckets[player] = pb end
 	local b = pb[name]; local now = os.clock()
@@ -2064,18 +2094,49 @@ local function allowed(player, name, rate, per)
 	if b.tokens < 1 then return false end
 	b.tokens -= 1; return true
 end
-Players.PlayerRemoving:Connect(function(p) buckets[p] = nil end)
+Players.PlayerRemoving:Connect(function(p) buckets[p] = nil; nonces[p] = nil end)
 
-local function validate(player, name, specs, opts, ...)
-	local n = select("#", ...)
-	if n ~= #specs then return false end
-	for i = 1, n do if not check(select(i, ...), specs[i]) then return false end end
-	if not allowed(player, name, opts.rate or 5, opts.per or 1) then return false end
+-- Returns ok, code. specs = expected args (without the nonce).
+local function validate(player, name, specs, opts, n, args)
+	if n > #specs or n < requiredCount(specs) then return false, "bad_args" end
+	for i = 1, #specs do if not check(args[i], specs[i]) then return false, "bad_args" end end
+	if not allowed(player, name, opts.rate or 5, opts.per or 1) then return false, "rate" end
 	if opts.alive then
 		local h = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-		if not h or h.Health <= 0 then return false end
+		if not h or h.Health <= 0 then return false, "dead" end
 	end
 	return true
+end
+
+-- Splits the trailing nonce off when opts.nonce is set. Returns n, args, nonce (nonce nil = invalid).
+local function unpackArgs(opts, ...)
+	local n = select("#", ...)
+	local args = { ... }
+	if not opts.nonce then return n, args, nil end
+	local nonce = args[n]
+	if type(nonce) ~= "string" or #nonce == 0 or #nonce > MAX_NONCE then return n, args, nil end
+	args[n] = nil
+	return n - 1, args, nonce
+end
+
+local function nonceBook(player, name)
+	local pb = nonces[player]; if not pb then pb = {}; nonces[player] = pb end
+	local book = pb[name]; if not book then book = { map = {}, order = {} }; pb[name] = book end
+	return book
+end
+
+local function remember(book, nonce, entry)
+	book.map[nonce] = entry
+	table.insert(book.order, nonce)
+	while #book.order > NONCE_CACHE do
+		local old = table.remove(book.order, 1)
+		if book.map[old] and book.map[old].state ~= "pending" then book.map[old] = nil end
+	end
+end
+
+local function refuse(opts, code)
+	if opts.codes then return { Ok = false, Code = code } end
+	return nil, (code == "error" and "error" or "rejected")
 end
 
 local function get(name, class)
@@ -2085,23 +2146,54 @@ local function get(name, class)
 end
 
 function Guard.On(name, specs, opts, handler)
+	opts = opts or {}
 	local remote = get(name, "RemoteEvent")
 	remote.OnServerEvent:Connect(function(player, ...)
-		if validate(player, name, specs, opts or {}, ...) then
-			local ok, err = pcall(handler, player, ...)
-			if not ok then warn("[RemoteGuard] " .. name .. ": " .. tostring(err)) end
+		local n, args, nonce = unpackArgs(opts, ...)
+		if opts.nonce and not nonce then return end
+		if not validate(player, name, specs, opts, n, args) then return end
+		if opts.nonce then
+			local book = nonceBook(player, name)
+			if book.map[nonce] then return end -- repeat: already handled
+			remember(book, nonce, { state = "done" })
 		end
+		local ok, err = pcall(handler, player, table.unpack(args, 1, #specs))
+		if not ok then warn("[RemoteGuard] " .. name .. ": " .. tostring(err)) end
 	end)
 	return remote
 end
 
 function Guard.OnInvoke(name, specs, opts, handler)
+	opts = opts or {}
 	local remote = get(name, "RemoteFunction")
 	remote.OnServerInvoke = function(player, ...)
-		if not validate(player, name, specs, opts or {}, ...) then return nil, "rejected" end
-		local ok, a, b = pcall(handler, player, ...)
-		if not ok then warn("[RemoteGuard] " .. name .. ": " .. tostring(a)); return nil, "error" end
-		return a, b
+		local n, args, nonce = unpackArgs(opts, ...)
+		if opts.nonce and not nonce then return refuse(opts, "bad_args") end
+		local valid, code = validate(player, name, specs, opts, n, args)
+		if not valid then return refuse(opts, code) end
+
+		local book, entry
+		if opts.nonce then
+			book = nonceBook(player, name)
+			entry = book.map[nonce]
+			if entry then
+				if entry.state == "pending" then return refuse(opts, "busy") end
+				if opts.onRepeat then task.spawn(opts.onRepeat, player, entry.result[1]) end
+				return table.unpack(entry.result, 1, entry.result.n)
+			end
+			entry = { state = "pending" } -- reserved before any yield
+			remember(book, nonce, entry)
+		end
+
+		local result = table.pack(pcall(handler, player, table.unpack(args, 1, #specs)))
+		if not result[1] then
+			warn("[RemoteGuard] " .. name .. ": " .. tostring(result[2]))
+			if entry then book.map[nonce] = nil end -- failed call may be retried
+			return refuse(opts, "error")
+		end
+		local out = table.pack(table.unpack(result, 2, result.n))
+		if entry then entry.state = "done"; entry.result = out end
+		return table.unpack(out, 1, out.n)
 	end
 	return remote
 end
@@ -2115,6 +2207,21 @@ end
 -- Client side: Guard.Fire("BuyItem", "sword_1")
 function Guard.Fire(name, ...) folder:WaitForChild(name):FireServer(...) end
 function Guard.Invoke(name, ...) return folder:WaitForChild(name):InvokeServer(...) end
+
+-- Client side, for remotes registered with opts.nonce: one nonce per user action.
+-- To retry the SAME action after a timeout, keep its nonce: local id = Guard.NewNonce(); Guard.InvokeWithNonce(id, name, ...).
+function Guard.NewNonce() return HttpService:GenerateGUID(false) end
+function Guard.InvokeWithNonce(nonce, name, ...)
+	local args = table.pack(...)
+	args.n += 1; args[args.n] = nonce
+	return folder:WaitForChild(name):InvokeServer(table.unpack(args, 1, args.n))
+end
+function Guard.InvokeOnce(name, ...) return Guard.InvokeWithNonce(Guard.NewNonce(), name, ...) end
+function Guard.FireOnce(name, ...)
+	local args = table.pack(...)
+	args.n += 1; args[args.n] = Guard.NewNonce()
+	folder:WaitForChild(name):FireServer(table.unpack(args, 1, args.n))
+end
 
 return Guard
 ]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T14"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:

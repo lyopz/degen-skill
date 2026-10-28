@@ -41,4 +41,8 @@ Starter island = Common–Uncommon, mid islands = Uncommon–Epic, later islands
 ## Build notes
 - Island underside: a few big rock meshes (not terrain), low poly with soft bevels. Waterfalls = scrolling-texture mesh strips + mist particles at the bottom. Clouds = soft billboard sprites.
 - Floating platforms bob slowly (client side). Moving/rotating/disappearing pieces run on TweenService, client-predicted.
+- **(promoted 2026-10-28) Organic island outlines:** star-shaped r(θ) = smoothed radius × (1 + seeded harmonics k=2..7 + gaussian points/bays), max() with protected circles (footprints, route samples, poles, trees) and pinned to the old radius at each bridge landing (blend ~17 studs); stepped strata bands 1.2–2.6 studs. 1.4–4.5k tris per island. Circle-union decks: check every route point is inside a lobe (R−2) — the notch between lobes is air.
+- **(promoted 2026-10-28) Walkable mesh tops:** don't trust PreciseConvexDecomposition — invisible WedgePair fan floors on the deck plane + invisible wall segments at r+0.3 (gaps at bridges). A MeshPart's collision hull bevels ~0.7 stud down at the rim → sample trim height ~3 studs inside the rim.
+- **(promoted 2026-10-28) Spawn view:** no poles/props beside the spawn camera or in front of the landmark; backdrop islands = scaled clones of existing island meshes, far and low (tops near the horizon).
+- **(promoted 2026-10-28) Checks:** jump windows — cast rays rim to rim at several heights/offsets (a box overlap flags the side walls); measure gaps/rises lip to lip from placed parts (build-script numbers ran up to 0.9 stud low). Fall recovery — stand ≥ 1.5 s, drop, log Y every 0.4 s.
 - Build at gameplay scale first (jump distances from the double-jump height), then dress it.

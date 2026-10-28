@@ -71,6 +71,11 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Two SurfaceGuis on the same face of one part fight for draw order (blank sign) → put text on its own transparent plate 0.05 in front.
 - In-world labels: SurfaceGui on the Top of a tilted part renders sideways — use a thin plate whose Front faces the player. Picture signs: ImageLabel in a SurfaceGui (LightInfluence 0) + dark backing plate = unlit neon look.
 
+- **(promoted 2026-10-28)** Never put a UIGradient directly on a CanvasGroup (it tints the whole flattened group) — fill + gradient on a child `Bg` frame, CanvasGroup background transparent.
+- **(promoted 2026-10-28)** Hiding the HUD for a mode: slide each child off-screen (save its Position) or tween a named UIScale to 0 then `Visible=false`; restore with Back easing. Toggling Visible loses to self-toggling widgets and relayout code.
+- **(promoted 2026-10-28)** Per-station chips beside default ProximityPrompts: client listens to `ProximityPromptService.PromptShown` + `prompt.PromptHidden` and hangs one BillboardGui per prompt parent — no server change, new stations get it from config.
+- **(promoted 2026-10-28)** Item reward cards: the item ALONE in its own ViewportFrame (camera on the bounds of parts with Transparency < 0.95, 3/4 dir (0.42, 0.28, −1), FOV 30), never mounted on a pet (players read the pet's stats as the item's); VFX-only items → draw an emblem. One results entry that routes by row shape (lazy require) and one owner per card screen.
+- **(promoted 2026-10-28)** Phone check without a device: in the Play client clone the HUD into an 844×390 frame with 47 px side insets, apply the controller's scale formula and read AbsoluteSize of text and buttons.
 ## Performance
 - Disable the whole `ScreenGui` instead of toggling many `.Visible`.
 - Fade groups with one `CanvasGroup.GroupTransparency` tween.

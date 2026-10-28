@@ -22,6 +22,7 @@
 - Clicker feel (seen in Tap Simulator REBORN): `+amount` popups float up from every tap, crits burst coins, rare hatches get a giant floating multiplier sign; live boss events announced by a top banner with a countdown, then a shared health %.
 - World events as cheap juice (same game): "Balloon Party" (coin/gem balloons float up, pop for loot) and "Blood Moon" (sky tint red + luck boost for secrets), each announced by a small toast with an icon.
 
+- **(promoted 2026-10-28)** Replays/fight playback: stream events with `task.defer` and a 1 s LeadIn after "enter" so the client places the scene first (count it in the length and busy lock). Camera "closer": fit-clamp per viewport (binary search on projected pads + pet height with HUD margins), re-fit on ViewportSize change — not a fixed offset.
 ## Effects layering
 - 3–5 emitters per effect: core glow, main body, sparks, smoke, light.
 - Fire/magic/energy: `LightEmission = 1`, `LightInfluence = 0`; smoke: LightEmission 0.

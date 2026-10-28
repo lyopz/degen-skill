@@ -46,6 +46,7 @@ Template (fill the <...>; still one pet, white background):
 - Metal/scrap subjects: add "smooth clean painted surfaces (no rust, grunge or scratch textures)". Symmetric pairs: "show the pair as one object, spread from an empty middle gap".
 - Neon signs: "flat front view, dark navy board + gunmetal frame with bolts, chunky rounded neon tubes, glow tight around the tubes, max 2 neon colors, text spelled exactly as written, no wall/poles/shadow, white bg" (10/10 first try); cut out with `cutout-white.ps1 -KeepAspect -Size 1024`. Top rarity: "most insane design but still clean and readable; holo rainbow-shift glow only on small accents".
 
+- **(promoted 2026-10-28)** Ears: "two upright cupped ear shells, rim, recessed panel" (else antennas/horns). Check `im.mode` before a white cut-out (some results are already RGBA; re-cutting eats highlights). The shared ChatGPT window can hand back another agent's picture — look at every result (MD5 doesn't catch it). Sets of 10+: one queue script that skips files already present.
 ## Good / bad
 - Bad: "a cool water pet cube". Good: the 8-part description above.
 - Name sizes relative to the body ("horns as tall as half the body"), positions ("on top, slightly back"), counts ("3 crystal spikes").

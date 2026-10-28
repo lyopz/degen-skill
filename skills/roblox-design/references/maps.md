@@ -1,11 +1,11 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–27 2026) and why they work
-Oct 27: rokoala 00:25 UTC / livecounts 09:35 UTC; lows, peaks run 2–3× higher.
+## Top games right now (live CCU snapshots, Oct 24–28 2026) and why they work
+Oct 28: livecounts 09:40 UTC (Oct 27: rokoala 00:25 / livecounts 09:35 UTC); lows, peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
 | Steal An Egg | Steal + hatch sim | ~0.7–1.1M (Oct 27, cooling after 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
-| Murder Mystery 2 | Social deduction | ~250–300k low (+11% day, Oct 27) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Murder Mystery 2 | Social deduction | ~400k at 09:40 UTC Oct 28 (up from ~250–300k Oct 27) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
 | Brookhaven RP | Social roleplay | ~230–470k | Open town, houses, cars, spatial voice; freedom > goals |
 | Steal a Brainrot / Break and Steal an Egg | Steal sims | ~190–220k (−37% day, Oct 27) / ~75–125k | Steal-from-bases loop; the egg version keeps cloning upward |
 | Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
@@ -14,7 +14,7 @@ Oct 27: rokoala 00:25 UTC / livecounts 09:35 UTC; lows, peaks run 2–3× higher
 | Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
 | Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
 | Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |
-| DONT SPLASH | New (top 20 since Oct 26) | ~53–83k (#12 on rokoala Oct 27) | Watch: new fast riser |
+| DONT SPLASH | Obby / runner (created Oct 17) | ~64–90k, 116k peak; 7-day avg +1,730% (Oct 28) | A 10-day-old simple obby hit the top 15 and #1 trending: short stages + regular "NEW STAGES" updates still break through |
 | The Hollow (Roblox) | Platform event hub | ~38–52k, **209k 24h peak** (Oct 27) | Nightly drops spike CCU — see Oct 27 read |
 | Illegal Soccer / Huss Valley | Gadget soccer / chase rounds | ~47k / ~46k (Oct 27, both new to top 25) | Sport + chaos gadgets (2 slots: grapple, jetpack, oil); "RUN!!" 30-player chase rounds — short simple rounds keep climbing |
 | Risers Oct 27 (livecounts 24h) | Horror / sim / TD | The Mimic +253% (~19k), Throw Food For Animals +64% (~27k), Home Alone: Anomalies +57%, Cameraman TD +22% (~36k), Steal A Pet And Ride It +22% | Horror + anomaly spikes into Halloween; "throw/feed animals" and steal-a-pet clones are the next sim wave |
@@ -106,7 +106,8 @@ Always: `Technology = Future`, add `Atmosphere`, `BloomEffect`, `ColorCorrection
 | **Void / dark realm** (picoo 2026) | ClockTime 19.5, ColorShift_Top (120,80,160), ColorShift_Bottom (60,40,100), ShadowSoftness 0.5, Env scales 0.5 | Density 0.35–0.7 (docs max 0.35), Haze 1.5, Offset 0.2, Glare 0.2, Color (80,80,90), Decay (100,80,120) | Intensity 0.5, Size 24, Threshold 0.95 | Brightness −0.3, Contrast 0.2, Saturation −0.4, TintColor (180,160,200) | off (no DoF on phones) |
 | **Horror** | ClockTime 2, Brightness 0.5, Ambient (5,5,8), OutdoorAmbient (15,15,20) | Density 0.6, Haze 3, Color (40,45,55) | Intensity 0.3, Threshold 1.5 | Saturation −0.3, Contrast 0.25, TintColor (210,220,230) | off; use flicker PointLights/SpotLights |
 
+**(promoted 2026-10-28) Dusk skies:** Roblox dims and reddens the skybox with sun height — at ClockTime ~17.9 a painted gradient goes near-black crimson, ~16.6 shows it as painted; paint the lower sky lighter than you want. Atmosphere Haze > 0 lays a flat colour floor under the horizon → Haze 0 / Glare 0, Density ~0.2 for distance fade. A flat haze-deck part shows its square edge; cloud puffs must be lighter than the sky (~0.6 transparency).
 Notes: lower ExposureCompensation needs higher Brightness to look normal (DevForum). Brightness also multiplies vertex/mesh colors: under Bright cartoon (3) use colors ~1/3 as bright (mid-blue rendered cyan). `Lighting.Technology` can't be read or set from MCP `execute_luau` — set Future by hand in Properties. Keep post effects modest and offer a "Low graphics" setting that disables Bloom/SunRays/DoF on phones.
 
 ## Sources
-rokoala live counts (Oct 26–27 2026) https://rokoala.com/roblox-player-count/ · rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 + 27 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).
+livecounts.nl (Oct 28 2026) https://livecounts.nl/roblox-charts/ · rotrends DONT SPLASH (Oct 28 2026) https://www.rotrends.com/game/10771421858/NEW-STAGES-DONT-SPLASH · rokoala live counts (Oct 26–27 2026) https://rokoala.com/roblox-player-count/ · rblxdb live counts (Oct 25 2026) https://rblxdb.com/roblox-player-count · livecounts.nl charts (Oct 24 + 27 2026) https://livecounts.nl/roblox-charts/ · Endgame Tools top 50 (Oct 24 2026) https://endgametools.com/en/roblox/charts · Endgame Tools top 10 + Steal An Egg loop (Sep 27, upd. Oct 9 2026) https://endgametools.com/en/roblox/news/roblox-most-popular-games · EJAW charts (Mar 2026) https://ejaw.net/roblox-charts/ · creation.dev trends https://www.creation.dev/learn/best-roblox-game-ideas-2026 · Kitsblox genres https://kitsblox.com/blog/popular-roblox-game-genres-2026 · DevForum lighting https://devforum.roblox.com/t/improve-lighting-step-by-step/1387033 · Lighting preset values are starting points from Roblox lighting practice (tune by eye).

@@ -83,7 +83,7 @@ Server decides (pet, rarity, reward) → fires a RemoteEvent → **client plays*
 
 ## 6. Gotchas
 - **Particles don't render inside ViewportFrames or ScreenGuis.** Hatches: put the egg in front of the camera. UI sparkles: tween ImageLabels or use a 2D emitter module (DevForum: Spark2D plugin, UIEmitter, "2D ParticleEmitter").
-- **Edit mode shows no particles**; capture in Play with quality forced high (`game-feel.md` → checking VFX).
+- **Edit-mode captures do show particles and beams (2026-10-27)**; set the camera in the same call, and for final checks capture in Play with quality forced high (`game-feel.md` → checking VFX).
 - Parts/effects parented to `workspace.CurrentCamera` are local to that client (good for hatch scenes).
 - Attachments: parent first, then set `WorldPosition` (before parenting, world values become local offsets).
 - Free models/packs: check for Scripts after inserting (backdoors) — `roblox-dev` §2.
@@ -93,6 +93,9 @@ Server decides (pet, rarity, reward) → fires a RemoteEvent → **client plays*
 - **(2026-10-25) Studio colour drift:** Studio lighting can push saturation hard (#2A1F5C → navy-black). Fit a per-channel line from two test renders and solve for the target colour; pale shells (#E8F0FF) render lilac under blue/purple light (drop red ~8%); bronze A8613A reads orange, 8E5232 reads bronze; SurfaceAppearance teeth/whites: tint green-warm (0.94,1,0.84) to cancel a purple stage. Small glow pieces in a flat accent read dark olive → lighten toward white, finer tile (×0.55). Category tints must be vivid and on big surfaces (panels), not pastel on emblems. Night lighting turns downward faces black → lift stone ~40% + an unlit SurfaceGui gradient (LightInfluence 0) on the visible underside. Corona/sunburst textures with a dark fill need LightEmission 1. Never recolour by attribute or part name across shared folders — walk only your own models.
 - **Hatch scenes:** parent the stage to the Camera (~8 studs ahead); ScreenGui dims hide 3D, so dim with a big translucent Part behind the stage + DepthOfField (FocusDistance = egg); multi-hatch eggs in SCREEN slots (u,v → camera space via tan(FOV/2) and aspect); hide own avatar with LocalTransparencyModifier. Some rbxasset sounds are "not approved" — check Output.
 
+- **(promoted 2026-10-28) Beams:** positive TextureSpeed scrolls A0 → A1 (A0 at the source for falls/flows). FaceCamera=false spreads width along the attachments' UpVector — a flat ground beam needs `CFrame.fromMatrix(pos, beamDir, horizontalPerp)` per attachment (re-set when spinning). Upward arc: both attachments' axis up, CurveSize0 = h, CurveSize1 = −h.
+- **(promoted 2026-10-28) Embers over a glowing beam/pool** vanish at LightEmission 1 / size ≤ 0.4: use LightEmission ~0.6, Brightness 3, size 0.8 → 0, Drag 0.5, gravity ~−14. In amber-lit areas cap LightEmission ~0.4.
+- **(promoted 2026-10-28) Skins on effects:** store each original ColorSequence/Color in an attribute before tinting and test that Clear restores every value; don't tint SA.Color twice (mesh skin path already did). Rigs parented outside the item need a `Tint(host, map)` hook; honour `TintOnly` on ancestors too. Aura sizing from an invisible stand-in: Transparency 0.999, not 1. Find a spout/pipe mouth from mesh vertices (`CreateEditableMeshAsync` + Size/MeshSize), not the marker part. Effect runners: own pausable clock + self-clean watchdog (template `FXRunner`).
 ## 7. Performance (phones first)
 - **Budget:** ≤ ~50 live particles per emitter, a few hundred on screen total. One emitter maxes at 400/s (100/s on mobile).
 - **Fill rate beats count:** a few huge overlapping transparent particles cost more than many small ones. Keep big glows short-lived; avoid stacking smoke layers in front of the camera.
