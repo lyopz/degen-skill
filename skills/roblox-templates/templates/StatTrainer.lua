@@ -1,0 +1,259 @@
+-- StatTrainer.lua — server-owned training stations (treadmills, pull-up bars, weights, punching bags) that
+--                   grow a stat per rep: Speed, Throw Power, Strength… the "train → unlock farther zone" loop
+--                   behind Steal An Egg (treadmills), Throw Food For Animals (pull-ups) and +1 Speed games.
+-- version: 1
+-- use: ModuleScript in ServerScriptService (server only).
+--   In Studio: tag each station part/model `TrainStation` (CollectionService) and set attributes:
+--     Stat     (string, required)  e.g. "Speed"
+--     Gain     (number, default 1)  stat added per rep (before the player multiplier)
+--     RepTime  (number, default 1)  seconds per automatic rep
+--     Requires (number, default 0)  minimum value of that stat to use the station (bigger stations later)
+--   The module adds a ProximityPrompt ("Train") to each station (or uses one already inside it).
+--
+-- local StatTrainer = require(game.ServerScriptService.StatTrainer)
+-- StatTrainer.Start({
+--     getStat = function(player, stat) local d = Data.Get(player); return d and d[stat] end,  -- nil = not loaded
+--     addStat = function(player, stat, amount) local d = Data.Get(player); d[stat] += amount end, -- must not yield
+--     multiplier = function(player, stat) return 1 + (Data.Get(player).Rebirths or 0) * 0.5 end, -- optional
+--     radius = 12,          -- studs from the station pivot the player must stay within (server-sampled)
+--     tapsPerSecond = 6,    -- optional tap-to-train boost: client fires Remotes/TrainTap; extra reps capped here
+--     tapGain = 0.25,       -- fraction of Gain per accepted tap
+--     onRep = function(player, stat, amount, station) end,  -- optional, e.g. Data.SaveSoon(player, 10)
+-- })
+-- Client (LocalScript): Remotes.TrainRep.OnClientEvent:Connect(function(stat, amount, station, total) ...
+--   pop "+amount" over the station, play the lift/run animation, punch the stat label (ButtonFeel/Motion) end)
+--   Remotes.TrainState.OnClientEvent:Connect(function(training, station, reason) ... show/hide "Stop" button,
+--   reason = "moved" | "locked" | "died" | "stopped" | "loading" end)
+--   Remotes.TrainTap:FireServer()   -- on tap/click while training (optional boost)
+--   Remotes.TrainStop:FireServer()  -- Stop button
+--
+-- Rules it follows (roblox-dev §2): the server owns the stat, the cadence and the distance check; the client
+-- only asks to start/stop/tap. One station per player. Rate limits survive stop/start (no restart spam).
+--
+-- changelog: v1 2026-10-29 first version (written for lyopz; trend: stat-training loops in 3 top-30 games)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
+
+local StatTrainer = {}
+
+local TAG = "TrainStation"
+local cfg = nil
+local sessions = {}   -- [player] = { station, stat, repTime, nextRepAt }
+local lastRepAt = {}  -- [player] = os.clock() of last auto rep (survives stop/start so restart can't beat the cadence)
+local tapBucket = {}  -- [player] = { tokens, t }
+
+local remotes = {}
+
+local function remote(name)
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = "Remotes"
+		folder.Parent = ReplicatedStorage
+	end
+	local r = folder:FindFirstChild(name)
+	if not r then
+		r = Instance.new("RemoteEvent")
+		r.Name = name
+		r.Parent = folder
+	end
+	return r
+end
+
+local function attr(station, name, default)
+	local v = station:GetAttribute(name)
+	if typeof(default) == "number" then
+		if typeof(v) ~= "number" or v ~= v or v < 0 then return default end
+	elseif v == nil then
+		return default
+	end
+	return v
+end
+
+local function stationPos(station)
+	if station:IsA("Model") then return station:GetPivot().Position end
+	if station:IsA("BasePart") then return station.Position end
+	return nil
+end
+
+local function rootOf(player)
+	local char = player.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not hum or not root or hum.Health <= 0 then return nil end
+	return root
+end
+
+local function inRange(player, station)
+	local root = rootOf(player)
+	local pos = stationPos(station)
+	if not root or not pos then return false, root and "moved" or "died" end
+	return (root.Position - pos).Magnitude <= cfg.radius, "moved"
+end
+
+local function stop(player, reason)
+	local s = sessions[player]
+	if not s then return end
+	sessions[player] = nil
+	remotes.State:FireClient(player, false, s.station, reason or "stopped")
+end
+
+local function readStat(player, stat)
+	local ok, v = pcall(cfg.getStat, player, stat)
+	if ok and typeof(v) == "number" and v == v then return v end
+	return nil
+end
+
+local function mult(player, stat)
+	if not cfg.multiplier then return 1 end
+	local ok, m = pcall(cfg.multiplier, player, stat)
+	if not ok or typeof(m) ~= "number" or m ~= m or m <= 0 or m == math.huge then return 1 end
+	return m
+end
+
+local function grant(player, s, amount)
+	if amount <= 0 then return end
+	local ok, err = pcall(cfg.addStat, player, s.stat, amount)
+	if not ok then
+		warn("[StatTrainer] addStat failed:", err)
+		stop(player, "loading")
+		return
+	end
+	local total = readStat(player, s.stat)
+	remotes.Rep:FireClient(player, s.stat, amount, s.station, total)
+	if cfg.onRep then task.spawn(cfg.onRep, player, s.stat, amount, s.station) end
+end
+
+local function start(player, station)
+	if not station:IsDescendantOf(workspace) or not station:HasTag(TAG) then return end
+	if sessions[player] and sessions[player].station == station then
+		stop(player, "stopped") -- pressing the prompt again toggles off
+		return
+	end
+	stop(player, "stopped")
+	local stat = attr(station, "Stat", nil)
+	if typeof(stat) ~= "string" or #stat == 0 or #stat > 32 then
+		warn("[StatTrainer] station without a Stat attribute:", station:GetFullName())
+		return
+	end
+	local value = readStat(player, stat)
+	if value == nil then
+		remotes.State:FireClient(player, false, station, "loading")
+		return
+	end
+	if value < attr(station, "Requires", 0) then
+		remotes.State:FireClient(player, false, station, "locked")
+		return
+	end
+	local ok, why = inRange(player, station)
+	if not ok then
+		remotes.State:FireClient(player, false, station, why)
+		return
+	end
+	local repTime = math.max(attr(station, "RepTime", 1), 0.2)
+	local now = os.clock()
+	sessions[player] = {
+		station = station,
+		stat = stat,
+		repTime = repTime,
+		nextRepAt = math.max(now + repTime, (lastRepAt[player] or 0) + repTime),
+	}
+	remotes.State:FireClient(player, true, station, nil)
+end
+
+local function onTap(player)
+	local s = sessions[player]
+	if not s or not cfg.tapsPerSecond then return end
+	local b = tapBucket[player]
+	local now = os.clock()
+	if not b then
+		b = { tokens = cfg.tapsPerSecond, t = now }
+		tapBucket[player] = b
+	end
+	b.tokens = math.min(cfg.tapsPerSecond, b.tokens + (now - b.t) * cfg.tapsPerSecond)
+	b.t = now
+	if b.tokens < 1 then return end -- over the cap: ignore silently
+	b.tokens -= 1
+	grant(player, s, attr(s.station, "Gain", 1) * (cfg.tapGain or 0.25) * mult(player, s.stat))
+end
+
+local function bindStation(station)
+	if not (station:IsA("BasePart") or station:IsA("Model")) then return end
+	local prompt = station:FindFirstChildWhichIsA("ProximityPrompt", true)
+	if not prompt then
+		prompt = Instance.new("ProximityPrompt")
+		prompt.ActionText = "Train"
+		prompt.ObjectText = tostring(station:GetAttribute("Stat") or "")
+		prompt.HoldDuration = 0
+		prompt.MaxActivationDistance = math.min(cfg.radius, 10)
+		prompt.RequiresLineOfSight = false
+		local host = station
+		if station:IsA("Model") then host = station.PrimaryPart or station:FindFirstChildWhichIsA("BasePart", true) end
+		if not host then
+			warn("[StatTrainer] station model has no part for the prompt:", station:GetFullName())
+			return
+		end
+		prompt.Parent = host
+	end
+	prompt.Triggered:Connect(function(player) start(player, station) end)
+end
+
+function StatTrainer.Start(config)
+	assert(not cfg, "StatTrainer.Start called twice")
+	assert(type(config) == "table" and type(config.getStat) == "function" and type(config.addStat) == "function",
+		"StatTrainer.Start needs getStat and addStat")
+	cfg = config
+	cfg.radius = cfg.radius or 12
+	remotes.Rep = remote("TrainRep")
+	remotes.State = remote("TrainState")
+	remotes.Tap = remote("TrainTap")
+	remotes.Stop = remote("TrainStop")
+
+	remotes.Tap.OnServerEvent:Connect(onTap)
+	remotes.Stop.OnServerEvent:Connect(function(player) stop(player, "stopped") end)
+
+	for _, station in CollectionService:GetTagged(TAG) do bindStation(station) end
+	CollectionService:GetInstanceAddedSignal(TAG):Connect(bindStation)
+	CollectionService:GetInstanceRemovedSignal(TAG):Connect(function(station)
+		for player, s in sessions do
+			if s.station == station then stop(player, "stopped") end
+		end
+	end)
+
+	Players.PlayerRemoving:Connect(function(player)
+		sessions[player] = nil
+		lastRepAt[player] = nil
+		tapBucket[player] = nil
+	end)
+
+	-- one loop for every player (cheap): distance check + automatic reps
+	task.spawn(function()
+		while true do
+			task.wait(0.2)
+			local now = os.clock()
+			for player, s in sessions do
+				local ok, why = inRange(player, s.station)
+				if not ok then
+					stop(player, why)
+				elseif now >= s.nextRepAt then
+					s.nextRepAt = now + s.repTime
+					lastRepAt[player] = now
+					grant(player, s, attr(s.station, "Gain", 1) * mult(player, s.stat))
+				end
+			end
+		end
+	end)
+end
+
+function StatTrainer.Stop(player)
+	stop(player, "stopped")
+end
+
+function StatTrainer.IsTraining(player)
+	local s = sessions[player]
+	return s ~= nil, s and s.station, s and s.stat
+end
+
+return StatTrainer

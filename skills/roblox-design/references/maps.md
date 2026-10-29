@@ -1,12 +1,12 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–28 2026) and why they work
-Oct 28: livecounts 09:40 UTC (Oct 27: rokoala 00:25 / livecounts 09:35 UTC); lows, peaks run 2–3× higher.
+## Top games right now (live CCU snapshots, Oct 24–29 2026) and why they work
+Oct 29: statroblox ~12:50 UTC (https://statroblox.com/leaderboards/playing; Oct 28: livecounts 09:40 UTC); lows, peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Steal An Egg | Steal + hatch sim | ~0.7–1.1M (Oct 27, cooling after 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
-| Murder Mystery 2 | Social deduction | ~400k at 09:40 UTC Oct 28 (up from ~250–300k Oct 27) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
-| Brookhaven RP | Social roleplay | ~230–470k | Open town, houses, cars, spatial voice; freedom > goals |
+| Steal An Egg | Steal + hatch sim | ~1.2M (Oct 29, +12% day; 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
+| Murder Mystery 2 | Social deduction | ~500k (Oct 29) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Brookhaven RP | Social roleplay | ~400k (Oct 29) | Open town, houses, cars, spatial voice; freedom > goals |
 | Steal a Brainrot / Break and Steal an Egg | Steal sims | ~190–220k (−37% day, Oct 27) / ~75–125k | Steal-from-bases loop; the egg version keeps cloning upward |
 | Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
 | 99 Nights in the Forest | Co-op survival | ~130–240k | Night cycle pressure, base fire, friends vs monster |
@@ -14,10 +14,12 @@ Oct 28: livecounts 09:40 UTC (Oct 27: rokoala 00:25 / livecounts 09:35 UTC); low
 | Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
 | Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
 | Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |
-| DONT SPLASH | Obby / runner (created Oct 17) | ~64–90k, 116k peak; 7-day avg +1,730% (Oct 28) | A 10-day-old simple obby hit the top 15 and #1 trending: short stages + regular "NEW STAGES" updates still break through |
+| DONT SPLASH | Obby / runner (created Oct 17) | ~104k at #11 (Oct 29, +10% day); 7-day avg +1,730% (Oct 28) | A 10-day-old simple obby hit the top 15 and #1 trending: short stages + regular "NEW STAGES" updates still break through |
 | The Hollow (Roblox) | Platform event hub | ~38–52k, **209k 24h peak** (Oct 27) | Nightly drops spike CCU — see Oct 27 read |
 | Illegal Soccer / Huss Valley | Gadget soccer / chase rounds | ~47k / ~46k (Oct 27, both new to top 25) | Sport + chaos gadgets (2 slots: grapple, jetpack, oil); "RUN!!" 30-player chase rounds — short simple rounds keep climbing |
 | Risers Oct 27 (livecounts 24h) | Horror / sim / TD | The Mimic +253% (~19k), Throw Food For Animals +64% (~27k), Home Alone: Anomalies +57%, Cameraman TD +22% (~36k), Steal A Pet And Ride It +22% | Horror + anomaly spikes into Halloween; "throw/feed animals" and steal-a-pet clones are the next sim wave |
+| Throw Food For Animals | Throw-train-collect sim | ~104k at #12, +70% day (Oct 29; ~27k on Oct 27) | Throw food far to lure animals from zones → animals earn money → better food lures rarer ones; pull-up stands train Throw Power, which opens farther zones. Train-a-stat → reach-farther is the hot sim core (template `StatTrainer`) https://www.roblox.com/games/120219252362013/Throw-Food-For-Animals |
+| +1 Speed Keyboard Escape / Steal A Pet And Ride It! | Speed obby / steal-pet clone | ~44k each, +48% / +43% day (Oct 29) | "+1 Speed" escape obby (dodge brainrots/traps for wins, speed = main resource) keeps cloning into themed versions; steal-a-pet clones still rising |
 | Climb For Animals Eggs / Sell Fries! | Climb-hatch / sell tycoon | ~60–80k | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
 
 **Oct 27 read — platform event structure (Roblox's The Hollow, Oct 22 – Nov 2, finale Oct 31):** one hub (a survival maze that adds a floor each night; old floors stay open so late joiners can catch up, each floor = guaranteed item) + 44 partner games in tiers (9 nightly "haunts", 9 roaming, 26 side-quest games paying 20 tickets + badge) → tickets buy hats in the hub shop; rewards claimable until Nov 2 (grace window after the finale). Its nightly drops hit a 209k peak. Players complained about uneven quest effort for the same 20 tickets and drops gated on special roles/admin timing. Copy for multi-zone events: keep earlier stages open, pay by effort, show prices up front, publish times in one time zone, add a claim window (template `EventClock` v2 `grace` + `CanClaim`). https://timesaver.gg/blog/roblox-the-hollow-event-games · https://livecounts.nl/roblox-charts/
@@ -31,6 +33,7 @@ Earlier trend data (creation.dev, Mar 2026): **brainrot** games lead (~1.4M CCU 
 **House style (lyopz, 2026-10-25):** islands and buildings follow `floating-islands.md` unless lyopz asks otherwise.
 
 ## Layout patterns per genre
+- **Train-to-reach sims** (Throw Food For Animals, Steal An Egg, +1 Speed, Oct 2026): training stations by spawn (each bigger one gated by the stat, template `StatTrainer`), zones laid out in one line outward so a higher stat visibly reaches farther; the next zone is always in view.
 - **Simulator / tycoon:** hub lobby (shops, leaderboards, rebirth altar, codes) → ring/line of zones unlocked by currency gates, each zone a new biome + color; collect spots spread so players walk past shops; teleport pads between zones; plot grid for tycoons with clear "build here" glow.
 - **Obby / parkour:** single vertical tower or linear course, checkpoints every 5–10 jumps, difficulty ramps with rest platforms, color-coded hazards (red = kill, blue = bounce, yellow = moving), stage counter UI, skip-stage product; competitive: procedural or vote-selected courses so memorizing doesn't win.
 - **Fighting / arena:** compact arenas with cover and verticality, clear spawn zones, readable floor; lobby with dummies to test moves.
