@@ -134,8 +134,8 @@ public static class DegenPolish
         var root = Find(name); if (root == null) return NoRoot(name);
         Selection.activeGameObject = root;
         var sv = SceneView.lastActiveSceneView;
-        if (sv == null) sv = EditorWindow.GetWindow<SceneView>();
-        sv.Show(); sv.Focus();
+        // Never pull Unity to the front (lyopz, 2026-10-28): update the Scene view in place, even when Unity is behind other windows.
+        if (sv == null) sv = EditorWindow.GetWindow<SceneView>(false, null, false);
         sv.drawGizmos = false;
         sv.sceneLighting = true;
         sv.cameraMode = SceneView.GetBuiltinCameraMode(DrawCameraMode.Textured);
@@ -576,7 +576,7 @@ public static class DegenPolish
     static void SaveWorkbench() { var s = SceneManager.GetActiveScene(); if (s.path == Workbench) EditorSceneManager.SaveScene(s); }
     static void FocusZone(Zone z)
     {
-        var sv = SceneView.lastActiveSceneView ?? EditorWindow.GetWindow<SceneView>();
+        var sv = SceneView.lastActiveSceneView ?? EditorWindow.GetWindow<SceneView>(false, null, false);
         var go = ZoneObject(z); Selection.activeGameObject = go;
         var b = GetBounds(go); if (b.size == Vector3.zero) b = new Bounds(new Vector3(z.x + 10, 0, z.z + 10), Vector3.one * 10);
         sv.LookAt(b.center, Quaternion.Euler(30, 215, 0), Mathf.Max(b.extents.magnitude * 1.6f, 6f)); sv.Repaint();
