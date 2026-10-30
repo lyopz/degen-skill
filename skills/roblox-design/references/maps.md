@@ -1,25 +1,26 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–29 2026) and why they work
-Oct 29: statroblox ~12:50 UTC (https://statroblox.com/leaderboards/playing; Oct 28: livecounts 09:40 UTC); lows, peaks run 2–3× higher.
+## Top games right now (live CCU snapshots, Oct 24–30 2026) and why they work
+Oct 30: statroblox ~13:15 UTC (https://statroblox.com/leaderboards/playing; livecounts 10:08 UTC https://livecounts.nl/roblox-charts/); lows, peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
-| Steal An Egg | Steal + hatch sim | ~1.2M (Oct 29, +12% day; 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
-| Murder Mystery 2 | Social deduction | ~500k (Oct 29) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
-| Brookhaven RP | Social roleplay | ~400k (Oct 29) | Open town, houses, cars, spatial voice; freedom > goals |
-| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~190–220k (−37% day, Oct 27) / ~75–125k | Steal-from-bases loop; the egg version keeps cloning upward |
+| Steal An Egg | Steal + hatch sim | ~1.1–1.3M (Oct 30; 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
+| Murder Mystery 2 | Social deduction | ~485–525k (Oct 30, +17% day) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
+| Brookhaven RP | Social roleplay | ~360–490k (Oct 30) | Open town, houses, cars, spatial voice; freedom > goals |
+| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~255–280k (Oct 30, +7–30% day) / ~105–120k | Steal-from-bases loop; the egg version keeps cloning upward |
 | Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
 | 99 Nights in the Forest | Co-op survival | ~130–240k | Night cycle pressure, base fire, friends vs monster |
 | Blox Fruits / RIVALS / Jujutsu Shenanigans | RPG / FPS / anime fighter | ~90–215k each | Islands + bosses · tight shooting · flashy moves |
 | Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
 | Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
 | Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |
-| DONT SPLASH | Obby / runner (created Oct 17) | ~104k at #11 (Oct 29, +10% day); 7-day avg +1,730% (Oct 28) | A 10-day-old simple obby hit the top 15 and #1 trending: short stages + regular "NEW STAGES" updates still break through |
+| DONT SPLASH | Obby / runner (created Oct 17) | ~109k at #12 (Oct 30, flat); 7-day avg +1,730% (Oct 28) | A 10-day-old simple obby hit the top 15 and #1 trending: short stages + regular "NEW STAGES" updates still break through |
 | The Hollow (Roblox) | Platform event hub | ~38–52k, **209k 24h peak** (Oct 27) | Nightly drops spike CCU — see Oct 27 read |
 | Illegal Soccer / Huss Valley | Gadget soccer / chase rounds | ~47k / ~46k (Oct 27, both new to top 25) | Sport + chaos gadgets (2 slots: grapple, jetpack, oil); "RUN!!" 30-player chase rounds — short simple rounds keep climbing |
 | Risers Oct 27 (livecounts 24h) | Horror / sim / TD | The Mimic +253% (~19k), Throw Food For Animals +64% (~27k), Home Alone: Anomalies +57%, Cameraman TD +22% (~36k), Steal A Pet And Ride It +22% | Horror + anomaly spikes into Halloween; "throw/feed animals" and steal-a-pet clones are the next sim wave |
-| Throw Food For Animals | Throw-train-collect sim | ~104k at #12, +70% day (Oct 29; ~27k on Oct 27) | Throw food far to lure animals from zones → animals earn money → better food lures rarer ones; pull-up stands train Throw Power, which opens farther zones. Train-a-stat → reach-farther is the hot sim core (template `StatTrainer`) https://www.roblox.com/games/120219252362013/Throw-Food-For-Animals |
+| Throw Food For Animals | Throw-train-collect sim | ~105–132k at #10, +39–53% day (Oct 30; ~27k on Oct 27) | Throw food far to lure animals from zones → animals earn money → better food lures rarer ones; pull-up stands train Throw Power, which opens farther zones. Train-a-stat → reach-farther is the hot sim core (template `StatTrainer`) https://www.roblox.com/games/120219252362013/Throw-Food-For-Animals |
 | +1 Speed Keyboard Escape / Steal A Pet And Ride It! | Speed obby / steal-pet clone | ~44k each, +48% / +43% day (Oct 29) | "+1 Speed" escape obby (dodge brainrots/traps for wins, speed = main resource) keeps cloning into themed versions; steal-a-pet clones still rising |
+| Risers Oct 30 (24h) | Horror escape / family RP / +1 clickers / driving | WARDEN Sonaria Horror Escape +1,848% (~20k), Driving Empire +95–107% (~40–50k), Raise The Biggest Family +65–157% (~22–25k, new Oct 2026), +1 Spider Arm +154% (~23k), +1 Anime Eyes +61% (~48k), Fake an Egg +25% (~37k) | "+1 ___" stat clickers keep cloning (eyes, arms, speed) with anime skins + egg rewards; a caretaking RP (adopt → interview → feed/bathe a growing baby, come back daily) is the new social riser https://rowatcher.com/games/10770699460/raise-the-biggest-family · https://statroblox.com/games/10770933473/1-anime-eyes |
 | Climb For Animals Eggs / Sell Fries! | Climb-hatch / sell tycoon | ~60–80k | Climb-for-eggs hybrid and "Sell ___" tycoons are rising |
 
 **Oct 27 read — platform event structure (Roblox's The Hollow, Oct 22 – Nov 2, finale Oct 31):** one hub (a survival maze that adds a floor each night; old floors stay open so late joiners can catch up, each floor = guaranteed item) + 44 partner games in tiers (9 nightly "haunts", 9 roaming, 26 side-quest games paying 20 tickets + badge) → tickets buy hats in the hub shop; rewards claimable until Nov 2 (grace window after the finale). Its nightly drops hit a 209k peak. Players complained about uneven quest effort for the same 20 tickets and drops gated on special roles/admin timing. Copy for multi-zone events: keep earlier stages open, pay by effort, show prices up front, publish times in one time zone, add a claim window (template `EventClock` v2 `grace` + `CanClaim`). https://timesaver.gg/blog/roblox-the-hollow-event-games · https://livecounts.nl/roblox-charts/
