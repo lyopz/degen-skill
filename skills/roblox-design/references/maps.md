@@ -1,6 +1,7 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24–31 2026) and why they work
+## Top games right now (live CCU snapshots, Oct 24 – Nov 1 2026) and why they work
+Nov 1 (rowatcher, day after Halloween): Steal An Egg ~783k (+77k 24h, ~10.1B visits) — off its 1.3M Halloween-day high; expect Halloween spikes to cool this week. On Oct 31 it hosted a one-time **Jonas Brothers live concert** (11 am ET, announced 3 days ahead, costumes encouraged): a scheduled in-game show at a fixed time is a top-tier "everyone gather now" beat for a big live game (drive the countdown with `EventClock`). https://rowatcher.com/games/10563114921/steal-an-egg · https://themusicuniverse.com/jonas-brothers-head-to-roblox-for-halloween/
 Oct 31 (livecounts 10:23 UTC, Halloween day, The Hollow finale): Steal An Egg 1.31M (+15%), MM2 ~495k, Brookhaven ~462k (+25%), Steal a Brainrot ~298k, **RIVALS ~256k (+36%, 404k peak)**, 99 Nights ~221k, Adopt Me ~212k, Blox Fruits ~186k, Throw Food For Animals ~139k (#9, new high), Jujutsu Shenanigans ~109k, Dandy's World ~94k (+25%), DONT SPLASH ~90k (#13, holding); top 100 = 6.85M. https://livecounts.nl/roblox-charts/
 Oct 30: statroblox ~13:15 UTC (https://statroblox.com/leaderboards/playing; livecounts 10:08 UTC https://livecounts.nl/roblox-charts/); lows, peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
