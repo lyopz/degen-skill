@@ -1,18 +1,19 @@
 # Roblox maps — what's in meta (2026) and how to build them
 
-## Top games right now (live CCU snapshots, Oct 24 – Nov 1 2026) and why they work
+## Top games right now (live CCU snapshots, Oct 24 – Nov 2 2026) and why they work
+Nov 2 (livecounts 11:03 UTC, post-Halloween cool-down, top 100 = 5.30M vs 6.85M on Oct 31): Steal An Egg ~931k (−25%), **Blox Fruits back to #2 ~404k (721k peak)**, MM2 ~338k, Brookhaven ~318k, Adopt Me ~207k, RIVALS ~163k, **Break and Steal an Egg ~153k (+67%, 592k peak)**, 99 Nights ~144k, Throw Food For Animals ~128k (#9, holding), Strongest Battlegrounds ~80k (+17%), DONT SPLASH ~65k (−40%), Steal a Brainrot ~60k (−50%, now #18). Almost everything else is down 20–40% as Halloween ends. **Break and Steal an Egg read:** a "MASSIVE UPDATE + ADMIN ABUSE" dropped Sun Nov 1, 10 AM EST, announced ~2 days ahead on the game page; past admin-abuse sessions = server-wide boosts + unusual egg spawns, duration unannounced → peak ~5× its normal ~110k. A weekend update at a fixed time + a short live dev "admin abuse" session (boost luck, spawn rare eggs for everyone) is a cheap, repeatable spike — announce the time in the title/description, drive the countdown with `EventClock`. https://livecounts.nl/roblox-charts/ · https://stealthygaming.com/break-and-steal-an-egg-massive-update-admin-abuse/
 Nov 1 (rowatcher, day after Halloween): Steal An Egg ~783k (+77k 24h, ~10.1B visits) — off its 1.3M Halloween-day high; expect Halloween spikes to cool this week. On Oct 31 it hosted a one-time **Jonas Brothers live concert** (11 am ET, announced 3 days ahead, costumes encouraged): a scheduled in-game show at a fixed time is a top-tier "everyone gather now" beat for a big live game (drive the countdown with `EventClock`). https://rowatcher.com/games/10563114921/steal-an-egg · https://themusicuniverse.com/jonas-brothers-head-to-roblox-for-halloween/
 Oct 31 (livecounts 10:23 UTC, Halloween day, The Hollow finale): Steal An Egg 1.31M (+15%), MM2 ~495k, Brookhaven ~462k (+25%), Steal a Brainrot ~298k, **RIVALS ~256k (+36%, 404k peak)**, 99 Nights ~221k, Adopt Me ~212k, Blox Fruits ~186k, Throw Food For Animals ~139k (#9, new high), Jujutsu Shenanigans ~109k, Dandy's World ~94k (+25%), DONT SPLASH ~90k (#13, holding); top 100 = 6.85M. https://livecounts.nl/roblox-charts/
-Oct 30: statroblox ~13:15 UTC (https://statroblox.com/leaderboards/playing; livecounts 10:08 UTC https://livecounts.nl/roblox-charts/); lows, peaks run 2–3× higher.
+Table numbers: Oct 30 statroblox/livecounts lows unless dated; peaks run 2–3× higher.
 | Game | Genre | Live players | What to learn |
 |---|---|---|---|
 | Steal An Egg | Steal + hatch sim | ~1.1–1.3M (Oct 30; 2M+ Halloween Dimension peak; #1 since Sep) | Steal eggs from NPC pets/other players → hatch rarer pets that earn money; treadmill speed training; PvP stealing = constant drama; timed event dimension (see below) |
 | Murder Mystery 2 | Social deduction | ~485–525k (Oct 30, +17% day) / 1M+ peak (Halloween event to ~Nov 16) | Short rounds, hidden roles, knife/gun cosmetics economy; seasonal event + new map = 2x players |
 | Brookhaven RP | Social roleplay | ~360–490k (Oct 30) | Open town, houses, cars, spatial voice; freedom > goals |
-| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~255–280k (Oct 30, +7–30% day) / ~105–120k | Steal-from-bases loop; the egg version keeps cloning upward |
+| Steal a Brainrot / Break and Steal an Egg | Steal sims | ~255–280k (Oct 30) → ~60k (Nov 2) / ~105–120k → 592k peak on its Nov 1 update + admin abuse | Steal-from-bases loop; the egg version keeps cloning upward |
 | Adopt Me! | Social trading | ~140–290k | Pet economy, rarity tiers (Neon/Mega), safe for new players |
 | 99 Nights in the Forest | Co-op survival | ~130–240k | Night cycle pressure, base fire, friends vs monster |
-| Blox Fruits / RIVALS / Jujutsu Shenanigans | RPG / FPS / anime fighter | ~90–215k each | Islands + bosses · tight shooting · flashy moves |
+| Blox Fruits / RIVALS / Jujutsu Shenanigans | RPG / FPS / anime fighter | ~90–215k each (Blox Fruits ~404k, #2 on Nov 2) | Islands + bosses · tight shooting · flashy moves |
 | Anime Dice | Anime RNG | ~79k (near its all-time peak) | Dice-roll RNG for anime units — RNG + anime keeps climbing |
 | Fish It! / Pet Simulator 99 / Fisch | Idle fishing / pet sim | ~50–75k each | Calm collect loops with frequent worlds |
 | Violence District / Dandy's World / Evade / DOORS | Asymmetric + co-op horror | ~47–155k each | Halloween spike: 1 killer vs survivors, chase + hide, short runs |

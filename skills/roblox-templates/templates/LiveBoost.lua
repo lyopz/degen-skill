@@ -1,0 +1,286 @@
+-- LiveBoost.lua — "admin abuse" live boosts: a dev starts x3 Luck / x2 Coins for N minutes and it goes live in
+--                 EVERY server at once (and servers that start mid-boost pick it up), with a countdown banner.
+-- version: 1
+-- use: ModuleScript in ReplicatedStorage.
+--   SERVER (one Script in ServerScriptService):
+--     local LiveBoost = require(game.ReplicatedStorage.LiveBoost)
+--     LiveBoost.StartServer({
+--         Admins  = { UserIds = { 123456 }, GroupId = 0, MinRank = 254 },   -- who may start/stop boosts
+--         Boosts  = { Luck = { Max = 10 }, Coins = { Max = 5 }, HatchSpeed = { Max = 3 } }, -- allow-list + caps
+--         MaxMinutes = 60,
+--         ChatCommand = true,   -- adds /boost luck 3 15 · /boost stop luck · /boost list (admins only)
+--     })
+--     -- authority: read the multiplier where the reward is decided
+--     local luck = LiveBoost.Get("Luck")          -- 1 when no boost is live
+--     LiveBoost.OnChanged("Luck", function(mult, endsAt) if mult > 1 then spawnRareEggs() end end)
+--     LiveBoost.Start("Coins", 2, 30, "Weekend update")  -- from your own admin panel / EventClock.OnStart
+--     LiveBoost.Stop("Coins")
+--   CLIENT (any LocalScript):
+--     LiveBoost.BindLabel(label, "Luck", "x%s LUCK — %s LEFT")  -- shown only while live, hidden after
+--     LiveBoost.OnChanged("Luck", function(mult) if mult > 1 then playBannerSlideIn() end end)
+-- How: Start → MemoryStore HashMap (expires with the boost, so new servers read it) + MessagingService publish
+--      (live servers apply within ~1 s). Each server writes Workspace attributes Boost_<Name> / Boost_<Name>_Ends,
+--      which replicate to clients (clients can't change the server's copy). Times use GetServerTimeNow().
+-- Pattern: Break and Steal an Egg's Nov 1 2026 "MASSIVE UPDATE + ADMIN ABUSE" (fixed time, announced ~2 days ahead,
+--          server-wide boosts + rare egg spawns) peaked ~5x its normal CCU. Announce the time; boosts stack by MAX,
+--          not multiply (a second Start of the same name replaces it).
+-- Limits: MessagingService ~1 KB/message, publish rate ~150 + 60×players/min per server — fine for admin use only;
+--         never call Start from player actions. All service calls are pcall'd; on failure the local server still
+--         applies the boost and the call returns false + reason.
+-- Studio: MessagingService/MemoryStore work in Studio after publishing with API access on; in Studio any player
+--         counts as admin so you can test /boost alone (never on live servers).
+-- changelog: v1 2026-11-02 first version (daily refresh: dev-run "admin abuse" boost sessions spike CCU)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local LiveBoost = {}
+
+local TOPIC = "DegenLiveBoost"
+local MAP_NAME = "DegenLiveBoosts"
+local PREFIX = "Boost_"
+
+local config = nil
+local listeners = {} -- name -> { fn }
+local watched = {} -- name -> true (client attribute watchers)
+
+local function now()
+	return workspace:GetServerTimeNow()
+end
+
+local function fire(name)
+	local list = listeners[name]
+	if not list then
+		return
+	end
+	local mult, endsAt = LiveBoost.Get(name), workspace:GetAttribute(PREFIX .. name .. "_Ends") or 0
+	for _, fn in ipairs(list) do
+		task.spawn(fn, mult, endsAt)
+	end
+end
+
+local function watch(name)
+	if watched[name] then
+		return
+	end
+	watched[name] = true
+	workspace:GetAttributeChangedSignal(PREFIX .. name):Connect(function()
+		fire(name)
+	end)
+end
+
+-- Works on server and client. Returns the live multiplier (1 if none / expired) and seconds left.
+function LiveBoost.Get(name)
+	local mult = workspace:GetAttribute(PREFIX .. name)
+	local endsAt = workspace:GetAttribute(PREFIX .. name .. "_Ends")
+	if type(mult) == "number" and type(endsAt) == "number" and endsAt > now() then
+		return mult, endsAt - now()
+	end
+	return 1, 0
+end
+
+function LiveBoost.OnChanged(name, fn)
+	listeners[name] = listeners[name] or {}
+	table.insert(listeners[name], fn)
+	watch(name)
+end
+
+function LiveBoost.Format(s)
+	s = math.max(0, math.floor(s))
+	if s >= 3600 then
+		return string.format("%dh %02dm", s // 3600, (s % 3600) // 60)
+	end
+	return string.format("%02d:%02d", s // 60, s % 60)
+end
+
+-- Client or server: show "x3 LUCK — 12:30 LEFT" while live, hide otherwise. fmt gets (mult, timeLeft).
+function LiveBoost.BindLabel(label, name, fmt)
+	fmt = fmt or ("x%s " .. string.upper(name) .. " — %s LEFT")
+	task.spawn(function()
+		while label.Parent do
+			local mult, left = LiveBoost.Get(name)
+			local live = mult ~= 1 and left > 0
+			label.Visible = live
+			if live then
+				local m = (mult % 1 == 0) and tostring(math.floor(mult)) or string.format("%.1f", mult)
+				label.Text = string.format(fmt, m, LiveBoost.Format(left))
+			end
+			task.wait(live and 0.5 or 1)
+		end
+	end)
+end
+
+---------------------------------------------------------------- server only
+local MessagingService, map
+
+local function apply(name, mult, endsAt)
+	if not config or not config.Boosts[name] then
+		return
+	end
+	if endsAt <= now() or mult == 1 then
+		workspace:SetAttribute(PREFIX .. name .. "_Ends", nil)
+		workspace:SetAttribute(PREFIX .. name, nil)
+	else
+		workspace:SetAttribute(PREFIX .. name .. "_Ends", endsAt)
+		workspace:SetAttribute(PREFIX .. name, mult) -- set last: listeners see both values
+	end
+end
+
+local function clean(name, mult, minutes)
+	if type(name) ~= "string" or not config.Boosts[name] then
+		return nil, "unknown boost"
+	end
+	if type(mult) ~= "number" or mult ~= mult or not math.isfinite(mult) then
+		return nil, "bad multiplier"
+	end
+	if type(minutes) ~= "number" or minutes ~= minutes or not math.isfinite(minutes) then
+		return nil, "bad minutes"
+	end
+	mult = math.clamp(mult, 1, config.Boosts[name].Max or 10)
+	minutes = math.clamp(minutes, 1, config.MaxMinutes)
+	return mult, minutes
+end
+
+function LiveBoost.IsAdmin(player)
+	if RunService:IsStudio() then
+		return true
+	end
+	local a = config and config.Admins or {}
+	if table.find(a.UserIds or {}, player.UserId) then
+		return true
+	end
+	if game.CreatorType == Enum.CreatorType.User and player.UserId == game.CreatorId then
+		return true
+	end
+	if (a.GroupId or 0) > 0 then
+		local ok, rank = pcall(player.GetRankInGroup, player, a.GroupId)
+		if ok and rank >= (a.MinRank or 255) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Server: start a boost in every server. Returns ok, reason.
+function LiveBoost.Start(name, mult, minutes, note)
+	assert(RunService:IsServer(), "LiveBoost.Start is server-only")
+	local m, mins = clean(name, mult, minutes)
+	if not m then
+		return false, mins
+	end
+	local endsAt = now() + mins * 60
+	apply(name, m, endsAt) -- this server right away
+	local payload = { n = name, m = m, e = endsAt, t = typeof(note) == "string" and note:sub(1, 80) or nil }
+	local okMap, errMap = pcall(map.SetAsync, map, name, payload, math.ceil(mins * 60) + 5)
+	local okPub, errPub = pcall(MessagingService.PublishAsync, MessagingService, TOPIC, payload)
+	if not (okMap and okPub) then
+		warn("[LiveBoost] cross-server sync failed:", errMap, errPub)
+		return false, "sync failed (this server only)"
+	end
+	return true
+end
+
+function LiveBoost.Stop(name)
+	assert(RunService:IsServer(), "LiveBoost.Stop is server-only")
+	if type(name) ~= "string" or not config.Boosts[name] then
+		return false, "unknown boost"
+	end
+	apply(name, 1, 0)
+	pcall(map.RemoveAsync, map, name)
+	local ok = pcall(MessagingService.PublishAsync, MessagingService, TOPIC, { n = name, m = 1, e = 0 })
+	return ok, (not ok) and "sync failed" or nil
+end
+
+local function setupChat()
+	local TextChatService = game:GetService("TextChatService")
+	local cmd = Instance.new("TextChatCommand")
+	cmd.Name = "LiveBoostCommand"
+	cmd.PrimaryAlias = "/boost"
+	cmd.Parent = TextChatService
+	cmd.Triggered:Connect(function(source, text)
+		local player = Players:GetPlayerByUserId(source.UserId)
+		if not player or not LiveBoost.IsAdmin(player) then
+			return
+		end
+		local args = string.split(string.lower(text):sub(1, 60), " ")
+		local function find(n)
+			for key in pairs(config.Boosts) do
+				if string.lower(key) == n then
+					return key
+				end
+			end
+		end
+		local reply
+		if args[2] == "stop" and find(args[3] or "") then
+			LiveBoost.Stop(find(args[3]))
+			reply = "Stopped " .. find(args[3])
+		elseif args[2] == "list" then
+			local parts = {}
+			for key in pairs(config.Boosts) do
+				local m, left = LiveBoost.Get(key)
+				table.insert(parts, key .. (m ~= 1 and (" x" .. m .. " " .. LiveBoost.Format(left)) or ""))
+			end
+			reply = table.concat(parts, " · ")
+		elseif find(args[2] or "") then
+			local ok, why = LiveBoost.Start(find(args[2]), tonumber(args[3]) or 2, tonumber(args[4]) or 15)
+			reply = ok and ("Started " .. find(args[2])) or ("Boost: " .. tostring(why))
+		else
+			reply = "/boost <name> <mult> <minutes> · /boost stop <name> · /boost list"
+		end
+		print("[LiveBoost]", player.Name, text, "->", reply)
+	end)
+end
+
+function LiveBoost.StartServer(cfg)
+	assert(RunService:IsServer(), "LiveBoost.StartServer is server-only")
+	assert(type(cfg) == "table" and type(cfg.Boosts) == "table", "LiveBoost: config.Boosts required")
+	config = cfg
+	config.MaxMinutes = config.MaxMinutes or 60
+	MessagingService = game:GetService("MessagingService")
+	map = game:GetService("MemoryStoreService"):GetHashMap(MAP_NAME)
+	for name in pairs(config.Boosts) do
+		watch(name)
+	end
+
+	-- live servers: apply published boosts
+	task.spawn(function()
+		local ok, err = pcall(MessagingService.SubscribeAsync, MessagingService, TOPIC, function(msg)
+			local d = msg.Data
+			if type(d) == "table" and type(d.n) == "string" and type(d.m) == "number" and type(d.e) == "number" then
+				apply(d.n, d.m, d.e)
+			end
+		end)
+		if not ok then
+			warn("[LiveBoost] subscribe failed:", err)
+		end
+	end)
+
+	-- this server started mid-boost: read what is still live
+	task.spawn(function()
+		for name in pairs(config.Boosts) do
+			local ok, d = pcall(map.GetAsync, map, name)
+			if ok and type(d) == "table" and type(d.m) == "number" and type(d.e) == "number" then
+				apply(name, d.m, d.e)
+			end
+		end
+	end)
+
+	-- clear expired boosts so OnChanged fires at the end too
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			for name in pairs(config.Boosts) do
+				local endsAt = workspace:GetAttribute(PREFIX .. name .. "_Ends")
+				if type(endsAt) == "number" and endsAt <= now() then
+					apply(name, 1, 0)
+				end
+			end
+		end
+	end)
+
+	if config.ChatCommand then
+		setupChat()
+	end
+end
+
+return LiveBoost
