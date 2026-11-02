@@ -2245,7 +2245,576 @@ function PortalFX.Animate()
 end
 
 return PortalFX
-]]></ProtectedString></Properties></Item><Item class="Script" referent="T13"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T13"><Properties><string name="Name">PortalVortex</string><ProtectedString name="Source"><![CDATA[-- PortalVortex.lua - animated swirling portal centre (Rick-and-Morty style vortex) for any portal frame, client only
+-- version: 1
+-- use: LocalScript: local PV = require(ReplicatedStorage.PortalVortex); local h = PV.Attach(portalModel, {Main=Color3, Light=Color3, Dark=Color3, Locked=true}); h:Unlock()
+-- changelog: v1 2026-11-02 first version (from Build-A-Pet r18 rank portals; palette passed in; textures are rbxassetid uploads on the lyopz account, re-upload for another owner)
+--[[ PortalVortex (ReplicatedStorage.FX.PortalVortex) - CLIENT ONLY
+Animated swirling portal centre for Build-A-Pet rank portals (r17, 2026-11-02).
+Follows PORTALS-BRIEF.md "## r17 vortex" r17.4: dark backdrop (L0, or the frame's funnel mesh),
+3 spiral layers at different depths that all turn the same way and faster toward the centre
+(L1 deep 18 deg/s, L2 main 35 deg/s breathing 100->94%, L3 fast inner 60 deg/s breathing 100->90%),
+zoom-tunnel rings that shrink into the centre, a pulsing near-white core (L4), soft wisps pulled
+inward on spiral paths (L5), motes drifting in (L6), a bright rim (lip stand-in), a forward
+SurfaceLight + PointLight inside, and a soft ground spill. Smooth by construction: every layer is
+a rotating texture on a SurfaceGui, no parts in the swirl, no straight radial lines.
+
+Usage (LocalScript, e.g. StarterPlayerScripts/PortalClient):
+	local PortalVortex = require(game.ReplicatedStorage.FX.PortalVortex)
+	local h = PortalVortex.Attach(portalModelOrPart, {
+		Main = Color3.fromHex("FFD85A"),  -- (alias Primary) vortex colour, required
+		Light = Color3.fromHex("FFF2B0"), -- (alias Secondary) L3, rim, streaks
+		Dark = Color3.fromHex("141E3C"),  -- (alias Deep) tunnel / gaps between the arms
+		Core = nil,         -- default white lerped 15% toward Main
+		Accent = nil,       -- motes (default Core)
+		Radius = 3.5,       -- half width of the opening (default: from the anchor part)
+		Aspect = 11/7,      -- height / width (default: from the anchor part)
+		Depth = nil,        -- studs from the opening to the deepest swirl (2.4 when the frame has the r17 funnel)
+		Rim = true,         -- false when the frame has its own Neon lip
+		Locked = true,      -- 25% speed, half brightness, 40% toward navy, no core
+		Quality = "Auto",   -- "Low" | "Medium" | "High" | "Auto" (phone / low graphics -> Low)
+		Front = nil,        -- Vector3 players walk in from (default: model pivot LookVector)
+		HideNames = nil,    -- e.g. {"Veil","VeilBack","SwirlArm","SwirlCore"}: hide old veil parts locally
+	})
+	h:SetLocked(false)          -- 0.8 s blend; or PortalVortex.SetLocked(portalModel, false)
+	h:Unlock()                  -- first-time unlock moment: spin-up 1.2 s, core blooms, burst of 30 streaks
+	h:SetQuality("Low")         -- rebuilds
+	h:Destroy()
+
+Anchor: a BasePart passed in, or inside a Model the first descendant named "VortexAnchor", else "Veil".
+The anchor's thinnest axis is the portal normal; the other two give width/height. Or pass opts.CFrame
+(centre, LookVector = front) with Radius/Aspect.
+]]
+
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local PortalVortex = {}
+
+PortalVortex.Textures = {
+	SpiralA = "rbxassetid://139228148547505", -- 3 broad soft arms (L1 deep swirl, back face)
+	SpiralM = "rbxassetid://87502258711343",  -- 7 curved arms, brighter toward the edge (L2 main swirl)
+	SpiralB = "rbxassetid://92655959557557",  -- 2 thin wispy arms, same hand as A (L3)
+	Tunnel = "rbxassetid://126486200798243",  -- swirly annulus for the zoom rings
+	Rim = "rbxassetid://95503615026488",
+	Core = "rbxassetid://88445552566574",
+	Fill = "rbxassetid://128839018275495",    -- opaque disc, lighter centre -> edge (tinted Dark)
+	Wisp = "rbxassetid://136754012836624",
+	Mote = "rbxassetid://134010825733603",
+}
+local T = PortalVortex.Textures
+
+PortalVortex.CullDistance = 120   -- beyond: emitters + lights off, spin at half rate
+PortalVortex.GuiCullDistance = 250 -- beyond: SurfaceGuis off
+
+-- per quality. wispTotal / moteTotal = particles per second for the whole portal
+local QUALITY = {
+	Low = { deepLayer = false, tunnels = 1, wisps = 4, wispTotal = 7, motes = 0, moteTotal = 0, pointLight = false, depth = 0.25, back = false },
+	Medium = { deepLayer = true, tunnels = 1, wisps = 6, wispTotal = 10, motes = 3, moteTotal = 2, pointLight = false, depth = 0.32, back = true },
+	High = { deepLayer = true, tunnels = 2, wisps = 8, wispTotal = 14, motes = 4, moteTotal = 3, pointLight = true, depth = 0.38, back = true },
+}
+
+-- deg/s. Negative = the way these textures' arms curl inward (all layers turn together, faster toward the centre)
+local SPEED = { fill = -6, deep = -18, main = -35, inner = -60, rim = 10, tunnelSpin = -80, tunnelZoom = 0.4, spin = -0.7 }
+local LOCKED_SPEED = 0.25
+local NAVY = Color3.fromRGB(28, 36, 78)
+
+local active = {} -- handle -> true
+local byTarget = setmetatable({}, { __mode = "k" })
+local conn: RBXScriptConnection? = nil
+
+local function lockedColor(c: Color3): Color3
+	return c:Lerp(NAVY, 0.4)
+end
+
+local function deep(c: Color3): Color3 -- richer, darker same hue (default Dark when none given)
+	local h, s, v = c:ToHSV()
+	return Color3.fromHSV(h, math.min(1, s * 1.15 + 0.05), v * 0.4)
+end
+
+local function mul(c: Color3, k: number): Color3 return Color3.new(c.R * k, c.G * k, c.B * k) end
+
+local function autoQuality(): string
+	local ok, level = pcall(function()
+		return UserSettings():GetService("UserGameSettings").SavedQualityLevel.Value
+	end)
+	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+		return "Low"
+	end
+	if ok and level and level > 0 then
+		if level <= 3 then return "Low" elseif level <= 7 then return "Medium" end
+		return "High"
+	end
+	return "Medium"
+end
+
+local function findAnchor(target: Instance, opts): BasePart?
+	if target:IsA("BasePart") then return target end
+	local a = target:FindFirstChild(opts.AnchorName or "VortexAnchor", true)
+	if a and a:IsA("BasePart") then return a end
+	a = target:FindFirstChild("Veil", true)
+	if a and a:IsA("BasePart") then return a end
+	if target:IsA("Model") and target.PrimaryPart then return target.PrimaryPart end
+	return nil
+end
+
+-- returns centre CFrame (LookVector = front), width, height
+local function resolveFrame(target: Instance, opts)
+	if opts.CFrame then
+		local r = opts.Radius or 3.5
+		return opts.CFrame, r * 2, r * 2 * (opts.Aspect or 1)
+	end
+	local part = findAnchor(target, opts)
+	assert(part, "PortalVortex.Attach: no anchor part (VortexAnchor / Veil) and no opts.CFrame")
+	local cf, s = part.CFrame, part.Size
+	local axes = { { cf.RightVector, s.X }, { cf.UpVector, s.Y }, { -cf.LookVector, s.Z } }
+	table.sort(axes, function(a, b) return a[2] < b[2] end)
+	local normal = axes[1][1]
+	local a1, a2 = axes[2], axes[3]
+	-- height axis = the one closest to world up
+	local hAxis, wAxis = a1, a2
+	if math.abs(a2[1]:Dot(Vector3.yAxis)) > math.abs(a1[1]:Dot(Vector3.yAxis)) then hAxis, wAxis = a2, a1 end
+	local front = opts.Front
+	if not front then
+		front = (target:IsA("Model") and target:GetPivot().LookVector) or cf.LookVector
+	end
+	if normal:Dot(front) < 0 then normal = -normal end
+	local up = hAxis[1]
+	if up:Dot(Vector3.yAxis) < 0 then up = -up end
+	local back = -normal
+	local right = up:Cross(back)
+	local w, h = wAxis[2], hAxis[2]
+	if opts.Radius then
+		local aspect = opts.Aspect or (h / w)
+		w = opts.Radius * 2
+		h = w * aspect
+	elseif opts.Aspect then
+		h = w * opts.Aspect
+	end
+	return CFrame.fromMatrix(cf.Position, right, up, back), w, h
+end
+
+local function newPart(name: string, size: Vector3, cf: CFrame, parent: Instance): BasePart
+	local p = Instance.new("Part")
+	p.Name = name
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.CastShadow = false
+	p.Transparency = 1
+	p.Size = size
+	p.CFrame = cf
+	p.Parent = parent
+	return p
+end
+
+local function newGui(part: BasePart, face: Enum.NormalId, brightness: number)
+	local g = Instance.new("SurfaceGui")
+	g.Face = face
+	g.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
+	g.CanvasSize = Vector2.new(512, 512) -- square canvas stretched over the oval face
+	g.LightInfluence = 0
+	g.Brightness = brightness
+	g.ClipsDescendants = true
+	g.ResetOnSpawn = false
+	g.Adornee = part
+	g.Parent = part
+	return g
+end
+
+local function newImage(gui: Instance, image: string, scale: number, transparency: number)
+	local l = Instance.new("ImageLabel")
+	l.BackgroundTransparency = 1
+	l.AnchorPoint = Vector2.new(0.5, 0.5)
+	l.Position = UDim2.fromScale(0.5, 0.5)
+	l.Size = UDim2.fromScale(scale, scale)
+	l.Image = image
+	l.ImageTransparency = transparency
+	l.Parent = gui
+	return l
+end
+
+local function seq(a: Color3, b: Color3) return ColorSequence.new(a, b) end
+
+local Handle = {}
+Handle.__index = Handle
+
+local function build(h)
+	local o, q = h.opts, QUALITY[h.quality]
+	local cf, w, ht = h.cf, h.w, h.h
+	local R = w * 0.5
+	local folder = Instance.new("Folder")
+	folder.Name = "PortalVortex"
+	h.folder = folder
+	h.layers = {} -- {label, gui, colorKey, bright, trans}
+	h.tunnels = {}
+	h.emitters = {} -- {e, rate, lockRate, colorFn}
+	h.guis = {}
+
+	local D = o.Depth or (R * q.depth) -- studs from the opening to the deepest swirl
+	local function layer(name, depthFrac, scale, image, colorKey, bright, trans)
+		local p = newPart("VX_" .. name, Vector3.new(w * scale, ht * scale, 0.05), cf * CFrame.new(0, 0, depthFrac * D), folder)
+		local g = newGui(p, Enum.NormalId.Front, bright)
+		table.insert(h.guis, g)
+		local l = newImage(g, image, 1, trans)
+		local rec = { label = l, gui = g, part = p, colorKey = colorKey, bright = bright, trans = trans }
+		table.insert(h.layers, rec)
+		return rec
+	end
+
+	-- L0 backdrop (dark gaps between the arms), just behind the deepest swirl
+	h.fill = layer("Fill", 1.08, 0.97, T.Fill, "Dark", 2.8, 0) -- Brightness lifts the dark tunnel hex to readable navy gaps
+	if q.back then -- back side: players walking round the terrace still see a swirl
+		local g = newGui(h.fill.part, Enum.NormalId.Back, 1.3)
+		table.insert(h.guis, g)
+		local l = newImage(g, T.Fill, 1, 0)
+		table.insert(h.layers, { label = l, gui = g, colorKey = "Dark", bright = 1.3, trans = 0 })
+		local l2 = newImage(g, T.SpiralA, 1, 0.15)
+		h.backSpiral = { label = l2, gui = g, colorKey = "Main", bright = 1.3, trans = 0.15 }
+		table.insert(h.layers, h.backSpiral)
+	end
+	-- L1 deep swirl: broad soft arms, main x 0.7
+	if q.deepLayer then h.deepL = layer("L1_Deep", 1.0, 0.97, T.SpiralA, "Main70", 1.2, 0.15) end
+	-- zoom rings travelling from the rim into the centre (sells the fall-in)
+	for i = 1, q.tunnels do
+		local t = layer("Tunnel" .. i, 0.8 - i * 0.06, 1, T.Tunnel, "Light", 1.8, 1)
+		t.phase = (i - 1) / q.tunnels
+		table.insert(h.tunnels, t)
+	end
+	-- L2 main swirl, L4 core, L3 fast inner swirl, rim (lip stand-in)
+	h.main = layer("L2_Main", 0.58, 1, T.SpiralM, "Main", 1.6, 0)
+	h.core = layer("L4_Core", 0.42, 1, T.Core, "Core", 3, 0)
+	h.inner = layer("L3_Inner", 0.29, 0.55, T.SpiralB, "Light", 2.5, 0.25)
+	if o.Rim ~= false then h.rim = layer("Rim", 0, 0.95, T.Rim, "Rim", 2.1, 0) end
+
+	-- spinner: wisps sucked into the centre on spiral paths (LockedToPart + rotating part)
+	local spinner = newPart("VX_Spinner", Vector3.new(0.1, 0.1, 0.1), cf, folder)
+	h.spinner = spinner
+	local function ellipse(a, k)
+		return Vector3.new(math.cos(a) * R * k, math.sin(a) * (ht * 0.5) * k, 0)
+	end
+	local function inwardAttachment(pos: Vector3, zOff: number)
+		local att = Instance.new("Attachment")
+		local up = (-pos).Unit
+		local right = Vector3.new(up.Y, -up.X, 0)
+		att.CFrame = CFrame.fromMatrix(pos + Vector3.new(0, 0, zOff), right, up)
+		att.Parent = spinner
+		return att
+	end
+	-- L5 inward streaks. Small and soft on purpose: long squashed streaks from evenly spaced rim
+	-- points line up into a polygon / star web (tested r17), so no Squash here.
+	local wispRate = q.wispTotal / q.wisps
+	for i = 1, q.wisps do
+		local a = (i - 1) / q.wisps * math.pi * 2 + 0.3
+		local pos = ellipse(a, 0.9)
+		local att = inwardAttachment(pos, -0.25)
+		local e = Instance.new("ParticleEmitter")
+		e.Name = "L5_Wisp"
+		e.Texture = T.Wisp
+		e.EmissionDirection = Enum.NormalId.Top
+		local life = 1.15
+		e.Lifetime = NumberRange.new(life * 0.9, life)
+		e.Speed = NumberRange.new(pos.Magnitude / life * 0.95)
+		e.SpreadAngle = Vector2.new(6, 6)
+		e.Drag = 0
+		e.LockedToPart = true
+		e.Orientation = Enum.ParticleOrientation.VelocityParallel
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, R * 0.08), NumberSequenceKeypoint.new(0.35, R * 0.13), NumberSequenceKeypoint.new(1, 0) })
+		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.25, 0.4), NumberSequenceKeypoint.new(0.75, 0.5), NumberSequenceKeypoint.new(1, 1) })
+		e.LightEmission = 0.8
+		e.LightInfluence = 0
+		e.Brightness = 2
+		e.ZOffset = 0.4
+		e.Rate = wispRate
+		e.Parent = att
+		table.insert(h.emitters, { e = e, rate = wispRate, lockRate = 3 / q.wisps, colorFn = function(c) return seq(c.Light, c.Core) end })
+	end
+	h.burstEmitters = {}
+	for _, E in h.emitters do table.insert(h.burstEmitters, E.e) end
+	-- L6 motes drifting in from around the frame (off when locked)
+	local moteRate = q.motes > 0 and q.moteTotal / q.motes or 0
+	for i = 1, q.motes do
+		local a = (i - 1) / q.motes * math.pi * 2 + 0.9
+		local pos = ellipse(a, 1.4)
+		local att = inwardAttachment(pos, -0.6)
+		local e = Instance.new("ParticleEmitter")
+		e.Name = "L6_Mote"
+		e.Texture = T.Mote
+		e.EmissionDirection = Enum.NormalId.Top
+		local life = 3.2
+		e.Lifetime = NumberRange.new(life * 0.85, life)
+		e.Speed = NumberRange.new(pos.Magnitude * 0.45 / life)
+		e.SpreadAngle = Vector2.new(25, 25)
+		e.LockedToPart = true
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.25, math.min(0.22, R * 0.05)), NumberSequenceKeypoint.new(1, 0.05) })
+		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.25, 0.15), NumberSequenceKeypoint.new(1, 1) })
+		e.LightEmission = 0.5
+		e.LightInfluence = 0
+		e.Brightness = 2.5
+		e.ZOffset = 0.6
+		e.Rate = moteRate
+		e.Parent = att
+		table.insert(h.emitters, { e = e, rate = moteRate, lockRate = 0, colorFn = function(c) return seq(c.Accent, c.Main) end })
+	end
+
+	-- light: forward SurfaceLight onto the steps + PointLight inside the tunnel (High)
+	local lp = newPart("VX_Light", Vector3.new(w * 0.6, ht * 0.6, 0.05), cf * CFrame.new(0, 0, 0.1), folder)
+	local sl = Instance.new("SurfaceLight")
+	sl.Face = Enum.NormalId.Front
+	sl.Angle = 75
+	sl.Range = 14
+	sl.Shadows = false
+	sl.Parent = lp
+	h.lights = { { l = sl, base = 1.2, lockMul = 0.4 / 1.2 } }
+	if q.pointLight then
+		local la = Instance.new("Attachment")
+		la.CFrame = CFrame.new(0, 0, D * 0.5)
+		la.Parent = lp
+		local pl = Instance.new("PointLight")
+		pl.Shadows = false
+		pl.Range = 8
+		pl.Parent = la
+		table.insert(h.lights, { l = pl, base = 0.6, lockMul = 0.5 })
+	end
+
+	-- soft ground spill in front of the portal (soft blob, max alpha ~0.45, never a ring)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local ex = { folder }
+	if h.target and h.target:IsA("Model") then table.insert(ex, h.target) end
+	params.FilterDescendantsInstances = ex
+	local origin = cf.Position + cf.LookVector * (R * 0.6)
+	local hit = workspace:Raycast(origin, Vector3.new(0, -(ht * 0.5 + 8), 0), params)
+	if hit then
+		local fwd = Vector3.new(cf.LookVector.X, 0, cf.LookVector.Z)
+		fwd = fwd.Magnitude > 0.01 and fwd.Unit or Vector3.zAxis
+		local base = hit.Position + Vector3.new(0, 0.06, 0)
+		local gp = newPart("VX_Ground", Vector3.new(w * 1.5, 0.05, R * 2.6), CFrame.lookAt(base, base + fwd) * CFrame.new(0, 0, -R * 0.5), folder)
+		local g = newGui(gp, Enum.NormalId.Top, 1.2)
+		table.insert(h.guis, g)
+		local l = newImage(g, T.Core, 1, 0.55)
+		h.ground = { label = l, gui = g, colorKey = "Main", bright = 1.2, trans = 0.55 }
+		table.insert(h.layers, h.ground)
+	end
+
+	folder.Parent = h.parent
+end
+
+function Handle:_colors()
+	local o, k = self.opts, self.lockCur
+	local function c(x: Color3) return x:Lerp(lockedColor(x), k) end
+	local m = o.Primary
+	local light = o.Secondary or m:Lerp(Color3.new(1, 1, 1), 0.55)
+	local core = o.Core or Color3.new(1, 1, 1):Lerp(m, 0.15)
+	return {
+		Main = c(m),
+		Main70 = c(mul(m, 0.7)),
+		Light = c(light),
+		Core = c(core),
+		Accent = c(o.Accent or core),
+		Dark = c(o.Deep or deep(m)),
+		Rim = c(m:Lerp(light, 0.5)),
+	}
+end
+
+function Handle:_apply()
+	local cols = self:_colors()
+	local k = self.lockCur
+	local dim = 1 - 0.5 * k
+	for _, L in self.layers do
+		L.label.ImageColor3 = cols[L.colorKey]
+		L.gui.Brightness = L.bright * (L.colorKey == "Dark" and (1 - 0.3 * k) or dim)
+	end
+	self.core.label.ImageTransparency = k -- core off when locked
+	for _, E in self.emitters do
+		E.e.Color = E.colorFn(cols)
+		E.e.Rate = E.rate + (E.lockRate - E.rate) * k
+		E.e.Brightness = 2 * dim
+	end
+	for _, L in self.lights do
+		L.l.Color = cols.Main
+		L.cur = L.base * (1 + (L.lockMul - 1) * k)
+	end
+	self.speedMul = 1 + (LOCKED_SPEED - 1) * k
+end
+
+local function setAwake(h, awake: boolean)
+	if h.awake == awake then return end
+	h.awake = awake
+	for _, E in h.emitters do E.e.Enabled = awake end
+	for _, L in h.lights do L.l.Enabled = awake end
+end
+
+local function setVisible(h, vis: boolean)
+	if h.visible == vis then return end
+	h.visible = vis
+	for _, g in h.guis do g.Enabled = vis end
+end
+
+local function breathe(now: number, period: number, offset: number): number -- 0..1, sine
+	return 0.5 + 0.5 * math.sin((now + offset) * math.pi * 2 / period)
+end
+
+local function step(dt: number)
+	local cam = workspace.CurrentCamera
+	local camPos = cam and cam.CFrame.Position or Vector3.zero
+	for h in active do
+		local dist = (h.cf.Position - camPos).Magnitude
+		local near = dist < PortalVortex.CullDistance
+		setAwake(h, near)
+		setVisible(h, dist < PortalVortex.GuiCullDistance)
+		if h.visible then
+			if h.lockCur ~= h.lockTarget then
+				local d = dt / 0.8
+				if h.lockTarget > h.lockCur then h.lockCur = math.min(h.lockTarget, h.lockCur + d) else h.lockCur = math.max(h.lockTarget, h.lockCur - d) end
+				h:_apply()
+			end
+			local boost = 1
+			if h.spinUp then -- unlock moment: Quad Out spin-up over 1.2 s
+				local a = math.clamp((os.clock() - h.spinUp) / 1.2, 0, 1)
+				boost = 1 + 1.5 * (1 - a) ^ 2
+				if a >= 1 then h.spinUp = nil end
+			end
+			local t = h.t + dt * h.speedMul * boost * (near and 1 or 0.5)
+			h.t = t
+			-- breathing runs on its own clock, slower when locked
+			h.bt += dt * (0.5 + 0.5 * h.speedMul)
+			local now = h.bt
+			h.fill.label.Rotation = t * SPEED.fill
+			if h.backSpiral then h.backSpiral.label.Rotation = -t * SPEED.main end
+			if h.deepL then h.deepL.label.Rotation = t * SPEED.deep end
+			h.main.label.Rotation = t * SPEED.main
+			local m = 1 - 0.06 * breathe(now, 2.8, 0)
+			h.main.label.Size = UDim2.fromScale(m, m)
+			h.inner.label.Rotation = t * SPEED.inner
+			local n = 1 - 0.1 * breathe(now, 2.2, 0.9)
+			h.inner.label.Size = UDim2.fromScale(n, n)
+			if h.rim then h.rim.label.Rotation = t * SPEED.rim end
+			for i, tn in h.tunnels do
+				local ph = (t * SPEED.tunnelZoom + tn.phase) % 1
+				local s = 1.25 * (1 - ph) ^ 1.5 + 0.03
+				tn.label.Size = UDim2.fromScale(s, s)
+				tn.label.Rotation = t * SPEED.tunnelSpin + i * 70
+				tn.label.ImageTransparency = 1 - math.sin(math.pi * ph) ^ 0.9 * 0.7
+			end
+			local pulse = breathe(now, 2.2, h.seed)
+			local cs = 0.62 * (0.9 + 0.2 * pulse)
+			if h.bloom then -- unlock: core blooms in 0.4 s (Back Out)
+				local a = math.clamp((os.clock() - h.bloom) / 0.4, 0, 1)
+				local c1, c3 = 1.70158, 2.70158
+				cs *= 1 + c3 * (a - 1) ^ 3 + c1 * (a - 1) ^ 2
+				if a >= 1 then h.bloom = nil end
+			end
+			h.core.label.Size = UDim2.fromScale(math.max(0, cs), math.max(0, cs))
+			local dim = 1 - 0.5 * h.lockCur
+			if h.rim then h.rim.gui.Brightness = h.rim.bright * dim * (0.9 + 0.2 * breathe(now, 3, h.seed)) end
+			if h.ground then h.ground.label.ImageTransparency = h.ground.trans + 0.1 * (1 - pulse) end
+			if near then
+				for _, L in h.lights do L.l.Brightness = L.cur * (0.9 + 0.2 * pulse) end
+				h.spinner.CFrame = h.cf * CFrame.Angles(0, 0, t * SPEED.spin)
+			end
+		end
+	end
+end
+
+local function ensureLoop()
+	if conn then return end
+	conn = RunService.Heartbeat:Connect(step)
+end
+
+function PortalVortex.Attach(target: Instance, opts)
+	assert(RunService:IsClient() or not RunService:IsRunning(), "PortalVortex is client-side: require it from a LocalScript")
+	opts = table.clone(opts or {})
+	opts.Primary = opts.Primary or opts.Main
+	opts.Secondary = opts.Secondary or opts.Light
+	opts.Deep = opts.Deep or opts.Dark
+	assert(opts.Primary, "PortalVortex.Attach: opts.Main (Color3) is required")
+	if byTarget[target] then byTarget[target]:Destroy() end
+	local cf, w, ht = resolveFrame(target, opts)
+	local q = opts.Quality
+	if q == nil or q == "Auto" or not QUALITY[q] then q = autoQuality() end
+	local h = setmetatable({
+		target = target, opts = opts, quality = q, cf = cf, w = w, h = ht,
+		parent = opts.Parent or (target:IsA("BasePart") and target.Parent) or target,
+		t = math.random() * 10, bt = math.random() * 10, seed = math.random() * 3,
+		lockCur = opts.Locked and 1 or 0, lockTarget = opts.Locked and 1 or 0,
+		awake = true, visible = true, speedMul = 1,
+	}, Handle)
+	if opts.HideNames then
+		h.hidden = {}
+		local names = {}
+		for _, n in opts.HideNames do names[n] = true end
+		local root = target:IsA("BasePart") and target.Parent or target
+		for _, d in root:GetDescendants() do
+			if d:IsA("BasePart") and names[d.Name] then
+				h.hidden[d] = d.LocalTransparencyModifier
+				d.LocalTransparencyModifier = 1
+			end
+		end
+		if target:IsA("BasePart") and names[target.Name] == nil then
+			h.hidden[target] = target.LocalTransparencyModifier
+			target.LocalTransparencyModifier = 1
+		end
+	end
+	build(h)
+	h:_apply()
+	active[h] = true
+	byTarget[target] = h
+	ensureLoop()
+	return h
+end
+
+function Handle:SetLocked(locked: boolean, instant: boolean?)
+	self.lockTarget = locked and 1 or 0
+	if instant then
+		self.lockCur = self.lockTarget
+		self:_apply()
+	end
+end
+
+-- first-time unlock moment (r17.4): blend to unlocked, spin up 1.2 s, core blooms 0.4 s, burst of 30 streaks
+function Handle:Unlock()
+	self:SetLocked(false)
+	self.spinUp = os.clock()
+	self.bloom = os.clock() + 0.3
+	local per = math.max(1, math.floor(30 / #self.burstEmitters))
+	for _, e in self.burstEmitters do e:Emit(per) end
+end
+
+function Handle:SetQuality(quality: string)
+	if not QUALITY[quality] or quality == self.quality then return end
+	self.quality = quality
+	if self.folder then self.folder:Destroy() end
+	build(self)
+	self.awake, self.visible = true, true
+	self:_apply()
+end
+
+function Handle:Destroy()
+	active[self] = nil
+	if byTarget[self.target] == self then byTarget[self.target] = nil end
+	if self.folder then self.folder:Destroy() end
+	if self.hidden then
+		for p, v in self.hidden do if p.Parent then p.LocalTransparencyModifier = v end end
+	end
+	if next(active) == nil and conn then conn:Disconnect(); conn = nil end
+end
+
+function PortalVortex.Get(target: Instance) return byTarget[target] end
+
+function PortalVortex.SetLocked(handleOrTarget, locked: boolean, instant: boolean?)
+	local h = getmetatable(handleOrTarget) == Handle and handleOrTarget or byTarget[handleOrTarget]
+	if h then h:SetLocked(locked, instant) end
+end
+
+-- Low on phones / low graphics: switch every live vortex (e.g. from a settings toggle)
+function PortalVortex.SetQualityAll(quality: string)
+	for h in active do h:SetQuality(quality) end
+end
+
+return PortalVortex
+]]></ProtectedString></Properties></Item><Item class="Script" referent="T14"><Properties><string name="Name">PurchaseHandler</string><bool name="Disabled">true</bool><ProtectedString name="Source"><![CDATA[-- PurchaseHandler.server.lua — safe developer product + game pass handling (Script in ServerScriptService).
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Grants ONLY from the receipt handler, idempotent by PurchaseId, returns NotProcessedYet if the player
@@ -2299,7 +2868,7 @@ for _, p in ipairs(Players:GetPlayers()) do task.spawn(checkPasses, p) end
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
 	if purchased and PASSES[passId] then PASSES[passId](player) end
 end)
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T14"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T15"><Properties><string name="Name">RemoteGuard</string><ProtectedString name="Source"><![CDATA[-- RemoteGuard.lua — validated, rate-limited RemoteEvents/Functions (ModuleScript in ReplicatedStorage; use from server).
 -- version: 2
 -- changelog: v1 2026-10-23 first version
 -- changelog: v2 2026-10-28 optional trailing args, refusal codes ({ Ok = false, Code }), exactly-once nonces for item machines
@@ -2510,7 +3079,7 @@ function Guard.FireOnce(name, ...)
 end
 
 return Guard
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T15"><Properties><string name="Name">StatTrainer</string><ProtectedString name="Source"><![CDATA[-- StatTrainer.lua — server-owned training stations (treadmills, pull-up bars, weights, punching bags) that
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T16"><Properties><string name="Name">StatTrainer</string><ProtectedString name="Source"><![CDATA[-- StatTrainer.lua — server-owned training stations (treadmills, pull-up bars, weights, punching bags) that
 --                   grow a stat per rep: Speed, Throw Power, Strength… the "train → unlock farther zone" loop
 --                   behind Steal An Egg (treadmills), Throw Food For Animals (pull-ups) and +1 Speed games.
 -- version: 1
@@ -2769,7 +3338,7 @@ function StatTrainer.IsTraining(player)
 end
 
 return StatTrainer
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T16"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T17"><Properties><string name="Name">VFX</string><ProtectedString name="Source"><![CDATA[-- vfx.lua — ready-to-use Roblox effects (ModuleScript in ReplicatedStorage). No assets needed:
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- uses Roblox's built-in particle textures. Swap Texture ids for flipbooks for richer fire.
@@ -2910,7 +3479,7 @@ function VFX.Aura(part: BasePart, color: Color3?, scale: number?)
 end
 
 return VFX
-]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T17"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
+]]></ProtectedString></Properties></Item><Item class="ModuleScript" referent="T18"><Properties><string name="Name">Waves</string><ProtectedString name="Source"><![CDATA[-- Waves: shared Gerstner wave math so the ocean mesh, ships and anything floating agree.
 -- version: 1
 -- changelog: v1 2026-10-23 first version
 -- Time comes from workspace:GetServerTimeNow() so every client sees the same waves.
