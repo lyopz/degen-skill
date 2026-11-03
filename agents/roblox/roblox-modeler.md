@@ -20,6 +20,7 @@ Save source picture, .blend and export together in the project folder.
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
 - **After:** add 1–3 lines for anything learned — a bug and its fix, a Studio/MCP quirk, a pattern that worked, a number that needed tuning. Reusable code that worked well → propose it as a template for `roblox-templates`.
 - Report the lessons you added in your final message so the main session can save them.
+- (2026-11-03) Shared Studio: check `get_studio_state` right before each Edit batch and never stop or screen_capture another agent's Play. Fix values in the generator, not only in Studio (`roblox-3d-pipeline` gotchas). Write scripts, installers and prompt files with the Write/Edit tools, never bash heredocs. Compare with the concept from its own camera angle before uploading, and scrub usernames/paths before any commit.
 
 ## Always
 - **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.

@@ -22,3 +22,8 @@
 
 ## Detail view (selected item)
 Big render on the left, rarity/odds table in the middle, example items row + top-prize showcase on the right, and the buy + gift buttons under the render.
+
+## Sizes and states (2026-11-03)
+- Detail pages need ~1560×880 design px (1220×720 crams them); on phones stack the preview over the info and let the info scroll. Odds tables: nowrap, short numbers (2.5K / 10M / 1B), a scroll fade.
+- Wallets as chips in the panel header (next to the title), HUD counters hidden while the shop is open; the side tab rail then only fits tab icons (~60 px real on phones).
+- A green price pill reads as a live Buy: use a neutral price tag while buying is off. Disabled bars with no price hide the currency icon ("icon + SOON" overflows a 51 px button).

@@ -211,6 +211,8 @@ Format: **rule**, then why (what went wrong or what the developer said).
 - **Draw demo data that exercises every state** you will need to swap at runtime (tab states, selected tiles).
 - **Headless Chrome drops 20-40% of images at random** even after decode: judge LAYOUT from headless, IMAGES
   in the browser pane (count `!naturalWidth`). Inline images as data URIs for scored renders.
+- **Edge `--headless=new --window-size=W,H` gives a (W-30) x (H-95) viewport** (2026-11-03): open W+30 x H+95 and
+  crop, or phone mocks lay out at the wrong size.
 
 ## 9. HTML -> Roblox pipeline
 
@@ -420,6 +422,10 @@ Format: **rule**, then why (what went wrong or what the developer said).
 - **Rate-limit frame-loop warnings** (once per message) and wrap RenderStepped bodies in pcall.
 - **Pooled objects need a generation counter** for delayed callbacks.
 - **Guard optional APIs** (`if UI.PageChanged then`): an older runtime copy without it killed the whole bridge.
+- **Never end a line inside a table constructor with `-- comment` followed by more props** (2026-11-03): everything
+  after the marker is dropped silently (a lost AnchorPoint / Size made 0x0 or off-centre frames). Scripted one-line
+  replaces that append a comment hit this twice. Writing `"\n"` into Luau through a Python heredoc can become a real
+  newline (Malformed string): write escapes with an editor tool or `string.char(10)`.
 
 ## 24. Verification habits
 
@@ -456,6 +462,10 @@ Format: **rule**, then why (what went wrong or what the developer said).
 - **Team Create edit mode has a LocalPlayer but no PlayerGui**: harness code that hits `WaitForChild("PlayerGui")`
   (UIKit.overlay, Toasts.init) hangs forever; stub them. Return ASCII from execute_luau: a multi-byte char cut by
   string.sub made the MCP call time out.
+- **(2026-11-03) Reviewer audits include hidden objects**: keep hidden legacy UI audit-clean too (no negative sizes,
+  buttons >= 44 px). **A style study needs evidence**: read the images and sample the recordings before claiming a
+  look; an archive listing proves inventory, not behaviour. Tell remaining-timer values from schedules, independent
+  drop odds from normalised tables, observed prices from recommendations.
 
 ## 25. Approved work (reuse these approaches)
 

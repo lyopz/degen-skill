@@ -20,6 +20,7 @@ Write a short spec and keep it in the game folder (`spec-<thing>.md`):
 - Screenshot from the player's view (spawn camera) + one wide shot. Phone-size check for UI (device emulator).
 - Tick every "Done means" line; list anything that's off and fix it.
 - Output window clean (no red errors). Triangle/texture/particle budgets OK.
+- When the builder's own scores and a cold reviewer pass disagree, believe the reviewer and send a focused round on the owner's named ask before polishing anything else (2026-11-03).
 - Then log lessons in `roblox-dev/lessons.md` (what would have made it right sooner).
 
 ## Common first-try misses (avoid)

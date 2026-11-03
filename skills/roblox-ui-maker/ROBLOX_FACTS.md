@@ -66,7 +66,8 @@
 - TextSize = line height: CSS font-size x 1.215. Integer, max 100.
 - Runs of spaces render in full (HTML collapses them).
 - `TextFits` is false for overflowing text; `TextBounds` is the real ink box. Check fit by `TextBounds.X`, not
-  the label size. TextScaled caps (UITextSizeConstraint) are in screen pixels.
+  the label size. TextScaled caps (UITextSizeConstraint) under a UIScale: measurements disagree (2026-10-31 read
+  screen px; 2026-11-01/02 read design px, a 14 floor drew 9.7 px at 0.69): verify with TextBounds (already real px).
 - `Font.fromEnum(Enum.Font.Arcade)` is Press Start 2P.
 
 ## Layout
@@ -95,6 +96,27 @@
 - An unfocused Studio window renders at exactly 15 fps (timings in edit-mode tests look slow).
 - Device emulation: `mcp__robloxstudio__set_device_simulator` (phone profiles) for a playtest; for edit-mode
   sweeps, resize `Root` + `FitScale` (PropertySweep.atSizes) instead.
+
+## Built-in Studio MCP (`screen_capture`, `user_mouse_input`, `execute_luau`) (2026-11-03)
+- Clicks: `user_mouse_input` with `instance_path` ("LocalPlayer.PlayerGui.X.Root.Continue") hits; raw/hand-computed
+  coordinates miss after a re-layout. It validates every path in a batch first, so a path that only exists after an
+  earlier click fails the whole batch: split calls. Pad keys from `user_keyboard_input` arrive as Keyboard and
+  `ContextActionService:CallFunction` fails ("lacking capability"): test console flows through the selection graph
+  or a Studio-only debug BindableFunction on the live module.
+- `require` in execute_luau is a separate module copy: a UI module that finds-or-makes its ScreenGui by name fights the
+  game's copy (rename the test gui). Compile-check without running top-level yields: put
+  `"return function(...)\n" .. src .. "\nend"` in a temp unparented ModuleScript and `pcall(require, m)`.
+- Captures: CoreGui never shows; a temp `__X_TEMP` ScreenGui in StarterGui does show in Edit captures (so does the
+  Studio HUD: keep subjects in the middle third). Captures land ~2 s late (timed notices need 12 s+ or a `hold` debug
+  option). Close-ups: clone the live card into a temp ScreenGui on a flat backdrop, capture, destroy; save each shot
+  right away (other agents stop Play). Cutaways that hide parts for a shot run inside the effect's own Heartbeat and
+  re-set every frame (two Heartbeat connections have no order). SurfaceGui.MaxDistance in Edit counts from
+  `CurrentCamera`, which screen_capture doesn't move: set CurrentCamera.CFrame first.
+- Phone previews: a `DebugViewport` attribute / emulated Root is a LAYOUT fixture only (the real HUD stays unscaled,
+  so it can't judge HUD overlap); keep HUD avoidance on the real screen size, multiply Root UIScale by
+  min(real/emulated) to fit the window, crop by the Root box × the capture's scale, label the shot a fixture, and confirm
+  on Studio device emulation or a phone. The Studio window (and Play viewport, e.g. 1678x611) changes between sessions:
+  measure it each time. A blank capture may be another agent's Play disabling PlayerGuis: check ScreenGui.Enabled.
 
 ## Playtests
 - A running playtest may belong to another agent working on the same place: check before `eval_client_runtime`

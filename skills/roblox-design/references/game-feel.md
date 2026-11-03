@@ -12,6 +12,7 @@
 2. **Impact:** hit-stop 2–3 frames (pause attacker+target animation speed to 0 for ~0.05 s), white/red flash on target (Highlight with FillTransparency 0.3 → 1 over 0.15 s), damage number pop (BillboardGui, rise + fade 0.6 s, crits bigger + yellow).
 3. **Reaction:** knockback, small camera shake, layered VFX (core flash, sparks, smoke ring), impact sound with ±5% pitch.
 4. **Recovery:** follow-through animation, trail fades.
+- **(2026-11-03) Anticipation that sells scripted (rig-less) moves:** 1-frame rise, squash 0.8–0.84 + lean back 8–16°, a 3–4 frame tremble hold (`math.noise` × 0.05), then a 2-frame smear stretch ~1.25 with afterimages (Neon ghosts at ~0.7 transparency; 0.55 reads heavy). Hit-stop must hold the squash/pose in the move timeline too — freezing particles and timers alone reads light.
 
 ## Rewards & progression
 - Coins/gems: pickup scale-pop + fly toward the HUD counter (UI tween from world-to-screen point), counter counts up over 0.4 s, sound pitch rises with streak.
@@ -33,17 +34,20 @@
 - Toggle post-processing (Bloom/ColorCorrection) briefly for ultimates or boss phases.
 - Emitter tuning (from projects): `Drag` also damps `Acceleration` (Drag 2–4 → motes never rise; use Drag 0 + Speed ~1.5, or Drag 1.5 + Acceleration 7–9). Flat ground rings: `Orientation = VelocityPerpendicular`, Speed 0.01, EmissionDirection Top, **ZOffset 0** (negative sinks into the floor); `forcefield_vortex_main.dds` + RotSpeed = free rune ring. `Squash` > 0 taller, < 0 flatter (−3..3). Auras around a body need radial speed to clear the mesh (emit at the feet, EmissionDirection Right + SpreadAngle (0,180) = horizontal ring).
 - Attachments: parent first, then set `WorldPosition`/`WorldCFrame` (before parenting, world values become local offsets).
-- Checking VFX: Edit-mode screenshots never show particles. Test in Play with a Scriptable camera bound on RenderStep and `settings().Rendering.QualityLevel = Level21` (Automatic throttles low-rate emitters), wait 2–3 s, capture, stop quickly.
+- Checking VFX: Edit-mode screenshots are unreliable for particles/trails (see `roblox-vfx` §6). Test in Play with a Scriptable camera bound on RenderStep and `settings().Rendering.QualityLevel = Level21` (Automatic throttles low-rate emitters), wait 2–3 s, capture, stop quickly.
+- **(2026-11-03) Review shots:** shoot inside the effect's cull/animation distance (far rigs pause or swap to LOD, a wide row looks bare); read the workspace's world-event state first and wait it out (event drops get reported as FX bugs); hold short events (bolts, crits) on a freeze/hold switch and wait ~1.5 s for slow-mo frames; compare against the concept by measuring the hero feature's share of the frame (agents self-score high when silhouettes match but proportions don't).
 
 ## Physics impacts (new 2026-10)
 `BasePart:BindToCollisionSummaries(cb)` gives per-frame contacts with `Point`, `Normal`, `RelativeVelocity`, `Area` — impact speed = `|RelativeVelocity:Dot(Normal)|`. Use it for thuds, dust, cracks and fall/crash damage scaled by speed. Only fires on the part's network owner and isn't replicated. Template: `roblox-templates/templates/ImpactFX.lua`. Docs: https://create.roblox.com/docs/workspace/collisions
 
 ## Ambient life (cheap, always on)
 Swaying trees/grass (scripted rotation), drifting clouds, birds circling, water texture offset scroll, floating pickups bobbing, NPC idle animations, flickering torches (PointLight brightness noise), ambient particles (fireflies, dust, snow) per zone.
+- **(2026-11-03) Hanging signs/props:** rotate every anchored part rigidly about a `Pivot` part (`pose = CFrame.new(p) * rot * CFrame.new(-p)`, part = pose × rest) so chains follow; drive rot with a 2D spring on a rotation vector (target = `push:Cross(Vector3.yAxis)`) + a 2-sine idle; one Heartbeat + one BulkMoveTo for all (~145 µs for 9). Floor glow marks that follow a nearby item's moment animate for free. Ground cracks: even zigzags read as letters (N/Z/S) — mostly radial, 3–4° wobble, taper, one branch.
 
 ## Sound design
-Every action gets a sound; layer a low "thump" under big hits; ambient loops per zone; music changes at boss/zone; footsteps by material. Keep UI sounds quiet and short.
+Every action gets a sound; layer a low "thump" under big hits; ambient loops per zone; music changes at boss/zone; footsteps by material. Keep UI sounds quiet and short. Timing/mixing rules: `roblox-animation-audio-feedback` → Audio notes.
 - **Peaceful/"magical" reveals (2026-10-25, projects):** gentle float + sway instead of shake, star motes orbiting on moving Attachments (Rate ~28), soft chime arpeggio (one ping at pitch 1/1.12/1.26/1.5/1.68), pieces drift off with drag and almost no gravity, then bloom + thin ring + sparkles. Rarity tells stay honest (more motes/late colour shift only for the real result). Track live Sounds and fade them on close instead of a fixed Destroy.
+- **(2026-11-03) Stacked displays + one-shots:** item + pedestal + floating bits share one rhythm — drive every bob from the hero's integrated beat clock in whole-beat periods (hand companions a clock function) so speed-ups stay in sync; cap bob amplitude as the beat speeds up. Track every one-shot Sound (start, base volume): fade long stings over the reveal, stop long risers at the release cue, stop all at idle, reset Volume before `:Play()` (a faded Sound gets reused quiet). Things spawned on the player→target line hide behind the avatar in the default camera: offset single spawns ~25–30° around the target, keep a minimum player gap.
 - Free Roblox-licensed reveal layers (APM / Pro Sound Effects): Silver Dreams 1841180330 (pad), Magical Meetup 9048764286, Glass Tinks 2 9114619050, Boink Pop 9113537815, Rising Together 9043511769 (epic), Happy Orchestral 9040233685 + Bell Rings 5 9113421788 (legendary), Quest for the Truth 9043512845 (mythic), A Place To Dream 1847240504 (secret).
 
 ## Sources

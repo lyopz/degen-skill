@@ -27,6 +27,13 @@ Use layered feedback:
 - Use consistent audio language for success, danger, rarity, and progression.
 - Make rare rewards feel distinct without requiring long animations.
 
+## Audio notes (2026-11-03)
+
+- Land a riser exactly on an impact: start a "reverse hard stop" riser at `TimePosition = TimeLength − (charge + slow)` so its stop hits the break frame at every speed (no pitch change). `Sound.TimeLength` is 0 until `ContentProvider:PreloadAsync`.
+- SFX need their own SoundGroup at volume 1: falling back to a quiet "UI" group (0.2) with a short rolloff (6–45 studs) makes them effectively silent. Play signature cues non-positionally (parent to SoundService, Destroy on Ended).
+- Low thud from a small kit: a metal clank at pitch ~0.55. Unknown sound keys in a kit table give a bad SoundId — fail loud, not silent. Free Pro Sound Effects "Lightning Flashes Quick Electrical Bursts" + "Metal Pops Denting" = a good chest/egg open thunk + crack.
+- Placeholder-id Sounds load (and error in the console) even inside shelved models in ServerStorage: strip Sounds, not just Scripts, when shelving store decor.
+
 ## MCP Workflow
 
 1. Search scripts and assets for animation, sound, reward, and effect hooks.

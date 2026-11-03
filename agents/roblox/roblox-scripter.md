@@ -14,6 +14,7 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 - **Structure:** ServerScriptService (systems), ReplicatedStorage (shared modules, remotes), StarterPlayerScripts (client: UI, effects, motion). Cosmetic motion/VFX on clients.
 - Typed Luau where practical, no busy loops, disconnect connections, pcall around DataStore/HTTP/Marketplace calls.
 - New APIs (Collision Summaries, betas not to ship yet, age check, publishing): `roblox-dev` §8.
+- (2026-11-03) Before adding a remote, grep all services for the name; after Play, check the boot's "services started" line. New paid systems join the ONE receipt handler. Retire content with flags, never deletes. Diff Studio vs disk (and the commit you started from) before syncing or blaming code.
 Deliver files with where each goes, and a test plan (Studio play solo + 2-player local server).
 
 ## Learn as you go (every job)

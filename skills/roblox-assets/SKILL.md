@@ -61,6 +61,7 @@ local walk = Instance.new("Animation"); walk.AnimationId = "rbxassetid://YOUR_ID
 local track = animator:LoadAnimation(walk); track.Looped = true; track:Play()
 ```
 - Higgsfield `3d_rigging` (Meshy) auto-rigs and can apply one of 678 clips (walk id 30, run 16, idle 0, jump 466) — **only good for human-shaped bodies**. Birds/animals/creatures: rig in Blender.
+- **Bending parts (wings, tails), 2026-11-03:** rigid pieces split by planar cuts open seams as soon as a joint bends. A skinned mesh (root bone at origin, ~3 bones per side, smoothstep weight blends, ≤ 2 influences; decimate BEFORE weighting, Decimate Collapse with symmetry X) uploaded via Open Cloud keeps its Bones and bends without gaps. Drive `Bone.Transform = q⁻¹ * R * q` (q = bone rest rotation in body space); pivot a wing root at mid height, not the top edge, or the downstroke swings into the body. Multi-material skinned GLBs land with bones under a separate RootPart joined by Motor6Ds (swapping those for welds stops deformation): clone the bone tree under each MeshPart and drive every copy. Anchored chains without bones: one part + Motor6D per segment as rig data, client FK `parent * C0 * CFrame.Angles(pitch, yaw, 0) * C1:Inverse()` + BulkMoveTo, and reuse the same FK in the clip check.
 - Roblox Adaptive Animation (GA April 2026) lets one animation drive different rig types via HumanoidRigDescription.
 
 ### B. Scripted motion (no rig needed)
@@ -79,6 +80,7 @@ Full guide and pet/reward effects: `roblox-vfx` skill + `roblox-templates/templa
 - CC0 kits outside Roblox (KayKit, Kenney, Quaternius, Screaming Brain skies) for map dressing: table in `roblox-design/references/maps.md` → "Free assets & new looks". Import via `roblox-3d-pipeline`, recolour to the bible.
 - Test on phone size in Studio's Device Simulator.
 - Save source picture, .blend, GLB/FBX and the Luau scripts with the project.
+- (2026-11-03) Re-save `roblox-assets.json` the way `roblox-upload.ps1` writes it (PowerShell `ConvertTo-Json -Depth 4`, UTF-8 no BOM); Python `json.dumps` reformats every line (16k-line diff). Count keys before/after.
 
 ## Examples
 - Robot chicken (model): see `3d-assets/examples/robot-chicken.md`. To make it walk for Roblox: Blender rig (hip, knee, ankle per leg + neck + head), 28-frame walk with head bob, export GLB, import as Custom rig, AnimationController. Flaming legs: `IgniteLegs(chicken)`.

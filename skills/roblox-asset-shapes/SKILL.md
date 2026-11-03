@@ -50,6 +50,22 @@ Follow `references/blender-part-by-part.md`: parts list from the picture (8–25
 **Cube pet:** body = bevelled cube (15–25% bevel or what lyopz says), features as separate shaped parts (ears, horns, tail, wings, snout, feet) that change the silhouette; eyes in recessed sockets, front face, upper half, style by rarity (`pet-eyes.md`). Match the concept picture's proportions exactly.
 **Coin/gem pickup:** thick bevelled disk with raised rim + embossed symbol; gem = faceted cut, not a sphere.
 
+**More recipes (2026-11-03)**
+- **Plates on a shell:** explicit 2D plates with sharp corners read as riveted sheet metal; random Voronoi cells read as pebbles. Seams/panels can be painted into the colour map from a 3D SDF (`exp(-(d/0.014)^2)`) with no new geometry. Outlines from a shape field: 0-contour by marching triangles, smooth + resample by arc length; corner disc ~1.3× arm half-width, smooth-min k ~0.07 (≥ 0.14 = blobs). Rivets: test against the clipped outline with a min spacing. Voronoi cells: drop slivers (inradius < 0.12 rad) and re-solve; move cell centres away from keep-outs instead of dropping seeds.
+- **Crown rim:** one closed wall swept round the lid, scalloped per-sample height, spikes snapped to exact samples; balls on a flat rim read as lumps.
+- **Folded feathered wings:** feathers on a bilinear map between leading- and trailing-edge curves, parallel to the leading edge, inner on top, shell steps ~0.04–0.05 × radius, slight cross-curl; more, narrower feathers beat a bigger shell; big and turned ~36° toward the front to read.
+- **Foliage:** leaf-card bushes stay faceted; one ray-marched smooth dome (soft union of 3 lobes minus leaf cushions, colour from crease depth, ≥ 40×16 rings) reads stylized at ~2k tris. Canopy = 3–5 lobes of thick teardrop shingle leaves pointing down-slope with a light rim each (round pillows = turtle shell, dark leaf-gap AO = cracked plates).
+- **Crusty surfaces:** domain-warped fbm clumps split by narrow winding channels of varying width (Voronoi shards read as stone, big gaps as cow spots).
+- **Small stylized water:** mesh + SurfaceAppearance (alpha shore fade) + two slow scrolling Textures beats Terrain water (dark 4-stud facets). Deep-to-shallow fade, soft foam edge, low-contrast large ripples (high-contrast caustics = swimming pool).
+- **Ground textures:** 1024 over ~100 studs ≈ 10 px/stud → painted clumps/flowers 1.5–2.5 studs across; saturation ≤ ×1.12 (more drifts lime); a new bright patch reads as a lit rectangle (fade ~7 studs of edge or swap the whole plot). Studio Grass material clashes with baked kits → SmoothPlastic in kit greens.
+- **Glass and crystal:** a glowing core inside → transparent SmoothPlastic (T 0.3–0.55, Reflectance 0.18), not Glass (Glass hides transparent parts behind it). See-through bodies need a frosted liner; clip cage triangles behind it.
+- **Moving parts:** spinners built at the origin on their own axis, exactly symmetric, tilted via CFrame. Doors need ~70° to read open from the front camera, DoubleSided panels, riders parented under the panel part.
+- **Companion props:** reuse the hero's atlas files as-is (same UVs) so image ids and colours match. **Logos:** SurfaceGui ImageLabel (LightInfluence 0) on a face part clear of any bevel, over a dim body-colour backing so a slow load never shows black. **Reads from far:** thick Neon seam band proud of the box, coloured inlays, glow along metal lips.
+
+**What reads wrong:** spoked drums = steering wheels · dark flat discs = holes · octagon-cut squares = crates · full-slab Neon = a sheet (thin band instead) · opaque white glints on wood = scratches · dark painted gap bands = smears (thin Neon tube with a dark lip) · two round knobs side by side = anatomy (upload hold) · a tilted ring adds ~2·R·sin(tilt) height.
+
+**Tri savings with no visible loss:** ring segments → 14–24, tube sides 6, 4-point band profiles, 6-seg or no rivets, no caps on hidden ends, arcs only at loop corners. Spend it on silhouette.
+
 ## 4. Quality check (before showing lyopz)
 - Silhouette test: black-fill screenshot — can you name it? Does it match the concept's outline?
 - Side-by-side with the concept picture in one screenshot. Note 3 differences; fix the biggest.
@@ -57,6 +73,7 @@ Follow `references/blender-part-by-part.md`: parts list from the picture (8–25
 - Edges: no stacked-sphere look, no z-fighting, no gaps where parts meet.
 - Budget: tris/parts/texture size per `roblox-art-style` + `roblox-assets`.
 - If it looks choppy: more bevel segments / smooth shading on curved parts, flat shading only on intentionally faceted parts.
+- **(2026-11-03)** Hero surface forms (slats, plates, domes) are real geometry; paint only colour, grain, glints. Moving/floating pieces: check clearance against the REAL motion (every spin angle, both limits, highest bob) vs sampled shell triangles, not a radius envelope; keep each displaced vertex inside its plate's own cell. Removing decorative rails needs a closed replacement shell (assert manifold, volume, bounds). Socket checks: mount the real accessories (or thin marker parts) on a review clone and compare body-space Y ranges (`GetPartsInPart` on mesh clones returns nothing — trust the shot). Never fit a finished asset by non-uniform scale (flattens bevels/rims, drops a PivotOffset pivot under the floor and drags pivot-anchored UI with it): redesign at the new size; after any resize check `GetPivot()` against the authored point.
 
 ## 5. Learn
 When lyopz approves or rejects an asset, add a line here (what made it work / what looked bad) and update the project's style bible.

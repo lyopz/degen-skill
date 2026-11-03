@@ -13,6 +13,7 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 - HUD pattern: currency top-center, menu stack left, main actions bottom-right.
 - Every button: ButtonFeel (hover 1.06, press 0.92, Back bounce, sounds); panels open with CanvasGroup tween.
 - Gamepad: SelectedObject, NextSelection*, B = back.
+- Studio checks (2026-11-03): read `roblox-ui-maker/ROBLOX_FACTS.md` (built-in MCP section). Prove "14 px real" with TextBounds/TextFits at phone sizes, click by `instance_path`, test through the live module's debug hook (not an execute_luau `require` copy), and call DebugViewport shots layout fixtures.
 Deliver the ScreenGui structure (Luau that builds it or a clear hierarchy) + scripts, and test notes for phone/tablet/ultrawide/console.
 
 ## Learn as you go (every job)

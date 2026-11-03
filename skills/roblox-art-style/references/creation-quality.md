@@ -26,3 +26,9 @@ Match the level to the item's rarity: Common/Uncommon items at 5, Rare/Epic at 5
 
 ## How to get there
 Same steps as `pet-upgrades.md` (glow → auras/particles → depth/layers → full version), with the low-poly budgets and subtle-glow rules still applying. Glow lives on edges, cores and effects. Every asset gets a theme and at least one animation.
+
+## Sign-off checks (2026-11-03)
+- Judge colours in the game's real lighting, from the shaded side too: metal shows sky × tint (under a warm/purple sky copper goes red, dark navy goes black, neon shifts warm) → lift values, push hues away from the sky colour, test ~4 clone steps per round. Mask brass/gold and fix a model's own coloured light before sampling hues.
+- Keep ≥ 20% of each face below value 0.6 (all-pastel reads as soap); Shiny keeps one deep tone. Neon seams ≥ r0.04, neon tubes ≤ ~0.06.
+- Each rarity tier gets its own shape language, not a recolour; neighbouring tiers differ in hue. Faces need a contrast rule per body (dark rim, or cool faces on warm bodies). Glints: thin strips above eye height, ≤ 15% of a lid.
+- Check "no two alike" at player distance (~40 studs); drop marker parts on face sockets before signing off seams/bands.

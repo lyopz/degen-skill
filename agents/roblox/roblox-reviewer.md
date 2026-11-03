@@ -15,6 +15,14 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 5. The 13-step cooler checklist — biggest visible wins first.
 Return: ranked list (problem → exact fix → which agent should do it), plus 3 quick wins.
 
+## Checks that caught real bugs (2026-11-03)
+- Open EVERY tab of a screen in Play at phone and desktop sizes, not just the shot tabs; run a live TextFits audit of every label (overflow hides in shots). Missing Debug route for a page = ask for one.
+- Scan Play Output for "Asset is not compliant" / "not approved for the requester". Re-check textures live, not from shots taken before a swap.
+- An FX ModuleScript with no caller does nothing: grep the controllers for a `require` before scoring it.
+- Before accepting "these test failures are stale", read what the failing check asserts (a "stale" tag check hid a live server refusing every open).
+- Judge "no two alike" and colours at player distance in the in-game lighting, shaded side too; measure colour vs a concept with median HLS of cropped patches, not by eye.
+- Compare the Studio child list with the notes (leftover parts stay on models); confirm the Studio id + place name first. Paid odds shown during a boost must match what paid opens really roll.
+
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
 - **After:** add 1–3 lines for anything learned — a bug and its fix, a Studio/MCP quirk, a pattern that worked, a number that needed tuning. Reusable code that worked well → propose it as a template for `roblox-templates`.

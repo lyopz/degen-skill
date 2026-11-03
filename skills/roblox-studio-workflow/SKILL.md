@@ -56,6 +56,7 @@ Never edit a Roblox script you have not read in the current task context.
 - Use `character_navigation`, `user_keyboard_input`, and `user_mouse_input` to exercise gameplay and UI.
 - Use `screen_capture` to verify visual state.
 - Always check `get_console_output` after a playtest.
+- (2026-11-03) Shared Studio: read the Play lock and its result BEFORE calling `start_stop_play` (never in the same parallel batch); stop Play the moment checks end. Before any write, confirm the Studio id and place name. Diff Studio vs disk before blaming code. Edit-window timing, lock pids, capture, sync and `execute_luau` VM details: `roblox-dev` §7.
 
 ## Roadmap Discipline
 

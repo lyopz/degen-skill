@@ -54,3 +54,6 @@ Slots, follow states and the wobble: `pet-movement.md`.
 ## Making changes
 - Upgrading an existing part or body ("make it 10,000x cooler"): `pet-upgrades.md`.
 - Picture prompts: one part per picture, show it mounted on the plain base body (front + side + back views) so the fit reads.
+- (2026-11-03) Detail on the shared base body = separate meshes in body space, every vertex tested against the slot keep-out zones in the build script; clone the base model so sockets stay identical, and put new attachments on detail parts so Body stays identical. Preview kits on the standard body, never a new cube.
+- A missing body or item silently falls back to the plain base (which still looks like "a pet"): check every catalogued item's bounding box, part count and non-empty MeshIds in a lab row, not just the list. Lab shows never mount face items on face-less bodies (it reads as the item having a face).
+- A rarity step reads as "different" from its neighbour through one material swap on the biggest part (gold arm vs gunmetal), not more small detail.

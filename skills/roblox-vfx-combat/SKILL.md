@@ -81,3 +81,12 @@ and it wins over anything below that disagrees. Write new VFX feedback there.
   say how many first.
 - Keep each effect's texture script and asset-id map in the game's project
   folder (`<game>/vfx/<effect>/`), so it can be redrawn and re-uploaded.
+
+## Project lessons (degen, 2026-11-03)
+
+- **"Make it feel like the liked hit" = copy its structure, not its parts:** one huge solid 3D object, a readable tell, edge-first impact on the target, grind through hit-stop, chunks + crack, a B/W frame. For arm-less pets a giant clone of the pet's own shell (Highlight outline + neon leading edge) is the object; uniform scale in the pose sells "grows giant".
+- **Placement:** a giant object erupting UNDER the target swallows it — put it just behind (front face kissing the target's back) so the target stays silhouetted. Billboard sunbursts behind a ~3-stud pet sit ≥ 3.9 studs above body centre or the lower third sinks into the floor. Shadows on dark floors: black + a thin hue Neon rim (navy vanishes).
+- **Shapes:** two crossing slash bars read as an X / star — a crit double slash is parallel (offset along the bar's up axis). A Back ease overshoots ~10 %: clamp the final size to the cap.
+- **Hit-stop** freezes particles and timers, not scripted poses: write the held squash/pose into the move timeline for those frames. Anticipation recipe: `roblox-design/references/game-feel.md` → Combat hits.
+- **Helper traps:** a "flat clone" that walks only `GetDescendants()` skips the root when given a lone BasePart — insert the root first. Option types bite (a count passed as `true` crashes a compare); removing a texture/sound key crashes every emitter still pointing at it — grep the key first. Read the effect's console warnings after every preview.
+- **Previews:** stop the old preview runner before starting another (overlapping runners corrupt the home pose), reset pets after knockout runs (pivot + LocalTransparencyModifier = 0), check the preview spot is empty with `GetPartBoundsInBox`, copy layouts between models by path, not descendant order. Freeze-at-frame is async: re-capture once the run reaches the frame; keep the cloned router parented during a preview or it silently plays the generic impact.

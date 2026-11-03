@@ -72,6 +72,26 @@ keep a playbook, put the engineering details for them in
   joints**: C0 is read-only, pose with `.Transform`, ragdoll by disabling
   them, and limbs don't move in edit mode.
 
+## Asset errors in Output (2026-11-03)
+- **Scan Play Output for "Asset is not compliant" and "not approved for the
+  requester"**: they silently drop parts from previews and cards.
+- **A "not compliant" id found in no script, file or property** is usually a
+  hidden TexturePack: Studio auto-uploads one per SurfaceAppearance when its
+  maps change, rejected if any map was. Find it with
+  `SerializationService:SerializeInstancesAsync({sa})` + a byte search for the
+  id; fix by replacing the rejected map. The Studio log
+  (`%LOCALAPPDATA%\Roblox\logs\*_Studio_*_last.log`) shows more than Output
+  ("fetchTexturePackTextures", upload rate limits); match ids by timestamp.
+- **"Asset type does not match" for an id in no DataModel** comes from a
+  plugin (rbxm plugins are LZ4-compressed, so plain grep misses them). Ignore
+  it or disable the plugin.
+- **`ContentProvider:PreloadAsync` with raw `rbxassetid` strings preloads them
+  as images** (every MeshId "fails"). Preload the MeshPart/SurfaceAppearance
+  instances instead.
+- **Free-audio proof without Play:** `MarketplaceService:GetProductInfo(id)` →
+  `IsPublicDomain` + Creator; `PreloadAsync` on the Sound in Edit gives
+  Success + `TimeLength`.
+
 ## Studio processes
 - **`manage_instance launch source=baseplate` has hung on macOS:** stray
   `RobloxStudio --task` processes survive SIGTERM and blind the real Studio.

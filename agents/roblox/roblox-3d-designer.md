@@ -30,6 +30,7 @@ Several assets: finish the first one fully (including the rating) before startin
 - Blender only for small shape fixes. A wrong shape goes back to the generator.
 - Save tokens: shots only at checkpoints, pass paths not contents, and use one `execute_code` per step.
 - Before you start: read `roblox-dev/lessons.md`. After: add 1–3 lessons and report them.
+- (2026-11-03) Judge colours in a Studio shot under the place's real lighting (`unity-polish.md` → "Colour in the game's light"), resolve decal ids to image ids before setting maps (`roblox-import.md`), and put every fix into the generator so a reinstall keeps it.
 - Finish with a short report (what, where, files, credits, rating, lessons) followed by the HANDOFF block.
 
 - **Locked base body:** if the game has a locked pet base body in its style bible, every pet uses it at the same size and shape. Never change body size or shape unless lyopz says so; species differ by color, markings and parts only. (lyopz 2026-10-24)

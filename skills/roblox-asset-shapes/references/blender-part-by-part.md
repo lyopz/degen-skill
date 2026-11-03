@@ -58,3 +58,10 @@ Run `scripts/compare_to_siblings.py` in Blender (or the same steps by hand):
 
 ## 5. Export
 Apply transforms, origin at the base, join parts (or keep a few: body, moving parts for animation), export GLB, import to Studio, screenshot in the place next to existing pets. Save `.blend`, GLB and the comparison renders in the project folder.
+
+## Headless / procedural gotchas (2026-11-03)
+- **Absolute paths always** for `blender -b -P ... -- --out/--dir` (relative paths and `//` resolve against Blender's cwd, e.g. `C:\`, and stale maps got uploaded): `"$(cygpath -w "$PWD/<dir>")"`, then check map timestamps match the GLB. Windows Python needs `C:/` paths.
+- bpy: re-fetch `obj.data.uv_layers[...].data` after every mode toggle (a stale ref silently drops `foreach_set`). Blender 5.2 glTF kwarg: `export_texcoords`. Bundled Python has no PIL/scipy (box blur = cumsum × 3; `np.roll` leaves a checker); `float()` numpy values for JSON. `bmesh.ops.delaunay_2d_cdt` gives clean flat cel shapes from a 2D outline.
+- **Faces:** winding from the undeformed surface (dents flip otherwise); lathe/loft point order sets face direction; open revolved discs only show from the front (use closed thin cylinders for caps).
+- **UVs + bakes:** thin strips off smart-UV (swatch UVs). Delete hidden inner walls before baking (their UVs overlap and bake black blotches). Several moving pieces: smart-UV together, one shared atlas. A whole prop kit fits one 512 atlas with per-vertex shading baked along colour-ramp rows (recolour = regenerate the colour map only). Low-poly edge wear: Bevel node (r 0.05) dot with the true normal, not Pointiness. Thin emissive strands bake fully high-AO: drive a hot core from up-facing shade. Paint line masks at 4× and downsample (images cap at 1024).
+- **Clearance vs moving parts:** slice real triangles per height and sweep real vertices through the actual runtime driver; prove any axis formula against measured imported centres. Real verts in Edit: `CreateEditableMeshAsync(Content.fromUri(part.MeshId))`, scaled by Size/MeshSize.

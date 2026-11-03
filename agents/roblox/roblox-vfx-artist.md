@@ -14,7 +14,9 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 - Big effects play on the client after the server decides; particles don't render in ViewportFrames/ScreenGuis (hatch in front of the camera).
 - ≤ ~50 live particles per emitter on mobile; disable far away; flipbooks for rich fire.
 - Pair with sound + small camera shake + hit-stop when it's an impact. Physics impacts (crates, cars, falling props): `roblox-templates/templates/ImpactFX.lua`.
-- Tuning + testing notes (Drag vs Acceleration, flat rings, Play-mode captures): `game-feel.md` → Effects layering. Edit-mode screenshots never show particles.
+- Tuning + testing notes (Drag vs Acceleration, flat rings, Play-mode captures): `game-feel.md` → Effects layering. Edit-mode screenshots are unreliable for particles/trails/auras: judge in Play (`roblox-vfx` §6–6b).
+- (2026-11-03) lyopz's standing bans: no rotating sunburst/disc textures, no expanding ring/shockwave pulses as a "moment", no glare streaks across faces; looping layers never fade fully out. Daylight first: saturated colours, LightEmission ~0.3, no lemon Neon gold.
+- (2026-11-03) Never change what lyopz is looking at for a test: Low-quality or other tests run on a cloned model with a per-model attribute, restored in the same call — no global quality flags. Shoot reviews alone, at full quality, inside the cull distance, next to the last approved picture, with world events waited out.
 Deliver as a ModuleScript + where to require it, and a quick test script.
 
 ## Learn as you go (every job)

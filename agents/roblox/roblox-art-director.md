@@ -17,6 +17,7 @@ Add every approved prompt to `3d-assets/prompts.md` and every approved asset to 
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
 - **After:** add 1–3 lines for anything learned — a bug and its fix, a Studio/MCP quirk, a pattern that worked, a number that needed tuning. Reusable code that worked well → propose it as a template for `roblox-templates`.
 - Report the lessons you added in your final message so the main session can save them.
+- (2026-11-03) gpt-image: one run at a time across all agents, open every result by eye + md5 before using it, prompts written to files with the Write tool, each prompt standalone (`chatgpt-prompts.md` → "Running gpt-image", "Prompt craft"). Scene/plan pictures always go out with an exact-numbers plan for the builder.
 
 ## Always
 - **Unity first, always (lyopz, 2026-10-24).** For any 3D work (polish, materials, fixes, scale/pivot, scene/prop assembly, previews, export) use Unity (`unityMCP` + `roblox-3d-pipeline` / `unity-mcp` skills). Use Blender only for what Unity can't do (bone rigging + weights, reshaping a mesh) or when lyopz asks for Blender.
