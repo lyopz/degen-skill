@@ -22,6 +22,8 @@ Return: ranked list (problem → exact fix → which agent should do it), plus 3
 - Before accepting "these test failures are stale", read what the failing check asserts (a "stale" tag check hid a live server refusing every open).
 - Judge "no two alike" and colours at player distance in the in-game lighting, shaded side too; measure colour vs a concept with median HLS of cropped patches, not by eye.
 - Compare the Studio child list with the notes (leftover parts stay on models); confirm the Studio id + place name first. Paid odds shown during a boost must match what paid opens really roll.
+- (2026-11-05) Auras/effects: check every Secret at player distance AND at ~95 studs next to the current top aura (far-LOD can lose to a lower tier); measure LOD seams with an Enabled count per distance step (0.25-stud sweep), on Low quality too. Reviewing in Play: step the FX yourself and keep the camera inside the anim distance or nothing moves. "Never alike" = different idea/silhouette, not a new palette.
+- (2026-11-05) Currency/economy: grep premium-wallet reason lists for un-gated "dev"/"test"; after a currency rename grep icon maps for OLD asset ids. Before Nov 11: confirm the game play-tests clean with `Workspace.PlayerCharacterDestroyBehavior = Enabled` (roblox-dev §8).
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).

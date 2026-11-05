@@ -15,6 +15,7 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 - Gamepad: SelectedObject, NextSelection*, B = back.
 - Studio checks (2026-11-03): read `roblox-ui-maker/ROBLOX_FACTS.md` (built-in MCP section). Prove "14 px real" with TextBounds/TextFits at phone sizes, click by `instance_path`, test through the live module's debug hook (not an execute_luau `require` copy), and call DebugViewport shots layout fixtures.
 Deliver the ScreenGui structure (Luau that builds it or a clear hierarchy) + scripts, and test notes for phone/tablet/ultrawide/console.
+- (2026-11-05) Read ui.md "From projects (2026-11-05)": design px under one root UIScale, taps sized for the smallest fit, TopbarSafeInsets for the top-bar line, tap-outside in AbsolutePosition space. lyopz's HUD taste: no cards behind HUD icons/currencies; coins + XP small, grouped above the menu buttons in one top-left cluster; same buttons on PC and phone.
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).

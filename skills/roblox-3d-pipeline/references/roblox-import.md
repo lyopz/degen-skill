@@ -56,3 +56,5 @@ Unpolished Customuse mesh (Unity skipped): `customuse_validate_roblox_upload` �
 3. Saved encrypted for his Windows user in `~/RobloxGames/.degen/roblox-cloud.json`. Never in the repo, never print it. `-Remove` deletes it.
 
 Why this route: Open Cloud's Assets API takes .glb/.fbx/.gltf as a Model and makes real MeshIds; the Studio MCP can insert by id (`insert_asset`) but has no tool that reads a local mesh file, and plugin `CreateAssetAsync` was unreliable (lessons 2026-10-23/24).
+
+- **(2026-11-05) Swapping a re-baked mesh into a placed model:** clone the new raw part, `CFrame = placedRoot.CFrame * rawPart.CFrame`, copy props, attributes, tags and children from the old part, destroy the old one — and swap EVERY mesh sharing that atlas (a rebuild re-unwraps them all). Blender `.blend` zstd files can hold several frames: decompress with `stream_reader(..., read_across_frames=True)`. Neon see-through halo shells render opaque white in Cycles sheets — render them out.
