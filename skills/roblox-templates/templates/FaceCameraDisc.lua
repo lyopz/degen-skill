@@ -1,0 +1,77 @@
+-- FaceCameraDisc.lua — keeps a flat ring/disc effect readable from every camera angle (ModuleScript, client).
+-- version: 1
+-- changelog: v1 2026-11-04 first version (from Build-A-Pet r41 Singularity Genesis aura)
+-- A flat disc seen edge-on turns into a line. This picks, a few times a second, the tilt (from a fixed set) that
+-- shows the disc widest to the camera, then eases the disc's normal toward it. Side tilt is capped (default 60 deg)
+-- so the disc's low edge never dips across the pet's face. Pair it with flat beams (FaceCamera = false, 8 segments).
+--
+-- local FaceCameraDisc = require(game.ReplicatedStorage.FaceCameraDisc)
+-- local disc = FaceCameraDisc.new(hostPart, Vector3.new(0, 2.2, 1.1))   -- centre in host space
+-- RunService.RenderStepped:Connect(function(dt)
+--     local cf = disc:Step(dt)                     -- CFrame in host space, UpVector = disc normal
+--     ring:PivotTo(hostPart.CFrame * cf * CFrame.Angles(0, -spin, 0))
+-- end)
+-- Options: { pitches = {40, 52}, sideMax = 60, sideStep = 15, repick = 0.25, ease = 2.2, hysteresis = 0.06 }
+
+local FaceCameraDisc = {}
+FaceCameraDisc.__index = FaceCameraDisc
+
+function FaceCameraDisc.new(host: BasePart, centre: Vector3, opts: any?)
+	opts = opts or {}
+	local self = setmetatable({}, FaceCameraDisc)
+	self.host, self.c = host, centre
+	self.repick, self.ease, self.hyst = opts.repick or 0.25, opts.ease or 2.2, opts.hysteresis or 0.06
+	self.tilts = {}
+	local pitches = opts.pitches or { 40, 52 }
+	local sideMax, sideStep = opts.sideMax or 60, opts.sideStep or 15
+	for i, p in ipairs(pitches) do
+		for b = -sideMax, sideMax, sideStep do
+			local pr, br = math.rad(p), math.rad(b)
+			-- normal leans back (+Z) by p, swung toward +X by b; the low edge sits behind/beside, never in front
+			table.insert(self.tilts, {
+				n = Vector3.new(math.sin(pr) * math.sin(br), math.cos(pr), math.sin(pr) * math.cos(br)),
+				cost = (i - 1) * 0.05, -- prefer the first (flattest) pitch
+			})
+		end
+	end
+	local p0 = math.rad(pitches[1])
+	self.want = Vector3.new(0, math.cos(p0), math.sin(p0))
+	self.cur, self.t = self.want, 0
+	self:Pick()
+	self.cur = self.want
+	return self
+end
+
+function FaceCameraDisc:Pick()
+	local cam = workspace.CurrentCamera
+	if not cam or not self.host.Parent then return end
+	local d = self.host.CFrame:PointToObjectSpace(cam.CFrame.Position) - self.c
+	if d.Magnitude < 1e-3 then return end
+	local u = d.Unit
+	local best, bs = nil, -1
+	for _, cd in ipairs(self.tilts) do
+		local s = math.abs(cd.n:Dot(u)) - cd.cost
+		if s > bs then best, bs = cd, s end
+	end
+	if best and bs > math.abs(self.want:Dot(u)) + self.hyst then self.want = best.n end
+end
+
+-- returns the disc CFrame in host space (position = centre, UpVector = normal)
+function FaceCameraDisc:Step(dt: number): CFrame
+	self.t += dt
+	if self.t >= self.repick then self.t = 0 self:Pick() end
+	if (self.cur - self.want).Magnitude > 1e-3 then
+		self.cur = self.cur:Lerp(self.want, math.min(1, dt * self.ease)).Unit
+	end
+	local n = self.cur
+	return CFrame.fromMatrix(self.c, n:Cross(Vector3.zAxis).Unit, n)
+end
+
+-- snap straight to the best tilt (after a teleport or camera cut, so the disc isn't thin for a second)
+function FaceCameraDisc:Snap(): CFrame
+	self:Pick()
+	self.cur = self.want
+	return self:Step(0)
+end
+
+return FaceCameraDisc
