@@ -1,0 +1,192 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
+<Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">SafeTeleport</string><ProtectedString name="Source"><![CDATA[-- SafeTeleport.lua — server teleports that retry, lock and report: lobbies → rounds, event dimensions, party servers.
+-- version: 1
+-- use: ModuleScript in ServerScriptService (server only). The client only ASKS (portal touch, button remote);
+--      the server decides who goes where (check data, distance, cooldowns first — roblox-dev §2).
+--
+-- local SafeTeleport = require(game.ServerScriptService.SafeTeleport)
+-- SafeTeleport.Init({ onFailed = function(player, reason) Remotes.Toast:FireClient(player, "Teleport failed: " .. reason) end })
+-- -- one player / a group into the normal public pool of a place in THIS experience:
+-- SafeTeleport.Send({ player }, EVENT_PLACE_ID)
+-- -- a party into its own fresh private server (round, dungeon, event instance):
+-- local ok, why = SafeTeleport.Send(partyPlayers, ROUND_PLACE_ID, { reserve = true, data = { mode = "Hard" } })
+-- -- join an existing reserved server you stored earlier (e.g. in MemoryStore):
+-- SafeTeleport.Send({ player }, ROUND_PLACE_ID, { accessCode = savedCode })
+-- -- on the DESTINATION place, read the cosmetic data that came along:
+-- local data = SafeTeleport.GetArrivalData(player)  -- nil unless it came from this experience
+--
+-- Rules baked in:
+--   * one teleport at a time per player (busy lock, cleared on fail/leave) → no remote spam;
+--   * TeleportAsync in pcall with backoff; TeleportInitFailed retries Flooded/Failure/timeouts, gives up on
+--     real refusals (bad place, full/locked server) and calls onFailed so the client can un-freeze its UI;
+--   * teleport data is NOT secure (the client can forge it) — only send cosmetic/mode info. Coins, items,
+--     unlocks travel through your DataStore save, never through `data`;
+--   * save before you send: call your Data.Save(player) (or let PlayerRemoving do it with session locking).
+-- Client polish (optional): set a loading screen with TeleportService:SetTeleportGui(gui) in a LocalScript
+--   before the server sends, and fade out — matches the arrival screen (ReplicatedFirst) on the other place.
+-- Testing: since 2026-11-05 TeleportAsync runs in Studio Test/Team Test (destination opens as a new test
+--   server; same experience only). In local Test game.JobId/PrivateServerId are empty; VIP-server teleports
+--   fail in testing. https://devforum.roblox.com/t/test-teleports-in-studio/4977640
+--
+-- changelog: v1 2026-11-06 first version (written for lyopz; pattern from Roblox TeleportService docs)
+
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+
+local SafeTeleport = {}
+
+local MAX_ATTEMPTS = 4          -- total tries per teleport (call + TeleportInitFailed retries)
+local RETRY_DELAY = 2           -- seconds, grows each try
+local FLOOD_DELAY = 15          -- Roblox throttled us: wait longer
+local LOCK_TIMEOUT = 30         -- if nothing happens (no fail, no leave) the lock frees itself
+
+local RETRY_RESULTS = {
+	[Enum.TeleportResult.Flooded] = FLOOD_DELAY,
+	[Enum.TeleportResult.Failure] = RETRY_DELAY,
+}  -- anything else (GameFull, GameEnded, Unauthorized = place not in this experience…) is a real refusal
+
+local pending = {}  -- [player] = { placeId, options, attempts, startedAt }
+local onFailed = nil
+local started = false
+
+local function fail(player, reason)
+	pending[player] = nil
+	if onFailed then
+		task.spawn(onFailed, player, reason)
+	end
+end
+
+local function attempt(players, placeId, options)
+	local ok, result = pcall(TeleportService.TeleportAsync, TeleportService, placeId, players, options)
+	return ok, result
+end
+
+local function sendWithRetry(players, placeId, options, attemptsUsed)
+	local tries = attemptsUsed or 0
+	local lastErr
+	while tries < MAX_ATTEMPTS do
+		tries += 1
+		for _, p in players do
+			local entry = pending[p]
+			if entry then entry.attempts = tries end
+		end
+		local ok, result = attempt(players, placeId, options)
+		if ok then
+			return true, result
+		end
+		lastErr = tostring(result)
+		task.wait(RETRY_DELAY * tries)
+		-- drop anyone who left while we waited
+		local still = {}
+		for _, p in players do
+			if p.Parent == Players and pending[p] then table.insert(still, p) end
+		end
+		players = still
+		if #players == 0 then return false, "everyone left" end
+	end
+	return false, lastErr or "teleport failed"
+end
+
+-- players: array of Players; placeId: a place in THIS experience.
+-- opts: { reserve = bool, accessCode = string, data = table (cosmetic only), serverInstanceId = string }
+-- Returns ok, reasonOrResult (TeleportAsyncResult with ReservedServerAccessCode/PrivateServerId when reserved).
+-- Yields — call it from task.spawn if the caller must not wait.
+function SafeTeleport.Send(players, placeId, opts)
+	assert(started, "SafeTeleport.Init() first")
+	assert(typeof(placeId) == "number", "placeId must be a number")
+	opts = opts or {}
+
+	local group = {}
+	for _, p in players do
+		if typeof(p) == "Instance" and p:IsA("Player") and p.Parent == Players then
+			local busy = pending[p]
+			if busy and os.clock() - busy.startedAt < LOCK_TIMEOUT then
+				-- already teleporting: skip silently (spam or double-trigger)
+			else
+				table.insert(group, p)
+			end
+		end
+	end
+	if #group == 0 then return false, "nobody to send" end
+
+	local options = Instance.new("TeleportOptions")
+	if opts.reserve then
+		options.ShouldReserveServer = true
+	elseif opts.accessCode then
+		options.ReservedServerAccessCode = opts.accessCode
+	elseif opts.serverInstanceId then
+		options.ServerInstanceId = opts.serverInstanceId
+	end
+	if opts.data ~= nil then
+		options:SetTeleportData(opts.data)
+	end
+
+	for _, p in group do
+		pending[p] = { placeId = placeId, options = options, attempts = 0, startedAt = os.clock() }
+	end
+
+	local ok, result = sendWithRetry(group, placeId, options, 0)
+	if ok and opts.reserve and result and result.ReservedServerAccessCode ~= "" then
+		-- a player whose hand-off fails later retries into the SAME reserved server as the party
+		local again = Instance.new("TeleportOptions")
+		again.ReservedServerAccessCode = result.ReservedServerAccessCode
+		if opts.data ~= nil then again:SetTeleportData(opts.data) end
+		for _, p in group do
+			if pending[p] then pending[p].options = again end
+		end
+	end
+	if not ok then
+		for _, p in group do
+			if pending[p] then fail(p, result) end
+		end
+	end
+	return ok, result
+end
+
+-- True while a player is mid-teleport (freeze their UI / ignore their remotes).
+function SafeTeleport.IsBusy(player)
+	local entry = pending[player]
+	return entry ~= nil and os.clock() - entry.startedAt < LOCK_TIMEOUT
+end
+
+-- Destination side: cosmetic data sent along, only when it came from a place in this experience.
+function SafeTeleport.GetArrivalData(player)
+	local ok, join = pcall(player.GetJoinData, player)
+	if not ok or type(join) ~= "table" then return nil end
+	if join.SourceGameId ~= game.GameId then return nil end
+	return join.TeleportData
+end
+
+function SafeTeleport.Init(config)
+	if started then return end
+	started = true
+	config = config or {}
+	onFailed = config.onFailed
+
+	TeleportService.TeleportInitFailed:Connect(function(player, result, message, placeId, options)
+		local entry = pending[player]
+		if not entry then return end
+		local delay = RETRY_RESULTS[result]
+		if delay == nil then
+			fail(player, message ~= "" and message or result.Name)  -- GameFull, GameEnded, IsTeleporting, Unauthorized…
+			return
+		end
+		if entry.attempts >= MAX_ATTEMPTS then
+			fail(player, message ~= "" and message or result.Name)
+			return
+		end
+		task.delay(delay, function()
+			if player.Parent ~= Players or pending[player] ~= entry then return end
+			local ok, why = sendWithRetry({ player }, entry.placeId, entry.options, entry.attempts)
+			if not ok and pending[player] == entry then fail(player, why) end
+		end)
+	end)
+
+	Players.PlayerRemoving:Connect(function(player)
+		pending[player] = nil
+	end)
+end
+
+return SafeTeleport
+]]></ProtectedString></Properties></Item>
+</roblox>
