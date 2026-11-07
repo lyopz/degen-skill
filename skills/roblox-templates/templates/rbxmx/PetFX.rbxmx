@@ -1,6 +1,8 @@
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" version="4">
 <Item class="ModuleScript" referent="RBX0"><Properties><string name="Name">PetFX</string><ProtectedString name="Source"><![CDATA[-- PetFX.lua — pet/reward effects for simulators (ModuleScript in ReplicatedStorage, call from the CLIENT).
--- version: 1
+-- version: 2
+-- changelog: v2 2026-11-07 auto quality no longer reads UserGameSettings.SavedQualityLevel (Roblox is deprecating it,
+--   DevForum 2026-11-05); uses phone check + measured frame rate for the first ~4 s instead. Same API.
 -- changelog: v1 2026-10-24 first version (hatch, rarity aura, level up, reward fountain, light pillar, trail, Play, culling)
 -- Uses Roblox's built-in particle textures, so it works with no uploads. Swap the TEX ids for your own
 -- (ChatGPT white-on-black textures, see roblox-vfx/references/textures.md) to match the game's style.
@@ -52,14 +54,22 @@ local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(60, 160, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 80, 255)),
 })
 
--- Quality: 1 = full. Low graphics settings / phones get fewer particles automatically.
+-- Quality: 1 = full. Phones and slow devices get fewer particles automatically.
+-- Never read UserGameSettings.SavedQualityLevel (being deprecated, 2026-11): guess from the device,
+-- then measure the frame rate for ~4 s after require and drop to 0.5 if it averages under ~40 FPS.
 local quality = 1
+local manualQuality = false
 do
-	local ok, level = pcall(function() return UserSettings():GetService("UserGameSettings").SavedQualityLevel.Value end)
-	if ok and level > 0 and level <= 3 then quality = 0.5 end -- Automatic = 0, 1..10 = manual slider
-	if game:GetService("UserInputService").TouchEnabled then quality = math.min(quality, 0.7) end
+	local UIS = game:GetService("UserInputService")
+	if UIS.TouchEnabled and not UIS.KeyboardEnabled then quality = 0.7 end
+	task.spawn(function()
+		task.wait(2) -- skip loading hitches
+		local t, frames = 0, 0
+		while t < 4 do t += RunService.RenderStepped:Wait(); frames += 1 end
+		if not manualQuality and frames / t < 40 then quality = math.min(quality, 0.5) end
+	end)
 end
-function PetFX.SetQuality(q: number) quality = math.clamp(q, 0.1, 1) end
+function PetFX.SetQuality(q: number) manualQuality = true; quality = math.clamp(q, 0.1, 1) end
 local function n(count: number): number return math.max(1, math.floor(count * quality + 0.5)) end
 
 local function info(rarity: string?)

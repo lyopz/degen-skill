@@ -16,6 +16,8 @@
 - Fewer, bigger MeshParts beat thousands of small Parts; union sparingly (unions are heavy); use Terrain for ground/water.
 - Lights: limit shadow-casting lights; most decorative PointLights `Shadows = false`.
 
+- **(2026-11-07)** Min draw distance is now 500 studs even on the lowest quality (was 200): more of the map renders on phones, so far scenery must stay cheap (few big MeshParts, no lights/emitters far out). https://devforum.roblox.com/t/increasing-the-minimum-draw-distance-to-500-studs-and-other-auto-quality-level-improvements/4977292
+
 ## Effects
 - Under ~50 live particles per emitter for most effects; atlas/flipbook textures; disable emitters far from the camera or off-screen.
 - Post-processing optional on mobile (graphics setting / auto-detect).

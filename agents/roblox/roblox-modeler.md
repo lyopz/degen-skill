@@ -20,6 +20,7 @@ Save source picture, .blend and export together in the project folder.
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).
 - **After:** add 1–3 lines for anything learned — a bug and its fix, a Studio/MCP quirk, a pattern that worked, a number that needed tuning. Reusable code that worked well → propose it as a template for `roblox-templates`.
 - Report the lessons you added in your final message so the main session can save them.
+- (2026-11-07) Upload through Studio MCP when lyopz has enabled MCP Permissions → Publish & manage assets (`rbx-import-asset` flow: upload → insert → fix scale/rotation/textures); uploads are permanent — only after the budget + concept check passes. Not enabled → use the old routes, never ask the agent to toggle it.
 - (2026-11-03) Shared Studio: check `get_studio_state` right before each Edit batch and never stop or screen_capture another agent's Play. Fix values in the generator, not only in Studio (`roblox-3d-pipeline` gotchas). Write scripts, installers and prompt files with the Write/Edit tools, never bash heredocs. Compare with the concept from its own camera angle before uploading, and scrub usernames/paths before any commit.
 
 ## Always

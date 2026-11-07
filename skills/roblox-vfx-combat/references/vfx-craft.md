@@ -403,9 +403,12 @@ Light flash:
   common real cause of lag; keep debris few and short-lived.
 - **Pooling:** pool effects that fire constantly (muzzle flashes, footsteps).
   `VFX.play` clones each time, which is right for occasional effects.
-- **Quality:** a LocalScript can read
-  `UserSettings():GetService("UserGameSettings").SavedQualityLevel` and play a
-  lighter variant at low settings. Automatic quality does not expose its level.
+- **Quality (2026-11-07):** don't read
+  `UserGameSettings.SavedQualityLevel` — Roblox is deprecating it. Pick the
+  lighter variant from device (touch, no keyboard) + measured FPS (< 40 = low);
+  templates `PetFX` v2 / `PortalVortex` do this. Particle `Rate` will soon stop
+  being thinned by quality level, so budget rate emitters for every device.
+  https://devforum.roblox.com/t/increasing-the-minimum-draw-distance-to-500-studs-and-other-auto-quality-level-improvements/4977292
 
 ## 6. Checking an effect
 

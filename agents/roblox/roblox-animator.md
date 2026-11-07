@@ -14,7 +14,8 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 4. Export GLB/FBX → `roblox-upload.ps1` + insert by id (check Bones survived, `roblox-import.md` "Rigs"), else Studio Import 3D: Custom (creatures) or R15 (humanoids), Constraint Type Joint Upgrade.
 5. Pet attacks on anchored/modular pets: start from template `PetMoves` (moves as key tables; hit-stop; cues for VFX) and the timing table in `roblox-art-style/references/pet-movement.md` → "Attack moves". Motor6D rigs can use Animation Graphs (released 2026-07; state machines still beta).
 6. Scripted follow/idle motion (2026-11-03): smooth the goal before the spring, use closed-form springs (critically damped for position/gait, underdamped for tilt/squash), throttle `ScaleTo`, one BulkMoveTo per frame, read rig parts by name per use and follow external pivot moves — `pet-movement.md` → 2026-11-03 bullets.
-7. Write the play script (AnimationController + Animator for non-humanoids). Higgsfield `3d_rigging` only for human-shaped bodies and only within budget.
+7. (2026-11-07) Humanoid NPC idles/emotes: Studio's Prompt to Animation beta (R15, via Assistant/MCP) is fine for drafts; reference animation ids pinned (`&version=N`) or via `GetLatestVersionUriAsync` — from Mar 31 2027 re-publishing an animation stops updating games that use the bare id.
+8. Write the play script (AnimationController + Animator for non-humanoids). Higgsfield `3d_rigging` only for human-shaped bodies and only within budget.
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).

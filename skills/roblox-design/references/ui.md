@@ -10,7 +10,7 @@
 | HUD side buttons (shop, inventory, pets) | Vertical stack on left edge, each ~**0.06–0.08** screen height with `UIAspectRatioConstraint` 1:1, icon + short label. |
 | Body text | ≥ **14 px** effective (real screen px, after every UIScale; see "Text under a UIScale" below). Titles 28–48. Use bold, high-contrast fonts (Gotham/Builder Sans/Fredoka One style for fun games). |
 | Corner radius | One value everywhere: **8–16 px** (`UICorner`). |
-| Shadows | `UIShadow` (live 2026) instead of a fake dark frame. Beta (2026-10, can't publish yet): `Mode = Text` text shadows, `Inset` recessed look, `ShowBehindParent = false` knockout for see-through panels, child `UIGradient` for colored glow. Keep < 100 on screen. https://devforum.roblox.com/t/studio-beta-upgraded-uishadow-capabilities/4934553 |
+| Shadows | `UIShadow` (live 2026) instead of a fake dark frame. Upgraded features fully released 2026-11 (publishable): `Mode = Text` text shadows, `Inset` recessed look, `ShowBehindParent = false` knockout for see-through panels, child `UIGradient` for colored glow. Keep < 100 on screen. https://devforum.roblox.com/t/studio-beta-upgraded-uishadow-capabilities/4934553 |
 | Panel padding | **12–24 px** (`UIPadding`), list gap **8 px** (`UIListLayout.Padding = UDim.new(0, 8)`). |
 | Example panel | 60% width × 70% height (Scale) + `UISizeConstraint` min 320×400 px, max ~900×700 for ultrawide. |
 | Grid slots | 96×96 px cells, 8 px padding; `UIAspectRatioConstraint` 1 on every slot. |

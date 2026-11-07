@@ -21,7 +21,7 @@ Usage (LocalScript, e.g. StarterPlayerScripts/PortalClient):
 		Depth = nil,        -- studs from the opening to the deepest swirl (2.4 when the frame has the r17 funnel)
 		Rim = true,         -- false when the frame has its own Neon lip
 		Locked = true,      -- 25% speed, half brightness, 40% toward navy, no core
-		Quality = "Auto",   -- "Low" | "Medium" | "High" | "Auto" (phone / low graphics -> Low)
+		Quality = "Auto",   -- "Low" | "Medium" | "High" | "Auto" (phone / low FPS -> Low)
 		Front = nil,        -- Vector3 players walk in from (default: model pivot LookVector)
 		HideNames = nil,    -- e.g. {"Veil","VeilBack","SwirlArm","SwirlCore"}: hide old veil parts locally
 		Style = nil,        -- r18v: a style table (FX.PortalVortexStyles[rank]) or Rank = n to look it up:
@@ -30,7 +30,7 @@ Usage (LocalScript, e.g. StarterPlayerScripts/PortalClient):
 	h:SetLocked(false)          -- 0.8 s blend; or PortalVortex.SetLocked(portalModel, false)
 	h:Unlock()                  -- first-time unlock moment: spin-up 1.2 s, core blooms, burst of 30 streaks
 	h:SetQuality("Low")         -- rebuilds
-	PortalVortex.AutoQuality()  -- "Low" on phones (touch, no keyboard) or low graphics: shared by the hub FX scripts
+	PortalVortex.AutoQuality()  -- "Low" on phones (touch, no keyboard) or < 40 FPS: shared by the hub FX scripts
 	Style.Colors = { Main, Light, Dark, Core } (r19v) overrides the colours passed in
 	h:Destroy()
 
@@ -96,15 +96,21 @@ end
 
 local function mul(c: Color3, k: number): Color3 return Color3.new(c.R * k, c.G * k, c.B * k) end
 
-local function autoQuality(): string
-	local ok, level = pcall(function()
-		return UserSettings():GetService("UserGameSettings").SavedQualityLevel.Value
+-- 2026-11-07: no longer reads UserGameSettings.SavedQualityLevel (Roblox is deprecating it). Phones -> Low,
+-- otherwise the frame rate measured since require: < 40 FPS -> Low, < 55 -> Medium, else High.
+local fpsT, fpsFrames = 0, 0
+if RunService:IsClient() then
+	task.spawn(function()
+		while fpsT < 6 do fpsT += RunService.RenderStepped:Wait(); fpsFrames += 1 end
 	end)
+end
+local function autoQuality(): string
 	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 		return "Low"
 	end
-	if ok and level and level > 0 then
-		if level <= 3 then return "Low" elseif level <= 7 then return "Medium" end
+	if fpsT >= 1.5 then
+		local fps = fpsFrames / fpsT
+		if fps < 40 then return "Low" elseif fps < 55 then return "Medium" end
 		return "High"
 	end
 	return "Medium"
