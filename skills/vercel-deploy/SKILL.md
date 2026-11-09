@@ -13,7 +13,7 @@ lyopz's PC is Windows; run commands in normal PowerShell.
 ## How lyopz wants sites deployed
 
 - **Repo:** his own GitHub (`lyopz`), set to **Private**, no README/license from GitHub, no open-source license in the code.
-- **Nobody can tell who made it:** commit under the project's own name with a noreply email (e.g. `Cyber Attack <cyberattack@users.noreply.github.com>`), never his name or email. No repo link on the site. Vercel project name without `lyopz` (the name becomes the URL, e.g. `cyberattack-map.vercel.app`).
+- **Nobody can tell who made it:** the repo is private, so nobody sees the commits. Commit as `lyopz <262610994+lyopz@users.noreply.github.com>` (his GitHub noreply, never his real email). **Don't** commit under a made-up name: on Hobby, Vercel **blocks** any commit whose author isn't the account owner (deployment shows "Blocked"). No repo link on the site. Vercel project name without `lyopz` (the name becomes the URL, e.g. `cyberattack-map.vercel.app`).
 - **Vercel's GitHub app:** install with **Only select repositories** and pick just that site's repo. Add more repos later the same way, one at a time.
 - **Plan:** Hobby (free). Private repos from a personal account deploy fine on Hobby.
 - After the first deploy, **every push to `main` goes live by itself.** Don't redeploy by hand.
