@@ -25,6 +25,14 @@ Saved components live in `components/` next to this file, one `.md` per componen
 7. **Use it** where lyopz asked. For images use real Unsplash URLs; for icons use `lucide-react`.
 8. Tell him the file path and one line on how to use it.
 
+## Plain HTML sites (no React)
+
+If the project is plain HTML/CSS/JS with no build step (like the cyber-attack site), don't convert it to React just for one component. Port the component instead: read its code (or its 21st.dev description), rebuild the same effect with CSS variables and a few lines of JS, and credit it in a comment (`// ported from 21st.dev <name> (<author>)`). Tell lyopz in one line that you ported it and why.
+
+Ported so far (in lyopz/cyber-attack `public/fx.js` + `styles.css`): Spotlight Card (glow follows the pointer, one `pointermove` listener feeding `--x`/`--y` on `:root`), Cyber Matrix Hero (canvas glyph grid that brightens near the cursor), Glitch Text (cipher scramble), Count Up, Marquee. Rules that came out of it: effects only on devices with a real mouse (`(hover: hover) and (pointer: fine)`), everything off for `prefers-reduced-motion`, pause canvas loops when off screen.
+
+Good 21st.dev finds for dark "cyber" sites: `cyber-matrix-hero` (dhileepkumargm), `glitch-text` (kokonutd), `glitch-text-animation` (daiwiikharihar), `marquee` (diceui), `count-up` / `animate-digits` (unlumen).
+
 ## Adding a new component
 
 When lyopz pastes a new 21st.dev prompt: save it as `components/<component-name>.md`, add a row to the table above, commit and push to the degen-skill repo. Don't change the component code when saving it.

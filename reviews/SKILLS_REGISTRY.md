@@ -6,6 +6,7 @@ Every skill in this repo, tracked by the GitHub repo it came from. All skill fol
 
 | Repo | Added | Installed as | Merged into | Status | Notes |
 |---|---|---|---|---|---|
+| vercel.com/get-started.md | 2026-11-09 | `vercel-deploy/` | — | active | Vercel's "Onboard your agent" playbook (CLI, plugin, MCP) + lyopz's private-repo deploy rules |
 | (built-in) | 2026-10-18 | `skill-intake/` | — | active | Manages this repo: adding, merging, removing skills |
 | lyopz (own) | 2026-10-18 | `project-map/` (`SKILL.md`, `template.html`, `build_map.py`) | — | active | Interactive file map viewer from lyopz's Graph POW artifact. Agent Office project data stripped out; template is blank and filled from any project's graphify-out/graph.json. Loads d3 (cdnjs) + Google Fonts. |
 | DietrichGebert/ponytail | 2026-10-18 | `ponytail/`, `ponytail-review/`, `ponytail-audit/`, `ponytail-debt/` (+ `ponytail/LICENSE`) | — | trial | Lazy senior-dev coding mode + code review/audit/shortcut ledger. Skipped: ponytail-gain (marketing), ponytail-help (plugin-only), all hooks/scripts (auto-run code). MIT. |
