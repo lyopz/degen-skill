@@ -13,7 +13,7 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 3. Assemble (Unity via unityMCP, or a Luau build script; Blender fallback), scatter with random rotation/scale, snap to ground.
 4. Lighting preset from `maps.md` + ambient motion (scripted, client-side).
 5. Performance: StreamingEnabled, Box collisions on decor, anchored, shadows off on decorative lights.
-6. Check (2026-11-03): walk/jump checks by raycast (`RespectCanCollide = true`) from placed parts, a front shot for anything numbered left-to-right, `ShowDevelopmentGui = false` for shots.
+6. Check (2026-11-03): walk/jump checks by raycast (`RespectCanCollide = true`) from placed parts, a front shot for anything numbered left-to-right, `ShowDevelopmentGui = false` for shots. (2026-11-10) Islet floors: coverage/overhang ray grid + per-plot jump-chain fitting (`floating-islands.md` Checks); plot clones/archives/labs → roblox-dev §7.
 - Terrain rules (custom materials, thickness, island recipe, sea-level shelves, LOD-safe hills) and decor scatter: `maps.md` → Terrain / Build style. Check every free Creator Store model for hidden scripts.
 
 ## Learn as you go (every job)

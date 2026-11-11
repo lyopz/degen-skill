@@ -37,6 +37,11 @@
 - Sum placed tris per plot/scene, not per asset (one plot: 23 bushes × 4.5k + 7 trees × 15k ≈ 210k of 455k); crowd foliage goes on the low/medium tier even when the game default is high.
 - Studio Play frame times measure the PC: take the effect's DELTA over an idle sample in the same session (Heartbeat dt + `Stats.HeartbeatTimeMs` + RenderCPUFrameTime, plus a camera-at-sky sample); absolute targets need MicroProfiler or a phone. Never time while a screen-grab loop runs (~2× inflated): A/B in back-to-back clean Play sessions. FX that freeze past a LOD distance: put the Play camera next to the model before judging motion.
 
+## Cutting tris & lights (2026-11-10)
+- Measure real tris before planning cuts (an audit count was 110k stale): EditableMesh face count per unique MeshId, cached (`roblox-3d-pipeline` quality-gates). Count tris × instances — 13 cloned wall panels held more rivet tris (~26k) than the dome; merging adjacent rivet rows, 5-sided studs under 0.3 studs and dropping hidden rows cut 24k with no silhouette change.
+- Static grass tufts → ~12 merged sector clumps (476 → 12 parts); keep a few dozen live tufts where sway/push-away is seen.
+- Light pools without lights: invisible 0.05-stud Part + Top Decal (radial glow, tinted Color3, Transparency 0.55–0.72) 0.04 above the floor — cheaper than lights and doesn't count toward the light cap.
+
 ## Scripts & UI
 - Run cosmetic motion (spin/bob/sway) on the **client**, not the server.
 - Don't update UI or tween every frame without need; throttle labels to change-only or 0.1 s.
