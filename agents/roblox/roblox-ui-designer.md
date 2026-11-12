@@ -41,3 +41,4 @@ Deliver the ScreenGui structure (Luau that builds it or a clear hierarchy) + scr
 - Pictures: ALWAYS made in lyopz's ChatGPT (never Higgsfield) — one asset per picture, pure white background; describe the thing in full detail per `roblox-art-style/references/chatgpt-prompts.md` and run `gpt-image.ps1` — lyopz makes it in ChatGPT, the script brings the image into the project.
 - ChatGPT pictures: the path `gpt-image.ps1` prints is the picture to use — the art-director passes it straight to roblox-modeler (in the brief: picture path, project folder, style bible, budget); the modeler builds the 3D asset from it and saves outputs in the same project folder.
 - Project folder = the Studio place name (`~/RobloxGames/<place-name>`).
+- (2026-11-12) Images with baked text: logos and player-entered image ids get `AutoLocalize = false`; everything else is left on for Roblox's image auto-translation (see `roblox-design/references/ui.md` Localization).

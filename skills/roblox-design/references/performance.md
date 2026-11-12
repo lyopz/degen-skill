@@ -16,6 +16,7 @@
 - Fewer, bigger MeshParts beat thousands of small Parts; union sparingly (unions are heavy); use Terrain for ground/water.
 - Lights: limit shadow-casting lights; most decorative PointLights `Shadows = false`.
 
+- **(2026-11-12)** Studio **Performance Simulator** emulates a lower-end device's graphics + memory — run it before phone playtests on big maps. https://devforum.roblox.com/t/test-graphics-and-memory-on-lower-end-devices-with-the-performance-simulator/4979313
 - **(2026-11-07)** Min draw distance is now 500 studs even on the lowest quality (was 200): more of the map renders on phones, so far scenery must stay cheap (few big MeshParts, no lights/emitters far out). https://devforum.roblox.com/t/increasing-the-minimum-draw-distance-to-500-studs-and-other-auto-quality-level-improvements/4977292
 
 ## Effects
@@ -40,7 +41,7 @@
 ## Cutting tris & lights (2026-11-10)
 - Measure real tris before planning cuts (an audit count was 110k stale): EditableMesh face count per unique MeshId, cached (`roblox-3d-pipeline` quality-gates). Count tris × instances — 13 cloned wall panels held more rivet tris (~26k) than the dome; merging adjacent rivet rows, 5-sided studs under 0.3 studs and dropping hidden rows cut 24k with no silhouette change.
 - Static grass tufts → ~12 merged sector clumps (476 → 12 parts); keep a few dozen live tufts where sway/push-away is seen.
-- Light pools without lights: invisible 0.05-stud Part + Top Decal (radial glow, tinted Color3, Transparency 0.55–0.72) 0.04 above the floor — cheaper than lights and doesn't count toward the light cap.
+- Light pools without lights: invisible 0.05-stud Part + Top Decal (radial glow, tinted Color3, Transparency 0.55–0.72) 0.04 above the floor — cheaper than lights and doesn't count toward the light cap. A real SpotLight over an amber shaft: keep it a shade lighter than the shaft (#FFCF85 over #FFC15A) so a cyan hero under it doesn't go orange.
 
 ## Scripts & UI
 - Run cosmetic motion (spin/bob/sway) on the **client**, not the server.

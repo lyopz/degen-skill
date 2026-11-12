@@ -145,6 +145,9 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - Shots at a target size inside a small Studio window: resize the HUD root to the target DESIGN size (or multiply root Scale by k: PC 1920×1080 0.428, phone 844×390 0.974, portrait 0.713), relayout, crop, restore after; popups in their own ScreenGui need their holder moved to the faked HUD rect.
 - lyopz's HUD taste: no cards behind HUD icons/currencies; coins + XP small, grouped right above the menu buttons in one top-left cluster; PC and phone show the same buttons.
 
+## Localization (2026-11-12)
+- Text baked into images (shop banners, signs) can now be auto-translated (beta, roblox-dev §8) — still keep key labels as TextLabels; set `AutoLocalize = false` on logos and player-entered image ids.
+
 ## Performance
 - Disable the whole `ScreenGui` instead of toggling many `.Visible`.
 - Fade groups with one `CanvasGroup.GroupTransparency` tween.
