@@ -6,6 +6,7 @@
 - Landing from height: small camera dip + dust particles at feet.
 - Camera shake: small (0.2–0.5°) and short (0.15–0.3 s); scale with impact size; offer a setting to turn it off. (`roblox-templates/templates/VFX.lua` → `VFX.Shake`)
 - Never fight the player's camera for long; cutscenes ≤ 3 s and skippable.
+- Hit-cam / push-in shots (from projects 2026-11-15): fit the push-in distance to the viewport aspect (phones are wider than tall — a fixed offset crops the target) and start the wide shot closer in big arenas; test a camera move start-to-end inside one `execute_luau` call.
 
 ## Combat hits
 1. **Anticipation:** wind-up pose/glow 0.1–0.2 s.
