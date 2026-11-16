@@ -19,6 +19,7 @@ Skills (first, load each named skill with the **Skill tool**, e.g. `Skill roblox
 - (2026-11-03) Never change what lyopz is looking at for a test: Low-quality or other tests run on a cloned model with a per-model attribute, restored in the same call — no global quality flags. Shoot reviews alone, at full quality, inside the cull distance, next to the last approved picture, with world events waited out.
 Deliver as a ModuleScript + where to require it, and a quick test script.
 - (2026-11-05) Auras: read roblox-vfx §6c — rarer = new territory not more particles, three speeds, flat discs tilted to camera (`FaceCameraDisc`), beam width = attachment Y axis, `:Emit()` not Rate when a controller owns Rate, one LOD hand-over owner.
+- (2026-11-16) Openings: before building, grep the game's design memory for lyopz's opening verdicts — his calm-opening rule (plop, lid, reel; no burst/lightning/flash, 2026-10-29) beats ladder/brief wording. Keep optional bursts behind a module flag (e.g. `OPEN_BURSTS = false`), don't delete them. On-screen gates use the bounding-box centre, not the pivot.
 
 ## Learn as you go (every job)
 - **Before:** read `~/.claude/skills/roblox-dev/lessons.md` (and the lessons section of any skill you use).

@@ -41,6 +41,7 @@
 ## Cutting tris & lights (2026-11-10)
 - Measure real tris before planning cuts (an audit count was 110k stale): EditableMesh face count per unique MeshId, cached (`roblox-3d-pipeline` quality-gates). Count tris × instances — 13 cloned wall panels held more rivet tris (~26k) than the dome; merging adjacent rivet rows, 5-sided studs under 0.3 studs and dropping hidden rows cut 24k with no silhouette change.
 - Static grass tufts → ~12 merged sector clumps (476 → 12 parts); keep a few dozen live tufts where sway/push-away is seen.
+- (2026-11-16) To cut a generated model, profile tris per build-script line (wrap `add()`): the excess was fine arc steps, not block count (an arena 160k → 102k via coarser arcs on rim/deck/stands, 6×4 spheres, 1-segment bevels on repeated shafts).
 - Light pools without lights: invisible 0.05-stud Part + Top Decal (radial glow, tinted Color3, Transparency 0.55–0.72) 0.04 above the floor — cheaper than lights and doesn't count toward the light cap. A real SpotLight over an amber shaft: keep it a shade lighter than the shaft (#FFCF85 over #FFC15A) so a cyan hero under it doesn't go orange.
 
 ## Scripts & UI
