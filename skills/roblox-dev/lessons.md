@@ -2,7 +2,7 @@
 
 Every Roblox agent and session that builds or fixes Roblox code **reads this before starting** and **adds to it after finishing**.
 One line per lesson, newest at top, grouped by topic. Format: `- YYYY-MM-DD [project] lesson — fix/pattern (file or template)`.
-Promoted 2026-11-16: 13 lessons (11-15/11-16 Build-A-Pet arenas + Dynamo) → roblox-dev §7 (PrimaryPart pivot + random insert yaw; "Play tests & resumes": post-teleport wait, Escape for result cards, Scriptable camera before on-screen gates, resume a closed Lead from disk, roblox-assets.json after concurrent uploads), performance.md (tri profiling per build line), maps.md (fallback exits, ClockTime jumps), modeler/reviewer/vfx-artist/map-builder agents (moss sleeve, glow caps, both-face panels, bbox-centre on-screen checks, calm-opening rule + burst flag, GLB 180°/ApplyMesh); ~700 already-promoted lines re-added by a stale copy (Nov 16 03:00 commit) dropped — 6th time. Earlier promotions: see git history (2026-10-23..11-15). **On the PC: `git pull` BEFORE appending, and append only your OWN new lines — never paste an old copy of this file back.**
+Promoted 2026-11-17: 2 opening/clone lessons → roblox-animator agent (step 8). Promoted 2026-11-16: 13 lessons (11-15/11-16 Build-A-Pet arenas + Dynamo) → roblox-dev §7 (PrimaryPart pivot + random insert yaw; "Play tests & resumes": post-teleport wait, Escape for result cards, Scriptable camera before on-screen gates, resume a closed Lead from disk, roblox-assets.json after concurrent uploads), performance.md (tri profiling per build line), maps.md (fallback exits, ClockTime jumps), modeler/reviewer/vfx-artist/map-builder agents (moss sleeve, glow caps, both-face panels, bbox-centre on-screen checks, calm-opening rule + burst flag, GLB 180°/ApplyMesh); ~700 already-promoted lines re-added by a stale copy (Nov 16 03:00 commit) dropped — 6th time. Earlier promotions: see git history (2026-10-23..11-15). **On the PC: `git pull` BEFORE appending, and append only your OWN new lines — never paste an old copy of this file back.**
 
 ## Data & saving
 ## Security & remotes
@@ -10,8 +10,6 @@ Promoted 2026-11-16: 13 lessons (11-15/11-16 Build-A-Pet arenas + Dynamo) → ro
 ## Performance
 ## UI
 ## Animation & VFX
-- 2026-11-16 (build-a-pet, scripter): when an opening animates clones (a batch of copies) the station model never moves: check lid/clamp poses on the clones, not the placed model; result cards that wait for a close block the next queued open.
-- 2026-11-16 (build-a-pet, scripter): a twist-off cap reads well as its own mover kind (angle about the hinge's up axis + small lift, Back Out ease) rather than a hinge; with a no-shake brief, mark hatch spinners with a stage speed multiplier (1.5/3/4/5).
 - 2026-11-16 (build-a-pet, modeler): to thread a ring between fins, solve its height from the recorded fin cross-sections but set its tilt by hand (auto-solve gave an unusable 61.7°).
 ## Studio / tooling (MCP, import, plugins)
 ## Workflow (what made building faster)
