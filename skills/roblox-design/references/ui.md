@@ -106,7 +106,7 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 
 **ViewportFrame cards**
 - Fit the camera to the model's bounding box: project the 8 corners through the camera (vertical FOV AND the frame aspect) and pull in to ~0.86–0.88 fill; refit on AbsoluteSize change. A bounding-sphere or fixed distance leaves the model at ~40% / cropped.
-- No particles: auras = captured flipbooks (ImageRectOffset stepped by ONE shared strong-keyed Heartbeat, frozen when hidden, cell px ≥ on-screen size; crossfading 2 stacked frames makes 8 fps smooth) or a few Neon part stand-ins; 3D-item fire/sparks around it = 2D UI.
+- No particles (ViewportFrame still has none; for 2D UI see UI Particles below): auras = captured flipbooks (ImageRectOffset stepped by ONE shared strong-keyed Heartbeat, frozen when hidden, cell px ≥ on-screen size; crossfading 2 stacked frames makes 8 fps smooth) or a few Neon part stand-ins; 3D-item fire/sparks around it = 2D UI.
 - Looks: rim light = a flat Neon clone in a 1–2% bigger VF behind, offset 3 px, 45% transparent, pivoted with the model; soften a busy ColorMap with a SmoothPlastic shell (×1.006, ~0.55 transparent); never use scaled copies of hollow/one-sided meshes as outlines (they draw in front). Decals/face parts do render (strip them for bare-body previews). Apply runtime overlays to the clone inside the VF, never the cached template.
 
 **Prompts, world-anchored UI, input**
@@ -144,6 +144,10 @@ Use `TweenService` (a debounce stops overlapping clicks). Animate a `UIScale` ch
 - TextBox Text-changed handlers run deferred: a test hook that sets `.Text` must set the filter state itself. Currency rename: also grep baked UI-builder text, live StarterGui labels and icon maps for OLD asset ids (aliases kept old art).
 - Shots at a target size inside a small Studio window: resize the HUD root to the target DESIGN size (or multiply root Scale by k: PC 1920×1080 0.428, phone 844×390 0.974, portrait 0.713), relayout, crop, restore after; popups in their own ScreenGui need their holder moved to the faked HUD rect.
 - lyopz's HUD taste: no cards behind HUD icons/currencies; coins + XP small, grouped right above the menu buttons in one top-left cluster; PC and phone show the same buttons.
+
+## UI Particles — `ParticleEmitter2D` (Studio beta, 2026-11-19)
+- Real 2D particles on any GuiObject in a ScreenGui/SurfaceGui/BillboardGui (renders above the parent's stroke/shadow): `Enabled`+`Rate` for loops, `:Emit(n)` for bursts (button press, coin pop, rarity reveal), `:Clear()`. Props mirror ParticleEmitter (`TextureContent`, Color/Size/Transparency sequences in offset px — Size = half the drawn size, Lifetime, Speed, Acceleration, Drag, `RotSpeed`, SpreadAngle, `EmissionMode` Point/BoundingBox, Flipbook*, `Blend` 0 normal/1 additive, `TimeScale`, `LockedToParent`). New emitter defaults: Enabled, Rate 20, Lifetime 5–10 s, BoundingBox — set Enabled=false for burst-only.
+- **Beta: places that use it can't be published** → prototype only; keep shipped bursts on the flipbook/frame method above (`ButtonFeel`, `ImpactFX`) until it leaves beta. Enable: File → Beta Features → UI Particles. https://create.roblox.com/docs/ui/2D-particle-emitters · https://devforum.roblox.com/t/studio-beta-ui-particles/4996850
 
 ## Localization (2026-11-12)
 - Text baked into images (shop banners, signs) can now be auto-translated (beta, roblox-dev §8) — still keep key labels as TextLabels; set `AutoLocalize = false` on logos and player-entered image ids.
